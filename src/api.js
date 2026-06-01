@@ -1,4 +1,4 @@
-const BASE = import.meta.env.VITE_API_URL || 'http://localhost:3001'
+const BASE = import.meta.env.VITE_API_URL || ''
 
 function token() {
   try { return JSON.parse(sessionStorage.getItem('kiro_user'))?.token || null } catch { return null }
