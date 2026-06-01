@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>KIRO Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0a14;--bg2:#141420;--bg3:#1a1a26;
+  --text:#f5f5fa;--text2:#a8a8b8;--text3:#6b6b80;
+  --lime:#c8ff00;--border:#2a2a3a;
+  --red:#ff5f5f;--blue:#6eb5ff;--orange:#ff9f50;--green:#00c88c;
+  --sw:220px;
+}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+button{font-family:'Inter',sans-serif;cursor:pointer;border:none;outline:none;background:none}
+
+/* ─── LOGIN ─────────────────────────────── */
+#login-screen{display:flex;align-items:center;justify-content:center;min-height:100vh}
+.login-box{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:40px 36px;width:100%;max-width:380px}
+.login-logo{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:var(--lime);margin-bottom:6px}
+.login-sub{font-size:13px;color:var(--text3);margin-bottom:28px}
+.field{margin-bottom:16px}
+.field label{display:block;font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px}
+.field input{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:11px 14px;color:var(--text);font-size:14px;font-family:'Inter',sans-serif;outline:none;transition:.2s}
+.field input:focus{border-color:var(--lime);box-shadow:0 0 0 3px rgba(200,255,0,.1)}
+.btn-lime{display:inline-flex;align-items:center;justify-content:center;gap:6px;background:var(--lime);color:#0a0a14;font-weight:700;font-size:14px;padding:11px 22px;border-radius:6px;cursor:pointer;transition:.2s;width:100%}
+.btn-lime:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(200,255,0,.25)}
+.btn-ghost{display:inline-flex;align-items:center;gap:6px;background:transparent;color:var(--text2);font-size:13px;padding:7px 14px;border-radius:6px;border:1px solid var(--border);cursor:pointer;transition:.2s}
+.btn-ghost:hover{border-color:var(--lime);color:var(--lime)}
+.btn-danger{background:rgba(255,95,95,.12);color:var(--red);border:1px solid rgba(255,95,95,.25);font-size:12px;padding:5px 12px;border-radius:6px;cursor:pointer;transition:.2s}
+.btn-danger:hover{background:rgba(255,95,95,.2)}
+.btn-edit{background:rgba(200,255,0,.1);color:var(--lime);border:1px solid rgba(200,255,0,.2);font-size:12px;padding:5px 12px;border-radius:6px;cursor:pointer;transition:.2s}
+.btn-edit:hover{background:rgba(200,255,0,.18)}
+.login-err{font-size:13px;color:var(--red);background:rgba(255,85,85,.08);border:1px solid rgba(255,85,85,.2);border-radius:6px;padding:9px 14px;margin-bottom:14px;display:none}
+
+/* ─── SHELL ─────────────────────────────── */
+#app{display:none;min-height:100vh}
+.sidebar{position:fixed;top:0;left:0;width:var(--sw);height:100vh;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;z-index:100;overflow-y:auto}
+.sb-head{padding:20px 18px 16px;border-bottom:1px solid var(--border)}
+.sb-logo{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:var(--lime)}
+.sb-logo span{color:var(--text3);font-weight:400;font-size:12px;display:block;margin-top:2px}
+.sb-nav{flex:1;padding:10px}
+.nav-item{display:flex;align-items:center;gap:10px;width:100%;padding:9px 12px;border-radius:8px;color:var(--text2);font-size:13px;font-weight:500;cursor:pointer;transition:.15s;border:none;background:none;text-align:left}
+.nav-item:hover{background:var(--bg3);color:var(--text)}
+.nav-item.active{background:rgba(200,255,0,.1);color:var(--lime)}
+.nav-icon{font-size:15px;width:20px;text-align:center;flex-shrink:0}
+.sb-foot{padding:10px;border-top:1px solid var(--border)}
+.content{margin-left:var(--sw);padding:28px 32px;min-height:100vh}
+
+/* ─── SECTION ────────────────────────────── */
+.section{display:none}
+.section.active{display:block}
+.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}
+.section-title{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:var(--text)}
+.section-sub{font-size:13px;color:var(--text2);margin-top:3px}
+
+/* Stats (dashboard) */
+.stats-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;margin-bottom:28px}
+.stat-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:18px;text-align:center}
+.stat-num{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;color:var(--lime)}
+.stat-label{font-size:12px;color:var(--text3);margin-top:4px}
+
+/* ─── TABLE ──────────────────────────────── */
+.table-wrap{background:var(--bg2);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.tbl{width:100%;border-collapse:collapse}
+.tbl th{text-align:left;padding:11px 16px;font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid var(--border);background:var(--bg3)}
+.tbl td{padding:10px 16px;font-size:13px;border-bottom:1px solid rgba(42,42,58,.6);vertical-align:middle}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr:hover td{background:rgba(255,255,255,.02)}
+.tbl .actions{display:flex;gap:6px;white-space:nowrap}
+.badge{display:inline-flex;align-items:center;font-size:10px;font-weight:700;padding:2px 8px;border-radius:100px;text-transform:uppercase}
+.badge-lime{background:rgba(200,255,0,.15);color:var(--lime)}
+.badge-blue{background:rgba(110,181,255,.15);color:var(--blue)}
+.badge-orange{background:rgba(255,159,80,.15);color:var(--orange)}
+.badge-red{background:rgba(255,95,95,.15);color:var(--red)}
+.badge-gray{background:rgba(107,107,128,.15);color:#8a8a9a}
+.badge-green{background:rgba(0,200,140,.15);color:var(--green)}
+.empty-row td{text-align:center;color:var(--text3);padding:32px}
+
+/* ─── MODAL ──────────────────────────────── */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:500;align-items:center;justify-content:center}
+.modal-overlay.open{display:flex}
+.modal-box{background:var(--bg2);border:1px solid var(--border);border-radius:16px;width:100%;max-width:520px;max-height:90vh;overflow-y:auto;padding:28px}
+.modal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px}
+.modal-title{font-family:'Syne',sans-serif;font-size:17px;font-weight:700;color:var(--text)}
+.modal-close{background:none;border:none;color:var(--text3);font-size:22px;cursor:pointer;line-height:1;padding:2px}
+.modal-close:hover{color:var(--text)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.form-row.full{grid-template-columns:1fr}
+.modal-actions{display:flex;gap:10px;margin-top:24px;justify-content:flex-end}
+
+/* ─── TOAST ──────────────────────────────── */
+#toast{position:fixed;bottom:24px;right:24px;z-index:999;display:flex;flex-direction:column;gap:8px;pointer-events:none}
+.toast-item{padding:12px 18px;border-radius:8px;font-size:13px;font-weight:500;min-width:220px;animation:slideIn .3s ease;pointer-events:none}
+.toast-item.ok{background:#1a2e0a;border:1px solid rgba(200,255,0,.3);color:var(--lime)}
+.toast-item.err{background:#2a0a0a;border:1px solid rgba(255,95,95,.3);color:var(--red)}
+@keyframes slideIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:none}}
+
+/* ─── SELECT ─────────────────────────────── */
+select{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:11px 14px;color:var(--text);font-size:14px;font-family:'Inter',sans-serif;outline:none;appearance:none}
+select:focus{border-color:var(--lime)}
+textarea{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:11px 14px;color:var(--text);font-size:14px;font-family:'Inter',sans-serif;outline:none;resize:vertical;min-height:80px}
+textarea:focus{border-color:var(--lime)}
+
+/* ─── SUB-TABS ───────────────────────────── */
+.sub-tabs{display:flex;gap:4px;margin-bottom:20px;border-bottom:1px solid var(--border)}
+.sub-tab{padding:9px 18px;background:none;border:none;border-bottom:2px solid transparent;color:var(--text2);font-size:13px;font-weight:600;cursor:pointer;margin-bottom:-1px;transition:.2s}
+.sub-tab.active{color:var(--lime);border-bottom-color:var(--lime)}
+.sub-tab:hover{color:var(--text)}
+
+@media(max-width:768px){
+  .sidebar{transform:translateX(-100%)}
+  .content{margin-left:0;padding:20px 14px}
+  .form-row{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════ LOGIN ═══════════════ -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-logo">KIRO <span style="display:inline;font-size:13px;font-weight:400;color:var(--text3)">Admin Panel</span></div>
+    <p class="login-sub">Войдите с правами администратора</p>
+    <div id="login-err" class="login-err">Неверный логин или пароль</div>
+    <div class="field"><label>Логин</label><input id="au" type="text" value="admin" autocomplete="username"/></div>
+    <div class="field"><label>Пароль</label><input id="ap" type="password" value="admin" autocomplete="current-password"/></div>
+    <button class="btn-lime" onclick="adminLogin()">Войти →</button>
+  </div>
+</div>
+
+<!-- ═══════════════ APP SHELL ═══════════════ -->
+<div id="app">
+  <aside class="sidebar">
+    <div class="sb-head">
+      <div class="sb-logo">KIRO <span>Admin Panel</span></div>
+    </div>
+    <nav class="sb-nav">
+      <button class="nav-item active" onclick="goto('dashboard')"><span class="nav-icon">⊞</span>Дашборд</button>
+      <button class="nav-item"        onclick="goto('users')">   <span class="nav-icon">👥</span>Пользователи</button>
+      <button class="nav-item"        onclick="goto('schedule')"><span class="nav-icon">📅</span>Расписание</button>
+      <button class="nav-item"        onclick="goto('library')"> <span class="nav-icon">📚</span>Библиотека</button>
+      <button class="nav-item"        onclick="goto('links')">   <span class="nav-icon">🔗</span>Полезные ссылки</button>
+      <button class="nav-item"        onclick="goto('announces')"><span class="nav-icon">📣</span>Объявления</button>
+    </nav>
+    <div class="sb-foot">
+      <button class="nav-item" onclick="logout()"><span class="nav-icon">⇥</span>Выйти</button>
+    </div>
+  </aside>
+
+  <div class="content">
+
+    <!-- ── DASHBOARD ── -->
+    <div id="sec-dashboard" class="section active">
+      <div class="section-header">
+        <div><div class="section-title">Дашборд</div><div class="section-sub">Обзор платформы KIRO</div></div>
+      </div>
+      <div class="stats-row" id="dash-stats"></div>
+    </div>
+
+    <!-- ── USERS ── -->
+    <div id="sec-users" class="section">
+      <div class="section-header">
+        <div><div class="section-title">Пользователи</div><div class="section-sub">Управление участниками платформы</div></div>
+        <button class="btn-lime" style="width:auto" onclick="openUserModal()">+ Добавить</button>
+      </div>
+      <div class="table-wrap">
+        <table class="tbl">
+          <thead><tr><th>#</th><th>Логин</th><th>Очки</th><th>Стрик</th><th>Действия</th></tr></thead>
+          <tbody id="users-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ── SCHEDULE ── -->
+    <div id="sec-schedule" class="section">
+      <div class="section-header">
+        <div><div class="section-title">Расписание</div><div class="section-sub">Программа лагеря по дням — теория, задания и ДЗ</div></div>
+        <button class="btn-lime" style="width:auto" onclick="openEventModal()">+ Добавить</button>
+      </div>
+      <div class="table-wrap">
+        <table class="tbl">
+          <thead><tr><th>День</th><th>Дата</th><th>Тип</th><th>Название</th><th>Теория</th><th>Действия</th></tr></thead>
+          <tbody id="sched-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ── LIBRARY ── -->
+    <div id="sec-library" class="section">
+      <div class="section-header">
+        <div><div class="section-title">Библиотека знаний</div><div class="section-sub">Названия дней и ссылки на материалы</div></div>
+      </div>
+      <div id="lib-days-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px"></div>
+    </div>
+
+    <!-- ── LINKS ── -->
+    <div id="sec-links" class="section">
+      <div class="section-header">
+        <div><div class="section-title">Полезные ссылки</div><div class="section-sub">Подборка материалов для участников</div></div>
+        <button class="btn-lime" style="width:auto" onclick="openLinkModal()">+ Добавить</button>
+      </div>
+      <div class="table-wrap">
+        <table class="tbl">
+          <thead><tr><th>Название</th><th>Описание</th><th>Ссылка</th><th>Действия</th></tr></thead>
+          <tbody id="links-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ── ANNOUNCES ── -->
+    <div id="sec-announces" class="section">
+      <div class="section-header">
+        <div><div class="section-title">Объявления</div><div class="section-sub">Новости и сообщения для участников</div></div>
+        <button class="btn-lime" style="width:auto" onclick="openAnnModal()">+ Добавить</button>
+      </div>
+      <div class="table-wrap">
+        <table class="tbl">
+          <thead><tr><th>Иконка</th><th>Заголовок</th><th>Текст</th><th>Дата</th><th>Действия</th></tr></thead>
+          <tbody id="ann-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /app -->
+
+<!-- ═══════════════ MODAL ═══════════════ -->
+<div id="modal" class="modal-overlay" onclick="e=>e.target===this&&closeModal()">
+  <div class="modal-box" id="modal-box"></div>
+</div>
+
+<!-- ═══════════════ TOAST ═══════════════ -->
+<div id="toast"></div>
+
+<script>
+const API = ''  // same origin; change to http://localhost:3001 if serving separately
+let TOKEN = localStorage.getItem('kiro_admin_token') || ''
+let libDays = []  // cache for day selector in material form
+
+// ── Auth ──────────────────────────────────────────────────────────────────
+async function adminLogin() {
+  const u = document.getElementById('au').value.trim()
+  const p = document.getElementById('ap').value
+  const err = document.getElementById('login-err')
+  err.style.display = 'none'
+  try {
+    const data = await req('/api/auth/admin-login', 'POST', { username: u, password: p }, true)
+    TOKEN = data.token
+    localStorage.setItem('kiro_admin_token', TOKEN)
+    document.getElementById('login-screen').style.display = 'none'
+    document.getElementById('app').style.display = 'block'
+    loadDashboard()
+  } catch {
+    err.style.display = 'block'
+  }
+}
+
+function logout() {
+  TOKEN = ''
+  localStorage.removeItem('kiro_admin_token')
+  location.reload()
+}
+
+// Auto-login if token exists
+if (TOKEN) {
+  document.getElementById('login-screen').style.display = 'none'
+  document.getElementById('app').style.display = 'block'
+  loadDashboard()
+}
+
+document.getElementById('ap').addEventListener('keydown', e => { if (e.key === 'Enter') adminLogin() })
+
+// ── Request helper ────────────────────────────────────────────────────────
+async function req(path, method='GET', body=null, noAuth=false) {
+  const opts = { method, headers: { 'Content-Type': 'application/json' } }
+  if (!noAuth && TOKEN) opts.headers['Authorization'] = 'Bearer ' + TOKEN
+  if (body) opts.body = JSON.stringify(body)
+  const res = await fetch(API + path, opts)
+  const json = await res.json().catch(() => ({}))
+  if (!res.ok) throw new Error(json.message || res.statusText)
+  return json
+}
+
+// ── Toast ─────────────────────────────────────────────────────────────────
+function toast(msg, type='ok') {
+  const el = document.createElement('div')
+  el.className = 'toast-item ' + type
+  el.textContent = type === 'ok' ? '✓ ' + msg : '✕ ' + msg
+  document.getElementById('toast').appendChild(el)
+  setTimeout(() => el.remove(), 3000)
+}
+
+// ── Navigation ────────────────────────────────────────────────────────────
+const LOADERS = { dashboard:loadDashboard, users:loadUsers, schedule:loadSchedule, library:loadLibrary, links:loadLinks, announces:loadAnnounces }
+function goto(sec) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'))
+  document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'))
+  document.getElementById('sec-' + sec).classList.add('active')
+  document.querySelector(`[onclick="goto('${sec}')"]`).classList.add('active')
+  if (LOADERS[sec]) LOADERS[sec]()
+}
+
+// ── Modal ─────────────────────────────────────────────────────────────────
+function openModal(html) {
+  document.getElementById('modal-box').innerHTML = html
+  document.getElementById('modal').classList.add('open')
+}
+function closeModal() { document.getElementById('modal').classList.remove('open') }
+document.getElementById('modal').addEventListener('click', e => { if (e.target === document.getElementById('modal')) closeModal() })
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal() })
+
+// ── DASHBOARD ─────────────────────────────────────────────────────────────
+async function loadDashboard() {
+  try {
+    const [users, sched, tasks, ann] = await Promise.all([
+      req('/api/users'), req('/api/schedule'), req('/api/tasks/all'), req('/api/announcements')
+    ])
+    const libData = await req('/api/library')
+    let totalMats = 0
+    libData.forEach(g => g.days.forEach(d => totalMats += d.mats.length))
+    document.getElementById('dash-stats').innerHTML = [
+      ['👥', users.length, 'Пользователей'],
+      ['📅', sched.length, 'Занятий'],
+      ['📚', totalMats, 'Материалов'],
+      ['✅', tasks.length, 'Заданий'],
+      ['📣', ann.length, 'Объявлений'],
+    ].map(([ic, n, l]) => `<div class="stat-card"><div style="font-size:24px;margin-bottom:6px">${ic}</div><div class="stat-num">${n}</div><div class="stat-label">${l}</div></div>`).join('')
+  } catch(e) { toast('Ошибка загрузки', 'err') }
+}
+
+// ── USERS ─────────────────────────────────────────────────────────────────
+async function loadUsers() {
+  try {
+    const users = await req('/api/users')
+    const tbody = document.getElementById('users-tbody')
+    if (!users.length) { tbody.innerHTML = '<tr class="empty-row"><td colspan="5">Пользователей нет</td></tr>'; return }
+    tbody.innerHTML = users.map(u => `
+      <tr>
+        <td style="color:var(--text3)">${u.id}</td>
+        <td style="font-weight:600">${esc(u.name)}</td>
+        <td style="color:var(--lime);font-weight:600">${u.points}</td>
+        <td>${u.streak}</td>
+        <td><div class="actions">
+          <button class="btn-edit" onclick="openUserModal(${u.id},'${esc(u.name)}')">Ред.</button>
+          <button class="btn-danger" onclick="deleteUser(${u.id},'${esc(u.name)}')">Удалить</button>
+        </div></td>
+      </tr>`).join('')
+  } catch(e) { toast('Ошибка загрузки пользователей', 'err') }
+}
+
+function openUserModal(id, currentLogin) {
+  const isEdit = !!id
+  openModal(`
+    <div class="modal-head">
+      <div class="modal-title">${isEdit ? 'Редактировать пользователя' : 'Новый пользователь'}</div>
+      <button class="modal-close" onclick="closeModal()">&times;</button>
+    </div>
+    <div class="field"><label>Логин</label><input id="u-login" placeholder="student123" value="${esc(currentLogin||'')}"/></div>
+    <div class="field"><label>Пароль${isEdit ? ' (оставьте пустым чтобы не менять)' : ''}</label><input id="u-pass" type="password" placeholder="••••••••"/></div>
+    <div class="modal-actions">
+      <button class="btn-ghost" onclick="closeModal()">Отмена</button>
+      <button class="btn-lime" style="width:auto" onclick="saveUser(${id||'null'})">${isEdit ? 'Сохранить' : 'Создать'}</button>
+    </div>
+  `)
+}
+
+async function saveUser(id) {
+  const body = {
+    login:    document.getElementById('u-login').value.trim(),
+    password: document.getElementById('u-pass').value,
+  }
+  if (!body.login) return toast('Введите логин', 'err')
+  if (!id && !body.password) return toast('Введите пароль', 'err')
+  try {
+    if (id) { await req('/api/users/' + id, 'PUT', body); toast('Пользователь обновлён') }
+    else     { await req('/api/users',      'POST', body); toast('Пользователь создан') }
+    closeModal(); loadUsers()
+  } catch(e) { toast(e.message, 'err') }
+}
+
+function deleteUser(id, login) {
+  openModal(`
+    <div class="modal-head">
+      <div class="modal-title">Удалить пользователя</div>
+      <button class="modal-close" onclick="closeModal()">&times;</button>
+    </div>
+    <p style="color:var(--text2);margin-bottom:16px;font-size:14px">
+      Удаляется пользователь <b style="color:var(--lime)">${esc(login)}</b>.<br>
+      Это действие необратимо. Введите слово <b>Подтверждаю</b> для продолжения.
+    </p>
+    <div class="field"><input id="del-confirm" placeholder="Подтверждаю" oninput="document.getElementById('del-ok').disabled=this.value!=='Подтверждаю'"/></div>
+    <div class="modal-actions">
+      <button class="btn-ghost" onclick="closeModal()">Отмена</button>
+      <button id="del-ok" class="btn-danger" style="width:auto" disabled onclick="confirmDeleteUser(${id})">Удалить</button>
+    </div>
+  `)
+}
+
+async function confirmDeleteUser(id) {
+  try { await req('/api/users/' + id, 'DELETE'); toast('Пользователь удалён'); closeModal(); loadUsers() }
+  catch(e) { toast(e.message, 'err') }
+}
+
+// ── SCHEDULE ──────────────────────────────────────────────────────────────
+const TYPE_LABELS = { intro:'Введение', lecture:'Лекция', insider:'Insider Show', project:'Проект', org:'Орг', demo:'Демо-день' }
+const TYPE_BADGE  = { intro:'badge-blue', lecture:'badge-lime', insider:'badge-purple', project:'badge-orange', org:'badge-gray', demo:'badge-red' }
+
+async function loadSchedule() {
+  try {
+    const evs = await req('/api/schedule')
+    const tbody = document.getElementById('sched-tbody')
+    if (!evs.length) { tbody.innerHTML = '<tr class="empty-row"><td colspan="6">Занятий нет</td></tr>'; return }
+    tbody.innerHTML = evs.map(e => `
+      <tr>
+        <td style="font-family:var(--font-mono);font-weight:700;color:var(--lime)">День ${e.day}</td>
+        <td style="color:var(--text2);white-space:nowrap">${esc(e.date)}</td>
+        <td><span class="badge ${TYPE_BADGE[e.type]||'badge-gray'}">${TYPE_LABELS[e.type]||e.type}</span></td>
+        <td style="max-width:240px">${esc(e.title)}</td>
+        <td style="color:var(--text3);font-size:12px">${(e.theory||[]).length} пунктов</td>
+        <td><div class="actions">
+          <button class="btn-edit" onclick='openEventModal(${JSON.stringify(e)})'>Ред.</button>
+          <button class="btn-danger" onclick="deleteEvent(${e.id})">Удалить</button>
+        </div></td>
+      </tr>`).join('')
+  } catch(e) { toast('Ошибка загрузки', 'err') }
+}
+
+function openEventModal(ev) {
+  const isEdit = !!ev
+  const theoryVal = esc((ev?.theory||[]).join('\n'))
+  openModal(`
+    <div class="modal-head">
+      <div class="modal-title">${isEdit ? 'Редактировать занятие' : 'Новое занятие'}</div>
+      <button class="modal-close" onclick="closeModal()">&times;</button>
+    </div>
+    <div class="form-row">
+      <div class="field"><label>День №</label><input id="ev-day" type="number" min="1" placeholder="1" value="${ev?.day||''}"/></div>
+      <div class="field"><label>Дата (метка)</label><input id="ev-date" placeholder="пн, 1 июня" value="${esc(ev?.date||'')}"/></div>
+    </div>
+    <div class="form-row">
+      <div class="field"><label>Тип</label>
+        <select id="ev-type">
+          ${['intro','lecture','project','insider','org','demo'].map(t=>`<option value="${t}" ${ev?.type===t?'selected':''}>${TYPE_LABELS[t]||t}</option>`).join('')}
+        </select>
+      </div>
+      <div class="field"><label>Месяц</label>
+        <select id="ev-month">
+          ${['june','july','august'].map(m=>`<option value="${m}" ${(ev?.month||'june')===m?'selected':''}>${{june:'Июнь',july:'Июль',august:'Август'}[m]}</option>`).join('')}
+        </select>
+      </div>
+    </div>
+    <div class="field"><label>Название занятия</label><input id="ev-title" placeholder="Основы программирования" value="${esc(ev?.title||'')}"/></div>
+    <div class="field"><label>Теория (каждый пункт с новой строки)</label><textarea id="ev-theory" rows="5" placeholder="Что такое алгоритм&#10;Нотация Big O">${theoryVal}</textarea></div>
+    <div class="field"><label>Домашнее задание</label><textarea id="ev-hw" rows="2">${esc(ev?.hw||'')}</textarea></div>
+    <div class="form-row">
+      <div class="field"><label>Время встречи</label><input id="ev-meeting-time" placeholder="10:00" value="${esc(ev?.meeting_time||'')}"/></div>
+      <div class="field"><label>Ссылка на встречу</label><input id="ev-meeting-link" placeholder="https://zoom.us/j/..." value="${esc(ev?.meeting_link||'')}"/></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-ghost" onclick="closeModal()">Отмена</button>
+      <button class="btn-lime" style="width:auto" onclick="saveEvent(${ev?.id||'null'})">${isEdit ? 'Сохранить' : 'Добавить'}</button>
+    </div>
+  `)
+}
+
+async function saveEvent(id) {
+  const body = {
+    day:    parseInt(document.getElementById('ev-day').value),
+    date:   document.getElementById('ev-date').value.trim(),
+    type:   document.getElementById('ev-type').value,
+    month:  document.getElementById('ev-month').value,
+    title:  document.getElementById('ev-title').value.trim(),
+    theory: document.getElementById('ev-theory').value.split('\n').map(s=>s.trim()).filter(Boolean),
+    tasks:  [],
+    hw:     document.getElementById('ev-hw').value.trim(),
+    meeting_time: document.getElementById('ev-meeting-time').value.trim(),
+    meeting_link: document.getElementById('ev-meeting-link').value.trim(),
+  }
+  if (!body.day || !body.title) return toast('Заполните номер дня и название', 'err')
+  try {
+    if (id) { await req('/api/schedule/' + id, 'PUT', body); toast('Занятие обновлено') }
+    else     { await req('/api/schedule',       'POST', body); toast('Занятие добавлено') }
+    closeModal(); loadSchedule()
+  } catch(e) { toast(e.message, 'err') }
+}
+
+async function deleteEvent(id) {
+  if (!confirm('Удалить событие?')) return
+  try { await req('/api/schedule/' + id, 'DELETE'); toast('Удалено'); loadSchedule() }
+  catch(e) { toast(e.message, 'err') }
+}
+
+// ── LIBRARY ───────────────────────────────────────────────────────────────
+// currentLibTab removed — library uses single view
+
+async function loadLibrary() {
+  try {
+    libDays = await req('/api/library/days')
+    const allMats = await req('/api/library/materials')
+    const countByDay = {}
+    allMats.forEach(m => { countByDay[m.day_id] = (countByDay[m.day_id] || 0) + 1 })
+    const grid = document.getElementById('lib-days-grid')
+    if (!libDays.length) { grid.innerHTML = '<p style="color:var(--text3)">Дней нет</p>'; return }
+    grid.innerHTML = libDays.map(d => `
+      <div style="border:1px solid var(--border);border-radius:8px;padding:16px;background:var(--bg-primary)">
+        <div style="display:flex;gap:8px;align-items:baseline;margin-bottom:12px">
+          <div style="font-family:monospace;font-weight:700;color:var(--lime);font-size:18px">${String(d.day_number).padStart(2,'0')}</div>
+          <div style="flex:1;min-width:0">
+            <div style="font-size:11px;color:var(--text2);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:2px">${d.date_label}</div>
+            <div style="font-size:14px;font-weight:600;color:var(--text);line-height:1.3">${esc(d.title)}</div>
+          </div>
+        </div>
+        <div style="background:var(--bg-secondary);border-radius:6px;padding:8px 10px;margin-bottom:12px;font-size:12px;color:var(--text2)">
+          Материалов: <strong>${countByDay[d.id] || 0}</strong>
+        </div>
+        <div style="display:flex;gap:8px">
+          <button class="btn-edit" style="flex:1" onclick='openEditTitleModal(${d.id},"${esc(d.title)}")'>Название</button>
+          <button class="btn-ghost" style="flex:1" onclick='openLinksModal(${d.id},"${esc(d.title)}")'>Ссылки →</button>
+        </div>
+      </div>`).join('')
+  } catch(e) { toast('Ошибка загрузки', 'err') }
+}
+
+function openEditTitleModal(id, currentTitle) {
+  openModal(`
+    <div class="modal-head">
+      <div class="modal-title">Изменить название</div>
+      <button class="modal-close" onclick="closeModal()">&times;</button>
+    </div>
+    <div class="field"><label>Название дня</label><input id="d-title" value="${esc(currentTitle)}"/></div>
+    <div class="modal-actions">
+      <button class="btn-ghost" onclick="closeModal()">Отмена</button>
+      <button class="btn-lime" style="width:auto" onclick="saveTitle(${id})">Сохранить</button>
+    </div>
+  `)
+}
+
+async function saveTitle(id) {
+  const day = libDays.find(d => d.id === id)
+  if (!day) return
+  const title = document.getElementById('d-title').value.trim()
+  if (!title) return toast('Введите название', 'err')
+  try {
+    await req('/api/library/days/' + id, 'PUT', {
+      day_number: day.day_number, date_label: day.date_label,
+      title, month: day.month, week_name: day.week_name, status: day.status,
+    })
+    toast('Название обновлено')
+    closeModal()
+    loadLibrary()
+  } catch(e) { toast(e.message, 'err') }
+}
+
+async function openLinksModal(dayId, dayTitle) {
+  try {
+    const allMats = await req('/api/library/materials')
+    const links = allMats.filter(m => m.day_id === dayId)
+    renderLinksModal(dayId, dayTitle, links)
+  } catch(e) { toast('Ошибка загрузки ссылок', 'err') }
+}
+
+function renderLinksModal(dayId, dayTitle, links) {
+  const rows = links.length === 0
+    ? '<p style="color:var(--text3);font-size:13px;padding:4px 0">Ссылок нет</p>'
+    : links.map(m => `
+        <div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border)">
+          <div style="flex:1;min-width:0">
+            <div style="font-size:13px;font-weight:600;color:var(--text)">${esc(m.title)}</div>
+            <div style="font-size:11px;color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(m.url)}</div>
+          </div>
+          <button class="btn-edit" style="flex-shrink:0" onclick='editLinkModal(${m.id},"${esc(m.title)}","${esc(m.url)}",${dayId},"${esc(dayTitle)}")'>Ред.</button>
+          <button class="btn-danger" style="flex-shrink:0" onclick="deleteMaterial(${m.id},${dayId},'${esc(dayTitle)}')">✕</button>
+        </div>`).join('')
+
+  openModal(`
+    <div class="modal-head">
+      <div class="modal-title">Ссылки — День ${libDays.find(d=>d.id===dayId)?.day_number||''}: ${esc(dayTitle)}</div>
+      <button class="modal-close" onclick="closeModal()">&times;</button>
+    </div>
+    <div id="links-list" style="margin-bottom:16px">${rows}</div>
+    <div id="add-link-form"></div>
+    <div class="modal-actions" style="justify-content:flex-start">
+      <button class="btn-ghost" onclick="showAddLinkForm(${dayId},'${esc(dayTitle)}')">+ Добавить ссылку</button>
+      <button class="btn-ghost" onclick="closeModal()">Закрыть</button>
+    </div>
+  `)
+}
+
+function showAddLinkForm(dayId, dayTitle) {
+  document.getElementById('add-link-form').innerHTML = `
+    <div style="border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:12px">
+      <div class="field"><label>Название</label><input id="nl-title" placeholder="Запись лекции"/></div>
+      <div class="field"><label>URL</label><input id="nl-url" placeholder="https://..."/></div>
+      <div style="display:flex;gap:8px;margin-top:4px">
+        <button class="btn-lime" style="width:auto" onclick="addLink(${dayId},'${esc(dayTitle)}')">Добавить</button>
+        <button class="btn-ghost" onclick="document.getElementById('add-link-form').innerHTML=''">Отмена</button>
+      </div>
+    </div>`
+  document.getElementById('nl-title').focus()
+}
+
+async function addLink(dayId, dayTitle) {
+  const title = document.getElementById('nl-title')?.value.trim()
+  const url   = document.getElementById('nl-url')?.value.trim()
+  if (!title) return toast('Введите название', 'err')
+  try {
+    await req('/api/library/materials', 'POST', { day_id:dayId, material_type:'link', title, meta:'', url:url||'#' })
+    toast('Ссылка добавлена')
+    openLinksModal(dayId, dayTitle)
+  } catch(e) { toast(e.message, 'err') }
+}
+
+function editLinkModal(id, currentTitle, currentUrl, dayId, dayTitle) {
+  openModal(`
+    <div class="modal-head">
+      <div class="modal-title">Редактировать ссылку</div>
+      <button class="modal-close" onclick="closeModal()">&times;</button>
+    </div>
+    <div class="field"><label>Название</label><input id="el-title" value="${esc(currentTitle)}"/></div>
+    <div class="field"><label>URL</label><input id="el-url" value="${esc(currentUrl)}"/></div>
+    <div class="modal-actions">
+      <button class="btn-ghost" onclick="openLinksModal(${dayId},'${esc(dayTitle)}')">Отмена</button>
+      <button class="btn-lime" style="width:auto" onclick="saveLink(${id},${dayId},'${esc(dayTitle)}')">Сохранить</button>
+    </div>
+  `)
+}
+
+async function saveLink(id, dayId, dayTitle) {
+  const title = document.getElementById('el-title').value.trim()
+  const url   = document.getElementById('el-url').value.trim()
+  if (!title) return toast('Введите название', 'err')
+  try {
+    await req('/api/library/materials/' + id, 'PUT', { day_id:dayId, material_type:'link', title, meta:'', url:url||'#' })
+    toast('Ссылка обновлена')
+    openLinksModal(dayId, dayTitle)
+  } catch(e) { toast(e.message, 'err') }
+}
+
+async function deleteMaterial(id, dayId, dayTitle) {
+  if (!confirm('Удалить ссылку?')) return
+  try {
+    await req('/api/library/materials/' + id, 'DELETE')
+    toast('Ссылка удалена')
+    closeModal()
+    setTimeout(() => openLinksModal(dayId, dayTitle), 100)
+  } catch(e) { toast(e.message, 'err') }
+}
+
+// kept for compatibility - no longer used directly
+async function loadMaterials() {
+  try {
+    const mats = await req('/api/library/materials')
+    const tbody = document.getElementById('mats-tbody')
+    if (!mats.length) { tbody.innerHTML = '<tr class="empty-row"><td colspan="6">Материалов нет</td></tr>'; return }
+    tbody.innerHTML = mats.map(m => `
+      <tr>
+        <td style="color:var(--lime);font-weight:600">День ${m.day_number}: <span style="color:var(--text2);font-weight:400">${esc(m.day_title)}</span></td>
+        <td>${MAT_TYPES[m.material_type]||m.material_type}</td>
+        <td>${esc(m.title)}</td>
+        <td style="color:var(--text3)">${esc(m.meta)}</td>
+        <td style="color:var(--blue);max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(m.url)}</td>
+        <td><div class="actions">
+          <button class="btn-edit" onclick='openMaterialModal(${JSON.stringify(m)})'>Ред.</button>
+          <button class="btn-danger" onclick="deleteMaterial(${m.id})">Удалить</button>
+        </div></td>
+      </tr>`).join('')
+  } catch(e) { toast('Ошибка загрузки', 'err') }
+}
+
+async function openMaterialModal(mat) {
+  if (!libDays.length) libDays = await req('/api/library/days').catch(() => [])
+  const isEdit = !!mat
+  openModal(`
+    <div class="modal-head">
+      <div class="modal-title">${isEdit ? 'Редактировать ссылку' : 'Новая ссылка'}</div>
+      <button class="modal-close" onclick="closeModal()">&times;</button>
+    </div>
+    <div class="field"><label>День</label>
+      <select id="m-day">
+        ${libDays.map(d => `<option value="${d.id}" ${mat?.day_id===d.id?'selected':''}>День ${d.day_number}: ${esc(d.title)}</option>`).join('')}
+      </select>
+    </div>
+    <div class="field"><label>Название</label><input id="m-title" placeholder="Запись лекции" value="${esc(mat?.title||'')}"/></div>
+    <div class="field"><label>URL</label><input id="m-url" placeholder="https://..." value="${esc(mat?.url||'')}"/></div>
+    <div class="modal-actions">
+      <button class="btn-ghost" onclick="closeModal()">Отмена</button>
+      <button class="btn-lime" style="width:auto" onclick="saveMaterial(${mat?.id||'null'})">${isEdit ? 'Сохранить' : 'Добавить'}</button>
+    </div>
+  `)
+}
+
+async function saveMaterial(id) {
+  const body = {
+    day_id:        +document.getElementById('m-day').value,
+    material_type: 'link',
+    title:         document.getElementById('m-title').value.trim(),
+    meta:          '',
+    url:           document.getElementById('m-url').value.trim() || '#',
+  }
+  if (!body.day_id || !body.title) return toast('Выберите день и укажите название', 'err')
+  try {
+    if (id) { await req('/api/library/materials/' + id, 'PUT', body); toast('Материал обновлён') }
+    else     { await req('/api/library/materials',       'POST', body); toast('Материал добавлен') }
+    closeModal(); loadMaterials()
+  } catch(e) { toast(e.message, 'err') }
+}
+
+async function deleteMaterial(id) {
+  if (!confirm('Удалить материал?')) return
+  try { await req('/api/library/materials/' + id, 'DELETE'); toast('Удалено'); loadMaterials() }
+  catch(e) { toast(e.message, 'err') }
+}
+
+// ── TASKS ─────────────────────────────────────────────────────────────────
+const DIFF_LABEL = { easy:'Лёгкая', medium:'Средняя', hard:'Сложная' }
+const DIFF_BADGE = { easy:'badge-green', medium:'badge-orange', hard:'badge-red' }
+
+// ── LINKS ─────────────────────────────────────────────────────────────────
+async function loadLinks() {
+  try {
+    const links = await req('/api/links')
+    const tbody = document.getElementById('links-tbody')
+    if (!links.length) { tbody.innerHTML = '<tr class="empty-row"><td colspan="4">Ссылок нет</td></tr>'; return }
+    tbody.innerHTML = links.map(l => `
+      <tr>
+        <td style="font-weight:600;max-width:200px">${esc(l.title)}</td>
+        <td style="color:var(--text2);max-width:250px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(l.description)}</td>
+        <td style="color:var(--text2);max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(l.url)}</td>
+        <td><div class="actions">
+          <button class="btn-edit" onclick='openLinkModal(${JSON.stringify(l)})'>Ред.</button>
+          <button class="btn-danger" onclick="deleteLink(${l.id})">Удалить</button>
+        </div></td>
+      </tr>`).join('')
+  } catch(e) { toast('Ошибка загрузки', 'err') }
+}
+
+function openLinkModal(link) {
+  const isEdit = !!link
+  openModal(`
+    <div class="modal-head">
+      <div class="modal-title">${isEdit ? 'Редактировать ссылку' : 'Новая ссылка'}</div>
+      <button class="modal-close" onclick="closeModal()">&times;</button>
+    </div>
+    <div class="field"><label>Название</label><input id="l-title" placeholder="Запись лекции" value="${esc(link?.title||'')}"/></div>
+    <div class="field"><label>Описание</label><textarea id="l-desc" rows="3" placeholder="Кратко о ссылке...">${esc(link?.description||'')}</textarea></div>
+    <div class="field"><label>URL</label><input id="l-url" placeholder="https://..." value="${esc(link?.url||'')}"/></div>
+    <div class="modal-actions">
+      <button class="btn-ghost" onclick="closeModal()">Отмена</button>
+      <button class="btn-lime" style="width:auto" onclick="saveLink(${link?.id||'null'})">${isEdit ? 'Сохранить' : 'Добавить'}</button>
+    </div>
+  `)
+}
+
+async function saveLink(id) {
+  const body = {
+    title:       document.getElementById('l-title').value.trim(),
+    description: document.getElementById('l-desc').value.trim(),
+    url:         document.getElementById('l-url').value.trim(),
+  }
+  if (!body.title || !body.url) return toast('Название и URL обязательны', 'err')
+  try {
+    if (id) { await req('/api/links/' + id, 'PUT', body); toast('Ссылка обновлена') }
+    else     { await req('/api/links',       'POST', body); toast('Ссылка добавлена') }
+    closeModal(); loadLinks()
+  } catch(e) { toast(e.message, 'err') }
+}
+
+async function deleteLink(id) {
+  if (!confirm('Удалить ссылку?')) return
+  try { await req('/api/links/' + id, 'DELETE'); toast('Удалено'); loadLinks() }
+  catch(e) { toast(e.message, 'err') }
+}
+
+// ── ANNOUNCEMENTS ─────────────────────────────────────────────────────────
+async function loadAnnounces() {
+  try {
+    const anns = await req('/api/announcements')
+    const tbody = document.getElementById('ann-tbody')
+    if (!anns.length) { tbody.innerHTML = '<tr class="empty-row"><td colspan="5">Объявлений нет</td></tr>'; return }
+    tbody.innerHTML = anns.map(a => `
+      <tr>
+        <td style="font-size:20px">${a.icon}</td>
+        <td style="font-weight:600;max-width:200px">${esc(a.title)}</td>
+        <td style="color:var(--text2);max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(a.text)}</td>
+        <td style="color:var(--text3);white-space:nowrap">${a.published_at}</td>
+        <td><div class="actions">
+          <button class="btn-edit" onclick='openAnnModal(${JSON.stringify(a)})'>Ред.</button>
+          <button class="btn-danger" onclick="deleteAnn(${a.id})">Удалить</button>
+        </div></td>
+      </tr>`).join('')
+  } catch(e) { toast('Ошибка загрузки', 'err') }
+}
+
+function openAnnModal(ann) {
+  const isEdit = !!ann
+  openModal(`
+    <div class="modal-head">
+      <div class="modal-title">${isEdit ? 'Редактировать объявление' : 'Новое объявление'}</div>
+      <button class="modal-close" onclick="closeModal()">&times;</button>
+    </div>
+    <div class="form-row">
+      <div class="field"><label>Иконка (emoji)</label><input id="a-icon" placeholder="📢" value="${esc(ann?.icon||'📢')}"/></div>
+      <div class="field"><label>Дата публикации</label><input id="a-date" type="date" value="${ann?.published_at||new Date().toISOString().slice(0,10)}"/></div>
+    </div>
+    <div class="field form-row full"><label>Заголовок</label><input id="a-title" placeholder="Важное объявление" value="${esc(ann?.title||'')}"/></div>
+    <div class="field form-row full"><label>Текст объявления</label><textarea id="a-text" rows="5">${esc(ann?.text||'')}</textarea></div>
+    <div class="modal-actions">
+      <button class="btn-ghost" onclick="closeModal()">Отмена</button>
+      <button class="btn-lime" style="width:auto" onclick="saveAnn(${ann?.id||'null'})">${isEdit ? 'Сохранить' : 'Опубликовать'}</button>
+    </div>
+  `)
+}
+
+async function saveAnn(id) {
+  const body = {
+    title:        document.getElementById('a-title').value.trim(),
+    text:         document.getElementById('a-text').value.trim(),
+    icon:         document.getElementById('a-icon').value.trim() || '📢',
+    published_at: document.getElementById('a-date').value,
+  }
+  if (!body.title || !body.text) return toast('Заголовок и текст обязательны', 'err')
+  try {
+    if (id) { await req('/api/announcements/' + id, 'PUT', body); toast('Объявление обновлено') }
+    else     { await req('/api/announcements',       'POST', body); toast('Объявление опубликовано') }
+    closeModal(); loadAnnounces()
+  } catch(e) { toast(e.message, 'err') }
+}
+
+async function deleteAnn(id) {
+  if (!confirm('Удалить объявление?')) return
+  try { await req('/api/announcements/' + id, 'DELETE'); toast('Удалено'); loadAnnounces() }
+  catch(e) { toast(e.message, 'err') }
+}
+
+// ── Utils ─────────────────────────────────────────────────────────────────
+function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;') }
+</script>
+</body>
+</html>

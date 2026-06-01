@@ -1,0 +1,1048 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>KIRO CAMP</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link href="https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="platform.css"/>
+</head>
+<body class="app-page">
+
+  <!-- ====== SIDEBAR ====== -->
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-header">
+      <a class="sidebar-logo" href="#">
+        <span class="sidebar-logo-kiro">KIRO</span>
+        <span class="sidebar-logo-platform">Platform</span>
+      </a>
+      <button class="sidebar-close-btn" id="sidebar-close">&times;</button>
+    </div>
+
+    <div class="sidebar-user">
+      <div class="sidebar-avatar" id="sb-avatar">??</div>
+      <div style="min-width:0">
+        <div class="sidebar-user-name" id="sb-name">Загрузка...</div>
+        <div class="sidebar-user-sub"  id="sb-track">—</div>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <button class="nav-item active" data-page="dashboard">
+        <span class="nav-icon">⊞</span> Главная
+      </button>
+      <button class="nav-item" data-page="schedule">
+        <span class="nav-icon">📅</span> Расписание
+        <span class="nav-badge" id="nb-schedule">3</span>
+      </button>
+      <button class="nav-item" data-page="library">
+        <span class="nav-icon">📚</span> Библиотека знаний
+      </button>
+      <button class="nav-item" data-page="tasks">
+        <span class="nav-icon">✅</span> Задания
+        <span class="nav-badge" id="nb-tasks">2</span>
+      </button>
+      <button class="nav-item" data-page="progress">
+        <span class="nav-icon">📊</span> Прогресс
+      </button>
+      <button class="nav-item" data-page="leaderboard">
+        <span class="nav-icon">🏆</span> Рейтинг
+      </button>
+      <button class="nav-item" data-page="community">
+        <span class="nav-icon">💬</span> Сообщество
+      </button>
+      <button class="nav-item" data-page="profile">
+        <span class="nav-icon">👤</span> Профиль
+      </button>
+    </nav>
+
+    <div class="sidebar-footer">
+      <button class="nav-item nav-item--logout" id="logout-btn">
+        <span class="nav-icon">⇥</span> Выйти
+      </button>
+    </div>
+  </aside>
+
+  <div id="sidebar-overlay" class="sidebar-overlay"></div>
+
+  <!-- ====== MAIN CONTENT ====== -->
+  <div class="app-content">
+    <!-- Top bar (mobile) -->
+    <header class="top-bar">
+      <button class="hamburger" id="hamburger">
+        <span></span><span></span><span></span>
+      </button>
+      <span class="top-bar-title" id="top-bar-title">Главная</span>
+      <div class="top-bar-avatar" id="tb-avatar">??</div>
+    </header>
+
+    <main class="pages-wrap">
+
+      <!-- ============================================================
+           DASHBOARD
+      ============================================================ -->
+      <section id="page-dashboard" class="page active">
+        <div class="page-header">
+          <h1 class="page-title" id="dash-greeting">Привет! 👋</h1>
+          <p class="page-subtitle">Добро пожаловать в KIRO IT Summer Camp '26</p>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon">📈</div>
+            <div class="stat-value" id="stat-progress">25%</div>
+            <div class="stat-label">Прогресс лагеря</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">✅</div>
+            <div class="stat-value" id="stat-tasks">7/15</div>
+            <div class="stat-label">Задания выполнено</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">⚡</div>
+            <div class="stat-value" id="stat-points">840</div>
+            <div class="stat-label">Очков заработано</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">🔥</div>
+            <div class="stat-value" id="stat-streak">4</div>
+            <div class="stat-label">Дней подряд</div>
+          </div>
+        </div>
+
+        <div class="dashboard-grid">
+          <div class="dashboard-col">
+            <!-- Today schedule -->
+            <div class="widget">
+              <div class="widget-header">
+                <span class="widget-title">📅 Сегодня</span>
+                <span class="widget-link" onclick="navigate('schedule')">Всё расписание →</span>
+              </div>
+              <div class="today-events">
+                <div class="today-event">
+                  <div class="today-event-dot" style="background:#c8ff00"></div>
+                  <div class="today-event-body">
+                    <div class="today-event-title">Введение. Алгоритмы и Big O</div>
+                    <div class="today-event-meta">Лекция · Ханиль · 90 мин</div>
+                  </div>
+                  <div class="today-event-time">20:00</div>
+                </div>
+                <div class="today-event">
+                  <div class="today-event-dot" style="background:#8a8a9a"></div>
+                  <div class="today-event-body">
+                    <div class="today-event-title">Организационный созвон</div>
+                    <div class="today-event-meta">Орг · Ханиль · 45 мин</div>
+                  </div>
+                  <div class="today-event-time">19:00</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Progress -->
+            <div class="widget">
+              <div class="widget-header">
+                <span class="widget-title">📊 Прогресс лагеря</span>
+                <span class="widget-link" onclick="navigate('progress')">Подробнее →</span>
+              </div>
+              <div style="margin-bottom:14px">
+                <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text-tertiary);margin-bottom:6px">
+                  <span>Неделя 1 из 12</span><span>8%</span>
+                </div>
+                <div class="progress-bar"><div class="progress-fill" style="width:8%"></div></div>
+              </div>
+              <div>
+                <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text-tertiary);margin-bottom:6px">
+                  <span>Задания</span><span>7 / 15</span>
+                </div>
+                <div class="progress-bar"><div class="progress-fill" style="width:46%"></div></div>
+              </div>
+              <div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap">
+                <span class="badge badge--green">✓ День 1–3</span>
+                <span class="badge badge--lime">● День 4</span>
+                <span class="badge badge--gray">○ День 5–7</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="dashboard-col">
+            <!-- Upcoming events -->
+            <div class="widget">
+              <div class="widget-header">
+                <span class="widget-title">🔔 Ближайшие события</span>
+              </div>
+              <div class="today-events">
+                <div class="today-event">
+                  <div class="today-event-dot" style="background:#c8ff00"></div>
+                  <div class="today-event-body">
+                    <div class="today-event-title">Массивы и связанные списки</div>
+                    <div class="today-event-meta">Завтра · 20:00 · Лекция</div>
+                  </div>
+                </div>
+                <div class="today-event">
+                  <div class="today-event-dot" style="background:#6eb5ff"></div>
+                  <div class="today-event-body">
+                    <div class="today-event-title">Групповой созвон #1</div>
+                    <div class="today-event-meta">7 июня · 12:00 · Созвон</div>
+                  </div>
+                </div>
+                <div class="today-event">
+                  <div class="today-event-dot" style="background:#a07aff"></div>
+                  <div class="today-event-body">
+                    <div class="today-event-title">Insider Show #1 — Яндекс</div>
+                    <div class="today-event-meta">15 июня · 19:00 · Insider Show</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Recent library -->
+            <div class="widget">
+              <div class="widget-header">
+                <span class="widget-title">📚 Последние материалы</span>
+                <span class="widget-link" onclick="navigate('library')">Библиотека →</span>
+              </div>
+              <div class="mat-row" onclick="navigate('library')">
+                <div class="mat-row-icon">🎬</div>
+                <div>
+                  <div class="mat-row-title">Запись: Big O — День 1</div>
+                  <div class="mat-row-meta">Видеолекция · 1:32:00</div>
+                </div>
+              </div>
+              <div class="mat-row" onclick="navigate('library')">
+                <div class="mat-row-icon">📄</div>
+                <div>
+                  <div class="mat-row-title">Конспект: Массивы — День 2</div>
+                  <div class="mat-row-meta">PDF · 18 стр</div>
+                </div>
+              </div>
+              <div class="mat-row" onclick="navigate('library')">
+                <div class="mat-row-icon">✏️</div>
+                <div>
+                  <div class="mat-row-title">Задачи дня — День 3</div>
+                  <div class="mat-row-meta">3 задачи · LeetCode</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           SCHEDULE
+      ============================================================ -->
+      <section id="page-schedule" class="page">
+        <div class="page-header">
+          <h1 class="page-title">Расписание</h1>
+          <p class="page-subtitle">Все лекции, созвоны, Insider Show и мероприятия лагеря</p>
+        </div>
+
+        <div class="schedule-controls">
+          <button class="filter-btn active" data-filter="all">Все</button>
+          <button class="filter-btn" data-filter="lecture">Лекции</button>
+          <button class="filter-btn" data-filter="call">Созвоны</button>
+          <button class="filter-btn" data-filter="insider">Insider Show</button>
+          <button class="filter-btn" data-filter="project">Проекты</button>
+        </div>
+
+        <div id="schedule-list">
+          <!-- generated by JS -->
+        </div>
+      </section>
+
+      <!-- ============================================================
+           LIBRARY
+      ============================================================ -->
+      <section id="page-library" class="page">
+        <div class="page-header">
+          <h1 class="page-title">Библиотека знаний</h1>
+          <p class="page-subtitle">Все материалы лагеря по дням — нажми на день чтобы открыть</p>
+        </div>
+
+        <div class="library-tabs">
+          <button class="lib-tab active" data-month="june">Июнь — Фундамент</button>
+          <button class="lib-tab" data-month="july">Июль — Специализация</button>
+          <button class="lib-tab" data-month="august">Август — Карьера</button>
+        </div>
+
+        <div id="lib-june" class="lib-month active">
+          <!-- generated by JS -->
+        </div>
+        <div id="lib-july" class="lib-month">
+          <!-- generated by JS -->
+        </div>
+        <div id="lib-august" class="lib-month">
+          <!-- generated by JS -->
+        </div>
+      </section>
+
+      <!-- ============================================================
+           TASKS
+      ============================================================ -->
+      <section id="page-tasks" class="page">
+        <div class="page-header">
+          <h1 class="page-title">Задания</h1>
+          <p class="page-subtitle">Ежедневные задачи и домашние задания</p>
+        </div>
+
+        <div class="tasks-header">
+          <button class="filter-btn active" data-tfilter="all">Все</button>
+          <button class="filter-btn" data-tfilter="active">Активные</button>
+          <button class="filter-btn" data-tfilter="done">Выполненные</button>
+        </div>
+
+        <div id="tasks-list">
+          <!-- generated by JS -->
+        </div>
+      </section>
+
+      <!-- ============================================================
+           PROGRESS
+      ============================================================ -->
+      <section id="page-progress" class="page">
+        <div class="page-header">
+          <h1 class="page-title">Прогресс</h1>
+          <p class="page-subtitle">Твои достижения и прогресс по программе</p>
+        </div>
+
+        <div class="progress-grid">
+          <!-- Overall -->
+          <div class="widget" style="grid-column:1/-1">
+            <div class="widget-title" style="margin-bottom:16px">Общий прогресс лагеря</div>
+            <div style="display:flex;align-items:center;gap:16px;margin-bottom:10px">
+              <div style="flex:1">
+                <div class="progress-bar" style="height:12px"><div class="progress-fill" style="width:8%"></div></div>
+              </div>
+              <div style="font-family:var(--font-syne);font-size:20px;font-weight:800;color:var(--accent-lime);white-space:nowrap">Неделя 1 / 12</div>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(12,1fr);gap:4px;margin-top:14px">
+              <div style="height:28px;border-radius:4px;background:rgba(200,255,0,0.7)" title="Нед. 1 — в процессе"></div>
+              <div style="height:28px;border-radius:4px;background:var(--border-color)" title="Нед. 2"></div>
+              <div style="height:28px;border-radius:4px;background:var(--border-color)"></div>
+              <div style="height:28px;border-radius:4px;background:var(--border-color)"></div>
+              <div style="height:28px;border-radius:4px;background:var(--border-color)"></div>
+              <div style="height:28px;border-radius:4px;background:var(--border-color)"></div>
+              <div style="height:28px;border-radius:4px;background:var(--border-color)"></div>
+              <div style="height:28px;border-radius:4px;background:var(--border-color)"></div>
+              <div style="height:28px;border-radius:4px;background:var(--border-color)"></div>
+              <div style="height:28px;border-radius:4px;background:var(--border-color)"></div>
+              <div style="height:28px;border-radius:4px;background:var(--border-color)"></div>
+              <div style="height:28px;border-radius:4px;background:var(--border-color)"></div>
+            </div>
+            <div style="display:flex;justify-content:space-between;margin-top:4px">
+              <span style="font-size:10px;color:var(--text-tertiary)">Июнь</span>
+              <span style="font-size:10px;color:var(--text-tertiary)">Июль</span>
+              <span style="font-size:10px;color:var(--text-tertiary)">Август</span>
+            </div>
+          </div>
+
+          <!-- Skills -->
+          <div class="widget">
+            <div class="widget-section-title">Навыки</div>
+            <div class="skill-row"><span class="skill-name">Алгоритмы</span><div class="skill-bar"><div class="skill-fill" style="width:35%"></div></div><span class="skill-pct">35%</span></div>
+            <div class="skill-row"><span class="skill-name">Структуры данных</span><div class="skill-bar"><div class="skill-fill" style="width:40%"></div></div><span class="skill-pct">40%</span></div>
+            <div class="skill-row"><span class="skill-name">Git / Linux</span><div class="skill-bar"><div class="skill-fill" style="width:10%"></div></div><span class="skill-pct">10%</span></div>
+            <div class="skill-row"><span class="skill-name">Frontend</span><div class="skill-bar"><div class="skill-fill" style="width:5%"></div></div><span class="skill-pct">5%</span></div>
+            <div class="skill-row"><span class="skill-name">Python</span><div class="skill-bar"><div class="skill-fill" style="width:0%"></div></div><span class="skill-pct">0%</span></div>
+            <div class="skill-row"><span class="skill-name">Карьера / CV</span><div class="skill-bar"><div class="skill-fill" style="width:0%"></div></div><span class="skill-pct">0%</span></div>
+          </div>
+
+          <!-- Week stats -->
+          <div class="widget">
+            <div class="widget-section-title">По неделям</div>
+            <div class="week-progress-list">
+              <div class="week-row"><span class="week-num">Неделя 1</span><div class="week-bar"><div class="week-fill" style="width:60%"></div></div><span class="skill-pct">60%</span></div>
+              <div class="week-row"><span class="week-num">Неделя 2</span><div class="week-bar"><div class="week-fill" style="width:0%"></div></div><span class="skill-pct">—</span></div>
+              <div class="week-row"><span class="week-num">Неделя 3</span><div class="week-bar"><div class="week-fill" style="width:0%"></div></div><span class="skill-pct">—</span></div>
+              <div class="week-row"><span class="week-num">Неделя 4</span><div class="week-bar"><div class="week-fill" style="width:0%"></div></div><span class="skill-pct">—</span></div>
+              <div class="week-row"><span class="week-num">Неделя 5</span><div class="week-bar"><div class="week-fill" style="width:0%"></div></div><span class="skill-pct">—</span></div>
+            </div>
+          </div>
+
+          <!-- Achievements -->
+          <div class="widget" style="grid-column:1/-1">
+            <div class="widget-section-title">Достижения</div>
+            <div class="achievement-grid">
+              <div class="achievement">
+                <div class="achievement-icon">🚀</div>
+                <div class="achievement-name">Первый вход</div>
+              </div>
+              <div class="achievement">
+                <div class="achievement-icon">🔥</div>
+                <div class="achievement-name">Стрик 3 дня</div>
+              </div>
+              <div class="achievement">
+                <div class="achievement-icon">📚</div>
+                <div class="achievement-name">Первый материал</div>
+              </div>
+              <div class="achievement achievement--locked">
+                <div class="achievement-icon">⚡</div>
+                <div class="achievement-name">Стрик 7 дней</div>
+              </div>
+              <div class="achievement achievement--locked">
+                <div class="achievement-icon">🏅</div>
+                <div class="achievement-name">Неделя 1 завершена</div>
+              </div>
+              <div class="achievement achievement--locked">
+                <div class="achievement-icon">💡</div>
+                <div class="achievement-name">10 задач решено</div>
+              </div>
+              <div class="achievement achievement--locked">
+                <div class="achievement-icon">🤝</div>
+                <div class="achievement-name">Первый проект</div>
+              </div>
+              <div class="achievement achievement--locked">
+                <div class="achievement-icon">🎯</div>
+                <div class="achievement-name">Трек выбран</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           LEADERBOARD
+      ============================================================ -->
+      <section id="page-leaderboard" class="page">
+        <div class="page-header">
+          <h1 class="page-title">Рейтинг</h1>
+          <p class="page-subtitle">Топ участников лагеря по очкам активности</p>
+        </div>
+        <div style="background:var(--bg-secondary);border:1px solid var(--border-color);border-radius:10px;padding:14px 18px;margin-bottom:20px;font-size:13px;color:var(--text-secondary);line-height:1.6">
+          💡 Очки начисляются за выполнение заданий, посещение лекций, активность в чате и участие в проектах.
+        </div>
+        <div class="leaderboard-list" id="leaderboard-list">
+          <!-- generated by JS -->
+        </div>
+      </section>
+
+      <!-- ============================================================
+           COMMUNITY
+      ============================================================ -->
+      <section id="page-community" class="page">
+        <div class="page-header">
+          <h1 class="page-title">Сообщество</h1>
+          <p class="page-subtitle">Чаты, объявления и ссылки для участников</p>
+        </div>
+
+        <div class="community-grid">
+          <a class="community-card" href="https://t.me/kiro_team" target="_blank" rel="noopener">
+            <div class="community-card-icon">📣</div>
+            <div class="community-card-title">Канал KIRO Team</div>
+            <div class="community-card-desc">Главный канал сообщества. Объявления, новости и важная информация о лагере.</div>
+            <div class="community-card-tag">→ Открыть в Telegram</div>
+          </a>
+          <a class="community-card" href="https://t.me/kiro_team_manager" target="_blank" rel="noopener">
+            <div class="community-card-icon">👨‍💼</div>
+            <div class="community-card-title">Менеджер</div>
+            <div class="community-card-desc">Вопросы по оплате, доступу и организационным моментам — пиши менеджеру.</div>
+            <div class="community-card-tag">→ Написать менеджеру</div>
+          </a>
+          <div class="community-card" style="cursor:default;opacity:0.6">
+            <div class="community-card-icon">💬</div>
+            <div class="community-card-title">Общий чат лагеря</div>
+            <div class="community-card-desc">Ссылка будет добавлена при старте лагеря 1 июня. Здесь все участники.</div>
+            <div class="community-card-tag">🔒 Открывается 1 июня</div>
+          </div>
+          <div class="community-card" style="cursor:default;opacity:0.6">
+            <div class="community-card-icon">🎨</div>
+            <div class="community-card-title">Чат Frontend-трека</div>
+            <div class="community-card-desc">Чат для участников трека Frontend. Задачи, вопросы, помощь друг другу.</div>
+            <div class="community-card-tag">🔒 Открывается в июле</div>
+          </div>
+          <div class="community-card" style="cursor:default;opacity:0.6">
+            <div class="community-card-icon">⚙️</div>
+            <div class="community-card-title">Чат Backend-трека</div>
+            <div class="community-card-desc">Чат для участников трека Backend.</div>
+            <div class="community-card-tag">🔒 Открывается в июле</div>
+          </div>
+          <div class="community-card" style="cursor:default;opacity:0.6">
+            <div class="community-card-icon">🤖</div>
+            <div class="community-card-title">Чат ML/AI-трека</div>
+            <div class="community-card-desc">Чат для участников трека ML · AI.</div>
+            <div class="community-card-tag">🔒 Открывается в июле</div>
+          </div>
+        </div>
+
+        <div style="font-family:var(--font-syne);font-size:14px;font-weight:700;color:var(--text-primary);margin-bottom:14px">📋 Объявления</div>
+        <div class="announce-card">
+          <div class="announce-head">
+            <span class="announce-icon">🏕️</span>
+            <span class="announce-title">Лагерь стартует 1 июня!</span>
+            <span class="announce-date">20 мая</span>
+          </div>
+          <div class="announce-text">Дорогие участники! До старта лагеря осталось совсем немного. В этот день в 19:00 пройдёт организационный созвон — не пропусти. Ссылка будет в расписании.</div>
+        </div>
+        <div class="announce-card">
+          <div class="announce-head">
+            <span class="announce-icon">📚</span>
+            <span class="announce-title">Платформа готова к работе</span>
+            <span class="announce-date">18 мая</span>
+          </div>
+          <div class="announce-text">Образовательная платформа готова. Здесь будут все материалы, расписание, задания и твой прогресс. Добавь страницу в закладки.</div>
+        </div>
+        <div class="announce-card">
+          <div class="announce-head">
+            <span class="announce-icon">🎙️</span>
+            <span class="announce-title">Первый Insider Show — 15 июня</span>
+            <span class="announce-date">15 мая</span>
+          </div>
+          <div class="announce-text">15 июня в 19:00 состоится первый Insider Show с Ильёй Новицким — RL-разработчик в Яндекс Поиске, ассистент курсов Advanced ML в ИТМО. Тема: как попасть в ML в BigTech.</div>
+        </div>
+      </section>
+
+      <!-- ============================================================
+           PROFILE
+      ============================================================ -->
+      <section id="page-profile" class="page">
+        <div class="page-header">
+          <h1 class="page-title">Профиль</h1>
+          <p class="page-subtitle">Информация об аккаунте и настройки</p>
+        </div>
+
+        <div class="profile-layout">
+          <div class="profile-card">
+            <div class="profile-avatar" id="prof-avatar">??</div>
+            <div class="profile-name"  id="prof-name">—</div>
+            <div class="profile-email" id="prof-email">—</div>
+            <div class="profile-track-badge" id="prof-track">
+              <span>🎨</span> <span id="prof-track-text">Frontend</span>
+            </div>
+            <div class="profile-stats-mini">
+              <div class="psm"><div class="psm-val" id="prof-pts">840</div><div class="psm-label">Очков</div></div>
+              <div class="psm"><div class="psm-val" id="prof-streak">4</div><div class="psm-label">Дней стрик</div></div>
+              <div class="psm"><div class="psm-val" id="prof-tasks">7</div><div class="psm-label">Заданий</div></div>
+              <div class="psm"><div class="psm-val">1</div><div class="psm-label">Неделя</div></div>
+            </div>
+          </div>
+
+          <div class="profile-details">
+            <div class="profile-section-h">Информация об аккаунте</div>
+            <div class="profile-field">
+              <span class="pf-label">Имя</span>
+              <span class="pf-value" id="pf-name">—</span>
+            </div>
+            <div class="profile-field">
+              <span class="pf-label">Email</span>
+              <span class="pf-value" id="pf-email">—</span>
+            </div>
+            <div class="profile-field">
+              <span class="pf-label">Тариф</span>
+              <span class="pf-value" id="pf-plan">—</span>
+            </div>
+            <div class="profile-field">
+              <span class="pf-label">Трек</span>
+              <span class="pf-value" id="pf-track">—</span>
+            </div>
+            <div class="profile-field">
+              <span class="pf-label">Старт лагеря</span>
+              <span class="pf-value">1 июня 2026</span>
+            </div>
+            <div class="profile-field">
+              <span class="pf-label">Финал</span>
+              <span class="pf-value">31 августа 2026 · Демо-день</span>
+            </div>
+
+            <div class="profile-section-h" style="margin-top:20px">Что входит в тариф</div>
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <div style="display:flex;gap:8px;align-items:flex-start;font-size:13px;color:var(--text-secondary)"><span style="color:var(--accent-lime);font-weight:700;flex-shrink:0">✓</span>12 недель полной программы</div>
+              <div style="display:flex;gap:8px;align-items:flex-start;font-size:13px;color:var(--text-secondary)"><span style="color:var(--accent-lime);font-weight:700;flex-shrink:0">✓</span>Еженедельный личный созвон с Ханилем</div>
+              <div style="display:flex;gap:8px;align-items:flex-start;font-size:13px;color:var(--text-secondary)"><span style="color:var(--accent-lime);font-weight:700;flex-shrink:0">✓</span>Индивидуальный feedback по проектам</div>
+              <div style="display:flex;gap:8px;align-items:flex-start;font-size:13px;color:var(--text-secondary)"><span style="color:var(--accent-lime);font-weight:700;flex-shrink:0">✓</span>Доступ ко всем материалам навсегда</div>
+              <div style="display:flex;gap:8px;align-items:flex-start;font-size:13px;color:var(--text-secondary)"><span style="color:var(--accent-lime);font-weight:700;flex-shrink:0">✓</span>4 Insider Show с BigTech-специалистами</div>
+              <div style="display:flex;gap:8px;align-items:flex-start;font-size:13px;color:var(--text-secondary)"><span style="color:var(--accent-lime);font-weight:700;flex-shrink:0">✓</span>Демо-день и возможность рефералки</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- ====== DAY MODAL ====== -->
+  <div id="day-modal" class="modal-overlay">
+    <div class="modal-box">
+      <div class="modal-header">
+        <div>
+          <div class="modal-day-num"  id="modal-day-num">День 1</div>
+          <div class="modal-day-title" id="modal-day-title">Загрузка...</div>
+        </div>
+        <button class="modal-close" id="modal-close">&times;</button>
+      </div>
+      <div class="modal-body" id="modal-body">
+        <!-- generated by JS -->
+      </div>
+    </div>
+  </div>
+
+  <script>
+  /* ================================================================
+     DATA
+  ================================================================ */
+  var SCHEDULE = [
+    { date:'2026-06-01', day:'Понедельник, 1 июня', time:'19:00', dur:'45 мин', type:'org',     title:'Организационный созвон', desc:'Знакомство участников, рассказ о структуре лагеря и правилах', host:'Ханиль' },
+    { date:'2026-06-01', day:'Понедельник, 1 июня', time:'20:00', dur:'90 мин', type:'lecture', title:'Введение. Алгоритмы и Big O', desc:'Знакомство с алгоритмическим мышлением, нотация Big O, анализ сложности алгоритмов', host:'Ханиль' },
+    { date:'2026-06-02', day:'Вторник, 2 июня',    time:'20:00', dur:'90 мин', type:'lecture', title:'Массивы и связанные списки', desc:'Базовые структуры данных, операции и сложность, двусвязные списки', host:'Ханиль' },
+    { date:'2026-06-03', day:'Среда, 3 июня',      time:'20:00', dur:'90 мин', type:'lecture', title:'Стеки, очереди, хэш-таблицы', desc:'LIFO/FIFO структуры, хеширование, коллизии, применение на практике', host:'Ханиль' },
+    { date:'2026-06-04', day:'Четверг, 4 июня',    time:'20:00', dur:'90 мин', type:'lecture', title:'Деревья. BFS и DFS', desc:'Двоичные деревья, обходы в глубину и ширину, бинарное дерево поиска', host:'Ханиль' },
+    { date:'2026-06-05', day:'Пятница, 5 июня',    time:'20:00', dur:'90 мин', type:'lecture', title:'Графы и алгоритмы на них', desc:'Представление графов, Dijkstra, топологическая сортировка, BFS/DFS на графах', host:'Ханиль' },
+    { date:'2026-06-06', day:'Суббота, 6 июня',    time:'14:00', dur:'120 мин',type:'project', title:'Мини-проект: командные алгоритмические задачи', desc:'Работа в командах над практическими задачами на структуры данных', host:'Ханиль' },
+    { date:'2026-06-07', day:'Воскресенье, 7 июня',time:'12:00', dur:'90 мин', type:'call',    title:'Групповой созвон — итоги недели 1', desc:'Q&A по материалам первой недели, разбор сложных задач, обратная связь', host:'Ханиль' },
+    { date:'2026-06-08', day:'Понедельник, 8 июня',time:'20:00', dur:'90 мин', type:'lecture', title:'Git: основы и рабочие процессы', desc:'Версионирование, базовые команды, ветвление, работа с удалёнными репозиториями', host:'Ханиль' },
+    { date:'2026-06-09', day:'Вторник, 9 июня',    time:'20:00', dur:'90 мин', type:'lecture', title:'Linux и командная строка', desc:'Навигация в терминале, работа с файлами, процессы, базовые bash-скрипты', host:'Ханиль' },
+    { date:'2026-06-10', day:'Среда, 10 июня',     time:'20:00', dur:'90 мин', type:'lecture', title:'Docker: контейнеризация приложений', desc:'Образы, контейнеры, Dockerfile, docker-compose, основы использования', host:'Ханиль' },
+    { date:'2026-06-11', day:'Четверг, 11 июня',   time:'20:00', dur:'60 мин', type:'lecture', title:'Тайм-менеджмент разработчика', desc:'GTD, Pomodoro, планирование задач, работа с приоритетами в IT', host:'Ханиль' },
+    { date:'2026-06-13', day:'Суббота, 13 июня',   time:'14:00', dur:'180 мин',type:'project', title:'Проект недели #1: CLI-инструмент', desc:'Создание командного CLI-инструмента с нуля, оформление в Git, код-ревью', host:'Ханиль' },
+    { date:'2026-06-14', day:'Воскресенье, 14 июня',time:'12:00',dur:'90 мин', type:'call',    title:'Групповой созвон — итоги недели 2', desc:'Разбор проекта недели, Q&A, анонс следующего блока', host:'Ханиль' },
+    { date:'2026-06-15', day:'Понедельник, 15 июня',time:'19:00',dur:'120 мин',type:'insider', title:'Insider Show #1 — Илья Новицкий (Яндекс)', desc:'Карьера ML-инженера, работа в Яндекс Поиске, советы по карьере в BigTech', host:'Илья Новицкий' },
+    { date:'2026-06-16', day:'Вторник, 16 июня',   time:'20:00', dur:'90 мин', type:'lecture', title:'Python: основы синтаксиса и типы данных', desc:'Типы данных, управляющие конструкции, функции, базовые ООП концепции', host:'Ханиль' },
+    { date:'2026-06-21', day:'Воскресенье, 21 июня',time:'12:00',dur:'90 мин', type:'call',    title:'Групповой созвон — выбор трека', desc:'Обсуждение и выбор трека специализации, план на июль', host:'Ханиль' },
+    { date:'2026-07-06', day:'Воскресенье, 6 июля',time:'12:00', dur:'90 мин', type:'call',    title:'Групповой созвон — середина лагеря', desc:'Итоги первого месяца, корректировка планов, поддержка', host:'Ханиль' },
+    { date:'2026-07-13', day:'Понедельник, 13 июля',time:'19:00',dur:'120 мин',type:'insider', title:'Insider Show #2 — Назар Клюханов (Nexign)', desc:'Фронтенд разработчик в Nexign. Vibe-coding, Claude, карьера веб-разработчика', host:'Назар Клюханов' },
+    { date:'2026-08-17', day:'Понедельник, 17 августа',time:'19:00',dur:'120 мин',type:'insider',title:'Insider Show #3 — Вероника Болтенкова (Гостер)', desc:'Founder стартапа. SMM, маркетинг, карьера без программирования в IT', host:'Вероника Болтенкова' },
+    { date:'2026-08-31', day:'Понедельник, 31 августа',time:'14:00',dur:'240 мин',type:'demo',  title:'🎓 ДЕМО-ДЕНЬ — финал лагеря', desc:'Защита итоговых проектов перед ментором и спикерами. Лучшие получат рефералки в топ-компании', host:'Ханиль + спикеры' },
+  ];
+
+  var LIBRARY = [
+    { month:'june', week:'Неделя 1 · 1–7 июня', days:[
+      { id:1, date:'1 июня', title:'Введение. Алгоритмы и Big O', status:'done',
+        mats:[ {type:'video',title:'Запись лекции',meta:'1:32:00',url:'#'},
+               {type:'pdf',  title:'Конспект лекции',meta:'PDF · 24 стр',url:'#'},
+               {type:'task', title:'Задачи дня (3 задачи)',meta:'LeetCode',url:'#'},
+               {type:'link', title:'Big O Cheatsheet',meta:'bigocheatsheet.com',url:'#'} ]},
+      { id:2, date:'2 июня', title:'Массивы и связанные списки', status:'done',
+        mats:[ {type:'video',title:'Запись лекции',meta:'1:28:00',url:'#'},
+               {type:'pdf',  title:'Конспект лекции',meta:'PDF · 18 стр',url:'#'},
+               {type:'code', title:'Примеры кода (Python)',meta:'GitHub Gist',url:'#'},
+               {type:'task', title:'Задачи дня (4 задачи)',meta:'LeetCode',url:'#'} ]},
+      { id:3, date:'3 июня', title:'Стеки, очереди, хэш-таблицы', status:'done',
+        mats:[ {type:'video',title:'Запись лекции',meta:'1:45:00',url:'#'},
+               {type:'pdf',  title:'Конспект лекции',meta:'PDF · 22 стр',url:'#'},
+               {type:'task', title:'Задачи дня (3 задачи)',meta:'LeetCode',url:'#'} ]},
+      { id:4, date:'4 июня', title:'Деревья. BFS и DFS', status:'available',
+        mats:[ {type:'video',title:'Запись лекции',meta:'1:38:00',url:'#'},
+               {type:'pdf',  title:'Конспект лекции',meta:'PDF · 28 стр',url:'#'},
+               {type:'code', title:'Примеры кода (Python/JS)',meta:'GitHub Gist',url:'#'},
+               {type:'task', title:'Задачи дня (4 задачи)',meta:'LeetCode',url:'#'},
+               {type:'link', title:'Visualgo — визуализация деревьев',meta:'visualgo.net',url:'#'} ]},
+      { id:5, date:'5 июня', title:'Графы и алгоритмы', status:'locked', mats:[] },
+      { id:6, date:'6 июня', title:'Мини-проект: командные задачи', status:'locked', mats:[] },
+      { id:7, date:'7 июня', title:'Групповой созвон + итоги', status:'locked', mats:[] },
+    ]},
+    { month:'june', week:'Неделя 2 · 8–14 июня', days:[
+      { id:8,  date:'8 июня',  title:'Git: основы и рабочие процессы', status:'locked', mats:[] },
+      { id:9,  date:'9 июня',  title:'Linux и командная строка',        status:'locked', mats:[] },
+      { id:10, date:'10 июня', title:'Docker: контейнеризация',          status:'locked', mats:[] },
+      { id:11, date:'11 июня', title:'Тайм-менеджмент разработчика',     status:'locked', mats:[] },
+      { id:12, date:'12 июня', title:'Обзор треков и технологий',         status:'locked', mats:[] },
+      { id:13, date:'13 июня', title:'Проект недели #1',                  status:'locked', mats:[] },
+      { id:14, date:'14 июня', title:'Созвон + выбор трека',              status:'locked', mats:[] },
+    ]},
+    { month:'june', week:'Неделя 3 · 15–21 июня', days:[
+      { id:15, date:'15 июня', title:'Insider Show #1 — Яндекс',         status:'locked', mats:[] },
+      { id:16, date:'16 июня', title:'Python: основы синтаксиса',        status:'locked', mats:[] },
+      { id:17, date:'17 июня', title:'Python: работа с данными',         status:'locked', mats:[] },
+      { id:18, date:'18 июня', title:'Разбор трека: Frontend',           status:'locked', mats:[] },
+      { id:19, date:'19 июня', title:'Разбор трека: Backend',            status:'locked', mats:[] },
+      { id:20, date:'20 июня', title:'Разбор треков: ML / DevOps',       status:'locked', mats:[] },
+      { id:21, date:'21 июня', title:'Выбор трека + созвон',             status:'locked', mats:[] },
+    ]},
+    { month:'june', week:'Неделя 4 · 22–30 июня', days:[
+      { id:22, date:'22–30 июня', title:'Специализация по треку — начало', status:'locked', mats:[] },
+    ]},
+    { month:'july', week:'Июль · Недели 5–8 · Специализация', days:[
+      { id:29, date:'Июль', title:'Frontend: компоненты, React, TypeScript', status:'locked', mats:[] },
+      { id:30, date:'Июль', title:'Frontend: работа с API, адаптивная вёрстка', status:'locked', mats:[] },
+      { id:31, date:'Июль', title:'Командный проект: питч идеи, MVP', status:'locked', mats:[] },
+      { id:32, date:'Июль', title:'Insider Show #2 — Nexign', status:'locked', mats:[] },
+      { id:33, date:'Июль', title:'Code review с ментором', status:'locked', mats:[] },
+      { id:34, date:'Июль', title:'Первое учебное техническое собеседование', status:'locked', mats:[] },
+    ]},
+    { month:'august', week:'Август · Недели 9–12 · Карьера', days:[
+      { id:57, date:'Август', title:'Итоговый проект: полноценный продукт', status:'locked', mats:[] },
+      { id:58, date:'Август', title:'Резюме с нуля: структура и навыки', status:'locked', mats:[] },
+      { id:59, date:'Август', title:'Мок-интервью: техническое и поведенческое', status:'locked', mats:[] },
+      { id:60, date:'Август', title:'Insider Show #3', status:'locked', mats:[] },
+      { id:61, date:'31 авг', title:'🎓 Демо-день — защита проектов', status:'locked', mats:[] },
+    ]},
+  ];
+
+  var TASKS = [
+    { id:1, title:'Написать функцию find_second_max(arr) без sort()',            week:1, diff:'easy',   status:'done',   deadline:'2 июня' },
+    { id:2, title:'Решить Two Sum на LeetCode #1',                                week:1, diff:'easy',   status:'done',   deadline:'2 июня' },
+    { id:3, title:'Реализовать MinStack с getMin() за O(1)',                     week:1, diff:'medium', status:'done',   deadline:'3 июня' },
+    { id:4, title:'Реализовать LRU Cache (LeetCode #146)',                        week:1, diff:'medium', status:'active', deadline:'4 июня' },
+    { id:5, title:'Обход дерева: in-order итеративно, без рекурсии',             week:1, diff:'medium', status:'active', deadline:'5 июня' },
+    { id:6, title:'Group Anagrams — LeetCode #49',                                week:1, diff:'medium', status:'done',   deadline:'4 июня' },
+    { id:7, title:'Valid Parentheses — LeetCode #20',                             week:1, diff:'easy',   status:'done',   deadline:'3 июня' },
+    { id:8, title:'Настроить Git-репозиторий, сделать первый коммит',            week:2, diff:'easy',   status:'locked', deadline:'9 июня' },
+    { id:9, title:'Создать Dockerfile для Python Flask-приложения',               week:2, diff:'medium', status:'locked', deadline:'11 июня' },
+    { id:10,title:'Bash-скрипт: автоматизация бэкапов с датой в имени файла',   week:2, diff:'hard',   status:'locked', deadline:'10 июня' },
+    { id:11,title:'Проект недели #1: CLI-инструмент с Git',                      week:2, diff:'hard',   status:'locked', deadline:'14 июня' },
+    { id:12,title:'Написать конспект по своему треку (выбор + план)',             week:3, diff:'easy',   status:'locked', deadline:'21 июня' },
+    { id:13,title:'Составить резюме черновик (в конце лагеря — финальная версия)',week:12,diff:'medium', status:'locked', deadline:'31 авг' },
+    { id:14,title:'Командный проект: питч идеи и MVP',                           week:6, diff:'hard',   status:'locked', deadline:'Июль'   },
+    { id:15,title:'Итоговый проект: полноценный продукт в портфолио',            week:11,diff:'hard',   status:'locked', deadline:'31 авг' },
+  ];
+
+  var LEADERS = [
+    { name:'Максим Орлов',      track:'Backend',    pts:1240, me:false },
+    { name:'Дарья Волкова',     track:'ML · AI',    pts:1180, me:false },
+    { name:'Артём Соколов',     track:'Frontend',   pts:1095, me:false },
+    { name:'Кристина Лебедева', track:'Аналитика',  pts:980,  me:false },
+    { name:'Никита Петров',     track:'DevOps',     pts:920,  me:false },
+    { name:'Анна Морозова',     track:'Frontend',   pts:880,  me:false },
+    { name:'Ты',                track:'Frontend',   pts:840,  me:true  },
+    { name:'Сергей Козлов',     track:'Backend',    pts:790,  me:false },
+    { name:'Ольга Новикова',    track:'Кибербезопасность', pts:730, me:false },
+    { name:'Иван Фролов',       track:'ML · AI',    pts:680,  me:false },
+  ];
+
+  var TYPE_COLORS = {
+    lecture:'#c8ff00', call:'#6eb5ff', insider:'#a07aff',
+    project:'#ff9f50', org:'#8a8a9a', demo:'#ff5f5f'
+  };
+  var TYPE_LABELS = {
+    lecture:'Лекция', call:'Созвон', insider:'Insider Show',
+    project:'Проект', org:'Орг', demo:'Демо-день'
+  };
+  var TYPE_BADGE = {
+    lecture:'badge--lime', call:'badge--blue', insider:'badge--purple',
+    project:'badge--orange', org:'badge--gray', demo:'badge--red'
+  };
+  var MAT_ICONS = { video:'🎬', pdf:'📄', task:'✏️', link:'🔗', code:'💻' };
+  var MAT_CLASS = { video:'mat-video', pdf:'mat-pdf', task:'mat-task', link:'mat-link', code:'mat-code' };
+
+  /* ================================================================
+     AUTH CHECK
+  ================================================================ */
+  var user = null;
+  try { user = JSON.parse(sessionStorage.getItem('kiro_user')); } catch(e) {}
+  if (!user) { window.location.href = 'index.html'; }
+
+  /* ================================================================
+     NAVIGATION
+  ================================================================ */
+  var PAGE_TITLES = {
+    dashboard:'Главная', schedule:'Расписание', library:'Библиотека знаний',
+    tasks:'Задания', progress:'Прогресс', leaderboard:'Рейтинг',
+    community:'Сообщество', profile:'Профиль'
+  };
+
+  function navigate(page) {
+    document.querySelectorAll('.nav-item[data-page]').forEach(function(el) {
+      el.classList.toggle('active', el.getAttribute('data-page') === page);
+    });
+    document.querySelectorAll('.page').forEach(function(el) {
+      el.classList.remove('active');
+    });
+    var pg = document.getElementById('page-' + page);
+    if (pg) pg.classList.add('active');
+    var title = PAGE_TITLES[page] || page;
+    var tbTitle = document.getElementById('top-bar-title');
+    if (tbTitle) tbTitle.textContent = title;
+    closeSidebar();
+    history.replaceState(null, '', '#' + page);
+  }
+
+  /* ================================================================
+     SIDEBAR MOBILE
+  ================================================================ */
+  function openSidebar() {
+    document.getElementById('sidebar').classList.add('open');
+    document.getElementById('sidebar-overlay').classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeSidebar() {
+    document.getElementById('sidebar').classList.remove('open');
+    document.getElementById('sidebar-overlay').classList.remove('active');
+    document.body.style.overflow = '';
+  }
+
+  /* ================================================================
+     USER UI
+  ================================================================ */
+  function initUser() {
+    if (!user) return;
+    var parts = user.name.split(' ');
+    var initials = parts.map(function(p) { return p[0] || ''; }).join('').toUpperCase().slice(0,2);
+
+    ['sb-avatar','tb-avatar','prof-avatar'].forEach(function(id) {
+      var el = document.getElementById(id);
+      if (el) el.textContent = initials;
+    });
+    var sbName = document.getElementById('sb-name');
+    if (sbName) sbName.textContent = user.name;
+    var sbTrack = document.getElementById('sb-track');
+    if (sbTrack) sbTrack.textContent = user.track + ' · ' + user.plan;
+
+    // Dashboard greeting
+    var hour = new Date().getHours();
+    var greeting = hour < 12 ? 'Доброе утро' : hour < 18 ? 'Добрый день' : 'Добрый вечер';
+    var firstName = user.name.split(' ')[0];
+    var greetEl = document.getElementById('dash-greeting');
+    if (greetEl) greetEl.textContent = greeting + ', ' + firstName + '! 👋';
+
+    // Stats
+    document.getElementById('stat-progress').textContent = '8%';
+    document.getElementById('stat-tasks').textContent = user.completedTasks + '/' + user.totalTasks;
+    document.getElementById('stat-points').textContent = user.points;
+    document.getElementById('stat-streak').textContent = user.streak;
+
+    // Profile
+    document.getElementById('prof-name').textContent = user.name;
+    document.getElementById('prof-email').textContent = user.email;
+    document.getElementById('prof-track-text').textContent = user.track;
+    document.getElementById('prof-pts').textContent = user.points;
+    document.getElementById('prof-streak').textContent = user.streak;
+    document.getElementById('prof-tasks').textContent = user.completedTasks;
+    document.getElementById('pf-name').textContent = user.name;
+    document.getElementById('pf-email').textContent = user.email;
+    document.getElementById('pf-plan').textContent = user.plan + ' · ' + user.tariff.toLocaleString('ru') + ' ₽';
+    document.getElementById('pf-track').textContent = user.track;
+  }
+
+  /* ================================================================
+     SCHEDULE
+  ================================================================ */
+  function buildSchedule(filter) {
+    filter = filter || 'all';
+    var events = filter === 'all' ? SCHEDULE : SCHEDULE.filter(function(e) { return e.type === filter; });
+    var grouped = {};
+    events.forEach(function(e) {
+      if (!grouped[e.day]) grouped[e.day] = [];
+      grouped[e.day].push(e);
+    });
+    var html = '';
+    Object.keys(grouped).forEach(function(day) {
+      html += '<div class="schedule-date-label">' + day + '</div>';
+      grouped[day].forEach(function(e) {
+        var color = TYPE_COLORS[e.type] || '#8a8a9a';
+        var badge = TYPE_BADGE[e.type] || 'badge--gray';
+        var label = TYPE_LABELS[e.type] || e.type;
+        var joinBtn = e.type !== 'org'
+          ? '<a href="#" class="event-join">Ссылка на созвон →</a>'
+          : '<a href="#" class="event-join event-join--outline">Добавить в календарь</a>';
+        html += '<div class="event-card">' +
+          '<div class="event-time-col"><div class="event-time">' + e.time + '</div><div class="event-dur">' + e.dur + '</div></div>' +
+          '<div class="event-stripe" style="background:' + color + '"></div>' +
+          '<div class="event-body">' +
+            '<div class="event-title">' + e.title + '</div>' +
+            '<div class="event-desc">' + e.desc + '</div>' +
+            '<div class="event-footer">' +
+              '<span class="badge ' + badge + '">' + label + '</span>' +
+              '<span class="event-host">🎙 ' + e.host + '</span>' +
+              joinBtn +
+            '</div>' +
+          '</div>' +
+        '</div>';
+      });
+    });
+    document.getElementById('schedule-list').innerHTML = html || '<p style="color:var(--text-tertiary);padding:20px 0">Нет событий для этого фильтра</p>';
+  }
+
+  function initSchedule() {
+    buildSchedule('all');
+    document.querySelectorAll('.filter-btn[data-filter]').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        document.querySelectorAll('.filter-btn[data-filter]').forEach(function(b) { b.classList.remove('active'); });
+        btn.classList.add('active');
+        buildSchedule(btn.getAttribute('data-filter'));
+      });
+    });
+  }
+
+  /* ================================================================
+     LIBRARY
+  ================================================================ */
+  function renderDayCard(day) {
+    var icons = (day.mats||[]).map(function(m) { return MAT_ICONS[m.type]||'📎'; }).join(' ');
+    var cls = day.status === 'locked' ? 'day-card--locked' : day.status === 'done' ? 'day-card--done' : '';
+    var onclick = day.status !== 'locked' ? 'openDayModal(' + day.id + ')' : '';
+    return '<div class="day-card ' + cls + '" ' + (onclick ? 'onclick="'+onclick+'"' : '') + '>' +
+      '<div class="day-card-num">День ' + day.id + '</div>' +
+      '<div class="day-card-title">' + day.title + '</div>' +
+      '<div class="day-card-date">' + day.date + '</div>' +
+      (day.mats && day.mats.length ? '<div class="day-card-icons">' + icons + '</div>' : '') +
+      '</div>';
+  }
+
+  function buildLibrary() {
+    var months = { june:'', july:'', august:'' };
+    LIBRARY.forEach(function(wk) {
+      var daysHtml = wk.days.map(renderDayCard).join('');
+      months[wk.month] += '<div class="lib-week">' +
+        '<div class="lib-week-title"><span>' + wk.week + '</span></div>' +
+        '<div class="days-grid">' + daysHtml + '</div>' +
+        '</div>';
+    });
+    ['june','july','august'].forEach(function(m) {
+      var el = document.getElementById('lib-' + m);
+      if (el) el.innerHTML = months[m] || '<p style="color:var(--text-tertiary);padding:20px 0">Материалы появятся позже</p>';
+    });
+
+    // Tabs
+    document.querySelectorAll('.lib-tab').forEach(function(tab) {
+      tab.addEventListener('click', function() {
+        document.querySelectorAll('.lib-tab').forEach(function(t) { t.classList.remove('active'); });
+        document.querySelectorAll('.lib-month').forEach(function(m) { m.classList.remove('active'); });
+        tab.classList.add('active');
+        var m = document.getElementById('lib-' + tab.getAttribute('data-month'));
+        if (m) m.classList.add('active');
+      });
+    });
+  }
+
+  function openDayModal(dayId) {
+    var day = null;
+    LIBRARY.forEach(function(wk) { wk.days.forEach(function(d) { if (d.id === dayId) day = d; }); });
+    if (!day) return;
+    document.getElementById('modal-day-num').textContent = 'День ' + day.id + ' · ' + day.date;
+    document.getElementById('modal-day-title').textContent = day.title;
+    var html = '';
+    if (!day.mats || !day.mats.length) {
+      html = '<p style="color:var(--text-tertiary)">Материалы появятся скоро.</p>';
+    } else {
+      var byType = {};
+      day.mats.forEach(function(m) {
+        if (!byType[m.type]) byType[m.type] = [];
+        byType[m.type].push(m);
+      });
+      var labels = { video:'🎬 Видеозапись лекции', pdf:'📄 Конспект', task:'✏️ Задачи дня', code:'💻 Примеры кода', link:'🔗 Дополнительные материалы' };
+      Object.keys(labels).forEach(function(t) {
+        if (!byType[t]) return;
+        html += '<div class="mat-section-title">' + labels[t] + '</div>';
+        byType[t].forEach(function(m) {
+          html += '<a href="' + m.url + '" class="mat-item" target="_blank">' +
+            '<div class="mat-item-icon ' + (MAT_CLASS[m.type]||'') + '">' + (MAT_ICONS[m.type]||'📎') + '</div>' +
+            '<div class="mat-item-body"><div class="mat-item-title">' + m.title + '</div><div class="mat-item-meta">' + m.meta + '</div></div>' +
+            '<div class="mat-item-arrow">→</div></a>';
+        });
+      });
+    }
+    document.getElementById('modal-body').innerHTML = html;
+    document.getElementById('day-modal').classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeDayModal() {
+    document.getElementById('day-modal').classList.remove('active');
+    document.body.style.overflow = '';
+  }
+
+  /* ================================================================
+     TASKS
+  ================================================================ */
+  var DIFF_BADGE = { easy:'badge--green', medium:'badge--orange', hard:'badge--red' };
+  var DIFF_LABEL = { easy:'Лёгкая', medium:'Средняя', hard:'Сложная' };
+
+  function buildTasks(filter) {
+    filter = filter || 'all';
+    var tasks = TASKS.filter(function(t) {
+      if (filter === 'all') return true;
+      if (filter === 'active') return t.status === 'active';
+      if (filter === 'done') return t.status === 'done';
+      return true;
+    });
+    var html = tasks.map(function(t) {
+      var done = t.status === 'done';
+      var locked = t.status === 'locked';
+      var checkCls = done ? 'checked' : '';
+      var cardCls  = done ? 'task-card--done' : locked ? 'task-card' : '';
+      var checkContent = done ? '✓' : '';
+      return '<div class="task-card ' + cardCls + '">' +
+        '<div class="task-checkbox ' + checkCls + '" onclick="toggleTask(' + t.id + ')">' + checkContent + '</div>' +
+        '<div class="task-body">' +
+          '<div class="task-title">' + t.title + '</div>' +
+          '<div class="task-meta">' +
+            '<span class="badge ' + (DIFF_BADGE[t.diff]||'badge--gray') + '">' + (DIFF_LABEL[t.diff]||t.diff) + '</span>' +
+            '<span class="badge badge--gray">Неделя ' + t.week + '</span>' +
+            (locked ? '<span class="badge badge--gray">🔒 Заблокировано</span>' : '<span class="task-deadline">📅 ' + t.deadline + '</span>') +
+          '</div>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+    document.getElementById('tasks-list').innerHTML = html || '<p style="color:var(--text-tertiary);padding:20px 0">Нет заданий</p>';
+  }
+
+  function toggleTask(id) {
+    var t = TASKS.find(function(x) { return x.id === id; });
+    if (!t || t.status === 'locked') return;
+    t.status = t.status === 'done' ? 'active' : 'done';
+    var activeFilt = document.querySelector('.filter-btn[data-tfilter].active');
+    buildTasks(activeFilt ? activeFilt.getAttribute('data-tfilter') : 'all');
+  }
+
+  function initTasks() {
+    buildTasks('all');
+    document.querySelectorAll('.filter-btn[data-tfilter]').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        document.querySelectorAll('.filter-btn[data-tfilter]').forEach(function(b) { b.classList.remove('active'); });
+        btn.classList.add('active');
+        buildTasks(btn.getAttribute('data-tfilter'));
+      });
+    });
+  }
+
+  /* ================================================================
+     LEADERBOARD
+  ================================================================ */
+  function buildLeaderboard() {
+    var html = LEADERS.map(function(l, i) {
+      var rank = i + 1;
+      var rankCls = rank === 1 ? 'leader-rank--gold' : rank === 2 ? 'leader-rank--silver' : rank === 3 ? 'leader-rank--bronze' : '';
+      var rowCls  = l.me ? 'leader-row--me' : '';
+      var initials = l.name.split(' ').map(function(w) { return w[0]||''; }).join('').toUpperCase().slice(0,2);
+      return '<div class="leader-row ' + rowCls + '">' +
+        '<div class="leader-rank ' + rankCls + '">' + rank + '</div>' +
+        '<div class="leader-avatar">' + initials + '</div>' +
+        '<div class="leader-info"><div class="leader-name">' + l.name + (l.me ? ' <span style="font-size:11px;color:var(--accent-lime)">(ты)</span>' : '') + '</div><div class="leader-track">' + l.track + '</div></div>' +
+        '<div style="text-align:right"><div class="leader-pts">' + l.pts + '</div><div class="leader-pts-label">очков</div></div>' +
+      '</div>';
+    }).join('');
+    document.getElementById('leaderboard-list').innerHTML = html;
+  }
+
+  /* ================================================================
+     INIT
+  ================================================================ */
+  document.addEventListener('DOMContentLoaded', function() {
+    initUser();
+    initSchedule();
+    buildLibrary();
+    initTasks();
+    buildLeaderboard();
+
+    // Nav
+    document.querySelectorAll('.nav-item[data-page]').forEach(function(btn) {
+      btn.addEventListener('click', function() { navigate(btn.getAttribute('data-page')); });
+    });
+
+    // Sidebar mobile
+    document.getElementById('hamburger').addEventListener('click', openSidebar);
+    document.getElementById('sidebar-close').addEventListener('click', closeSidebar);
+    document.getElementById('sidebar-overlay').addEventListener('click', closeSidebar);
+
+    // Logout
+    document.getElementById('logout-btn').addEventListener('click', function() {
+      sessionStorage.removeItem('kiro_user');
+      window.location.href = 'index.html';
+    });
+
+    // Day modal close
+    document.getElementById('modal-close').addEventListener('click', closeDayModal);
+    document.getElementById('day-modal').addEventListener('click', function(e) {
+      if (e.target === this) closeDayModal();
+    });
+    document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeDayModal(); });
+
+    // Hash routing
+    var hash = window.location.hash.slice(1);
+    navigate(['dashboard','schedule','library','tasks','progress','leaderboard','community','profile'].indexOf(hash) !== -1 ? hash : 'dashboard');
+  });
+  </script>
+</body>
+</html>
