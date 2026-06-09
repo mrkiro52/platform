@@ -74,9 +74,7 @@ function QuestionCard({ question, taskIndex, totalTasks, onAnswer, isSolved }) {
       })
       setIsChecking(false)
 
-      if (isCorrect) {
-        onAnswer(taskIndex, true)
-      }
+      onAnswer(taskIndex, isCorrect)
     }, 300)
   }
 
@@ -155,7 +153,7 @@ function QuestionCard({ question, taskIndex, totalTasks, onAnswer, isSolved }) {
           className={`btn-check ${isChecking ? 'checking' : ''}`}
           disabled={isChecking}
         >
-          {isChecking ? '⟳' : 'Готово'}
+          {isChecking ? '⟳' : 'Проверить'}
         </button>
       </div>
 
@@ -174,26 +172,32 @@ function QuestionCard({ question, taskIndex, totalTasks, onAnswer, isSolved }) {
   )
 }
 
-function TaskIndicators({ totalTasks, solvedTasks, currentIndex, onSelectTask }) {
+function TaskIndicators({ totalTasks, taskStatuses, currentIndex, onSelectTask }) {
   return (
     <div className="task-indicators">
-      {Array.from({ length: totalTasks }).map((_, i) => (
-        <button
-          key={i}
-          className={`task-indicator ${solvedTasks.includes(i) ? 'solved' : ''} ${i === currentIndex ? 'active' : ''}`}
-          title={`Задача ${i + 1}`}
-          onClick={() => onSelectTask(i)}
-        >
-          {i + 1}
-        </button>
-      ))}
+      {Array.from({ length: totalTasks }).map((_, i) => {
+        const status = taskStatuses[i]
+        const isActive = i === currentIndex
+        const className = `task-indicator ${status === 'correct' ? 'correct' : ''} ${status === 'incorrect' ? 'incorrect' : ''} ${isActive ? 'active' : ''}`
+
+        return (
+          <button
+            key={i}
+            className={className}
+            title={`Задача ${i + 1}`}
+            onClick={() => onSelectTask(i)}
+          >
+            {i + 1}
+          </button>
+        )
+      })}
     </div>
   )
 }
 
 export default function QuestionsPage({ selectedDay, onBack }) {
   const [questions, setQuestions] = useState([])
-  const [solvedTasks, setSolvedTasks] = useState([])
+  const [taskStatuses, setTaskStatuses] = useState({}) // { 0: 'correct', 1: 'incorrect' }
   const [currentIndex, setCurrentIndex] = useState(0)
   const [loading, setLoading] = useState(true)
   const [switching, setSwitching] = useState(false)
@@ -205,11 +209,11 @@ export default function QuestionsPage({ selectedDay, onBack }) {
         const data = getQuestions()
         setQuestions(data.tasks || [])
 
-        // Load solved tasks from localStorage
-        const saved = localStorage.getItem('solvedTasks')
-        const solvedData = saved ? JSON.parse(saved) : {}
+        // Load task statuses from localStorage
+        const saved = localStorage.getItem('taskStatuses')
+        const statusData = saved ? JSON.parse(saved) : {}
         const dayKey = `day${selectedDay}`
-        setSolvedTasks(solvedData[dayKey] || [])
+        setTaskStatuses(statusData[dayKey] || {})
       }
       setCurrentIndex(0)
       setLoading(false)
@@ -218,17 +222,15 @@ export default function QuestionsPage({ selectedDay, onBack }) {
     return () => clearTimeout(timer)
   }, [selectedDay])
 
-  const handleAnswerCorrect = (taskIndex) => {
-    if (solvedTasks.includes(taskIndex)) return
-
-    const newSolved = [...solvedTasks, taskIndex]
-    setSolvedTasks(newSolved)
+  const handleAnswerCorrect = (taskIndex, isCorrect) => {
+    const newStatuses = { ...taskStatuses, [taskIndex]: isCorrect ? 'correct' : 'incorrect' }
+    setTaskStatuses(newStatuses)
 
     // Save to localStorage
-    const saved = localStorage.getItem('solvedTasks')
-    const solvedData = saved ? JSON.parse(saved) : {}
-    solvedData[`day${selectedDay}`] = newSolved
-    localStorage.setItem('solvedTasks', JSON.stringify(solvedData))
+    const saved = localStorage.getItem('taskStatuses')
+    const statusData = saved ? JSON.parse(saved) : {}
+    statusData[`day${selectedDay}`] = newStatuses
+    localStorage.setItem('taskStatuses', JSON.stringify(statusData))
   }
 
   const goToQuestion = (index) => {
@@ -297,7 +299,7 @@ export default function QuestionsPage({ selectedDay, onBack }) {
           <h2 className="questions-title">Задачи для тренировки</h2>
           <TaskIndicators
             totalTasks={questions.length}
-            solvedTasks={solvedTasks}
+            taskStatuses={taskStatuses}
             currentIndex={currentIndex}
             onSelectTask={goToQuestion}
           />
@@ -306,11 +308,12 @@ export default function QuestionsPage({ selectedDay, onBack }) {
         <div className="single-question-view">
           <div className={`question-card-wrapper ${switching ? 'switching' : ''}`}>
             <QuestionCard
+              key={`${selectedDay}-${currentIndex}`}
               question={currentQuestion}
               taskIndex={currentIndex}
               totalTasks={questions.length}
               onAnswer={handleAnswerCorrect}
-              isSolved={solvedTasks.includes(currentIndex)}
+              isSolved={taskStatuses[currentIndex]}
             />
           </div>
 

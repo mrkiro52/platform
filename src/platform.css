@@ -1399,10 +1399,16 @@ img { max-width: 100%; display: block; }
   color: var(--accent-lime);
 }
 
-.task-indicator.solved {
-  background: var(--accent-lime);
+.task-indicator.correct {
+  background: #00ff00;
   color: var(--bg-primary);
-  border-color: var(--accent-lime);
+  border-color: #00ff00;
+}
+
+.task-indicator.incorrect {
+  background: #ff3333;
+  color: white;
+  border-color: #ff3333;
 }
 
 .task-indicator.active {
