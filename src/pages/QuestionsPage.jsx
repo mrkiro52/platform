@@ -57,10 +57,11 @@ function QuestionCard({ question, taskIndex, totalTasks, onAnswer, isSolved }) {
   const [showHint, setShowHint] = useState(false)
   const [feedback, setFeedback] = useState(null)
   const [isChecking, setIsChecking] = useState(false)
+  const isChoiceType = question.type === 'choice'
 
   const handleCheck = () => {
     if (!inputValue.trim()) {
-      setFeedback({ correct: false, message: 'Введите ответ' })
+      setFeedback({ correct: false, message: 'Выберите ответ' })
       return
     }
 
@@ -102,39 +103,59 @@ function QuestionCard({ question, taskIndex, totalTasks, onAnswer, isSolved }) {
 
       <p className="question-text">{question.text}</p>
 
-      <div className="question-input-group">
-        <input
-          type="text"
-          value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
-          placeholder="Введите ваш ответ..."
-          disabled={isChecking}
-          className="question-input"
-          onKeyPress={(e) => e.key === 'Enter' && handleCheck()}
-        />
-      </div>
+      {isChoiceType ? (
+        <div className="question-options">
+          {question.options.map((option, idx) => (
+            <label key={idx} className="question-option">
+              <input
+                type="radio"
+                name={`question-${taskIndex}`}
+                value={option}
+                checked={inputValue === option}
+                onChange={(e) => setInputValue(e.target.value)}
+                disabled={isChecking}
+              />
+              <span className="option-text">{option}</span>
+            </label>
+          ))}
+        </div>
+      ) : (
+        <div className="question-input-group">
+          <input
+            type="text"
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+            placeholder="Введите ваш ответ..."
+            disabled={isChecking}
+            className="question-input"
+            onKeyPress={(e) => e.key === 'Enter' && handleCheck()}
+          />
+        </div>
+      )}
 
       <div className="question-actions">
-        <button
-          onClick={() => setShowHint(!showHint)}
-          className="btn-hint"
-          disabled={isChecking}
-        >
-          {showHint ? 'Скрыть подсказку' : 'Подсказка'}
-        </button>
+        <div className="question-actions-left">
+          <button
+            onClick={() => setShowHint(!showHint)}
+            className="btn-hint"
+            disabled={isChecking}
+          >
+            {showHint ? 'Скрыть подсказку' : 'Подсказка'}
+          </button>
+          <button
+            onClick={handleClear}
+            className="btn-clear"
+            disabled={isChecking}
+          >
+            Очистить
+          </button>
+        </div>
         <button
           onClick={handleCheck}
           className={`btn-check ${isChecking ? 'checking' : ''}`}
           disabled={isChecking}
         >
           {isChecking ? '⟳' : 'Готово'}
-        </button>
-        <button
-          onClick={handleClear}
-          className="btn-clear"
-          disabled={isChecking}
-        >
-          Очистить
         </button>
       </div>
 
@@ -175,6 +196,7 @@ export default function QuestionsPage({ selectedDay, onBack }) {
   const [solvedTasks, setSolvedTasks] = useState([])
   const [currentIndex, setCurrentIndex] = useState(0)
   const [loading, setLoading] = useState(true)
+  const [switching, setSwitching] = useState(false)
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -210,7 +232,14 @@ export default function QuestionsPage({ selectedDay, onBack }) {
   }
 
   const goToQuestion = (index) => {
-    setCurrentIndex(Math.max(0, Math.min(index, questions.length - 1)))
+    const newIndex = Math.max(0, Math.min(index, questions.length - 1))
+    if (newIndex === currentIndex) return
+
+    setSwitching(true)
+    setTimeout(() => {
+      setCurrentIndex(newIndex)
+      setSwitching(false)
+    }, 200)
   }
 
   const goPrevious = () => {
@@ -275,13 +304,15 @@ export default function QuestionsPage({ selectedDay, onBack }) {
         </div>
 
         <div className="single-question-view">
-          <QuestionCard
-            question={currentQuestion}
-            taskIndex={currentIndex}
-            totalTasks={questions.length}
-            onAnswer={handleAnswerCorrect}
-            isSolved={solvedTasks.includes(currentIndex)}
-          />
+          <div className={`question-card-wrapper ${switching ? 'switching' : ''}`}>
+            <QuestionCard
+              question={currentQuestion}
+              taskIndex={currentIndex}
+              totalTasks={questions.length}
+              onAnswer={handleAnswerCorrect}
+              isSolved={solvedTasks.includes(currentIndex)}
+            />
+          </div>
 
           <div className="question-navigation">
             <button
