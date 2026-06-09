@@ -1391,13 +1391,69 @@ img { max-width: 100%; display: block; }
   font-weight: 600;
   color: var(--text-secondary);
   transition: all 0.3s ease;
-  cursor: default;
+  cursor: pointer;
+}
+
+.task-indicator:hover {
+  border-color: var(--accent-lime);
+  color: var(--accent-lime);
 }
 
 .task-indicator.solved {
   background: var(--accent-lime);
   color: var(--bg-primary);
   border-color: var(--accent-lime);
+}
+
+.task-indicator.active {
+  box-shadow: 0 0 0 2px var(--bg-tertiary), 0 0 0 4px var(--accent-lime);
+}
+
+.single-question-view {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.question-navigation {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-top: 24px;
+  padding: 16px;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+}
+
+.nav-btn {
+  padding: 10px 16px;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.nav-btn:hover:not(:disabled) {
+  border-color: var(--accent-lime);
+  color: var(--accent-lime);
+}
+
+.nav-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.nav-counter {
+  font-size: 13px;
+  color: var(--text-secondary);
+  font-weight: 600;
+  white-space: nowrap;
 }
 
 .questions-list {
@@ -1552,6 +1608,9 @@ img { max-width: 100%; display: block; }
   .btn-hint, .btn-check, .btn-clear { width: 100%; }
   .task-indicators { gap: 6px; }
   .task-indicator { width: 36px; height: 36px; font-size: 12px; }
+  .question-navigation { flex-direction: column; gap: 12px; }
+  .nav-btn { width: 100%; }
+  .nav-counter { width: 100%; text-align: center; }
 }
 
 /* Responsive для теории */

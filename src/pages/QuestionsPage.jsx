@@ -52,7 +52,7 @@ const QUESTIONS_COMPONENTS = {
   29: Day29ResumeTasks,
 }
 
-function QuestionCard({ question, taskIndex, totalTasks, onAnswer }) {
+function QuestionCard({ question, taskIndex, totalTasks, onAnswer, isSolved }) {
   const [inputValue, setInputValue] = useState('')
   const [showHint, setShowHint] = useState(false)
   const [feedback, setFeedback] = useState(null)
@@ -69,7 +69,7 @@ function QuestionCard({ question, taskIndex, totalTasks, onAnswer }) {
       const isCorrect = inputValue.trim().toLowerCase() === question.answer.toLowerCase()
       setFeedback({
         correct: isCorrect,
-        message: isCorrect ? '✓ Правильно!' : '✗ Неправильно',
+        message: isCorrect ? 'Правильно!' : 'Неправильно',
       })
       setIsChecking(false)
 
@@ -96,7 +96,7 @@ function QuestionCard({ question, taskIndex, totalTasks, onAnswer }) {
   return (
     <div className="question-card">
       <div className="question-header">
-        <span className="question-number">Задача {taskIndex + 1}</span>
+        <span className="question-number">Задача {taskIndex + 1} из {totalTasks}</span>
         <span className="question-difficulty">{question.difficulty}</span>
       </div>
 
@@ -120,21 +120,21 @@ function QuestionCard({ question, taskIndex, totalTasks, onAnswer }) {
           className="btn-hint"
           disabled={isChecking}
         >
-          {showHint ? '✕ Скрыть подсказку' : '? Подсказка'}
+          {showHint ? 'Скрыть подсказку' : 'Подсказка'}
         </button>
         <button
           onClick={handleCheck}
           className={`btn-check ${isChecking ? 'checking' : ''}`}
           disabled={isChecking}
         >
-          {isChecking ? '⟳' : '✓ Проверить'}
+          {isChecking ? '⟳' : 'Готово'}
         </button>
         <button
           onClick={handleClear}
           className="btn-clear"
           disabled={isChecking}
         >
-          ✕ Очистить
+          Очистить
         </button>
       </div>
 
@@ -153,17 +153,18 @@ function QuestionCard({ question, taskIndex, totalTasks, onAnswer }) {
   )
 }
 
-function TaskIndicators({ totalTasks, solvedTasks }) {
+function TaskIndicators({ totalTasks, solvedTasks, currentIndex, onSelectTask }) {
   return (
     <div className="task-indicators">
       {Array.from({ length: totalTasks }).map((_, i) => (
-        <div
+        <button
           key={i}
-          className={`task-indicator ${solvedTasks.includes(i) ? 'solved' : ''}`}
+          className={`task-indicator ${solvedTasks.includes(i) ? 'solved' : ''} ${i === currentIndex ? 'active' : ''}`}
           title={`Задача ${i + 1}`}
+          onClick={() => onSelectTask(i)}
         >
           {i + 1}
-        </div>
+        </button>
       ))}
     </div>
   )
@@ -172,6 +173,7 @@ function TaskIndicators({ totalTasks, solvedTasks }) {
 export default function QuestionsPage({ selectedDay, onBack }) {
   const [questions, setQuestions] = useState([])
   const [solvedTasks, setSolvedTasks] = useState([])
+  const [currentIndex, setCurrentIndex] = useState(0)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -187,6 +189,7 @@ export default function QuestionsPage({ selectedDay, onBack }) {
         const dayKey = `day${selectedDay}`
         setSolvedTasks(solvedData[dayKey] || [])
       }
+      setCurrentIndex(0)
       setLoading(false)
     }, 300)
 
@@ -204,6 +207,18 @@ export default function QuestionsPage({ selectedDay, onBack }) {
     const solvedData = saved ? JSON.parse(saved) : {}
     solvedData[`day${selectedDay}`] = newSolved
     localStorage.setItem('solvedTasks', JSON.stringify(solvedData))
+  }
+
+  const goToQuestion = (index) => {
+    setCurrentIndex(Math.max(0, Math.min(index, questions.length - 1)))
+  }
+
+  const goPrevious = () => {
+    goToQuestion(currentIndex - 1)
+  }
+
+  const goNext = () => {
+    goToQuestion(currentIndex + 1)
   }
 
   function getDayLabel(dayNum) {
@@ -234,6 +249,8 @@ export default function QuestionsPage({ selectedDay, onBack }) {
     )
   }
 
+  const currentQuestion = questions[currentIndex]
+
   return (
     <section className="page active">
       <div className="theory-breadcrumbs">
@@ -249,19 +266,40 @@ export default function QuestionsPage({ selectedDay, onBack }) {
       <div className="questions-container">
         <div className="questions-header">
           <h2 className="questions-title">Задачи для тренировки</h2>
-          <TaskIndicators totalTasks={questions.length} solvedTasks={solvedTasks} />
+          <TaskIndicators
+            totalTasks={questions.length}
+            solvedTasks={solvedTasks}
+            currentIndex={currentIndex}
+            onSelectTask={goToQuestion}
+          />
         </div>
 
-        <div className="questions-list">
-          {questions.map((question, i) => (
-            <QuestionCard
-              key={i}
-              question={question}
-              taskIndex={i}
-              totalTasks={questions.length}
-              onAnswer={handleAnswerCorrect}
-            />
-          ))}
+        <div className="single-question-view">
+          <QuestionCard
+            question={currentQuestion}
+            taskIndex={currentIndex}
+            totalTasks={questions.length}
+            onAnswer={handleAnswerCorrect}
+            isSolved={solvedTasks.includes(currentIndex)}
+          />
+
+          <div className="question-navigation">
+            <button
+              className="nav-btn nav-prev"
+              onClick={goPrevious}
+              disabled={currentIndex === 0}
+            >
+              ← Предыдущая
+            </button>
+            <span className="nav-counter">{currentIndex + 1} из {questions.length}</span>
+            <button
+              className="nav-btn nav-next"
+              onClick={goNext}
+              disabled={currentIndex === questions.length - 1}
+            >
+              Следующая →
+            </button>
+          </div>
         </div>
       </div>
 

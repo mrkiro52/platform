@@ -26,9 +26,8 @@ function dayDateLabel(dayNum) {
 }
 
 function isAvailable(dayNum) {
-  const today = new Date()
-  today.setHours(0, 0, 0, 0)
-  return new Date(2026, 5, dayNum) <= today
+  // Все дни июня доступны для просмотра теории и задач
+  return dayNum >= 1 && dayNum <= 30
 }
 
 function buildJuneDays(scheduleData, libraryData) {
@@ -97,7 +96,7 @@ function DayCard({ day, onOpen, onOpenTheory, onOpenQuestions }) {
                 }}
                 title="Открыть задачи"
               >
-                ✓
+                ≡
               </button>
             </>
           )}
