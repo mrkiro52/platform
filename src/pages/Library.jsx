@@ -57,7 +57,7 @@ function buildJuneDays(scheduleData, libraryData) {
   })
 }
 
-function DayCard({ day, onOpen }) {
+function DayCard({ day, onOpen, onOpenTheory, onOpenQuestions }) {
   const locked = !isAvailable(day.day)
   const color  = locked ? 'rgba(255,255,255,0.08)' : '#c8ff00'
   const hasMats = day.mats?.length > 0
@@ -76,17 +76,43 @@ function DayCard({ day, onOpen }) {
           <span className="sched-day-date">{dayDateLabel(day.day)}</span>
         </div>
         <div className="sched-day-title">{day.title}</div>
-        {!locked && hasMats && (
-          <span style={{ fontSize:12, color:'var(--accent-lime)', flexShrink:0, fontWeight:600 }}>
-            Материалы →
-          </span>
-        )}
+        <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexShrink: 0 }}>
+          {!locked && (
+            <>
+              <button
+                className="theory-file-btn"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  onOpenTheory(day)
+                }}
+                title="Открыть теорию"
+              >
+                📄
+              </button>
+              <button
+                className="theory-file-btn"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  onOpenQuestions(day)
+                }}
+                title="Открыть задачи"
+              >
+                ✓
+              </button>
+            </>
+          )}
+          {!locked && hasMats && (
+            <span style={{ fontSize:12, color:'var(--accent-lime)', fontWeight:600 }}>
+              Материалы →
+            </span>
+          )}
+        </div>
       </div>
     </div>
   )
 }
 
-export default function Library({ onOpenDay }) {
+export default function Library({ onOpenDay, onOpenTheory, onOpenQuestions }) {
   const [activeMonth, setActiveMonth] = useState('june')
   const [library, setLibrary]         = useState(LIBRARY)
   const [schedule, setSchedule]       = useState(SCHEDULE)
@@ -144,7 +170,7 @@ export default function Library({ onOpenDay }) {
                 <div className="schedule-date-label">{week.label}</div>
                 {days.map((day, i) => (
                   <div key={day.id} className="fade-in" style={{ animationDelay: `${i * 0.02}s` }}>
-                    <DayCard day={day} onOpen={onOpenDay} />
+                    <DayCard day={day} onOpen={onOpenDay} onOpenTheory={onOpenTheory} onOpenQuestions={onOpenQuestions} />
                   </div>
                 ))}
               </div>

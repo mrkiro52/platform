@@ -7,6 +7,8 @@ import Schedule from './pages/Schedule'
 import Library from './pages/Library'
 import Tasks from './pages/Tasks'
 import Links from './pages/Links'
+import TheoryPage from './pages/TheoryPage'
+import QuestionsPage from './pages/QuestionsPage'
 
 const PAGES = {
   dashboard: Dashboard,
@@ -14,6 +16,8 @@ const PAGES = {
   library:   Library,
   tasks:     Tasks,
   links:     Links,
+  theory:    TheoryPage,
+  questions: QuestionsPage,
 }
 
 const VALID_PAGES = Object.keys(PAGES)
@@ -22,6 +26,7 @@ export default function AppShell({ user, onLogout }) {
   const [currentPage, setCurrentPage] = useState('dashboard')
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [dayModal, setDayModal]       = useState(null)
+  const [selectedDay, setSelectedDay] = useState(null)
 
   useEffect(() => {
     document.body.className = 'app-page'
@@ -33,6 +38,20 @@ export default function AppShell({ user, onLogout }) {
       setCurrentPage(page)
       setSidebarOpen(false)
     }
+  }
+
+  const openTheory = (day) => {
+    setSelectedDay(day.day)
+    setCurrentPage('theory')
+  }
+
+  const openQuestions = (day) => {
+    setSelectedDay(day.day)
+    setCurrentPage('questions')
+  }
+
+  const backToLibrary = () => {
+    setCurrentPage('library')
   }
 
   const PageComponent = PAGES[currentPage] || Schedule
@@ -60,11 +79,25 @@ export default function AppShell({ user, onLogout }) {
           onMenuClick={() => setSidebarOpen(true)}
         />
         <main className="pages-wrap">
-          <PageComponent
-            user={user}
-            onNavigate={navigate}
-            onOpenDay={setDayModal}
-          />
+          {currentPage === 'theory' ? (
+            <TheoryPage
+              selectedDay={selectedDay}
+              onBack={backToLibrary}
+            />
+          ) : currentPage === 'questions' ? (
+            <QuestionsPage
+              selectedDay={selectedDay}
+              onBack={backToLibrary}
+            />
+          ) : (
+            <PageComponent
+              user={user}
+              onNavigate={navigate}
+              onOpenDay={setDayModal}
+              onOpenTheory={openTheory}
+              onOpenQuestions={openQuestions}
+            />
+          )}
         </main>
       </div>
 

@@ -968,3 +968,611 @@ img { max-width: 100%; display: block; }
   /* Login */
   .login-card { padding: 28px 18px; }
 }
+
+/* ════════════════════════════════════════════════════════════════
+   THEORY PAGE & FILE BUTTON
+═════════════════════════════════════════════════════════════════ */
+
+/* Кнопка файла на плашке */
+.theory-file-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  background: rgba(200, 255, 0, 0.1);
+  color: var(--accent-lime);
+  font-size: 16px;
+  padding: 0;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  pointer-events: auto;
+}
+
+.theory-file-btn:hover {
+  background: rgba(200, 255, 0, 0.2);
+  transform: scale(1.05);
+}
+
+.theory-file-btn:active {
+  transform: scale(0.95);
+}
+
+/* Breadcrumbs */
+.theory-breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 32px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.breadcrumb-link {
+  color: var(--accent-lime);
+  font-size: 13px;
+  font-weight: 600;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.breadcrumb-link:hover {
+  color: #e6ff00;
+}
+
+.breadcrumb-sep {
+  color: var(--text-tertiary);
+  font-size: 12px;
+}
+
+.breadcrumb-current {
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+/* Контейнер теории */
+.theory-container {
+  max-width: 800px;
+  margin: 0 auto;
+  line-height: 1.8;
+}
+
+.theory-section {
+  margin-bottom: 48px;
+  padding-bottom: 32px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.theory-section:last-of-type {
+  border-bottom: none;
+  padding-bottom: 0;
+  margin-bottom: 32px;
+}
+
+.theory-section--closing {
+  border-bottom: none;
+  padding-bottom: 0;
+  margin-bottom: 0;
+  text-align: center;
+}
+
+/* Заголовки */
+.theory-title {
+  font-family: var(--font-clash);
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--accent-lime);
+  margin-bottom: 8px;
+  letter-spacing: -0.5px;
+}
+
+.theory-subtitle {
+  font-family: var(--font-syne);
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+
+.theory-date {
+  color: var(--text-tertiary);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.theory-heading-2 {
+  font-family: var(--font-syne);
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--accent-lime);
+  margin-bottom: 16px;
+  letter-spacing: -0.3px;
+}
+
+.theory-heading-3 {
+  font-family: var(--font-syne);
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 12px;
+}
+
+/* Текстовые элементы */
+.theory-text {
+  color: var(--text-secondary);
+  font-size: 14px;
+  margin: 0;
+  line-height: 1.7;
+}
+
+.theory-intro {
+  color: var(--text-secondary);
+  font-size: 14px;
+  margin-bottom: 12px;
+  line-height: 1.7;
+}
+
+.theory-mt {
+  margin-top: 20px;
+}
+
+.theory-highlight {
+  background: rgba(200, 255, 0, 0.08);
+  border-left: 3px solid var(--accent-lime);
+  padding: 12px 16px;
+  border-radius: 4px;
+  color: var(--text-primary);
+  font-size: 14px;
+  margin-top: 16px;
+  line-height: 1.7;
+}
+
+/* Карточки информации */
+.theory-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.theory-card-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.theory-card-item:last-child {
+  margin-bottom: 0;
+}
+
+.theory-label {
+  color: var(--accent-lime);
+  font-weight: 600;
+  font-size: 13px;
+}
+
+/* Списки */
+.theory-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.theory-list-item {
+  color: var(--text-secondary);
+  font-size: 14px;
+  margin-bottom: 10px;
+  padding-left: 20px;
+  position: relative;
+  line-height: 1.7;
+}
+
+.theory-list-item:before {
+  content: '→';
+  position: absolute;
+  left: 0;
+  color: var(--accent-lime);
+  font-weight: 600;
+}
+
+/* Подсекции */
+.theory-subsection {
+  margin-top: 28px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(200, 255, 0, 0.1);
+}
+
+.theory-subsection:first-child {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: none;
+}
+
+/* Закрывающий текст */
+.theory-closing-text {
+  color: var(--accent-lime);
+  font-family: var(--font-syne);
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0;
+  letter-spacing: -0.3px;
+}
+
+/* Кнопка назад */
+.btn-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--accent-lime);
+  font-size: 14px;
+  font-weight: 600;
+  background: rgba(200, 255, 0, 0.08);
+  border: 1px solid var(--accent-lime);
+  border-radius: 6px;
+  padding: 10px 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-top: 24px;
+}
+
+.btn-back:hover {
+  background: rgba(200, 255, 0, 0.15);
+  transform: translateX(-2px);
+}
+
+.btn-back:active {
+  transform: translateX(-1px);
+}
+
+/* Футер теории */
+.theory-footer {
+  display: flex;
+  justify-content: center;
+  padding-top: 48px;
+  border-top: 1px solid var(--border-color);
+  margin-top: 48px;
+}
+
+/* Таблицы в теории */
+.theory-table-wrapper {
+  overflow-x: auto;
+  margin: 20px 0;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+}
+
+.theory-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.theory-table th {
+  background: rgba(200, 255, 0, 0.08);
+  color: var(--accent-lime);
+  font-weight: 700;
+  padding: 12px 16px;
+  text-align: left;
+  border-bottom: 2px solid var(--border-color);
+  font-family: var(--font-syne);
+}
+
+.theory-table td {
+  color: var(--text-secondary);
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.theory-table tr:last-child td {
+  border-bottom: none;
+}
+
+.theory-table tr:hover {
+  background: rgba(200, 255, 0, 0.04);
+}
+
+/* Блоки кода */
+.theory-code-block {
+  position: relative;
+  margin: 20px 0;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+  background: var(--bg-tertiary);
+}
+
+.theory-code-label {
+  background: rgba(200, 255, 0, 0.1);
+  color: var(--accent-lime);
+  padding: 6px 12px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--border-color);
+  display: inline-block;
+}
+
+.theory-code {
+  color: var(--text-primary);
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  font-size: 13px;
+  line-height: 1.5;
+  margin: 0;
+  padding: 16px;
+  overflow-x: auto;
+}
+
+.theory-code code {
+  display: block;
+}
+
+/* Примеры */
+.theory-example {
+  background: rgba(200, 255, 0, 0.05);
+  border: 1px solid rgba(200, 255, 0, 0.15);
+  border-radius: 8px;
+  padding: 16px;
+  margin: 20px 0;
+}
+
+.theory-example-title {
+  color: var(--accent-lime);
+  font-weight: 700;
+  font-size: 13px;
+  margin-bottom: 12px;
+}
+
+.theory-example-content {
+  color: var(--text-secondary);
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.theory-example-content p {
+  margin: 0 0 8px 0;
+}
+
+.theory-example-content ul {
+  margin: 8px 0;
+  padding-left: 20px;
+}
+
+.theory-example-content li {
+  margin-bottom: 4px;
+  color: var(--text-secondary);
+}
+
+/* ════════════════════════════════════════════════════════════════
+   QUESTIONS / TASKS
+═════════════════════════════════════════════════════════════════ */
+.questions-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px 0;
+}
+
+.questions-header {
+  margin-bottom: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.questions-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.task-indicators {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.task-indicator {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  transition: all 0.3s ease;
+  cursor: default;
+}
+
+.task-indicator.solved {
+  background: var(--accent-lime);
+  color: var(--bg-primary);
+  border-color: var(--accent-lime);
+}
+
+.questions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.question-card {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 24px;
+  transition: border-color 0.3s ease;
+}
+
+.question-card:hover {
+  border-color: rgba(200, 255, 0, 0.2);
+}
+
+.question-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  gap: 12px;
+}
+
+.question-number {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+
+.question-difficulty {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 4px;
+  background: rgba(200, 255, 0, 0.1);
+  color: var(--accent-lime);
+}
+
+.question-text {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--text-primary);
+  margin-bottom: 16px;
+  line-height: 1.6;
+}
+
+.question-input-group {
+  margin-bottom: 16px;
+}
+
+.question-input {
+  width: 100%;
+  padding: 12px 16px;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  color: var(--text-primary);
+  font-size: 14px;
+  transition: all 0.3s ease;
+  font-family: var(--font-inter);
+}
+
+.question-input:focus {
+  outline: none;
+  border-color: var(--accent-lime);
+  box-shadow: 0 0 0 2px rgba(200, 255, 0, 0.1);
+}
+
+.question-input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.question-actions {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.btn-hint,
+.btn-check,
+.btn-clear {
+  flex: 1;
+  padding: 10px 16px;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-hint:hover:not(:disabled),
+.btn-clear:hover:not(:disabled) {
+  border-color: var(--accent-lime);
+  color: var(--accent-lime);
+}
+
+.btn-check {
+  color: var(--accent-lime);
+  border-color: var(--accent-lime);
+}
+
+.btn-check:hover:not(:disabled) {
+  background: rgba(200, 255, 0, 0.1);
+}
+
+.btn-check.checking {
+  animation: pulse 0.8s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+.btn-hint:disabled,
+.btn-check:disabled,
+.btn-clear:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.question-hint {
+  background: rgba(200, 255, 0, 0.05);
+  border: 1px solid rgba(200, 255, 0, 0.2);
+  border-radius: 6px;
+  padding: 12px 16px;
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-top: 12px;
+  line-height: 1.6;
+}
+
+.question-hint strong {
+  color: var(--accent-lime);
+}
+
+/* Responsive для задач */
+@media (max-width: 768px) {
+  .questions-container { padding: 16px 0; }
+  .questions-title { font-size: 22px; }
+  .question-card { padding: 16px; }
+  .question-actions { flex-direction: column; }
+  .btn-hint, .btn-check, .btn-clear { width: 100%; }
+  .task-indicators { gap: 6px; }
+  .task-indicator { width: 36px; height: 36px; font-size: 12px; }
+}
+
+/* Responsive для теории */
+@media (max-width: 768px) {
+  .theory-title { font-size: 24px; }
+  .theory-subtitle { font-size: 16px; }
+  .theory-heading-2 { font-size: 18px; }
+  .theory-heading-3 { font-size: 14px; }
+  .theory-section { margin-bottom: 32px; padding-bottom: 24px; }
+}
+
+@media (max-width: 480px) {
+  .theory-breadcrumbs { font-size: 12px; margin-bottom: 20px; }
+  .breadcrumb-link { font-size: 12px; }
+  .theory-title { font-size: 20px; }
+  .theory-subtitle { font-size: 14px; }
+  .theory-heading-2 { font-size: 16px; }
+  .theory-heading-3 { font-size: 13px; }
+  .theory-text, .theory-intro { font-size: 13px; }
+  .theory-list-item { font-size: 13px; }
+  .theory-section { margin-bottom: 24px; padding-bottom: 16px; }
+  .theory-card { padding: 12px; }
+  .theory-highlight { padding: 10px 12px; font-size: 13px; }
+}
