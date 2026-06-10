@@ -130,7 +130,7 @@ export default function Day5LogicTasks() {
         id: 11,
         type: 'choice',
         difficulty: 'medium',
-        text: 'A = {1, 2, 3}, B = {3, 4, 5}. Что такое A \ B (разность)?',
+        text: 'A = {1, 2, 3}, B = {3, 4, 5}. Что такое A - B (разность)?',
         options: [
           '{3, 4, 5}',
           '{1, 2, 3, 4, 5}',
