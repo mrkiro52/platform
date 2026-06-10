@@ -267,7 +267,7 @@ print(f"{name}, твоя оценка: {grade}")`} language="python" />
       </section>
 
       <section className="theory-section theory-section--closing">
-        <p className="theory-closing-text">Ты уже знаешь основы программирования! 🎉</p>
+        <p className="theory-closing-text">Теперь ты знаешь основы программирования!</p>
       </section>
     </div>
   )

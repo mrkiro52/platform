@@ -47,13 +47,6 @@ export default function Day10TreesTheory() {
         self.left = None
         self.right = None
 
-# Создание бинарного дерева
-#       1
-#      / \
-#     2   3
-#    / \
-#   4   5
-
 root = Node(1)
 root.left = Node(2)
 root.right = Node(3)
@@ -183,15 +176,7 @@ for val in [1, 2, 3, 4, 5]:  # Уже отсортировано!
     bst.insert(val)
 
 # Дерево выглядит как список:
-#   1
-#    \
-#     2
-#      \
-#       3
-#        \
-#         4
-#          \
-#           5
+# 1-2-3-4-5
 
 # Поиск 5 требует O(5) операций!`} language="python" />
       </section>
@@ -257,7 +242,7 @@ print(is_bst(root))  # True`} language="python" />
       </section>
 
       <section className="theory-section theory-section--closing">
-        <p className="theory-closing-text">Деревья — один из самых мощных инструментов программиста! 🌳</p>
+        <p className="theory-closing-text">Деревья — один из самых мощных инструментов программиста!</p>
       </section>
     </div>
   )

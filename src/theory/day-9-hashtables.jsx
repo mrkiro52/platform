@@ -152,6 +152,75 @@ ht.add("Alice", 90)
 ht.add("Bob", 85)
 print(ht.get("Alice"))  # 90`} language="python" />
         </div>
+
+        <div className="theory-subsection">
+          <h3 className="theory-heading-3">Метод 3: Double Hashing (двойное хеширование)</h3>
+          <p className="theory-intro">
+            Используются две хэш-функции для более эффективного поиска следующей свободной ячейки. При коллизии вместо просто +1, применяем вторую функцию: hash1(key), hash1(key)+hash2(key), hash1(key)+2*hash2(key), и т.д.
+          </p>
+
+          <p className="theory-intro">
+            Преимущества: лучше распределяет ключи, меньше кластеров (скопов занятых ячеек), лучше для кэша процессора.
+          </p>
+
+          <TheoryCode code={`# Хэш-таблица с double hashing
+class HashTableDoubleHashing:
+    def __init__(self, size):
+        self.size = size
+        self.table = [None] * size
+
+    def hash1(self, key):
+        # Первая хеш-функция
+        return sum(ord(c) for c in key) % self.size
+
+    def hash2(self, key):
+        # Вторая хеш-функция (обычно простое число)
+        return 7 - (sum(ord(c) for c in key) % 7)
+
+    def add(self, key, value):
+        index = self.hash1(key)
+        step = self.hash2(key)
+        i = 0
+        while self.table[index] is not None:
+            if self.table[index][0] == key:
+                self.table[index] = (key, value)
+                return
+            i += 1
+            index = (self.hash1(key) + i * step) % self.size
+        self.table[index] = (key, value)
+
+    def get(self, key):
+        index = self.hash1(key)
+        step = self.hash2(key)
+        i = 0
+        while self.table[index] is not None:
+            if self.table[index][0] == key:
+                return self.table[index][1]
+            i += 1
+            index = (self.hash1(key) + i * step) % self.size
+        return None
+
+# Использование
+ht = HashTableDoubleHashing(10)
+ht.add("Alice", 90)
+ht.add("Bob", 85)
+ht.add("Charlie", 92)
+
+print(ht.get("Alice"))   # 90
+print(ht.get("Bob"))     # 85`} language="python" />
+        </div>
+
+        <div className="theory-subsection">
+          <h3 className="theory-heading-3">Сравнение методов разрешения коллизий</h3>
+          <TheoryTable
+            headers={['Метод', 'Преимущества', 'Недостатки']}
+            rows={[
+              ['Chaining', 'Простая реализация, удаление O(1)', 'Требует доп. память для списков'],
+              ['Linear Probing', 'Не требует доп. память', 'Кластеризация, заполнение таблицы'],
+              ['Double Hashing', 'Меньше кластеров, лучше распределение', 'Сложнее реализация, нужны две функции'],
+            ]}
+          />
+        </div>
       </section>
 
       <section className="theory-section">
@@ -320,7 +389,7 @@ def has_duplicates_v2(arr):
       </section>
 
       <section className="theory-section theory-section--closing">
-        <p className="theory-closing-text">Половина лагеря пройдена! Ты уже на пути к профессиональному разработчику! 🏆</p>
+        <p className="theory-closing-text">Ты на правильном пути! Только вперед!</p>
       </section>
     </div>
   )

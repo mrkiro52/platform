@@ -26,8 +26,15 @@ function dayDateLabel(dayNum) {
 }
 
 function isAvailable(dayNum) {
-  // Все дни июня доступны для просмотра теории и задач
-  return dayNum >= 1 && dayNum <= 30
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+  const dayDate = new Date(2026, 5, dayNum)
+  return dayDate <= today
+}
+
+function shouldShowButtons(dayNum) {
+  // Show buttons only for days 2-10 (after June 1, up to today June 10)
+  return dayNum >= 2 && dayNum <= 10
 }
 
 function buildJuneDays(scheduleData, libraryData) {
@@ -58,6 +65,7 @@ function buildJuneDays(scheduleData, libraryData) {
 
 function DayCard({ day, onOpen, onOpenTheory, onOpenQuestions }) {
   const locked = !isAvailable(day.day)
+  const showButtons = shouldShowButtons(day.day)
   const color  = locked ? 'rgba(255,255,255,0.08)' : '#c8ff00'
   const hasMats = day.mats?.length > 0
 
@@ -76,7 +84,7 @@ function DayCard({ day, onOpen, onOpenTheory, onOpenQuestions }) {
         </div>
         <div className="sched-day-title">{day.title}</div>
         <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexShrink: 0 }}>
-          {!locked && (
+          {showButtons && (
             <>
               <button
                 className="theory-file-btn"

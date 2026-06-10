@@ -33,6 +33,8 @@ for num in range(3):
 
           <TheoryExample title="Как работает range()">
             <ul>
+              <li><strong>range</strong> использует Start Stop и Step</li>
+              <li>По умолчанию start = 0, stop = последнему элементу, step = 1</li>
               <li><strong>range(5)</strong> — от 0 до 4 (не включает 5)</li>
               <li><strong>range(1, 6)</strong> — от 1 до 5</li>
               <li><strong>range(0, 10, 2)</strong> — от 0 до 10, шаг 2 (0, 2, 4, 6, 8)</li>
@@ -274,14 +276,14 @@ for i in range(limit):
         <p className="theory-intro" style={{ marginTop: '16px' }}>Правила:</p>
         <ul className="theory-list">
           <li className="theory-list-item">Используй понятные имена переменных (age вместо a)</li>
-          <li className="theory-list-item">Добавляй пробелы: a+b вместо a+b читается лучше как a + b</li>
+          <li className="theory-list-item">Добавляй пробелы: a + b вместо a+b</li>
           <li className="theory-list-item">Один блок кода = одна задача</li>
           <li className="theory-list-item">Комментарии только когда код неочевиден</li>
         </ul>
       </section>
 
       <section className="theory-section theory-section--closing">
-        <p className="theory-closing-text">Ты уже почти профессионал! 🚀</p>
+        <p className="theory-closing-text">Ты уже почти профессионал!</p>
       </section>
     </div>
   )

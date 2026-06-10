@@ -252,7 +252,7 @@ user_rights = user_rights & ~WRITE`} language="python" />
       </section>
 
       <section className="theory-section theory-section--closing">
-        <p className="theory-closing-text">Логика — основа всего в программировании! 🧠</p>
+        <p className="theory-closing-text">Логика — основа всего в программировании!</p>
       </section>
     </div>
   )

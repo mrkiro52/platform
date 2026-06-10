@@ -266,7 +266,7 @@ print(bfs(graph, 'A'))  # ['A', 'B', 'C', 'D', 'E']`} language="python" />
       </section>
 
       <section className="theory-section theory-section--closing">
-        <p className="theory-closing-text">Стек и очередь — это основа многих алгоритмов! 🎯</p>
+        <p className="theory-closing-text">Стек и очередь — это основа многих алгоритмов!</p>
       </section>
     </div>
   )

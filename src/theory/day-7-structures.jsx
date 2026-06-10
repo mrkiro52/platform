@@ -255,7 +255,7 @@ while current:
       </section>
 
       <section className="theory-section theory-section--closing">
-        <p className="theory-closing-text">Правильная структура данных = правильное решение! 🏆</p>
+        <p className="theory-closing-text">Правильная структура данных = правильное решение!</p>
       </section>
     </div>
   )
