@@ -37,12 +37,25 @@ export default function App() {
 
   // Check token validity on mount, when tab becomes visible, and periodically
   useEffect(() => {
-    if (!user) return
-
     const checkTokenValidity = () => {
-      if (!isTokenValid(user)) {
-        // Token expired, logout
-        sessionStorage.removeItem('kiro_user')
+      try {
+        const storedData = localStorage.getItem('kiro_user')
+        if (!storedData) {
+          if (user) {
+            setUser(null)
+          }
+          return
+        }
+
+        const userData = JSON.parse(storedData)
+        if (!isTokenValid(userData)) {
+          // Token expired, logout
+          localStorage.removeItem('kiro_user')
+          localStorage.setItem('sessionExpired', 'true')
+          setUser(null)
+        }
+      } catch (err) {
+        localStorage.removeItem('kiro_user')
         setUser(null)
       }
     }
@@ -65,7 +78,7 @@ export default function App() {
       clearInterval(interval)
       document.removeEventListener('visibilitychange', handleVisibilityChange)
     }
-  }, [user])
+  }, [])
 
   const handleLogin = useCallback((userData) => {
     localStorage.setItem('kiro_user', JSON.stringify(userData))
