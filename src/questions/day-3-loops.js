@@ -1,0 +1,121 @@
+export default function Day3LoopsTasks() {
+  return {
+    tasks: [
+      {
+        id: 1,
+        type: 'choice',
+        difficulty: 'easy',
+        text: 'Что выведет: for i in range(3): print(i)?',
+        options: ['0 1 2', '1 2 3', '0 1 2 3', 'Ошибка'],
+        answer: '0 1 2',
+        hint: 'range(3) генерирует числа от 0 до 2 включительно'
+      },
+      {
+        id: 2,
+        type: 'choice',
+        difficulty: 'easy',
+        text: 'Какой результат даст while цикл при number = 0, while number < 3?',
+        options: [
+          'Бесконечный цикл',
+          'Выполнится 3 раза',
+          'Не выполнится вообще',
+          'Ошибка'
+        ],
+        answer: 'Выполнится 3 раза',
+        hint: 'while проверяет условие. При number=0,1,2 условие истинно, при 3 - ложно'
+      },
+      {
+        id: 3,
+        type: 'choice',
+        difficulty: 'easy',
+        text: 'Что выведет? for i in range(10): if i == 5: break; print(i)',
+        options: ['0 1 2 3 4', '0 1 2 3 4 5', '0 1 2 3 4 5 6 7 8 9', 'Только 5'],
+        answer: '0 1 2 3 4',
+        hint: 'break прерывает цикл. При i==5 цикл сразу прерывается'
+      },
+      {
+        id: 4,
+        type: 'choice',
+        difficulty: 'easy',
+        text: 'Что выведет? for i in range(5): if i == 2: continue; print(i)',
+        options: ['0 1 2 3 4', '0 1 3 4', '1 3 4', '0 1 3 4'],
+        answer: '0 1 3 4',
+        hint: 'continue пропускает текущую итерацию, переходит к следующей'
+      },
+      {
+        id: 5,
+        type: 'choice',
+        difficulty: 'easy',
+        text: 'Какой синтаксис правильный для определения функции в Python?',
+        options: [
+          'def add(a, b) { return a + b }',
+          'def add(a, b): return a + b',
+          'function add(a, b) { return a + b }',
+          'def add(a, b) -> a + b'
+        ],
+        answer: 'def add(a, b): return a + b',
+        hint: 'В Python: def имя(параметры): тело функции'
+      },
+      {
+        id: 6,
+        type: 'choice',
+        difficulty: 'medium',
+        text: 'Что выведет? def greet(name, greeting="Привет"): return f"{greeting}, {name}!"\nprint(greet("Мария"))',
+        options: [
+          'Привет, Мария!',
+          'Привет, Привет!',
+          'Ошибка',
+          'greeting, Мария!'
+        ],
+        answer: 'Привет, Мария!',
+        hint: 'Параметры по умолчанию используются если аргумент не передан'
+      },
+      {
+        id: 7,
+        type: 'choice',
+        difficulty: 'easy',
+        text: 'Что выведет? numbers = [1, 2, 3]; print(numbers[-1])',
+        options: ['1', '2', '3', 'Ошибка'],
+        answer: '3',
+        hint: '[-1] обращается к последнему элементу списка'
+      },
+      {
+        id: 8,
+        type: 'choice',
+        difficulty: 'medium',
+        text: 'Какой метод удаляет последний элемент из списка?',
+        options: ['remove()', 'pop()', 'delete()', 'clear()'],
+        answer: 'pop()',
+        hint: 'pop() удаляет и возвращает последний элемент'
+      },
+      {
+        id: 9,
+        type: 'choice',
+        difficulty: 'medium',
+        text: 'Что выведет? squares = [n ** 2 for n in [1, 2, 3]]; print(squares)',
+        options: [
+          '[1, 4, 9]',
+          '[1, 2, 3]',
+          '[2, 4, 6]',
+          'Ошибка'
+        ],
+        answer: '[1, 4, 9]',
+        hint: 'List comprehension: [выражение for элемент in список]'
+      },
+      {
+        id: 10,
+        type: 'choice',
+        difficulty: 'medium',
+        text: 'Что выведет? even = [n for n in [1, 2, 3, 4, 5] if n % 2 == 0]; print(even)',
+        options: [
+          '[1, 3, 5]',
+          '[2, 4]',
+          '[1, 2, 3, 4, 5]',
+          '[]'
+        ],
+        answer: '[2, 4]',
+        hint: '[выражение for элемент in список if условие] - фильтрует элементы'
+      }
+    ]
+  }
+}
