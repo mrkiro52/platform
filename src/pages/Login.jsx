@@ -7,10 +7,18 @@ export default function LoginPage({ onLogin }) {
   const [showPass, setShowPass] = useState(false)
   const [error, setError]       = useState('')
   const [loading, setLoading]   = useState(false)
+  const [sessionExpired, setSessionExpired] = useState(false)
   const canvasRef = useRef(null)
 
   useEffect(() => {
     document.body.className = 'login-page'
+
+    // Check if session expired
+    if (sessionStorage.getItem('sessionExpired')) {
+      setSessionExpired(true)
+      sessionStorage.removeItem('sessionExpired')
+    }
+
     return () => { document.body.className = '' }
   }, [])
 
@@ -126,6 +134,11 @@ export default function LoginPage({ onLogin }) {
                 </button>
               </div>
             </div>
+            {sessionExpired && (
+              <div className="login-error" style={{ background: 'rgba(255, 153, 0, 0.1)', borderColor: '#ff9900' }}>
+                ⏰ Ваша сессия истекла. Пожалуйста, войдите снова.
+              </div>
+            )}
             {error && <div className="login-error">{error}</div>}
             <button
               type="submit"
