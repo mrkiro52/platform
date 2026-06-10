@@ -52,12 +52,25 @@ const QUESTIONS_COMPONENTS = {
   29: Day29ResumeTasks,
 }
 
-function QuestionCard({ question, taskIndex, totalTasks, onAnswer, isSolved }) {
+function QuestionCard({ question, taskIndex, totalTasks, onAnswer, isSolved, savedAnswer }) {
   const [inputValue, setInputValue] = useState('')
   const [showHint, setShowHint] = useState(false)
   const [feedback, setFeedback] = useState(null)
   const [isChecking, setIsChecking] = useState(false)
   const isChoiceType = question.type === 'choice'
+
+  // Load saved answer on mount
+  useEffect(() => {
+    if (savedAnswer) {
+      setInputValue(savedAnswer.answer || '')
+      if (savedAnswer.status) {
+        setFeedback({
+          correct: savedAnswer.status === 'correct',
+          message: savedAnswer.status === 'correct' ? 'Правильно!' : 'Неправильно',
+        })
+      }
+    }
+  }, [savedAnswer])
 
   const handleCheck = () => {
     if (!inputValue.trim()) {
@@ -74,7 +87,7 @@ function QuestionCard({ question, taskIndex, totalTasks, onAnswer, isSolved }) {
       })
       setIsChecking(false)
 
-      onAnswer(taskIndex, isCorrect)
+      onAnswer(taskIndex, isCorrect, inputValue.trim())
     }, 300)
   }
 
@@ -83,6 +96,8 @@ function QuestionCard({ question, taskIndex, totalTasks, onAnswer, isSolved }) {
     setFeedback(null)
     setShowHint(false)
   }
+
+  const isAnswered = savedAnswer && savedAnswer.status
 
   const feedbackStyle = {
     color: feedback?.correct ? '#00ff00' : '#ff3333',
@@ -104,7 +119,7 @@ function QuestionCard({ question, taskIndex, totalTasks, onAnswer, isSolved }) {
       {isChoiceType ? (
         <div className="question-options">
           {question.options.map((option, idx) => (
-            <label key={idx} className="question-option">
+            <label key={idx} className={`question-option ${isAnswered ? 'answered' : ''}`}>
               <input
                 type="radio"
                 name={`question-${taskIndex}`}
@@ -125,7 +140,7 @@ function QuestionCard({ question, taskIndex, totalTasks, onAnswer, isSolved }) {
             onChange={(e) => setInputValue(e.target.value)}
             placeholder="Введите ваш ответ..."
             disabled={isChecking}
-            className="question-input"
+            className={`question-input ${isAnswered ? 'answered' : ''}`}
             onKeyPress={(e) => e.key === 'Enter' && handleCheck()}
           />
         </div>
@@ -145,15 +160,15 @@ function QuestionCard({ question, taskIndex, totalTasks, onAnswer, isSolved }) {
             className="btn-clear"
             disabled={isChecking}
           >
-            Очистить
+            {isAnswered ? 'Переделать' : 'Очистить'}
           </button>
         </div>
         <button
           onClick={handleCheck}
           className={`btn-check ${isChecking ? 'checking' : ''}`}
-          disabled={isChecking}
+          disabled={isChecking || (isAnswered && feedback?.correct)}
         >
-          {isChecking ? '⟳' : 'Проверить'}
+          {isChecking ? '⟳' : isAnswered && feedback?.correct ? '✓ Решено' : 'Проверить'}
         </button>
       </div>
 
@@ -198,6 +213,7 @@ function TaskIndicators({ totalTasks, taskStatuses, currentIndex, onSelectTask }
 export default function QuestionsPage({ selectedDay, onBack }) {
   const [questions, setQuestions] = useState([])
   const [taskStatuses, setTaskStatuses] = useState({}) // { 0: 'correct', 1: 'incorrect' }
+  const [taskAnswers, setTaskAnswers] = useState({}) // { 0: { answer: 'int', status: 'correct' } }
   const [currentIndex, setCurrentIndex] = useState(0)
   const [loading, setLoading] = useState(true)
   const [switching, setSwitching] = useState(false)
@@ -214,6 +230,11 @@ export default function QuestionsPage({ selectedDay, onBack }) {
         const statusData = saved ? JSON.parse(saved) : {}
         const dayKey = `day${selectedDay}`
         setTaskStatuses(statusData[dayKey] || {})
+
+        // Load task answers from localStorage
+        const answersSaved = localStorage.getItem('taskAnswers')
+        const answersData = answersSaved ? JSON.parse(answersSaved) : {}
+        setTaskAnswers(answersData[dayKey] || {})
       }
       setCurrentIndex(0)
       setLoading(false)
@@ -222,7 +243,7 @@ export default function QuestionsPage({ selectedDay, onBack }) {
     return () => clearTimeout(timer)
   }, [selectedDay])
 
-  const handleAnswerCorrect = (taskIndex, isCorrect) => {
+  const handleAnswerCorrect = (taskIndex, isCorrect, answer) => {
     const newStatuses = { ...taskStatuses, [taskIndex]: isCorrect ? 'correct' : 'incorrect' }
     setTaskStatuses(newStatuses)
 
@@ -231,6 +252,18 @@ export default function QuestionsPage({ selectedDay, onBack }) {
     const statusData = saved ? JSON.parse(saved) : {}
     statusData[`day${selectedDay}`] = newStatuses
     localStorage.setItem('taskStatuses', JSON.stringify(statusData))
+
+    // Save answers separately
+    const answersSaved = localStorage.getItem('taskAnswers')
+    const answersData = answersSaved ? JSON.parse(answersSaved) : {}
+    if (!answersData[`day${selectedDay}`]) {
+      answersData[`day${selectedDay}`] = {}
+    }
+    answersData[`day${selectedDay}`][taskIndex] = {
+      answer: answer,
+      status: isCorrect ? 'correct' : 'incorrect',
+    }
+    localStorage.setItem('taskAnswers', JSON.stringify(answersData))
   }
 
   const goToQuestion = (index) => {
@@ -314,6 +347,7 @@ export default function QuestionsPage({ selectedDay, onBack }) {
               totalTasks={questions.length}
               onAnswer={handleAnswerCorrect}
               isSolved={taskStatuses[currentIndex]}
+              savedAnswer={taskAnswers[currentIndex]}
             />
           </div>
 

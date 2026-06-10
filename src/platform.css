@@ -1574,6 +1574,11 @@ img { max-width: 100%; display: block; }
   cursor: not-allowed;
 }
 
+.question-input.answered {
+  border-color: rgba(0, 255, 0, 0.3);
+  background: rgba(0, 255, 0, 0.05);
+}
+
 .question-options {
   display: flex;
   flex-direction: column;
@@ -1596,6 +1601,11 @@ img { max-width: 100%; display: block; }
 .question-option:hover {
   border-color: var(--accent-lime);
   background: rgba(200, 255, 0, 0.05);
+}
+
+.question-option.answered {
+  border-color: rgba(0, 255, 0, 0.3);
+  background: rgba(0, 255, 0, 0.05);
 }
 
 .question-option input[type="radio"] {
