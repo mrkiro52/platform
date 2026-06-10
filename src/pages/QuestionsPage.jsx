@@ -61,16 +61,20 @@ function QuestionCard({ question, taskIndex, totalTasks, onAnswer, isSolved, sav
 
   // Load saved answer on mount
   useEffect(() => {
-    if (savedAnswer) {
-      setInputValue(savedAnswer.answer || '')
+    if (savedAnswer && savedAnswer.answer) {
+      setInputValue(savedAnswer.answer)
       if (savedAnswer.status) {
         setFeedback({
           correct: savedAnswer.status === 'correct',
           message: savedAnswer.status === 'correct' ? 'Правильно!' : 'Неправильно',
         })
       }
+    } else {
+      // Clear input if no saved answer
+      setInputValue('')
+      setFeedback(null)
     }
-  }, [savedAnswer])
+  }, [savedAnswer, taskIndex])
 
   const handleCheck = () => {
     if (!inputValue.trim()) {
