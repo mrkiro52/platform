@@ -48,7 +48,7 @@ export default function Day2BasicsTasks() {
         difficulty: 'Легко',
       },
       {
-        text: 'True или False: "5" == 5?',
+        text: 'True или False: "5" === 5?',
         type: 'choice',
         answer: 'false',
         options: ['true', 'false'],

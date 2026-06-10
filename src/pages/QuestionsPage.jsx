@@ -315,7 +315,7 @@ export default function QuestionsPage({ selectedDay, onBack }) {
     return (
       <section className="page active">
         <div className="page-header">
-          <p style={{ color: 'var(--text-tertiary)' }}>Задачи для этого дня еще готовятся...</p>
+          <p style={{ color: 'var(--text-tertiary)' }}>Задач для этого дня нет или они еще готовятся...</p>
         </div>
         <button className="btn-back" onClick={onBack}>
           ← Вернуться в Библиотеку
