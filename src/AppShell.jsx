@@ -9,6 +9,7 @@ import Tasks from './pages/Tasks'
 import Links from './pages/Links'
 import TheoryPage from './pages/TheoryPage'
 import QuestionsPage from './pages/QuestionsPage'
+import Announcements from './pages/Announcements'
 
 const PAGES = {
   dashboard: Dashboard,
@@ -18,6 +19,7 @@ const PAGES = {
   links:     Links,
   theory:    TheoryPage,
   questions: QuestionsPage,
+  announcements: Announcements,
 }
 
 const VALID_PAGES = Object.keys(PAGES)
@@ -54,6 +56,10 @@ export default function AppShell({ user, onLogout }) {
     setCurrentPage('library')
   }
 
+  const backToDashboard = () => {
+    setCurrentPage('dashboard')
+  }
+
   const PageComponent = PAGES[currentPage] || Schedule
 
   return (
@@ -88,6 +94,10 @@ export default function AppShell({ user, onLogout }) {
             <QuestionsPage
               selectedDay={selectedDay}
               onBack={backToLibrary}
+            />
+          ) : currentPage === 'announcements' ? (
+            <Announcements
+              onBack={backToDashboard}
             />
           ) : (
             <PageComponent

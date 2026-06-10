@@ -131,7 +131,7 @@ export default function Dashboard({ onOpenDay, onNavigate }) {
               ? [1, 2].map(i => <SkeletonNewsCard key={i} />)
               : announcements.length === 0
               ? <p style={{ color:'var(--text-tertiary)', fontSize:13, padding:'4px 0' }}>Объявлений пока нет</p>
-              : announcements.map((n, i) => (
+              : announcements.slice(0, 3).map((n, i) => (
                 <div key={n.id} className="news-card fade-in" style={{ animationDelay: `${i * 0.05}s` }}>
                   <div className="news-card-head">
                     <span className="news-card-title">{n.icon || '📢'} {n.title}</span>
@@ -141,6 +141,11 @@ export default function Dashboard({ onOpenDay, onNavigate }) {
                 </div>
               ))
             }
+            {!loading && announcements.length > 3 && (
+              <div className="dash-nav-link" style={{ marginTop: 10 }} onClick={() => onNavigate('announcements')}>
+                Показать еще →
+              </div>
+            )}
           </div>
 
           <div className="widget">

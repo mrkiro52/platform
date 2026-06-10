@@ -22,7 +22,7 @@ function getStatuses() {
   try { return JSON.parse(localStorage.getItem('kiro_hw_status') || '{}') } catch { return {} }
 }
 
-const HW_TASKS = Array.from({ length: 31 }, (_, i) => {
+const HW_TASKS = Array.from({ length: 30 }, (_, i) => {
   const dayNum = i + 1
   const d = getDayDate(dayNum)
   const week = dayNum <= 7 ? 1 : dayNum <= 14 ? 2 : dayNum <= 21 ? 3 : dayNum <= 28 ? 4 : 5
