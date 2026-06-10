@@ -38,7 +38,7 @@ export default function Day3LoopsTasks() {
         type: 'choice',
         difficulty: 'easy',
         text: 'Что выведет? for i in range(5): if i == 2: continue; print(i)',
-        options: ['0 1 2 3 4', '0 1 3 4', '1 3 4', '0 1 3 4'],
+        options: ['0 1 2 3 4', '0 1 3 4', '1 3 4', '0 1 3 5'],
         answer: '0 1 3 4',
         hint: 'continue пропускает текущую итерацию, переходит к следующей'
       },
@@ -75,7 +75,7 @@ export default function Day3LoopsTasks() {
         type: 'choice',
         difficulty: 'easy',
         text: 'Что выведет? numbers = [1, 2, 3]; print(numbers[-1])',
-        options: ['1', '2', '3', 'Ошибка'],
+        options: ['1', '-1', '3', 'Ошибка'],
         answer: '3',
         hint: '[-1] обращается к последнему элементу списка'
       },

@@ -1,0 +1,129 @@
+export default function Day4AlgorithmsTasks() {
+  return {
+    tasks: [
+      {
+        id: 1,
+        type: 'choice',
+        difficulty: 'easy',
+        text: 'Сколько операций выполняет O(1) алгоритм на n = 1 000 000?',
+        options: ['1 операция', '1 млн операций', 'n операций', 'log(n) операций'],
+        answer: '1 операция',
+        hint: 'O(1) - константная сложность, не зависит от размера входных данных'
+      },
+      {
+        id: 2,
+        type: 'choice',
+        difficulty: 'easy',
+        text: 'Какая сложность алгоритма если он делит задачу пополам на каждом шаге?',
+        options: ['O(n)', 'O(n²)', 'O(log n)', 'O(2^n)'],
+        answer: 'O(log n)',
+        hint: 'Бинарный поиск: n → n/2 → n/4 → 1. Глубина = log(n)'
+      },
+      {
+        id: 3,
+        type: 'choice',
+        difficulty: 'easy',
+        text: 'Сколько операций в одном цикле: for i in range(n): print(i)?',
+        options: ['O(1)', 'O(n)', 'O(n²)', 'O(log n)'],
+        answer: 'O(n)',
+        hint: 'Один цикл = n итераций = O(n)'
+      },
+      {
+        id: 4,
+        type: 'choice',
+        difficulty: 'easy',
+        text: 'Какая сложность двух вложенных циклов: for i in range(n): for j in range(n):?',
+        options: ['O(n)', 'O(2n)', 'O(n²)', 'O(n log n)'],
+        answer: 'O(n²)',
+        hint: 'Два вложенных цикла перемножаются: O(n) * O(n) = O(n²)'
+      },
+      {
+        id: 5,
+        type: 'choice',
+        difficulty: 'medium',
+        text: 'Упростите Big O: O(2n)',
+        options: ['O(2n)', 'O(n²)', 'O(n)', 'O(log n)'],
+        answer: 'O(n)',
+        hint: 'Отбрасываем константы: O(2n) = O(n)'
+      },
+      {
+        id: 6,
+        type: 'choice',
+        difficulty: 'medium',
+        text: 'Упростите Big O: O(n² + n)',
+        options: ['O(n)', 'O(n²)', 'O(n³)', 'O(n + n²)'],
+        answer: 'O(n²)',
+        hint: 'Оставляем доминирующий член: O(n²) > O(n)'
+      },
+      {
+        id: 7,
+        type: 'choice',
+        difficulty: 'medium',
+        text: 'На n = 1 000 000 O(n) даёт, а O(n²) даёт операций:',
+        options: [
+          'оба - 1 млн',
+          '1 млн и 1 млн',
+          '1 млн и 1 триллион',
+          '1 млн и 1 млрд'
+        ],
+        answer: '1 млн и 1 триллион',
+        hint: 'O(n) = 1 млн опер (миллисекунды). O(n²) = 1 трлн опер (часы!)'
+      },
+      {
+        id: 8,
+        type: 'choice',
+        difficulty: 'medium',
+        text: 'Какой алгоритм быстрее для поиска в отсортированном массиве?',
+        options: [
+          'Линейный поиск O(n)',
+          'Бинарный поиск O(log n)',
+          'Оба одинаковые',
+          'Зависит от размера'
+        ],
+        answer: 'Бинарный поиск O(log n)',
+        hint: 'На n=1млн: линейный ~1млн опер, бинарный ~20 опер. Разница 50000х!'
+      },
+      {
+        id: 9,
+        type: 'choice',
+        difficulty: 'medium',
+        text: 'Определите сложность: for i in range(n): for j in range(i): print(i,j)',
+        options: ['O(n)', 'O(n²)', 'O(n³)', 'O(log n)'],
+        answer: 'O(n²)',
+        hint: 'n + (n-1) + (n-2) + ... + 1 = n(n+1)/2 = O(n²)'
+      },
+      {
+        id: 10,
+        type: 'choice',
+        difficulty: 'hard',
+        text: 'Какая сложность у рекурсивного Фибоначчи: fib(n) = fib(n-1) + fib(n-2)?',
+        options: ['O(n)', 'O(n log n)', 'O(2^n)', 'O(log n)'],
+        answer: 'O(2^n)',
+        hint: 'Каждый вызов даёт 2 новых вызова. Дерево вызовов = 2^n'
+      },
+      {
+        id: 11,
+        type: 'choice',
+        difficulty: 'hard',
+        text: 'Какая сложность у Фибоначчи с мемоизацией (кэшированием)?',
+        options: ['O(n)', 'O(2^n)', 'O(n²)', 'O(n!)'],
+        answer: 'O(n)',
+        hint: 'С мемоизацией каждое число вычисляется один раз = O(n)'
+      },
+      {
+        id: 12,
+        type: 'choice',
+        difficulty: 'hard',
+        text: 'Какая операция имеет O(1) сложность?',
+        options: [
+          'Поиск в неотсортированном массиве',
+          'Доступ к элементу по индексу arr[5]',
+          'Сортировка массива',
+          'Обход всех элементов'
+        ],
+        answer: 'Доступ к элементу по индексу arr[5]',
+        hint: 'Доступ по индексу, присваивание, поиск в словаре - все O(1)'
+      }
+    ]
+  }
+}
