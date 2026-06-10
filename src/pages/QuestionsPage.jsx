@@ -123,7 +123,7 @@ function QuestionCard({ question, taskIndex, totalTasks, onAnswer, isSolved, sav
       {isChoiceType ? (
         <div className="question-options">
           {question.options.map((option, idx) => (
-            <label key={idx} className={`question-option ${isAnswered ? 'answered' : ''}`}>
+            <label key={idx} className={`question-option ${isAnswered && feedback?.correct && option === inputValue ? 'answered' : ''}`}>
               <input
                 type="radio"
                 name={`question-${taskIndex}`}
@@ -144,7 +144,7 @@ function QuestionCard({ question, taskIndex, totalTasks, onAnswer, isSolved, sav
             onChange={(e) => setInputValue(e.target.value)}
             placeholder="Введите ваш ответ..."
             disabled={isChecking}
-            className={`question-input ${isAnswered ? 'answered' : ''}`}
+            className={`question-input ${isAnswered && feedback?.correct ? 'answered' : ''}`}
             onKeyPress={(e) => e.key === 'Enter' && handleCheck()}
           />
         </div>
@@ -273,6 +273,13 @@ export default function QuestionsPage({ selectedDay, onBack }) {
   const goToQuestion = (index) => {
     const newIndex = Math.max(0, Math.min(index, questions.length - 1))
     if (newIndex === currentIndex) return
+
+    // Reload saved answer before switching
+    const answersSaved = localStorage.getItem('taskAnswers')
+    const answersData = answersSaved ? JSON.parse(answersSaved) : {}
+    const dayKey = `day${selectedDay}`
+    const updatedAnswers = answersData[dayKey] || {}
+    setTaskAnswers(updatedAnswers)
 
     setSwitching(true)
     setTimeout(() => {
