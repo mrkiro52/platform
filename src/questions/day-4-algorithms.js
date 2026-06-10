@@ -59,7 +59,7 @@ export default function Day4AlgorithmsTasks() {
         id: 7,
         type: 'choice',
         difficulty: 'medium',
-        text: 'На n = 1 000 000 O(n) даёт, а O(n²) даёт операций:',
+        text: 'На n = 1 000 000 - Сколько O(n) и O(n²) дают операций:',
         options: [
           'оба - 1 млн',
           '1 млн и 1 млн',
