@@ -258,4 +258,22 @@ function seed() {
 
 seed()
 
+// ── Migrations ──────────────────────────────────────────────────────────────────
+function migrate() {
+  const schemaVersion = db.pragma('user_version')
+
+  // Migration 1: Update meeting times from 20:00 to 21:00
+  if (schemaVersion < 1) {
+    try {
+      db.prepare('UPDATE schedule SET meeting_time = ? WHERE meeting_time = ?').run('21:00', '20:00')
+      db.pragma('user_version = 1')
+      console.log('✅ Migration 1 completed: Updated meeting times to 21:00')
+    } catch (err) {
+      console.error('❌ Migration 1 failed:', err.message)
+    }
+  }
+}
+
+migrate()
+
 module.exports = db
