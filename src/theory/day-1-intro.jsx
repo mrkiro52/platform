@@ -12,7 +12,7 @@ export default function Day1IntroTheory() {
         <div className="theory-card">
           <div className="theory-card-item">
             <span className="theory-label">Время проведения:</span>
-            <p className="theory-text">ежедневно примерно в 20:00 (8 вечера)</p>
+            <p className="theory-text">ежедневно примерно в 21:00 (9 вечера)</p>
           </div>
           <div className="theory-card-item">
             <span className="theory-label">Продолжительность:</span>

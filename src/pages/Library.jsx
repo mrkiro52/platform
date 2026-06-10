@@ -86,7 +86,7 @@ function DayCard({ day, onOpen, onOpenTheory, onOpenQuestions }) {
                 }}
                 title="Открыть теорию"
               >
-                📄
+                📚
               </button>
               <button
                 className="theory-file-btn"
@@ -96,7 +96,7 @@ function DayCard({ day, onOpen, onOpenTheory, onOpenQuestions }) {
                 }}
                 title="Открыть задачи"
               >
-                ≡
+                📝
               </button>
             </>
           )}
