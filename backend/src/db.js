@@ -151,7 +151,7 @@ function seed() {
   ]
   events.forEach(e => {
     const isMeeting = ['lecture', 'org', 'intro'].includes(e.type)
-    e.meeting_time = isMeeting ? '20:00' : ''
+    e.meeting_time = isMeeting ? '21:00' : ''
     e.meeting_link = isMeeting ? `https://zoom.us/j/kiro2026${String(e.num).padStart(2, '0')}` : ''
     insEvent.run(e)
   })
