@@ -18,16 +18,16 @@ function isTokenValid(token) {
 export default function App() {
   const [user, setUser] = useState(() => {
     try {
-      const userData = JSON.parse(sessionStorage.getItem('kiro_user'))
+      const userData = JSON.parse(localStorage.getItem('kiro_user'))
       // Check if token is valid on initial load
       if (userData && isTokenValid(userData)) {
         return userData
       }
       // Clear invalid token
-      sessionStorage.removeItem('kiro_user')
+      localStorage.removeItem('kiro_user')
       // Mark that session expired
       if (userData) {
-        sessionStorage.setItem('sessionExpired', 'true')
+        localStorage.setItem('sessionExpired', 'true')
       }
       return null
     } catch {
@@ -68,13 +68,13 @@ export default function App() {
   }, [user])
 
   const handleLogin = useCallback((userData) => {
-    sessionStorage.setItem('kiro_user', JSON.stringify(userData))
+    localStorage.setItem('kiro_user', JSON.stringify(userData))
     setUser(userData)
   }, [])
 
   const handleLogout = useCallback(() => {
-    sessionStorage.removeItem('kiro_user')
-    sessionStorage.setItem('sessionExpired', 'true')
+    localStorage.removeItem('kiro_user')
+    localStorage.setItem('sessionExpired', 'true')
     setUser(null)
   }, [])
 

@@ -1,7 +1,7 @@
 const BASE = import.meta.env.VITE_API_URL || ''
 
 function token() {
-  try { return JSON.parse(sessionStorage.getItem('kiro_user'))?.token || null } catch { return null }
+  try { return JSON.parse(localStorage.getItem('kiro_user'))?.token || null } catch { return null }
 }
 
 async function req(path, opts = {}) {
@@ -10,7 +10,7 @@ async function req(path, opts = {}) {
   if (t) headers.Authorization = `Bearer ${t}`
   const res = await fetch(`${BASE}${path}`, { ...opts, headers })
   if (res.status === 401 && !path.includes('/auth/')) {
-    sessionStorage.removeItem('kiro_user')
+    localStorage.removeItem('kiro_user')
     window.location.reload()
     return
   }

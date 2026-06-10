@@ -14,9 +14,9 @@ export default function LoginPage({ onLogin }) {
     document.body.className = 'login-page'
 
     // Check if session expired
-    if (sessionStorage.getItem('sessionExpired')) {
+    if (localStorage.getItem('sessionExpired')) {
       setSessionExpired(true)
-      sessionStorage.removeItem('sessionExpired')
+      localStorage.removeItem('sessionExpired')
     }
 
     return () => { document.body.className = '' }
