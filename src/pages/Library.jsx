@@ -33,8 +33,9 @@ function isAvailable(dayNum) {
 }
 
 function shouldShowButtons(dayNum) {
-  // Show buttons only for days 2-10 (after June 1, up to today June 10)
-  return dayNum >= 2 && dayNum <= 10
+  const today = new Date()
+  const currentDay = today.getDate()
+  return dayNum >= 2 && dayNum <= currentDay
 }
 
 function buildJuneDays(scheduleData, libraryData) {
