@@ -778,13 +778,19 @@ export default function HomeworkPage({ selectedDay, onBack }) {
   const homework = HOMEWORK_CONTENT[currentDay] || { title: 'Домашние задания', tasks: [] }
 
   function getDayLabel(dayNum) {
+    // Ищем в schedule (может быть с API или дефолт)
     const schedule_item = schedule.find(e => e.day === dayNum)
-    return schedule_item ? schedule_item.title : `День ${dayNum}`
+    if (schedule_item && schedule_item.title) {
+      return schedule_item.title
+    }
+    // Резервный вариант из HOMEWORK_CONTENT
+    const homework_title = HOMEWORK_CONTENT[dayNum]?.title
+    return homework_title || `День ${dayNum}`
   }
 
   return (
-    <section className="page active">
-      <div className="theory-breadcrumbs" style={{ position: 'sticky', top: 0, zIndex: 10, paddingTop: '12px', paddingBottom: '12px', backgroundColor: 'var(--bg-primary)', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
+    <>
+      <div style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 1000, backgroundColor: 'var(--bg-primary)', borderBottom: '1px solid rgba(255,255,255,0.08)', paddingTop: '12px', paddingBottom: '12px', paddingLeft: '20px', paddingRight: '20px' }} className="theory-breadcrumbs">
         <button className="breadcrumb-link" onClick={onBack}>
           📚 Библиотека знаний
         </button>
@@ -794,6 +800,7 @@ export default function HomeworkPage({ selectedDay, onBack }) {
         </span>
       </div>
 
+      <section className="page active" style={{ paddingTop: '60px' }}>
       <div style={{ maxWidth: '900px', margin: '0 auto' }}>
 
       <div style={{ marginTop: '24px' }}>
@@ -831,6 +838,7 @@ export default function HomeworkPage({ selectedDay, onBack }) {
           Вернуться в Библиотеку знаний
         </button>
       </div>
-    </section>
+      </section>
+    </>
   )
 }
