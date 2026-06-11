@@ -167,6 +167,14 @@ const HOMEWORK_CONTENT = {
       }
     ]
   },
+  6: {
+    title: 'Графы и обход',
+    tasks: []
+  },
+  7: {
+    title: 'Структуры данных: динамические массивы и связные списки',
+    tasks: []
+  },
   5: {
     title: 'Булева алгебра и множества',
     tasks: [
@@ -705,6 +713,141 @@ delete_subtree(root, 4) удаляет узлы 3, 2
       }
     ]
   },
+  12: {
+    title: 'ИИ-инструменты разработчика',
+    tasks: [
+      {
+        num: 1,
+        title: 'Установка ИИ помощника для VS Code',
+        description: `Выбери один из вариантов и установи бесплатно:
+
+Вариант 1: GitHub Copilot (ВЫБЕРИ ЭТОТ)
+• Перейди в VS Code → Extensions
+• Найди "GitHub Copilot" (от GitHub)
+• Нажми Install
+• Авторизуйся через GitHub (бесплатно для студентов)
+• Готово! Начни печатать код
+
+Вариант 2: Claude Code (для Claude)
+• Установи Claude Code CLI или расширение
+• Авторизуйся аккаунтом Claude
+• Используй в командной строке или IDE
+
+Если хочешь платную подписку - напиши:
+• t.me/kiro_team_manager или
+• t.me/x_tap
+Объясни что нужна помощь с покупкой, посоветуем!`
+      },
+      {
+        num: 2,
+        title: 'Первый промпт: простая функция',
+        description: `Напиши в Copilot / Claude Code просьбу:
+
+"Напиши функцию на Python, которая проверяет, простое ли число.
+Входной параметр: целое число n
+Выходной параметр: True если простое, False иначе
+Используй эффективный алгоритм O(√n)"
+
+Что ты должен был получить:
+✅ Функция с проверкой делимости
+✅ Оптимизация через √n
+✅ Комментарии в коде
+
+Протестируй результат:
+is_prime(7) → True
+is_prime(10) → False`
+      },
+      {
+        num: 3,
+        title: 'Второй промпт: создание файла и папки',
+        description: `Если используешь Claude Code - дай промпт:
+
+"Создай структуру проекта для калькулятора:
+• Папка: calculator/
+  • Файл: calculator.py (основная логика)
+  • Файл: tests.py (тесты)
+  • Файл: README.md (описание)
+
+В calculator.py реализуй:
+• add(a, b)
+• subtract(a, b)
+• multiply(a, b)
+• divide(a, b) с проверкой на 0
+
+В tests.py напиши примеры использования каждой функции"
+
+Claude Code сам создаст папку и файлы с кодом!`
+      },
+      {
+        num: 4,
+        title: 'Третий промпт: анализ и улучшение кода',
+        description: `Найди в своём проекте любой файл с кодом и дай ИИ:
+
+"Вот мой код:
+[скопируй весь код]
+
+Что можно улучшить?
+Напиши версию с:
+• Лучшей организацией
+• Типизацией (type hints)
+• Docstrings для функций
+• Обработкой ошибок
+
+Объясни каждое изменение"
+
+ИИ покажет как писать профессиональный код!`
+      },
+      {
+        num: 5,
+        title: 'Четвёртый промпт: написание тестов',
+        description: `Дай ИИ одну из своих функций:
+
+"Напиши unit tests для этой функции:
+[скопируй функцию]
+
+Использование pytest. Покрой:
+• Нормальные случаи
+• Edge cases (граничные значения)
+• Ошибки (exception handling)
+
+Минимум 5 тестов"
+
+Результат: готовые тесты, которые можно запустить!`
+      },
+      {
+        num: 6,
+        title: 'Пятый промпт: объяснение чужого кода',
+        description: `Возьми любой код (из интернета, учебника, проекта):
+
+"Объясни этот код пошагово, как я дошкольник:
+[скопируй весь код]
+
+Что он делает?
+Какие переменные и функции?
+Как работает логика?
+Нарисуй ASCII диаграмму если нужна"
+
+ИИ объяснит даже сложный код!`
+      },
+      {
+        num: 7,
+        title: 'Практический результат',
+        description: `К концу этого дня ты должен:
+
+✅ Установить Copilot или Claude Code
+✅ Дать ИИ минимум 3-5 промптов
+✅ Получить:
+   • Готовые функции
+   • Созданные файлы и папки
+   • Улучшенный и отрефакторенный код
+   • Написанные тесты
+   • Понимание как работает чужой код
+
+Это базовые навыки работы с ИИ!
+Используй его как помощника, не как замену.`
+      }
+    ]
+  },
   11: {
     title: 'Git и версионирование',
     tasks: [
@@ -789,8 +932,8 @@ export default function HomeworkPage({ selectedDay, onBack }) {
   }
 
   return (
-    <>
-      <div style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 1000, backgroundColor: 'var(--bg-primary)', borderBottom: '1px solid rgba(255,255,255,0.08)', paddingTop: '12px', paddingBottom: '12px', paddingLeft: '20px', paddingRight: '20px' }} className="theory-breadcrumbs">
+    <section className="page active">
+      <div className="theory-breadcrumbs">
         <button className="breadcrumb-link" onClick={onBack}>
           📚 Библиотека знаний
         </button>
@@ -800,7 +943,6 @@ export default function HomeworkPage({ selectedDay, onBack }) {
         </span>
       </div>
 
-      <section className="page active" style={{ paddingTop: '60px' }}>
       <div style={{ maxWidth: '900px', margin: '0 auto' }}>
 
       <div style={{ marginTop: '24px' }}>
@@ -838,7 +980,6 @@ export default function HomeworkPage({ selectedDay, onBack }) {
           Вернуться в Библиотеку знаний
         </button>
       </div>
-      </section>
-    </>
+    </section>
   )
 }
