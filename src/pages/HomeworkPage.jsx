@@ -76,14 +76,143 @@ const HOMEWORK_CONTENT = {
   4: {
     title: 'Big O анализ сложности',
     tasks: [
-      { num: 1, title: 'Сумма элементов', description: 'Определите временную и пространственную сложность функции sum_array(arr), которая вычисляет сумму всех элементов.' },
-      { num: 2, title: 'Проверка всех пар', description: 'Определите Big O для функции has_pair_sum(arr, target) с двумя вложенными циклами.' },
-      { num: 3, title: 'Возведение в степень', description: 'Определите сложность функции power(x, n) с рекурсией и делением пополам.' },
-      { num: 4, title: 'Максимум в матрице', description: 'Определите Big O для поиска максимума в двумерной матрице с двумя циклами.' },
-      { num: 5, title: 'Сортировка выбором', description: 'Определите сложность алгоритма selection_sort с двумя вложенными циклами.' },
-      { num: 6, title: 'Поиск дубликата', description: 'Определите Big O для наивного поиска дубликатов с двумя циклами. Есть способ O(n)!' },
-      { num: 7, title: 'Фибоначчи рекурсивно', description: 'Определите Big O для рекурсивной функции fib(n). Подсказка: это ОЧЕНЬ медленно!' },
-      { num: 8, title: 'Фибоначчи с мемоизацией', description: 'Определите сложность fib_memo(n, memo={}) с динамическим программированием. Это намного быстрее!' }
+      {
+        num: 1,
+        title: 'Сумма элементов',
+        description: `Определите временную и пространственную сложность этой функции:
+
+\`\`\`python
+def sum_array(arr):
+    total = 0
+    for num in arr:
+        total += num
+    return total
+\`\`\`
+
+**Вопрос:** Какая временная сложность? Какая пространственная сложность?`
+      },
+      {
+        num: 2,
+        title: 'Проверка всех пар',
+        description: `Определите Big O для этой функции:
+
+\`\`\`python
+def has_pair_sum(arr, target):
+    for i in range(len(arr)):
+        for j in range(i + 1, len(arr)):
+            if arr[i] + arr[j] == target:
+                return True
+    return False
+\`\`\`
+
+**Вопрос:** Сколько операций в худшем случае? Почему два вложенных цикла?`
+      },
+      {
+        num: 3,
+        title: 'Возведение в степень',
+        description: `Определите Big O для этого алгоритма:
+
+\`\`\`python
+def power(x, n):
+    if n == 0:
+        return 1
+    if n % 2 == 0:
+        half = power(x, n // 2)
+        return half * half
+    else:
+        return x * power(x, n - 1)
+\`\`\`
+
+**Вопрос:** Почему это быстрее, чем простой цикл? Сколько раз максимум рекурсия вызовет саму себя?`
+      },
+      {
+        num: 4,
+        title: 'Максимум в матрице',
+        description: `Определите Big O для поиска максимума в матрице:
+
+\`\`\`python
+def find_max_matrix(matrix):
+    max_val = matrix[0][0]
+    for row in matrix:
+        for val in row:
+            if val > max_val:
+                max_val = val
+    return max_val
+\`\`\`
+
+**Вопрос:** Если матрица размером m × n, сколько будет операций? Зависит ли сложность от высоты и ширины?`
+      },
+      {
+        num: 5,
+        title: 'Сортировка выбором',
+        description: `Определите Big O для этого алгоритма сортировки:
+
+\`\`\`python
+def selection_sort(arr):
+    for i in range(len(arr)):
+        min_idx = i
+        for j in range(i + 1, len(arr)):
+            if arr[j] < arr[min_idx]:
+                min_idx = j
+        arr[i], arr[min_idx] = arr[min_idx], arr[i]
+    return arr
+\`\`\`
+
+**Вопрос:** Сколько сравнений будет для массива из n элементов? Почему это O(n²)?`
+      },
+      {
+        num: 6,
+        title: 'Поиск дубликата (наивный способ)',
+        description: `Определите Big O для этого наивного алгоритма:
+
+\`\`\`python
+def has_duplicate_naive(arr):
+    for i in range(len(arr)):
+        for j in range(i + 1, len(arr)):
+            if arr[i] == arr[j]:
+                return True
+    return False
+\`\`\`
+
+**Вопрос:** Какая временная сложность? **Bonus:** Есть способ решить это за O(n) с помощью set() — можешь ли написать улучшенную версию?`
+      },
+      {
+        num: 7,
+        title: 'Фибоначчи рекурсивно (ЭТО ОЧЕНЬ МЕДЛЕННО)',
+        description: `Определите Big O для этого рекурсивного алгоритма:
+
+\`\`\`python
+def fib(n):
+    if n <= 1:
+        return n
+    return fib(n-1) + fib(n-2)
+\`\`\`
+
+**Вопрос:** Почему это так медленно? Сколько раз рекурсия вычисляет одно и то же значение?
+
+**Подсказка:** Нарисуй дерево вызовов для fib(5). Видишь повторения?`
+      },
+      {
+        num: 8,
+        title: 'Фибоначчи с мемоизацией (динамическое программирование)',
+        description: `Определите Big O для этого оптимизированного алгоритма:
+
+\`\`\`python
+def fib_memo(n, memo={}):
+    if n in memo:
+        return memo[n]
+    if n <= 1:
+        return n
+    memo[n] = fib_memo(n-1, memo) + fib_memo(n-2, memo)
+    return memo[n]
+\`\`\`
+
+**Вопрос:** Почему это работает в O(n) вместо O(2ⁿ)? Что такое мемоизация? Почему словарь memo улучшает производительность?
+
+**Сравнение:**
+- fib(40) с рекурсией: ≈ 300 млн операций
+- fib(40) с мемоизацией: ≈ 40 операций 🚀`
+      }
     ]
   },
   5: {
