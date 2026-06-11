@@ -78,77 +78,53 @@ const HOMEWORK_CONTENT = {
     tasks: [
       {
         num: 1,
-        title: 'Сумма элементов',
-        description: `Определите временную и пространственную сложность этой функции:
-
-\`\`\`python
-def sum_array(arr):
+        title: 'Сумма элементов массива',
+        description: `def sum_array(arr):
     total = 0
     for num in arr:
         total += num
     return total
-\`\`\`
-
-**Вопрос:** Какая временная сложность? Какая пространственная сложность?`
+# Определите Big O`
       },
       {
         num: 2,
         title: 'Проверка всех пар',
-        description: `Определите Big O для этой функции:
-
-\`\`\`python
-def has_pair_sum(arr, target):
+        description: `def has_pair_sum(arr, target):
     for i in range(len(arr)):
         for j in range(i + 1, len(arr)):
             if arr[i] + arr[j] == target:
                 return True
     return False
-\`\`\`
-
-**Вопрос:** Сколько операций в худшем случае? Почему два вложенных цикла?`
+# Определите Big O`
       },
       {
         num: 3,
-        title: 'Возведение в степень',
-        description: `Определите Big O для этого алгоритма:
-
-\`\`\`python
-def power(x, n):
-    if n == 0:
-        return 1
+        title: 'Быстрое возведение в степень',
+        description: `def power(x, n):
+    if n == 0: return 1
     if n % 2 == 0:
         half = power(x, n // 2)
         return half * half
     else:
         return x * power(x, n - 1)
-\`\`\`
-
-**Вопрос:** Почему это быстрее, чем простой цикл? Сколько раз максимум рекурсия вызовет саму себя?`
+# Определите Big O`
       },
       {
         num: 4,
         title: 'Максимум в матрице',
-        description: `Определите Big O для поиска максимума в матрице:
-
-\`\`\`python
-def find_max_matrix(matrix):
+        description: `def find_max_matrix(matrix):
     max_val = matrix[0][0]
     for row in matrix:
         for val in row:
             if val > max_val:
                 max_val = val
     return max_val
-\`\`\`
-
-**Вопрос:** Если матрица размером m × n, сколько будет операций? Зависит ли сложность от высоты и ширины?`
+# Определите Big O`
       },
       {
         num: 5,
         title: 'Сортировка выбором',
-        description: `Определите Big O для этого алгоритма сортировки:
-
-\`\`\`python
-def selection_sort(arr):
+        description: `def selection_sort(arr):
     for i in range(len(arr)):
         min_idx = i
         for j in range(i + 1, len(arr)):
@@ -156,62 +132,38 @@ def selection_sort(arr):
                 min_idx = j
         arr[i], arr[min_idx] = arr[min_idx], arr[i]
     return arr
-\`\`\`
-
-**Вопрос:** Сколько сравнений будет для массива из n элементов? Почему это O(n²)?`
+# Определите Big O`
       },
       {
         num: 6,
-        title: 'Поиск дубликата (наивный способ)',
-        description: `Определите Big O для этого наивного алгоритма:
-
-\`\`\`python
-def has_duplicate_naive(arr):
+        title: 'Поиск дубликата',
+        description: `def has_duplicate_naive(arr):
     for i in range(len(arr)):
         for j in range(i + 1, len(arr)):
             if arr[i] == arr[j]:
                 return True
     return False
-\`\`\`
-
-**Вопрос:** Какая временная сложность? **Bonus:** Есть способ решить это за O(n) с помощью set() — можешь ли написать улучшенную версию?`
+# Определите Big O (есть способ O(n)!)`
       },
       {
         num: 7,
-        title: 'Фибоначчи рекурсивно (ЭТО ОЧЕНЬ МЕДЛЕННО)',
-        description: `Определите Big O для этого рекурсивного алгоритма:
-
-\`\`\`python
-def fib(n):
-    if n <= 1:
-        return n
+        title: 'Фибоначчи рекурсивно',
+        description: `def fib(n):
+    if n <= 1: return n
     return fib(n-1) + fib(n-2)
-\`\`\`
-
-**Вопрос:** Почему это так медленно? Сколько раз рекурсия вычисляет одно и то же значение?
-
-**Подсказка:** Нарисуй дерево вызовов для fib(5). Видишь повторения?`
+# Это ОЧЕНЬ медленно!
+# Определите Big O`
       },
       {
         num: 8,
-        title: 'Фибоначчи с мемоизацией (динамическое программирование)',
-        description: `Определите Big O для этого оптимизированного алгоритма:
-
-\`\`\`python
-def fib_memo(n, memo={}):
-    if n in memo:
-        return memo[n]
-    if n <= 1:
-        return n
+        title: 'Фибоначчи с запоминанием (динамическое программирование)',
+        description: `def fib_memo(n, memo={}):
+    if n in memo: return memo[n]
+    if n <= 1: return n
     memo[n] = fib_memo(n-1, memo) + fib_memo(n-2, memo)
     return memo[n]
-\`\`\`
-
-**Вопрос:** Почему это работает в O(n) вместо O(2ⁿ)? Что такое мемоизация? Почему словарь memo улучшает производительность?
-
-**Сравнение:**
-- fib(40) с рекурсией: ≈ 300 млн операций
-- fib(40) с мемоизацией: ≈ 40 операций 🚀`
+# Это намного быстрее
+# Определите Big O`
       }
     ]
   },
