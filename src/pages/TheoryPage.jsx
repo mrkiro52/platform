@@ -120,7 +120,7 @@ export default function TheoryPage({ selectedDay, onBack }) {
 
       <div className="theory-footer">
         <button className="btn-back" onClick={onBack}>
-          ← Вернуться в Библиотеку знаний
+          Вернуться в Библиотеку знаний
         </button>
       </div>
     </section>

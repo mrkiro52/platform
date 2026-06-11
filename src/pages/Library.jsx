@@ -110,7 +110,7 @@ function DayCard({ day, onOpen, onOpenTheory, onOpenQuestions }) {
           )}
           {!locked && hasMats && (
             <span style={{ fontSize:12, color:'var(--accent-lime)', fontWeight:600 }}>
-              Материалы →
+              🔗
             </span>
           )}
         </div>

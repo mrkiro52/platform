@@ -223,7 +223,7 @@ print(topological_sort(graph, in_degree))  # ['A', 'B', 'C', 'D']`} language="py
       </section>
 
       <section className="theory-section theory-section--closing">
-        <p className="theory-closing-text">Графы — это суперсила программиста! 🚀</p>
+        <p className="theory-closing-text">Теперь ты знаешь графы</p>
       </section>
     </div>
   )
