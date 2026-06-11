@@ -173,7 +173,268 @@ const HOMEWORK_CONTENT = {
   },
   7: {
     title: 'Структуры данных: динамические массивы и связные списки',
-    tasks: []
+    tasks: [
+      {
+        num: 1,
+        title: 'Реализация динамического массива (DynamicArray)',
+        description: `Реализуй простой динамический массив с методами:
+
+class DynamicArray:
+    def __init__(self, capacity=10):
+        self.arr = [None] * capacity
+        self.size = 0
+        self.capacity = capacity
+
+    def append(self, value):
+        # Добавь элемент в конец
+        # Если массив полный - увеличь его вдвое
+        pass
+
+    def insert(self, index, value):
+        # Вставь элемент на позицию index
+        # Сдвинь остальные элементы вправо
+        pass
+
+    def remove(self, index):
+        # Удали элемент на позиции index
+        # Сдвинь остальные влево
+        pass
+
+    def get(self, index):
+        # Верни элемент по индексу
+        pass
+
+Тест:
+arr = DynamicArray()
+arr.append(1)
+arr.append(2)
+arr.insert(0, 0)  # [0, 1, 2]
+arr.remove(1)     # [0, 2]`
+      },
+      {
+        num: 2,
+        title: 'Реализация односвязного списка (LinkedList)',
+        description: `Реализуй односвязный список с нодами:
+
+class Node:
+    def __init__(self, data):
+        self.data = data
+        self.next = None
+
+class LinkedList:
+    def __init__(self):
+        self.head = None
+
+    def append(self, data):
+        # Добавь элемент в конец списка
+        pass
+
+    def insert_at_head(self, data):
+        # Вставь в начало
+        pass
+
+    def remove(self, data):
+        # Удали первый элемент с значением data
+        pass
+
+    def search(self, data):
+        # Найди элемент, верни True/False
+        pass
+
+    def display(self):
+        # Выведи все элементы: 1 -> 2 -> 3 -> None
+        pass
+
+Тест:
+ll = LinkedList()
+ll.append(1)
+ll.append(2)
+ll.insert_at_head(0)
+ll.display()  # 0 -> 1 -> 2 -> None`
+      },
+      {
+        num: 3,
+        title: 'Реализация двусвязного списка (DoublyLinkedList)',
+        description: `Реализуй двусвязный список (может ходить туда-сюда):
+
+class DNode:
+    def __init__(self, data):
+        self.data = data
+        self.next = None
+        self.prev = None
+
+class DoublyLinkedList:
+    def __init__(self):
+        self.head = None
+
+    def append(self, data):
+        # Добавь в конец, обновляя prev
+        pass
+
+    def insert_at_head(self, data):
+        # Вставь в начало
+        pass
+
+    def remove(self, data):
+        # Удали элемент
+        # Обнови both prev и next
+        pass
+
+    def reverse_display(self):
+        # Выведи список в обратном порядке
+        # Начиная с конца
+        pass
+
+Почему двусвязный нужен?
+- Быстрое удаление если есть ссылка на ноду
+- Движение в обе стороны
+- Итератор на обратный проход`
+      },
+      {
+        num: 4,
+        title: 'Реверс односвязного списка',
+        description: `Реализуй функцию разворота связного списка:
+
+def reverse_linked_list(head):
+    # Входной параметр: head линкованного списка
+    # Выходной параметр: head развернутого списка
+    # Не используй доп. структуры данных!
+    pass
+
+Пример:
+Было: 1 -> 2 -> 3 -> None
+Стало: 3 -> 2 -> 1 -> None
+
+Алгоритм (3 указателя):
+prev = None
+current = head
+while current:
+    next = current.next
+    current.next = prev
+    prev = current
+    current = next`
+      },
+      {
+        num: 5,
+        title: 'Поиск середины списка',
+        description: `Найди элемент в середине односвязного списка:
+
+def find_middle(head):
+    # Верни ноду которая находится в середине
+    # Если два элемента в конце - верни второй
+    pass
+
+Пример:
+1 -> 2 -> 3 -> 4 -> 5 -> None
+Ответ: Node(3)
+
+Подсказка: используй two pointers техник!
+- slow указатель: шагает на 1
+- fast указатель: шагает на 2
+Когда fast достигнет конца - slow будет в середине`
+      },
+      {
+        num: 6,
+        title: 'Обнаружение цикла в списке',
+        description: `Определи, есть ли цикл в связном списке:
+
+def has_cycle(head):
+    # Верни True если есть цикл, False иначе
+    pass
+
+Пример с циклом:
+1 -> 2 -> 3 -> 4
+          ^    |
+          |____|  (4 указывает на 3)
+
+Алгоритм: Floyd's Cycle Detection
+- slow: шагает на 1
+- fast: шагает на 2
+- Если fast поймает slow = есть цикл
+- Если fast достигнет None = нет цикла`
+      },
+      {
+        num: 7,
+        title: 'Слияние двух отсортированных списков',
+        description: `Слей два отсортированных связных списка в один:
+
+def merge_sorted_lists(head1, head2):
+    # head1: 1 -> 3 -> 5 -> None
+    # head2: 2 -> 4 -> 6 -> None
+    # Результат: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> None
+    pass
+
+Алгоритм:
+- Два указателя: current1 и current2
+- Сравниваешь элементы
+- Меньший добавляешь в результат
+- Сдвигаешь тот указатель
+- В конце добавляешь остаток
+
+Сложность: O(n + m), где n и m - длины списков`
+      },
+      {
+        num: 8,
+        title: 'Удаление N-го элемента с конца',
+        description: `Удали N-й элемент считая с конца (без пересчета длины!):
+
+def remove_nth_from_end(head, n):
+    # Удали N-й элемент с конца
+    # Верни новый head
+    pass
+
+Пример:
+1 -> 2 -> 3 -> 4 -> 5, n=2
+Результат: 1 -> 2 -> 3 -> 5
+
+Подсказка: two pointers с gap!
+- first указатель на n позиций впереди
+- second и first идут вместе
+- Когда first достигнет конца - second перед элементом к удалению`
+      },
+      {
+        num: 9,
+        title: 'Проверка палиндрома в списке',
+        description: `Проверь, является ли связный список палиндромом:
+
+def is_palindrome(head):
+    # Верни True если список читается одинаково в обе стороны
+    pass
+
+Пример:
+1 -> 2 -> 3 -> 2 -> 1 -> None  ✅ True
+1 -> 2 -> 3 -> None             ❌ False
+
+Алгоритм (без разворота всего списка):
+1. Найди середину (two pointers)
+2. Разверни вторую половину
+3. Сравни первую половину со второй в обратном порядке
+
+Сложность: O(n) время, O(1) память`
+      },
+      {
+        num: 10,
+        title: 'Сортировка списка (Merge Sort)',
+        description: `Отсортируй связный список используя merge sort:
+
+def sort_linked_list(head):
+    # Верни отсортированный head
+    # Используй divide & conquer
+    pass
+
+Алгоритм:
+1. Раздели список пополам (find_middle)
+2. Рекурсивно отсортируй обе половины
+3. Слей две половины (merge_sorted_lists)
+
+Пример:
+4 -> 2 -> 1 -> 3 -> None
+Результат: 1 -> 2 -> 3 -> 4 -> None
+
+Сложность: O(n log n) - как обычный merge sort
+Преимущество: работает с памятью O(log n) для рекурсии (не O(n))`
+      }
+    ]
   },
   5: {
     title: 'Булева алгебра и множества',
@@ -721,11 +982,11 @@ delete_subtree(root, 4) удаляет узлы 3, 2
         title: 'Установка ИИ помощника для VS Code',
         description: `Выбери один из вариантов и установи бесплатно:
 
-Вариант 1: GitHub Copilot (ВЫБЕРИ ЭТОТ)
+Вариант 1: GitHub Copilot
 • Перейди в VS Code → Extensions
 • Найди "GitHub Copilot" (от GitHub)
 • Нажми Install
-• Авторизуйся через GitHub (бесплатно для студентов)
+• Авторизуйся через GitHub
 • Готово! Начни печатать код
 
 Вариант 2: Claude Code (для Claude)
@@ -736,12 +997,12 @@ delete_subtree(root, 4) удаляет узлы 3, 2
 Если хочешь платную подписку - напиши:
 • t.me/kiro_team_manager или
 • t.me/x_tap
-Объясни что нужна помощь с покупкой, посоветуем!`
+Объясни что нужна помощь с покупкой, поможем!`
       },
       {
         num: 2,
         title: 'Первый промпт: простая функция',
-        description: `Напиши в Copilot / Claude Code просьбу:
+        description: `Напиши в Copilot / Claude Code промпт:
 
 "Напиши функцию на Python, которая проверяет, простое ли число.
 Входной параметр: целое число n
