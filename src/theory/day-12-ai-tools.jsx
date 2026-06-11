@@ -372,7 +372,7 @@ npm install && npm start`} />
         <div className="theory-subsection">
           <h3 className="theory-heading-3">📅 Знания устаревают</h3>
           <ul className="theory-list">
-            <li className="theory-list-item">Claude обучена до определённой даты (Feb 2025)</li>
+            <li className="theory-list-item">Claude обучена до определённой даты</li>
             <li className="theory-list-item">О новых версиях библиотек может не знать</li>
             <li className="theory-list-item">Новые API может не знать</li>
           </ul>
@@ -414,7 +414,6 @@ npm install && npm start`} />
           <li className="theory-list-item">✅ Указывай что ты использовал ИИ (в коде, в документации, в резюме)</li>
           <li className="theory-list-item">✅ Проверяй лицензии и авторские права (не копируй чужой чужой лицензированный код)</li>
           <li className="theory-list-item">✅ ИИ — помощник, а не замена. Ты должен понимать что пишешь</li>
-          <li className="theory-list-item">❌ Не выдавай код ИИ как свой без упоминания</li>
           <li className="theory-list-item">❌ Не полагайся полностью на ИИ для критических систем</li>
         </ul>
       </section>
@@ -444,7 +443,7 @@ npm install && npm start`} />
       </section>
 
       <section className="theory-section theory-section--closing">
-        <p className="theory-closing-text">ИИ — твой помощник разработчика. Используй его мудро, проверяй результаты, и он сэкономит тебе часы работы! 🚀</p>
+        <p className="theory-closing-text">ИИ — твой помощник разработчика. Используй его мудро, проверяй результаты, и он сэкономит тебе часы работы!</p>
       </section>
     </div>
   )

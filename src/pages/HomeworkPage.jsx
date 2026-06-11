@@ -168,8 +168,371 @@ const HOMEWORK_CONTENT = {
     ]
   },
   6: {
-    title: 'Графы и обход',
-    tasks: []
+    title: 'Дискретная математика: графы и алгоритмы',
+    tasks: [
+      {
+        num: 1,
+        title: 'Граф как словарь (Adjacency List)',
+        description: `Реализуй граф используя словарь (самый популярный способ):
+
+# Неориентированный граф
+graph = {
+    'A': ['B', 'C'],
+    'B': ['A', 'D'],
+    'C': ['A', 'D'],
+    'D': ['B', 'C']
+}
+
+# Ориентированный граф
+directed = {
+    'A': ['B', 'C'],
+    'B': ['D'],
+    'C': ['D'],
+    'D': []
+}
+
+Напиши функции:
+def add_edge(graph, u, v):
+    # Добавь ребро между u и v
+    pass
+
+def remove_edge(graph, u, v):
+    # Удали ребро
+    pass
+
+def get_neighbors(graph, node):
+    # Верни всех соседей узла
+    pass
+
+Плюсы: быстро, простой доступ, экономит память на разреженных графах
+Минусы: медленный поиск ребра`
+      },
+      {
+        num: 2,
+        title: 'Граф как матрица смежности (Adjacency Matrix)',
+        description: `Реализуй граф используя 2D массив:
+
+# Матрица смежности для 4 узлов
+#     0 1 2 3
+# 0 [[0,1,1,0],
+# 1  [1,0,0,1],
+# 2  [1,0,0,1],
+# 3  [0,1,1,0]]
+
+class Graph:
+    def __init__(self, num_nodes):
+        self.num_nodes = num_nodes
+        self.matrix = [[0] * num_nodes for _ in range(num_nodes)]
+
+    def add_edge(self, u, v):
+        # Добавь ребро между u и v
+        self.matrix[u][v] = 1
+        self.matrix[v][u] = 1  # для неориентированного
+
+    def remove_edge(self, u, v):
+        # Удали ребро
+        pass
+
+    def has_edge(self, u, v):
+        # Проверь есть ли ребро
+        pass
+
+Плюсы: быстрый поиск ребра O(1), удобно для плотных графов
+Минусы: требует O(n²) памяти даже для пустого графа`
+      },
+      {
+        num: 3,
+        title: 'Обход в ширину (BFS - Breadth-First Search)',
+        description: `Обойди граф уровень за уровнем (как волны в воде):
+
+def bfs(graph, start):
+    # Верни список посещённых узлов в порядке BFS
+    from collections import deque
+
+    visited = set()
+    queue = deque([start])
+    result = []
+
+    while queue:
+        node = queue.popleft()
+        if node not in visited:
+            visited.add(node)
+            result.append(node)
+            # Добавь всех соседей в очередь
+            pass
+
+    return result
+
+Пример:
+graph = {
+    'A': ['B', 'C'],
+    'B': ['D', 'E'],
+    'C': ['F'],
+    'D': [],
+    'E': [],
+    'F': []
+}
+bfs(graph, 'A') → ['A', 'B', 'C', 'D', 'E', 'F']
+
+Сложность: O(V + E) где V - вершины, E - рёбра
+Используется для: поиск кратчайшего пути, уровневый обход`
+      },
+      {
+        num: 4,
+        title: 'Обход в глубину (DFS - Depth-First Search)',
+        description: `Обойди граф глубоко в каждую ветку:
+
+# Итеративный способ со стеком
+def dfs_iterative(graph, start):
+    visited = set()
+    stack = [start]
+    result = []
+
+    while stack:
+        node = stack.pop()
+        if node not in visited:
+            visited.add(node)
+            result.append(node)
+            # Добавь соседей в стек
+            pass
+
+    return result
+
+# Рекурсивный способ
+def dfs_recursive(graph, node, visited=None):
+    if visited is None:
+        visited = set()
+
+    visited.add(node)
+    result = [node]
+
+    for neighbor in graph[node]:
+        if neighbor not in visited:
+            # Рекурсивный вызов
+            pass
+
+    return result
+
+Пример:
+dfs_iterative(graph, 'A') → ['A', 'C', 'F', 'B', 'E', 'D']
+
+Сложность: O(V + E)
+Используется для: поиск связных компонент, топологическая сортировка, обнаружение цикла`
+      },
+      {
+        num: 5,
+        title: 'Поиск кратчайшего пути (Shortest Path)',
+        description: `Найди кратчайший путь между двумя узлами:
+
+def shortest_path(graph, start, end):
+    # Используй BFS чтобы найти кратчайший путь
+    # Верни список узлов от start до end
+    from collections import deque
+
+    visited = {start}
+    queue = deque([(start, [start])])
+
+    while queue:
+        node, path = queue.popleft()
+        if node == end:
+            return path
+
+        for neighbor in graph[node]:
+            if neighbor not in visited:
+                visited.add(neighbor)
+                # Добавь в очередь новый путь
+                pass
+
+    return None  # Пути нет
+
+Пример:
+graph = {
+    'A': ['B', 'C'],
+    'B': ['D'],
+    'C': ['D'],
+    'D': ['E'],
+    'E': []
+}
+shortest_path(graph, 'A', 'E') → ['A', 'B', 'D', 'E'] или ['A', 'C', 'D', 'E']
+
+Сложность: O(V + E)
+Почему BFS? Потому что обходит по уровням и найдёт кратчайший путь первым`
+      },
+      {
+        num: 6,
+        title: 'Обнаружение цикла в графе',
+        description: `Определи, есть ли цикл в графе:
+
+def has_cycle(graph):
+    # Для ориентированного графа используй DFS с раскраской
+    # Белый (0) - не посещён
+    # Серый (1) - сейчас посещаем
+    # Чёрный (2) - полностью обработан
+
+    color = {node: 0 for node in graph}
+
+    def dfs(node):
+        if color[node] == 1:  # Нашли серый - цикл!
+            return True
+        if color[node] == 2:  # Уже полностью обработан
+            return False
+
+        color[node] = 1  # Становится серым
+        for neighbor in graph.get(node, []):
+            if dfs(neighbor):
+                return True
+        color[node] = 2  # Становится чёрным
+        return False
+
+    for node in graph:
+        if color[node] == 0:
+            if dfs(node):
+                return True
+    return False
+
+Примеры:
+Граф БЕЗ цикла: A→B→C (это дерево)
+Граф С циклом: A→B→C→A`
+      },
+      {
+        num: 7,
+        title: 'Поиск связных компонент',
+        description: `Найди все отдельные компоненты в графе:
+
+def find_components(graph):
+    # Верни список списков, где каждый внутренний - компонента
+    visited = set()
+    components = []
+
+    def dfs(node, component):
+        visited.add(node)
+        component.append(node)
+        for neighbor in graph.get(node, []):
+            if neighbor not in visited:
+                dfs(neighbor, component)
+
+    for node in graph:
+        if node not in visited:
+            component = []
+            dfs(node, component)
+            components.append(component)
+
+    return components
+
+Пример:
+graph = {
+    'A': ['B'],
+    'B': ['A'],
+    'C': ['D'],
+    'D': ['C'],
+    'E': []
+}
+find_components(graph) → [['A','B'], ['C','D'], ['E']]
+
+Используется для: проверка связности, социальные сети (группы друзей)`
+      },
+      {
+        num: 8,
+        title: 'Топологическая сортировка (для DAG)',
+        description: `Отсортируй узлы так чтобы для каждого ребра u→v узел u был раньше v:
+
+def topological_sort(graph):
+    # Работает только для ориентированного графа БЕЗ циклов (DAG)
+    visited = set()
+    stack = []
+
+    def dfs(node):
+        visited.add(node)
+        for neighbor in graph.get(node, []):
+            if neighbor not in visited:
+                dfs(neighbor)
+        stack.append(node)  # Добавляем ПОСЛЕ рекурсии
+
+    for node in graph:
+        if node not in visited:
+            dfs(node)
+
+    return stack[::-1]  # Переворачиваем
+
+Пример (зависимости между курсами):
+graph = {
+    'Основы': ['Python', 'Git'],
+    'Python': ['Django'],
+    'Git': [],
+    'Django': []
+}
+topological_sort(graph) → ['Основы', 'Python', 'Django', 'Git']
+
+Используется для: расписание задач, зависимости пакетов, порядок выполнения работ`
+      },
+      {
+        num: 9,
+        title: 'Проверка двудольности графа (Bipartite)',
+        description: `Определи, можно ли раскрасить узлы в 2 цвета так чтобы соседи имели разные цвета:
+
+def is_bipartite(graph):
+    # Используй BFS с раскраской в 2 цвета
+    from collections import deque
+
+    color = {}
+
+    for start in graph:
+        if start in color:
+            continue
+
+        queue = deque([start])
+        color[start] = 0
+
+        while queue:
+            node = queue.popleft()
+            for neighbor in graph.get(node, []):
+                if neighbor not in color:
+                    color[neighbor] = 1 - color[node]
+                    queue.append(neighbor)
+                elif color[neighbor] == color[node]:
+                    return False  # Сосед имеет тот же цвет = не двудольный
+
+    return True
+
+Примеры:
+Двудольный: A-B-C (можно раскрасить: красный-синий-красный)
+НЕ двудольный: A-B, B-C, C-A (треугольник, нельзя раскрасить в 2 цвета)
+
+Используется для: проверка шахматной доски, паросочетания, проверка графика`
+      },
+      {
+        num: 10,
+        title: 'Проверка эйлерова пути/цикла',
+        description: `Определи, можно ли пройти по графу посетив каждое ребро ровно один раз:
+
+def has_euler_path(graph, num_vertices):
+    # Условия существования эйлерова пути:
+    # 1. Граф должен быть связный
+    # 2. Все вершины должны иметь чётную степень (цикл)
+    #    ИЛИ ровно 2 вершины нечётной степени (путь)
+
+    # Посчитай степень каждой вершины
+    degree = {}
+    for node in graph:
+        degree[node] = len(graph.get(node, []))
+
+    odd_degree_count = sum(1 for d in degree.values() if d % 2 == 1)
+
+    if odd_degree_count == 0:
+        return "Эйлеров ЦИКЛ"  # Можно начать с любой
+    elif odd_degree_count == 2:
+        return "Эйлеров ПУТЬ"   # Начни с нечётной степени
+    else:
+        return "Пути нет"
+
+Пример (мост Кёнигсберга):
+Есть 4 острова, соединённые 7 мостами.
+Вопрос: можно ли пройти по каждому мосту ровно один раз?
+Ответ: НЕТ, потому что более 2 вершин имеют нечётную степень
+
+Используется для: маршруты почтальона, уборка улиц, печать схем без повтора`
+      }
+    ]
   },
   7: {
     title: 'Структуры данных: динамические массивы и связные списки',
@@ -328,7 +691,8 @@ def find_middle(head):
 1 -> 2 -> 3 -> 4 -> 5 -> None
 Ответ: Node(3)
 
-Подсказка: используй two pointers техник!
+Подсказка: используй two pointers технику!
+(она же Алгоритм Заяц-Черепаха / Метод быстрого и медленного указателей)
 - slow указатель: шагает на 1
 - fast указатель: шагает на 2
 Когда fast достигнет конца - slow будет в середине`
@@ -347,7 +711,7 @@ def has_cycle(head):
           ^    |
           |____|  (4 указывает на 3)
 
-Алгоритм: Floyd's Cycle Detection
+Алгоритм: Floyd's Cycle Detection (следует погуглить)
 - slow: шагает на 1
 - fast: шагает на 2
 - Если fast поймает slow = есть цикл
