@@ -784,7 +784,7 @@ export default function HomeworkPage({ selectedDay, onBack }) {
 
   return (
     <section className="page active">
-      <div className="theory-breadcrumbs">
+      <div className="theory-breadcrumbs" style={{ position: 'sticky', top: 0, zIndex: 10, paddingTop: '12px', paddingBottom: '12px', backgroundColor: 'var(--bg-primary)', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
         <button className="breadcrumb-link" onClick={onBack}>
           📚 Библиотека знаний
         </button>
