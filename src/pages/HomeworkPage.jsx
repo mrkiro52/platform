@@ -212,9 +212,195 @@ c) A XOR B`
       }
     ]
   },
+  8: {
+    title: 'Стеки и очереди',
+    tasks: [
+      {
+        num: 1,
+        title: 'Реализация стека (LIFO)',
+        description: `Реализуй стек с методами push, pop и peek.
+
+class Stack:
+    def __init__(self):
+        self.items = []
+
+    def push(self, item):
+        # Добавь элемент в стек
+        pass
+
+    def pop(self):
+        # Удали и верни верхний элемент
+        # Верни None если стек пуст
+        pass
+
+    def peek(self):
+        # Посмотри верхний элемент без удаления
+        pass
+
+    def is_empty(self):
+        pass
+
+Тест:
+stack = Stack()
+stack.push(1)
+stack.push(2)
+stack.push(3)
+print(stack.pop())  # 3
+print(stack.peek()) # 2`
+      },
+      {
+        num: 2,
+        title: 'Реализация очереди (FIFO)',
+        description: `Реализуй очередь с методами enqueue, dequeue и peek.
+
+class Queue:
+    def __init__(self):
+        self.items = []
+
+    def enqueue(self, item):
+        # Добавь элемент в конец очереди
+        pass
+
+    def dequeue(self):
+        # Удали и верни первый элемент
+        # Верни None если очередь пуста
+        pass
+
+    def peek(self):
+        # Посмотри первый элемент без удаления
+        pass
+
+    def is_empty(self):
+        pass
+
+Тест:
+queue = Queue()
+queue.enqueue(1)
+queue.enqueue(2)
+queue.enqueue(3)
+print(queue.dequeue())  # 1
+print(queue.peek())     # 2`
+      },
+      {
+        num: 3,
+        title: 'Проверка правильной скобочной последовательности',
+        description: `Реализуй функцию, которая проверяет, правильно ли расставлены круглые скобки.
+
+def is_valid_parentheses(s):
+    # Возврати True если скобки правильные, False иначе
+    # Используй стек!
+    pass
+
+Примеры:
+"()" → True
+"(())" → True
+"())" → False
+"(((" → False
+"(()())" → True`
+      },
+      {
+        num: 4,
+        title: 'Проверка скобок трех типов: (), {}, []',
+        description: `Расширь предыдущую функцию - проверяй скобки трех типов одновременно.
+
+def is_valid_brackets(s):
+    # Проверь (), {}, [] одновременно
+    # Они должны быть правильно вложены
+    pass
+
+Примеры:
+"()[]{}" → True
+"({[]})" → True
+"({[}))" → False (неправильный порядок)
+"{[}]" → False (перекрываются)`
+      },
+      {
+        num: 5,
+        title: 'Найти минимальное количество удалений',
+        description: `Найди минимальное количество символов, которые нужно удалить, чтобы получить правильную скобочную последовательность.
+
+def min_deletions(s):
+    # Верни минимальное число удалений
+    pass
+
+Примеры:
+"())" → 1 (удали последнюю )
+"(((" → 3 (удали все)
+"(())" → 0 (уже правильная)
+"))(" → 3 (удали все)`
+      },
+      {
+        num: 6,
+        title: 'Проверка корректности кода (вложенные скобки)',
+        description: `Напиши функцию, которая проверяет, что в коде все скобки правильно открыты и закрыты.
+Учитывай также, что строки в кавычках не считаются.
+
+def is_valid_code(code):
+    # Проверь баланс (), {}, [] в коде
+    # Игнорируй строки в кавычках: "..." или '...'
+    pass
+
+Примеры:
+'print("hello")' → True
+'if x > 0: { print("ok") }' → True
+'arr = [1, 2, 3' → False
+'string = "test ) bracket"' → True (скобка в строке не считается)`
+      },
+      {
+        num: 7,
+        title: 'Реверс строки используя стек',
+        description: `Реализуй функцию, которая разворачивает строку, используя стек.
+
+def reverse_string(s):
+    # Используй стек для разворота
+    # Верни развернутую строку
+    pass
+
+Примеры:
+"hello" → "olleh"
+"12345" → "54321"
+"a" → "a"`
+      }
+    ]
+  },
   9: {
     title: 'Хэш таблицы',
     tasks: [
+      {
+        num: 0,
+        title: 'ВАЖНО: Выбор хэш функции',
+        description: `⚠️ ТЕОРИЯ: Изучи разные хэш функции в Python перед выполнением задач:
+
+1️⃣ Встроенная hash() функция:
+   hash("key") % table_size
+   ✓ Встроенная в Python
+   ✗ Разная в разных сеансах (для безопасности)
+
+2️⃣ Сумма ASCII кодов:
+   def hash_sum(key, size):
+       return sum(ord(c) for c in key) % size
+   ✓ Простая
+   ✗ Плохое распределение для похожих строк
+
+3️⃣ Полиномиальный хэш (популярный):
+   def hash_poly(key, size, base=31):
+       h = 0
+       for c in key:
+           h = (h * base + ord(c)) % size
+       return h
+   ✓ Хорошее распределение
+   ✓ Быстрый
+
+4️⃣ Хэш с простым числом:
+   def hash_prime(key, size, prime=101):
+       h = 0
+       for c in key:
+           h = (h * prime + ord(c)) % size
+       return h
+   ✓ Еще лучше для таблиц
+
+Рекомендуем использовать функции 3 или 4 в задачах ниже!`
+      },
       {
         num: 1,
         title: 'Реализация хэш таблицы (добавление и поиск)',
@@ -226,7 +412,7 @@ class HashTable:
         self.table = [None] * size
 
     def hash(self, key):
-        # Используй хэш функцию: hash(key) % self.size
+        # Используй одну из хэш функций выше
         return hash(key) % self.size
 
     def insert(self, key, value):
@@ -335,7 +521,7 @@ def hash1(key, size):
     return hash(key) % size
 
 def hash2(key, size):
-    return 1 + (hash(key) % (size - 1))  # Всегда нечетное, не делит на size
+    return 1 + (hash(key) % (size - 1))
 
 class HashTableDoubleHash:
     def __init__(self, size=5):
@@ -355,41 +541,6 @@ ht = HashTableDoubleHash(7)
 ht.insert("x", 10)
 ht.insert("y", 20)
 print(ht.search("x"))  # 10`
-      },
-      {
-        num: 6,
-        title: 'Выбор хэш функции',
-        description: `Изучи разные хэш функции в Python и их особенности:
-
-1. Встроенная hash() функция:
-   hash("key") % table_size
-   ✓ Встроенная в Python
-   ✗ Разная в разных сеансах (для безопасности)
-
-2. Сумма ASCII кодов:
-   def hash_sum(key, size):
-       return sum(ord(c) for c in key) % size
-   ✓ Простая
-   ✗ Плохое распределение для похожих строк
-
-3. Полиномиальный хэш (популярный):
-   def hash_poly(key, size, base=31):
-       h = 0
-       for c in key:
-           h = (h * base + ord(c)) % size
-       return h
-   ✓ Хорошее распределение
-   ✓ Быстрый
-
-4. Хэш с простым числом:
-   def hash_prime(key, size, prime=101):
-       h = 0
-       for c in key:
-           h = (h * prime + ord(c)) % size
-       return h
-   ✓ Еще лучше для таблиц
-
-Выбери любую и используй в своих реализациях выше!`
       }
     ]
   },
