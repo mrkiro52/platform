@@ -73,7 +73,7 @@ git diff                # Что изменилось`} language="bash" />
       </section>
 
       <section className="theory-section theory-section--closing">
-        <p className="theory-closing-text">Git это не просто инструмент — это часть культуры разработки. Каждый коммит это история. Пиши понятные сообщения и станешь хорошим разработчиком! 🚀</p>
+        <p className="theory-closing-text">Git это не просто инструмент — это часть культуры разработки. Каждый коммит это история. Пиши понятные коммиты и станешь хорошим разработчиком!</p>
       </section>
     </div>
   )
