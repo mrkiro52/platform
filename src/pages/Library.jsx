@@ -109,9 +109,16 @@ function DayCard({ day, onOpen, onOpenTheory, onOpenQuestions }) {
             </>
           )}
           {!locked && hasMats && (
-            <span style={{ fontSize:12, color:'var(--accent-lime)', fontWeight:600 }}>
+            <button
+              className="theory-file-btn"
+              onClick={(e) => {
+                e.stopPropagation()
+                onOpen(day)
+              }}
+              title="Открыть материалы"
+            >
               🔗
-            </span>
+            </button>
           )}
         </div>
       </div>

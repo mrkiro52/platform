@@ -952,8 +952,29 @@ img { max-width: 100%; display: block; }
   /* Filter buttons */
   .filter-btn { font-size: 12px; padding: 6px 12px; }
 
-  /* Schedule */
-  .schedule-controls { gap: 8px; }
+  /* Schedule & Library mobile adaptation */
+  .sched-day-header {
+    flex-wrap: wrap;
+    padding: 12px;
+    gap: 8px;
+  }
+  .sched-day-stripe { display: none; }
+  .sched-day-meta {
+    order: 1;
+    width: 100%;
+    flex-basis: 100%;
+  }
+  .sched-day-title {
+    order: 2;
+    width: 100%;
+    flex-basis: 100%;
+    margin-top: 4px;
+  }
+  .sched-day-header > div:last-child {
+    order: 3;
+    width: 100%;
+    flex-basis: 100%;
+  }
 
   /* Tasks */
   .task-card { padding: 12px; }
