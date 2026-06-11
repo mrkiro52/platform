@@ -212,6 +212,187 @@ c) A XOR B`
       }
     ]
   },
+  9: {
+    title: 'Хэш таблицы',
+    tasks: [
+      {
+        num: 1,
+        title: 'Реализация хэш таблицы (добавление и поиск)',
+        description: `Реализуй простую хэш таблицу с методами добавления и поиска элементов.
+
+class HashTable:
+    def __init__(self, size=10):
+        self.size = size
+        self.table = [None] * size
+
+    def hash(self, key):
+        # Используй хэш функцию: hash(key) % self.size
+        return hash(key) % self.size
+
+    def insert(self, key, value):
+        # Добавь пару (key, value) в таблицу
+        pass
+
+    def search(self, key):
+        # Найди значение по ключу
+        # Верни значение или None
+        pass
+
+Тест:
+ht = HashTable(5)
+ht.insert("name", "Alice")
+ht.insert("age", 25)
+print(ht.search("name"))  # Alice
+print(ht.search("city"))  # None`
+      },
+      {
+        num: 2,
+        title: 'Удаление из хэш таблицы',
+        description: `Добавь метод удаления элемента из хэш таблицы.
+
+class HashTable:
+    # ... предыдущие методы ...
+
+    def delete(self, key):
+        # Удали пару (key, value) из таблицы
+        # Верни True если удалил, False если ключ не найден
+        pass
+
+Тест:
+ht.insert("city", "Paris")
+print(ht.delete("city"))  # True
+print(ht.search("city"))  # None
+print(ht.delete("city"))  # False`
+      },
+      {
+        num: 3,
+        title: 'Разрешение колизий методом Chaining',
+        description: `Реализуй хэш таблицу с разрешением колизий через chaining (цепочки).
+Вместо одного значения в ячейке храни список пар (key, value).
+
+class HashTableChaining:
+    def __init__(self, size=5):
+        self.size = size
+        self.table = [[] for _ in range(size)]  # Список цепочек
+
+    def hash(self, key):
+        return hash(key) % self.size
+
+    def insert(self, key, value):
+        # Добавь (key, value) в цепочку на позиции hash(key)
+        pass
+
+    def search(self, key):
+        # Найди значение по ключу в цепочке
+        pass
+
+Тест с колизией:
+ht = HashTableChaining(3)
+ht.insert("dog", 1)
+ht.insert("cat", 2)
+ht.insert("rat", 3)  # Возможна колизия! Но все равно найдутся
+print(ht.search("dog"))  # 1
+print(ht.search("cat"))  # 2`
+      },
+      {
+        num: 4,
+        title: 'Разрешение колизий методом Linear Probing',
+        description: `Реализуй хэш таблицу с разрешением колизий через linear probing.
+Если ячейка занята, переходи к следующей: hash(key), hash(key)+1, hash(key)+2...
+
+class HashTableLinearProbing:
+    def __init__(self, size=5):
+        self.size = size
+        self.table = [None] * size
+
+    def hash(self, key):
+        return hash(key) % self.size
+
+    def insert(self, key, value):
+        # Найди первую свободную ячейку начиная с hash(key)
+        # Добавь (key, value) туда
+        pass
+
+    def search(self, key):
+        # Найди значение, проверяя ячейки начиная с hash(key)
+        pass
+
+Тест:
+ht = HashTableLinearProbing(5)
+ht.insert("a", 1)
+ht.insert("b", 2)
+print(ht.search("a"))  # 1
+print(ht.search("b"))  # 2`
+      },
+      {
+        num: 5,
+        title: 'Разрешение колизий методом Double Hashing',
+        description: `Реализуй хэш таблицу с разрешением колизий через double hashing.
+Используй две хэш функции: hash1(key) и hash2(key).
+При колизии переходи: hash1 + hash2, hash1 + 2*hash2, hash1 + 3*hash2...
+
+def hash1(key, size):
+    return hash(key) % size
+
+def hash2(key, size):
+    return 1 + (hash(key) % (size - 1))  # Всегда нечетное, не делит на size
+
+class HashTableDoubleHash:
+    def __init__(self, size=5):
+        self.size = size
+        self.table = [None] * size
+
+    def insert(self, key, value):
+        # Используй обе хэш функции для разрешения колизий
+        pass
+
+    def search(self, key):
+        # Найди значение используя double hashing
+        pass
+
+Тест:
+ht = HashTableDoubleHash(7)
+ht.insert("x", 10)
+ht.insert("y", 20)
+print(ht.search("x"))  # 10`
+      },
+      {
+        num: 6,
+        title: 'Выбор хэш функции',
+        description: `Изучи разные хэш функции в Python и их особенности:
+
+1. Встроенная hash() функция:
+   hash("key") % table_size
+   ✓ Встроенная в Python
+   ✗ Разная в разных сеансах (для безопасности)
+
+2. Сумма ASCII кодов:
+   def hash_sum(key, size):
+       return sum(ord(c) for c in key) % size
+   ✓ Простая
+   ✗ Плохое распределение для похожих строк
+
+3. Полиномиальный хэш (популярный):
+   def hash_poly(key, size, base=31):
+       h = 0
+       for c in key:
+           h = (h * base + ord(c)) % size
+       return h
+   ✓ Хорошее распределение
+   ✓ Быстрый
+
+4. Хэш с простым числом:
+   def hash_prime(key, size, prime=101):
+       h = 0
+       for c in key:
+           h = (h * prime + ord(c)) % size
+       return h
+   ✓ Еще лучше для таблиц
+
+Выбери любую и используй в своих реализациях выше!`
+      }
+    ]
+  },
   10: {
     title: 'Структуры данных: деревья',
     tasks: [
