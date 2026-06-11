@@ -9,6 +9,7 @@ import Tasks from './pages/Tasks'
 import Links from './pages/Links'
 import TheoryPage from './pages/TheoryPage'
 import QuestionsPage from './pages/QuestionsPage'
+import HomeworkPage from './pages/HomeworkPage'
 import Announcements from './pages/Announcements'
 
 const PAGES = {
@@ -19,6 +20,7 @@ const PAGES = {
   links:     Links,
   theory:    TheoryPage,
   questions: QuestionsPage,
+  homework:  HomeworkPage,
   announcements: Announcements,
 }
 
@@ -50,6 +52,11 @@ export default function AppShell({ user, onLogout }) {
   const openQuestions = (day) => {
     setSelectedDay(day.day)
     setCurrentPage('questions')
+  }
+
+  const openHomework = (day) => {
+    setSelectedDay(day.day)
+    setCurrentPage('homework')
   }
 
   const backToLibrary = () => {
@@ -95,6 +102,11 @@ export default function AppShell({ user, onLogout }) {
               selectedDay={selectedDay}
               onBack={backToLibrary}
             />
+          ) : currentPage === 'homework' ? (
+            <HomeworkPage
+              selectedDay={selectedDay}
+              onBack={backToLibrary}
+            />
           ) : currentPage === 'announcements' ? (
             <Announcements
               onBack={backToDashboard}
@@ -106,6 +118,7 @@ export default function AppShell({ user, onLogout }) {
               onOpenDay={setDayModal}
               onOpenTheory={openTheory}
               onOpenQuestions={openQuestions}
+              onOpenHomework={openHomework}
             />
           )}
         </main>

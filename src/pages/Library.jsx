@@ -64,7 +64,7 @@ function buildJuneDays(scheduleData, libraryData) {
   })
 }
 
-function DayCard({ day, onOpen, onOpenTheory, onOpenQuestions }) {
+function DayCard({ day, onOpen, onOpenTheory, onOpenQuestions, onOpenHomework }) {
   const locked = !isAvailable(day.day)
   const showButtons = shouldShowButtons(day.day)
   const color  = locked ? 'rgba(255,255,255,0.08)' : '#c8ff00'
@@ -103,7 +103,17 @@ function DayCard({ day, onOpen, onOpenTheory, onOpenQuestions }) {
                   e.stopPropagation()
                   onOpenQuestions(day)
                 }}
-                title="Открыть задачи"
+                title="Открыть задачи для тренировки"
+              >
+                ✅
+              </button>
+              <button
+                className="theory-file-btn"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  onOpenHomework(day)
+                }}
+                title="Открыть домашние задания"
               >
                 📝
               </button>
@@ -127,7 +137,7 @@ function DayCard({ day, onOpen, onOpenTheory, onOpenQuestions }) {
   )
 }
 
-export default function Library({ onOpenDay, onOpenTheory, onOpenQuestions }) {
+export default function Library({ onOpenDay, onOpenTheory, onOpenQuestions, onOpenHomework }) {
   const [activeMonth, setActiveMonth] = useState('june')
   const [library, setLibrary]         = useState(LIBRARY)
   const [schedule, setSchedule]       = useState(SCHEDULE)
@@ -185,7 +195,7 @@ export default function Library({ onOpenDay, onOpenTheory, onOpenQuestions }) {
                 <div className="schedule-date-label">{week.label}</div>
                 {days.map((day, i) => (
                   <div key={day.id} className="fade-in" style={{ animationDelay: `${i * 0.02}s` }}>
-                    <DayCard day={day} onOpen={onOpenDay} onOpenTheory={onOpenTheory} onOpenQuestions={onOpenQuestions} />
+                    <DayCard day={day} onOpen={onOpenDay} onOpenTheory={onOpenTheory} onOpenQuestions={onOpenQuestions} onOpenHomework={onOpenHomework} />
                   </div>
                 ))}
               </div>
