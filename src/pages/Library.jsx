@@ -97,16 +97,18 @@ function DayCard({ day, onOpen, onOpenTheory, onOpenQuestions, onOpenHomework })
               >
                 📚
               </button>
-              <button
-                className="theory-file-btn"
-                onClick={(e) => {
-                  e.stopPropagation()
-                  onOpenQuestions(day)
-                }}
-                title="Открыть задачи для тренировки"
-              >
-                ✅
-              </button>
+              {day.day !== 13 && (
+                <button
+                  className="theory-file-btn"
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    onOpenQuestions(day)
+                  }}
+                  title="Открыть задачи для тренировки"
+                >
+                  ✅
+                </button>
+              )}
               <button
                 className="theory-file-btn"
                 onClick={(e) => {
