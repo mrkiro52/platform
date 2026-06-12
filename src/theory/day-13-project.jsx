@@ -14,25 +14,25 @@ export default function Day13ProjectTheory() {
         <div style={{ backgroundColor: 'rgba(200,255,0,0.05)', padding: '16px', borderRadius: '8px', marginBottom: '24px' }}>
           <p style={{ margin: '0 0 12px 0', fontWeight: 600 }}>⏰ Когда можешь сдать:</p>
           <ul style={{ margin: '0 0 12px 0', paddingLeft: '20px' }}>
-            <li>✅ Суббота, 13 июня в 21:00 (крайний срок)</li>
+            <li>✅ Суббота, 13 июня в 21:00</li>
             <li>✅ Или в любой день в 21:00 в начале лекции</li>
           </ul>
           <p style={{ margin: '0 0 12px 0', fontWeight: 600 }}>🎤 Выступление:</p>
           <ul style={{ margin: '0 0 12px 0', paddingLeft: '20px' }}>
-            <li>⏱️ Время на выступление: 5 минут</li>
-            <li>📱 Показать что реализовал (демонстрация программы)</li>
-            <li>📝 Рассказать какое задание было</li>
-            <li>✅ Объяснить что получилось</li>
-            <li>⚠️ Рассказать какие трудности были</li>
+            <li>Время на выступление: 5 минут</li>
+            <li>Показать что реализовал (демонстрация программы)</li>
+            <li>Рассказать какое задание было</li>
+            <li>Объяснить что получилось</li>
+            <li>Рассказать какие трудности были</li>
           </ul>
           <p style={{ margin: '0', color: 'var(--text-secondary)', fontSize: '13px' }}>Дедлайна нет! Можешь сдать когда готово. Главное - показать свою работу и рассказать как её делал.</p>
         </div>
       </section>
 
       <section className="theory-section">
-        <h2 className="theory-heading-2">🎯 Выбери один из 10 вариантов</h2>
+        <h2 className="theory-heading-2">🎯 Тебе мог попасться один из 10 вариантов</h2>
         <p className="theory-intro" style={{ marginBottom: '24px' }}>
-          Выбери один вариант проекта и реализуй его. Используй Python или другой язык программирования. Допускается использование AI (Copilot, Claude, ChatGPT) для помощи. Код загрузи в GitHub репозиторий.
+          Получи вариант в лс в телеграме и реализуй его. Используй Python или другой язык программирования. Допускается использование AI (Copilot, Claude, ChatGPT) для помощи. Код загрузи в GitHub репозиторий.
         </p>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
@@ -147,39 +147,6 @@ export default function Day13ProjectTheory() {
             </ul>
           </div>
         </div>
-      </section>
-
-      <section className="theory-section">
-        <h2 className="theory-heading-2">✅ Что нужно сделать</h2>
-        <ol style={{ paddingLeft: '20px', color: 'var(--text-secondary)', fontSize: '13px', lineHeight: '1.8' }}>
-          <li>Выбери один из 10 вариантов</li>
-          <li>Реализуй проект на Python (или другом языке)</li>
-          <li>Загрузи код в GitHub репозиторий</li>
-          <li>Дождись дня выступления (13 июня в 21:00 или в любой день в 21:00 в начале лекции)</li>
-          <li>На выступлении (5 минут) покажи и расскажи:
-            <ul style={{ margin: '8px 0', paddingLeft: '20px' }}>
-              <li>Демонстрация твоей программы</li>
-              <li>Какое задание ты выбрал</li>
-              <li>Что получилось в итоге</li>
-              <li>Какие трудности были при разработке</li>
-            </ul>
-          </li>
-        </ol>
-      </section>
-
-      <section className="theory-section">
-        <h2 className="theory-heading-2">💡 Советы</h2>
-        <ul className="theory-list">
-          <li className="theory-list-item"><strong>Используй AI для помощи:</strong> Copilot, Claude Code, ChatGPT помогут тебе быстрее реализовать идею</li>
-          <li className="theory-list-item"><strong>Начни с простого:</strong> Сначала реализуй базовую логику без визуализации, потом добавь красоту</li>
-          <li className="theory-list-item"><strong>Тестируй пошагово:</strong> После каждой функции проверяй что работает</li>
-          <li className="theory-list-item"><strong>Учись от других:</strong> Посмотри как другие решали похожие задачи на GitHub</li>
-          <li className="theory-list-item"><strong>Нет дедлайна срока сдачи:</strong> Главное чтобы ты показал свою работу и рассказал как её делал</li>
-        </ul>
-      </section>
-
-      <section className="theory-section theory-section--closing">
-        <p className="theory-closing-text">Выбери задачу которая тебе нравится и начни кодить! Не бойся использовать AI — это современный инструмент разработчика. Главное — понимать что ты пишешь и уметь объяснить свой код. 🚀</p>
       </section>
     </div>
   )
