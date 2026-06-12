@@ -1338,6 +1338,10 @@ delete_subtree(root, 4) удаляет узлы 3, 2
       }
     ]
   },
+  13: {
+    title: 'Практический проект',
+    tasks: []
+  },
   12: {
     title: 'ИИ-инструменты разработчика',
     tasks: [
@@ -1542,7 +1546,6 @@ export default function HomeworkPage({ selectedDay, onBack }) {
   }, [])
 
   const currentDay = selectedDay || 1
-  const dayInfo = schedule.find(d => d.day === currentDay)
   const homework = HOMEWORK_CONTENT[currentDay] || { title: 'Домашние задания', tasks: [] }
 
   function getDayLabel(dayNum) {

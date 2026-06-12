@@ -1,174 +1,185 @@
-import { TheoryTable, TheoryCode, TheoryExample } from './components/TheoryTable'
+import { TheoryCode, TheoryExample } from './components/TheoryTable'
 
 export default function Day13ProjectTheory() {
   return (
     <div className="theory-container">
       <section className="theory-section">
         <h1 className="theory-title">День 13</h1>
-        <p className="theory-subtitle">Мини-проект: визуализация алгоритмов</p>
+        <p className="theory-subtitle">Практический проект: визуализация структур данных и алгоритмов</p>
         <p className="theory-date">13 июня 2026</p>
       </section>
 
       <section className="theory-section">
-        <h2 className="theory-heading-2">Цель проекта</h2>
-        <p className="theory-intro">
-          Создать визуальную демонстрацию алгоритма. Вместо просто понимания кода, видишь как алгоритм работает шаг за шагом с анимацией.
+        <h2 className="theory-heading-2">📋 Дедлайны и правила</h2>
+        <div style={{ backgroundColor: 'rgba(200,255,0,0.05)', padding: '16px', borderRadius: '8px', marginBottom: '24px' }}>
+          <p style={{ margin: '0 0 12px 0', fontWeight: 600 }}>⏰ Когда можешь сдать:</p>
+          <ul style={{ margin: '0 0 12px 0', paddingLeft: '20px' }}>
+            <li>✅ Суббота, 13 июня в 21:00 (крайний срок)</li>
+            <li>✅ Или в любой день в 21:00 в начале лекции</li>
+          </ul>
+          <p style={{ margin: '0 0 12px 0', fontWeight: 600 }}>🎤 Выступление:</p>
+          <ul style={{ margin: '0 0 12px 0', paddingLeft: '20px' }}>
+            <li>⏱️ Время на выступление: 5 минут</li>
+            <li>📱 Показать что реализовал (демонстрация программы)</li>
+            <li>📝 Рассказать какое задание было</li>
+            <li>✅ Объяснить что получилось</li>
+            <li>⚠️ Рассказать какие трудности были</li>
+          </ul>
+          <p style={{ margin: '0', color: 'var(--text-secondary)', fontSize: '13px' }}>Дедлайна нет! Можешь сдать когда готово. Главное - показать свою работу и рассказать как её делал.</p>
+        </div>
+      </section>
+
+      <section className="theory-section">
+        <h2 className="theory-heading-2">🎯 Выбери один из 10 вариантов</h2>
+        <p className="theory-intro" style={{ marginBottom: '24px' }}>
+          Выбери один вариант проекта и реализуй его. Используй Python или другой язык программирования. Допускается использование AI (Copilot, Claude, ChatGPT) для помощи. Код загрузи в GitHub репозиторий.
         </p>
 
-        <TheoryExample title="Примеры">
-          <ul>
-            <li>Визуализация сортировки: столбчатая диаграмма, элементы меняются местами, можешь видеть процесс</li>
-            <li>Поиск в ширину (BFS): граф, подсвечиваются посещённые узлы, показывается очередь</li>
-            <li>Стек операций: видишь как элементы добавляются и удаляются</li>
-          </ul>
-        </TheoryExample>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          {/* Вариант 1 */}
+          <div style={{ padding: '16px', backgroundColor: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '8px' }}>
+            <h3 style={{ margin: '0 0 12px 0', fontSize: '16px' }}>Вариант 1: Поиск середины списка (slow/fast pointers)</h3>
+            <ul style={{ margin: '0', paddingLeft: '20px', fontSize: '13px', color: 'var(--text-secondary)', lineHeight: '1.6' }}>
+              <li>Реализовать алгоритм поиска середины односвязного списка с помощью указателей slow и fast</li>
+              <li>Программа должна пошагово показывать перемещение указателей по списку</li>
+              <li>Графический вывод: консоль с анимацией или выводом каждого шага по нажатию Enter</li>
+              <li>Необходимо реализовать создание списка и визуализацию позиций указателей</li>
+            </ul>
+          </div>
+
+          {/* Вариант 2 */}
+          <div style={{ padding: '16px', backgroundColor: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '8px' }}>
+            <h3 style={{ margin: '0 0 12px 0', fontSize: '16px' }}>Вариант 2: Проверка скобочной последовательности</h3>
+            <ul style={{ margin: '0', paddingLeft: '20px', fontSize: '13px', color: 'var(--text-secondary)', lineHeight: '1.6' }}>
+              <li>Реализовать алгоритм проверки правильности скобочной последовательности с использованием стека</li>
+              <li>Визуально показывать содержимое стека после каждой операции push/pop</li>
+              <li>Графический вывод: браузер (HTML/CSS/JS) или консоль</li>
+              <li>Отображать текущий символ строки и текущее состояние стека на каждом шаге</li>
+            </ul>
+          </div>
+
+          {/* Вариант 3 */}
+          <div style={{ padding: '16px', backgroundColor: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '8px' }}>
+            <h3 style={{ margin: '0 0 12px 0', fontSize: '16px' }}>Вариант 3: Обход графа в ширину (BFS)</h3>
+            <ul style={{ margin: '0', paddingLeft: '20px', fontSize: '13px', color: 'var(--text-secondary)', lineHeight: '1.6' }}>
+              <li>Реализовать алгоритм обхода графа в ширину (BFS) с использованием очереди</li>
+              <li>Пошагово показывать добавление и удаление вершин из очереди</li>
+              <li>Графический вывод: браузер с визуализацией графа или библиотека графики</li>
+              <li>На каждом шаге подсвечивать текущую вершину и содержимое очереди</li>
+            </ul>
+          </div>
+
+          {/* Вариант 4 */}
+          <div style={{ padding: '16px', backgroundColor: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '8px' }}>
+            <h3 style={{ margin: '0 0 12px 0', fontSize: '16px' }}>Вариант 4: Обход графа в глубину (DFS)</h3>
+            <ul style={{ margin: '0', paddingLeft: '20px', fontSize: '13px', color: 'var(--text-secondary)', lineHeight: '1.6' }}>
+              <li>Реализовать алгоритм обхода графа в глубину (DFS) со стеком или рекурсией</li>
+              <li>Визуально показывать порядок посещения вершин графа</li>
+              <li>Графический вывод: браузер или библиотека для графики</li>
+              <li>На каждом этапе отображать текущую вершину и уже посещённые вершины</li>
+            </ul>
+          </div>
+
+          {/* Вариант 5 */}
+          <div style={{ padding: '16px', backgroundColor: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '8px' }}>
+            <h3 style={{ margin: '0 0 12px 0', fontSize: '16px' }}>Вариант 5: Двусвязный список</h3>
+            <ul style={{ margin: '0', paddingLeft: '20px', fontSize: '13px', color: 'var(--text-secondary)', lineHeight: '1.6' }}>
+              <li>Реализовать двусвязный список с операциями вставки и удаления элементов</li>
+              <li>Пошагово показывать изменение связей между узлами списка</li>
+              <li>Графический вывод: консоль или библиотека графики</li>
+              <li>Отображать указатели prev и next для каждого элемента списка</li>
+            </ul>
+          </div>
+
+          {/* Вариант 6 */}
+          <div style={{ padding: '16px', backgroundColor: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '8px' }}>
+            <h3 style={{ margin: '0 0 12px 0', fontSize: '16px' }}>Вариант 6: Удаление дубликатов из списка</h3>
+            <ul style={{ margin: '0', paddingLeft: '20px', fontSize: '13px', color: 'var(--text-secondary)', lineHeight: '1.6' }}>
+              <li>Реализовать алгоритм удаления дубликатов из односвязного списка</li>
+              <li>Пошагово показывать обход списка и удаление повторяющихся элементов</li>
+              <li>Графический вывод: консоль, браузер или библиотека графики</li>
+              <li>На каждом шаге отображать текущий узел, проверяемое значение и итоговое состояние списка</li>
+              <li>Можно реализовать управление шагами через кнопки вперед/назад или автоматический показ через таймер</li>
+            </ul>
+          </div>
+
+          {/* Вариант 7 */}
+          <div style={{ padding: '16px', backgroundColor: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '8px' }}>
+            <h3 style={{ margin: '0 0 12px 0', fontSize: '16px' }}>Вариант 7: Хэш-таблица с разрешением коллизий</h3>
+            <ul style={{ margin: '0', paddingLeft: '20px', fontSize: '13px', color: 'var(--text-secondary)', lineHeight: '1.6' }}>
+              <li>Реализовать хэш-таблицу с разрешением коллизий методом цепочек или линейного пробирования</li>
+              <li>Пошагово показывать процесс вставки, поиска и обработки коллизий</li>
+              <li>Графический вывод: браузер или библиотека графики</li>
+              <li>На каждом шаге отображать индекс хэш-таблицы и действия алгоритма</li>
+            </ul>
+          </div>
+
+          {/* Вариант 8 */}
+          <div style={{ padding: '16px', backgroundColor: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '8px' }}>
+            <h3 style={{ margin: '0 0 12px 0', fontSize: '16px' }}>Вариант 8: Бинарное дерево поиска (BST)</h3>
+            <ul style={{ margin: '0', paddingLeft: '20px', fontSize: '13px', color: 'var(--text-secondary)', lineHeight: '1.6' }}>
+              <li>Реализовать бинарное дерево поиска (BST) с операциями вставки и поиска элементов</li>
+              <li>Визуально показывать прохождение по дереву на каждом шаге алгоритма</li>
+              <li>Графический вывод: библиотека графики или браузер</li>
+              <li>Отображать текущий узел и направление перехода по дереву</li>
+            </ul>
+          </div>
+
+          {/* Вариант 9 */}
+          <div style={{ padding: '16px', backgroundColor: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '8px' }}>
+            <h3 style={{ margin: '0 0 12px 0', fontSize: '16px' }}>Вариант 9: Разворот односвязного списка</h3>
+            <ul style={{ margin: '0', paddingLeft: '20px', fontSize: '13px', color: 'var(--text-secondary)', lineHeight: '1.6' }}>
+              <li>Реализовать алгоритм разворота односвязного списка</li>
+              <li>Пошагово показывать изменение ссылок между элементами списка</li>
+              <li>Графический вывод: консоль с задержкой по времени или браузер</li>
+              <li>На каждом шаге отображать текущий элемент, previous и next</li>
+            </ul>
+          </div>
+
+          {/* Вариант 10 */}
+          <div style={{ padding: '16px', backgroundColor: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '8px' }}>
+            <h3 style={{ margin: '0 0 12px 0', fontSize: '16px' }}>Вариант 10: Алгоритм Дейкстры (кратчайший путь)</h3>
+            <ul style={{ margin: '0', paddingLeft: '20px', fontSize: '13px', color: 'var(--text-secondary)', lineHeight: '1.6' }}>
+              <li>Реализовать алгоритм поиска кратчайшего пути в графе (алгоритм Дейкстры)</li>
+              <li>Пошагово показывать обновление расстояний до вершин и выбор текущей вершины</li>
+              <li>Графический вывод: браузер или библиотека графики</li>
+              <li>Отображать таблицу расстояний и подсветку текущих рёбер графа</li>
+            </ul>
+          </div>
+        </div>
       </section>
 
       <section className="theory-section">
-        <h2 className="theory-heading-2">Требования проекта</h2>
-
-        <div className="theory-subsection">
-          <h3 className="theory-heading-3">Обязательно (MVP)</h3>
-          <ul className="theory-list">
-            <li className="theory-list-item">Выбрать один алгоритм (сортировка, поиск, BFS/DFS)</li>
-            <li className="theory-list-item">Визуализировать данные (диаграмма, граф, таблица)</li>
-            <li className="theory-list-item">Показать пошаговое выполнение</li>
-            <li className="theory-list-item">Кнопки "Следующий шаг", "Сбросить", может "Автоматически"</li>
-            <li className="theory-list-item">Код на GitHub с README</li>
-          </ul>
-        </div>
-
-        <div className="theory-subsection">
-          <h3 className="theory-heading-3">Хорошо иметь (Nice-to-have)</h3>
-          <ul className="theory-list">
-            <li className="theory-list-item">Изменяемый размер данных (slider)</li>
-            <li className="theory-list-item">Разные алгоритмы на выбор</li>
-            <li className="theory-list-item">Красивая анимация</li>
-            <li className="theory-list-item">Отображение Big O сложности</li>
-            <li className="theory-list-item">GIF запись работающей программы</li>
-          </ul>
-        </div>
+        <h2 className="theory-heading-2">✅ Что нужно сделать</h2>
+        <ol style={{ paddingLeft: '20px', color: 'var(--text-secondary)', fontSize: '13px', lineHeight: '1.8' }}>
+          <li>Выбери один из 10 вариантов</li>
+          <li>Реализуй проект на Python (или другом языке)</li>
+          <li>Загрузи код в GitHub репозиторий</li>
+          <li>Дождись дня выступления (13 июня в 21:00 или в любой день в 21:00 в начале лекции)</li>
+          <li>На выступлении (5 минут) покажи и расскажи:
+            <ul style={{ margin: '8px 0', paddingLeft: '20px' }}>
+              <li>Демонстрация твоей программы</li>
+              <li>Какое задание ты выбрал</li>
+              <li>Что получилось в итоге</li>
+              <li>Какие трудности были при разработке</li>
+            </ul>
+          </li>
+        </ol>
       </section>
 
       <section className="theory-section">
-        <h2 className="theory-heading-2">Технологический стек</h2>
-
-        <TheoryTable
-          headers={['Технология', 'Для чего', 'Альтернатива']}
-          rows={[
-            ['HTML', 'Структура страницы', '-'],
-            ['CSS', 'Оформление', 'Tailwind, Bootstrap'],
-            ['JavaScript', 'Логика алгоритма', 'TypeScript'],
-            ['Canvas или SVG', 'Рисование графики', 'Three.js, Pixi.js'],
-            ['React (опционально)', 'Управление состоянием', 'Vue, Svelte'],
-          ]}
-        />
-      </section>
-
-      <section className="theory-section">
-        <h2 className="theory-heading-2">Примеры для разных алгоритмов</h2>
-
-        <div className="theory-subsection">
-          <h3 className="theory-heading-3">Сортировка массива</h3>
-          <ul className="theory-list">
-            <li className="theory-list-item">Показываешь столбчатую диаграмму</li>
-            <li className="theory-list-item">На каждом шаге два столбца подсвечиваются (сравниваются)</li>
-            <li className="theory-list-item">Если нужно поменять — анимация свапа</li>
-            <li className="theory-list-item">Отсортированные элементы зелёные, остальные серые</li>
-          </ul>
-          <TheoryCode code={`// Bubble Sort с визуализацией
-function bubbleSortStep(arr, step) {
-  let operations = 0
-
-  for (let i = 0; i < arr.length; i++) {
-    for (let j = 0; j < arr.length - i - 1; j++) {
-      if (operations === step) {
-        return {
-          array: arr,
-          comparing: [j, j+1],  // Какие элементы сравниваются
-          swapped: arr[j] > arr[j+1]
-        }
-      }
-      if (arr[j] > arr[j+1]) {
-        [arr[j], arr[j+1]] = [arr[j+1], arr[j]]
-      }
-      operations++
-    }
-  }
-  return { array: arr, comparing: [], swapped: false }
-}`} language="javascript" />
-        </div>
-
-        <div className="theory-subsection">
-          <h3 className="theory-heading-3">BFS на графе</h3>
-          <ul className="theory-list">
-            <li className="theory-list-item">Рисуешь граф (узлы и рёбра)</li>
-            <li className="theory-list-item">Показываешь очередь сбоку</li>
-            <li className="theory-list-item">На каждом шаге: узел синий (текущий), посещённые зелёные, в очереди жёлтые</li>
-            <li className="theory-list-item">Анимация движения от узла к узлу</li>
-          </ul>
-        </div>
-
-        <div className="theory-subsection">
-          <h3 className="theory-heading-3">Поиск в массиве</h3>
-          <ul className="theory-list">
-            <li className="theory-list-item">Подсвечиваешь какой элемент проверяешь</li>
-            <li className="theory-list-item">Показываешь текущую позицию в поиске</li>
-            <li className="theory-list-item">При нахождении - зелёный цвет</li>
-          </ul>
-        </div>
-      </section>
-
-      <section className="theory-section">
-        <h2 className="theory-heading-2">План разработки</h2>
-
-        <TheoryExample title="День 1-2: Базовая структура">
-          <ol style={{ paddingLeft: '20px', color: 'var(--text-secondary)', fontSize: '13px' }}>
-            <li>Создай HTML с кнопками и контейнером для визуализации</li>
-            <li>Напиши алгоритм без визуализации</li>
-            <li>Добавь логику для пошагового выполнения</li>
-          </ol>
-        </TheoryExample>
-
-        <TheoryExample title="День 3: Визуализация">
-          <ol style={{ paddingLeft: '20px', color: 'var(--text-secondary)', fontSize: '13px' }}>
-            <li>Реализуй рисование (Canvas или SVG)</li>
-            <li>Подключи визуализацию к алгоритму</li>
-            <li>Добавь анимации переходов</li>
-          </ol>
-        </TheoryExample>
-
-        <TheoryExample title="День 4: Полировка">
-          <ol style={{ paddingLeft: '20px', color: 'var(--text-secondary)', fontSize: '13px' }}>
-            <li>CSS для красивого оформления</li>
-            <li>Тестирование разных случаев</li>
-            <li>Загрузка на GitHub</li>
-          </ol>
-        </TheoryExample>
-      </section>
-
-      <section className="theory-section">
-        <h2 className="theory-heading-2">Полезные ресурсы</h2>
+        <h2 className="theory-heading-2">💡 Советы</h2>
         <ul className="theory-list">
-          <li className="theory-list-item"><strong>Canvas MDN</strong> — https://developer.mozilla.org/ru/docs/Web/API/Canvas_API</li>
-          <li className="theory-list-item"><strong>requestAnimationFrame</strong> — для гладкой анимации</li>
-          <li className="theory-list-item"><strong>Visualgo.net</strong> — примеры визуализаций для вдохновения</li>
-          <li className="theory-list-item"><strong>p5.js</strong> — библиотека для графики (проще Canvas)</li>
-        </ul>
-      </section>
-
-      <section className="theory-section">
-        <h2 className="theory-heading-2">Что сдавать</h2>
-        <ul className="theory-list">
-          <li className="theory-list-item">Git репозиторий на GitHub</li>
-          <li className="theory-list-item">README с описанием и скриншотами</li>
-          <li className="theory-list-item">GIF запись работающего проекта (используй ScreenFlow или gifcap)</li>
-          <li className="theory-list-item">Живая ссылка (GitHub Pages или Vercel)</li>
+          <li className="theory-list-item"><strong>Используй AI для помощи:</strong> Copilot, Claude Code, ChatGPT помогут тебе быстрее реализовать идею</li>
+          <li className="theory-list-item"><strong>Начни с простого:</strong> Сначала реализуй базовую логику без визуализации, потом добавь красоту</li>
+          <li className="theory-list-item"><strong>Тестируй пошагово:</strong> После каждой функции проверяй что работает</li>
+          <li className="theory-list-item"><strong>Учись от других:</strong> Посмотри как другие решали похожие задачи на GitHub</li>
+          <li className="theory-list-item"><strong>Нет дедлайна срока сдачи:</strong> Главное чтобы ты показал свою работу и рассказал как её делал</li>
         </ul>
       </section>
 
       <section className="theory-section theory-section--closing">
-        <p className="theory-closing-text">Твой первый полноценный проект! Гордись собой! 🌟</p>
+        <p className="theory-closing-text">Выбери задачу которая тебе нравится и начни кодить! Не бойся использовать AI — это современный инструмент разработчика. Главное — понимать что ты пишешь и уметь объяснить свой код. 🚀</p>
       </section>
     </div>
   )
