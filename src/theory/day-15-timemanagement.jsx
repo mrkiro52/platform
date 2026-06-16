@@ -1,157 +1,232 @@
-import { TheoryTable, TheoryCode, TheoryExample } from './components/TheoryTable'
+import { TheoryTable, TheoryExample } from './components/TheoryTable'
 
 export default function Day15TimeManagementTheory() {
   return (
     <div className="theory-container">
       <section className="theory-section">
         <h1 className="theory-title">День 15</h1>
-        <p className="theory-subtitle">Тайм и таск-менеджмент</p>
+        <p className="theory-subtitle">Тайм- и таск-менеджмент</p>
         <p className="theory-date">15 июня 2026</p>
       </section>
 
       <section className="theory-section">
-        <h2 className="theory-heading-2">Техника Pomodoro</h2>
+        <h2 className="theory-heading-2">Что такое таск-менеджмент и зачем он нужен</h2>
         <p className="theory-intro">
-          Простая техника управления временем: работаешь 25 минут, отдыхаешь 5 минут. Повторяешь, потом длинный перерыв.
+          Таск-менеджмент — это система организации и управления задачами, которая помогает человеку или команде достигать целей без потери фокуса. В мире, где количество задач постоянно растёт, умение управлять временем становится ключевым профессиональным навыком.
         </p>
-
-        <TheoryExample title="Цикл Pomodoro">
-          <ol style={{ paddingLeft: '20px', color: 'var(--text-secondary)', fontSize: '13px' }}>
-            <li><strong>25 мин:</strong> Работаешь (без отвлечений!)</li>
-            <li><strong>5 мин:</strong> Отдыхаешь</li>
-            <li><strong>25 мин:</strong> Работаешь</li>
-            <li><strong>5 мин:</strong> Отдыхаешь</li>
-            <li><strong>25 мин:</strong> Работаешь</li>
-            <li><strong>5 мин:</strong> Отдыхаешь</li>
-            <li><strong>25 мин:</strong> Работаешь</li>
-            <li><strong>30 мин:</strong> Длинный перерыв, потом начинаешь заново</li>
-          </ol>
-        </TheoryExample>
-
-        <ul className="theory-list">
-          <li className="theory-list-item">✅ Помогает сосредоточиться</li>
-          <li className="theory-list-item">✅ Защита от перегорания (регулярные паузы)</li>
-          <li className="theory-list-item">✅ Можно адаптировать (20/10, 50/10)</li>
-          <li className="theory-list-item">❌ Может не подходить для больших задач</li>
-        </ul>
+        <div className="theory-subsection">
+          <h3 className="theory-heading-3">Проблемы без системы управления задачами</h3>
+          <ul className="theory-list">
+            <li className="theory-list-item">Задачи теряются или забываются</li>
+            <li className="theory-list-item">Непонятно, что делать в первую очередь</li>
+            <li className="theory-list-item">Ощущение постоянной перегруженности</li>
+            <li className="theory-list-item">Сложно оценить реальный прогресс по проектам</li>
+            <li className="theory-list-item">Прокрастинация и откладывание важных дел</li>
+          </ul>
+        </div>
       </section>
 
       <section className="theory-section">
-        <h2 className="theory-heading-2">GTD (Getting Things Done)</h2>
+        <h2 className="theory-heading-2">Метод GTD (Getting Things Done)</h2>
         <p className="theory-intro">
-          Методология управления задачами от David Allen. Главное: выгрузи свой мозг, чтобы он думал о стратегии, а не о том, что не забыть.
+          GTD — система управления задачами Дэвида Аллена. Её суть: освободить голову от хранения задач и доверить их надёжной внешней системе. Мозг плохо хранит, но отлично обрабатывает.
         </p>
 
-        <div className="theory-subsection">
-          <h3 className="theory-heading-3">5 этапов GTD</h3>
-          <ol style={{ paddingLeft: '20px', color: 'var(--text-secondary)', fontSize: '13px' }}>
-            <li><strong>Capture:</strong> Запиши все задачи (inbox)</li>
-            <li><strong>Clarify:</strong> Разберись в каждой задаче (actionable?)</li>
-            <li><strong>Organize:</strong> Рассортируй по категориям (сроки, проекты)</li>
-            <li><strong>Reflect:</strong> Регулярный обзор (еженедельно)</li>
-            <li><strong>Engage:</strong> Выполняй задачи</li>
-          </ol>
+        {/* Иллюстрация: 5 шагов GTD как поток-схема */}
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', margin: '20px 0' }}>
+          {[
+            { n: '1', t: 'Сбор', en: 'Capture', d: 'Записывай всё во «входящий ящик» (Inbox). Не держи ничего в голове.' },
+            { n: '2', t: 'Обработка', en: 'Clarify', d: 'Требует ли элемент действия? Если да — определи конкретный следующий шаг.' },
+            { n: '3', t: 'Организация', en: 'Organize', d: 'Распредели по категориям: действия, проекты, ожидания, календарь.' },
+            { n: '4', t: 'Обзор', en: 'Reflect', d: 'Еженедельно просматривай все списки и обновляй систему.' },
+            { n: '5', t: 'Выполнение', en: 'Engage', d: 'Выбирай задачу по контексту, времени, энергии и приоритету.' },
+          ].map((s, i) => (
+            <div key={i} style={{ flex: '1 1 150px', minWidth: '150px', background: 'var(--bg-secondary)', border: '1px solid var(--border-color)', borderRadius: '10px', padding: '14px' }}>
+              <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: 'var(--accent-lime)', color: '#0a0a14', fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '8px' }}>{s.n}</div>
+              <div style={{ fontWeight: 700, color: 'var(--text-primary)', fontSize: '14px' }}>{s.t}</div>
+              <div style={{ fontSize: '11px', color: 'var(--accent-lime)', marginBottom: '6px' }}>{s.en}</div>
+              <div style={{ fontSize: '12px', color: 'var(--text-secondary)', lineHeight: '1.5' }}>{s.d}</div>
+            </div>
+          ))}
         </div>
 
-        <TheoryTable
-          headers={['Категория', 'Пример', 'Когда начинать']}
-          rows={[
-            ['Входящие', 'Новая идея, письмо', 'Разобраться позже'],
-            ['Проекты', 'Написать курс', 'Сложная многошаговая задача'],
-            ['Следующие действия', 'Купить молоко', 'В течение дня'],
-            ['Ожидание', 'Ответ от друга', 'Зависит от других'],
-            ['Когда-нибудь', 'Выучить испанский', 'Когда будет время'],
-          ]}
-        />
-      </section>
-
-      <section className="theory-section">
-        <h2 className="theory-heading-2">Канбан для визуализации</h2>
-        <p className="theory-intro">
-          Доска с колонками: To Do → In Progress → Done. Видишь что делается в реальном времени.
-        </p>
-
-        <TheoryExample title="Пример Канбана">
-          <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '12px' }}>
-            <tr style={{ borderBottom: '1px solid var(--border-color)' }}>
-              <td style={{ padding: '12px', textAlign: 'center', color: 'var(--text-secondary)' }}><strong>To Do</strong></td>
-              <td style={{ padding: '12px', textAlign: 'center', color: 'var(--text-secondary)' }}><strong>In Progress</strong></td>
-              <td style={{ padding: '12px', textAlign: 'center', color: 'var(--text-secondary)' }}><strong>Done</strong></td>
-            </tr>
-            <tr>
-              <td style={{ padding: '12px', verticalAlign: 'top' }}>
-                <div style={{ background: 'var(--bg-secondary)', padding: '8px', borderRadius: '4px', marginBottom: '8px', fontSize: '12px' }}>📝 Написать функцию</div>
-                <div style={{ background: 'var(--bg-secondary)', padding: '8px', borderRadius: '4px', fontSize: '12px' }}>🧪 Тесты</div>
-              </td>
-              <td style={{ padding: '12px', verticalAlign: 'top' }}>
-                <div style={{ background: 'rgba(200,255,0,0.15)', padding: '8px', borderRadius: '4px', fontSize: '12px' }}>🔍 Код-ревью</div>
-              </td>
-              <td style={{ padding: '12px', verticalAlign: 'top' }}>
-                <div style={{ background: 'rgba(100,200,100,0.15)', padding: '8px', borderRadius: '4px', fontSize: '12px' }}>✅ Задача 1</div>
-              </td>
-            </tr>
-          </table>
+        <TheoryExample title="Ключевое правило GTD (правило 2 минут)">
+          <p>Если задача занимает менее 2 минут — сделай её немедленно, не откладывая в систему.</p>
         </TheoryExample>
-
-        <ul className="theory-list">
-          <li className="theory-list-item"><strong>WIP лимит:</strong> Максимум 3 задачи "In Progress" (чтобы не прерываться)</li>
-          <li className="theory-list-item"><strong>Движение слева направо:</strong> Задача должна всегда двигаться вперёд</li>
-          <li className="theory-list-item"><strong>Bottleneck:</strong> Если одна колонка полная — есть блокер</li>
-        </ul>
       </section>
 
       <section className="theory-section">
-        <h2 className="theory-heading-2">Приоритизация: матрица Eisenhower</h2>
+        <h2 className="theory-heading-2">Техники управления временем</h2>
         <p className="theory-intro">
-          Матрица 2x2: важность vs срочность. Помогает решить что делать первым.
+          Универсального метода нет — разные подходы подходят разным людям. Попробуй каждый и найди свой.
         </p>
 
-        <TheoryTable
-          headers={['', 'Срочное', 'Не срочное']}
-          rows={[
-            ['Важное', 'Делай СЕЙЧАС (дедлайны, кризис)', 'Планируй (учёба, развитие)'],
-            ['Не важное', 'Делегируй или откажись', 'Исключи (соцсети, лень)'],
-          ]}
-        />
+        {/* Иллюстрация Pomodoro: визуальная шкала цикла */}
+        <div className="theory-subsection">
+          <h3 className="theory-heading-3">🍅 Техника Pomodoro</h3>
+          <p className="theory-text" style={{ marginBottom: '12px' }}>
+            Работай 25 минут без прерываний (один «помидор»), затем 5 минут отдыха. После четырёх «помидоров» — длинный перерыв 15–30 минут.
+          </p>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', alignItems: 'center', margin: '12px 0' }}>
+            {[
+              { l: '25 мин', w: 'работа' }, { l: '5', w: 'отдых' },
+              { l: '25 мин', w: 'работа' }, { l: '5', w: 'отдых' },
+              { l: '25 мин', w: 'работа' }, { l: '5', w: 'отдых' },
+              { l: '25 мин', w: 'работа' }, { l: '15-30', w: 'длинный отдых' },
+            ].map((b, i) => (
+              <div key={i} style={{
+                flex: b.w === 'работа' ? '1 1 70px' : '0 1 50px',
+                minWidth: b.w === 'работа' ? '70px' : '44px',
+                background: b.w === 'работа' ? 'rgba(200,255,0,0.15)' : (b.w === 'длинный отдых' ? 'rgba(110,181,255,0.18)' : 'var(--bg-secondary)'),
+                border: '1px solid var(--border-color)',
+                borderRadius: '6px', padding: '8px 6px', textAlign: 'center'
+              }}>
+                <div style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-primary)' }}>{b.l}</div>
+                <div style={{ fontSize: '10px', color: 'var(--text-tertiary)' }}>{b.w}</div>
+              </div>
+            ))}
+          </div>
+          <p className="theory-text"><strong>Для кого:</strong> тем, кого легко отвлечь, и тем, кто работает без пауз. Хорошо для монотонных задач — кодирование, тексты, учёба.</p>
+        </div>
 
-        <TheoryExample title="Примеры">
-          <ul>
-            <li><strong>Важно + Срочно:</strong> Исправить баг в продакшене</li>
-            <li><strong>Важно + Не срочно:</strong> Учиться новым технологиям</li>
-            <li><strong>Не важно + Срочно:</strong> Срочное письмо, которое кто-то отправил</li>
-            <li><strong>Не важно + Не срочно:</strong> Прокрастинация в соцсетях</li>
+        <div className="theory-subsection">
+          <h3 className="theory-heading-3">🐸 Метод «Съешь лягушку»</h3>
+          <p className="theory-text">«Лягушка» — самая неприятная задача дня. Выполняй её первой, пока энергия максимальна. Остаток дня ощущается легче. <strong>Для кого:</strong> тем, кто откладывает неприятное на конец дня.</p>
+        </div>
+
+        <div className="theory-subsection">
+          <h3 className="theory-heading-3">🐘 Метод «Съешь слона по частям»</h3>
+          <p className="theory-text">Большую задачу разбей на маленькие шаги. «Написать диплом» — это проект, а «написать введение (1500 слов)» — задача. <strong>Для кого:</strong> тем, кто чувствует паралич перед крупными проектами.</p>
+        </div>
+
+        <div className="theory-subsection">
+          <h3 className="theory-heading-3">🗓 Метод «Временные блоки» (Time Blocking)</h3>
+          <p className="theory-text">Заранее выделяй в календаре блоки под типы задач. Например: 9:00–11:00 — глубокая работа, 11:00–12:00 — встречи, после обеда — рутина. <strong>Для кого:</strong> тем, кто не чувствует контроля над днём.</p>
+        </div>
+
+        <div className="theory-subsection">
+          <h3 className="theory-heading-3">1️⃣3️⃣5️⃣ Метод «1-3-5»</h3>
+          <p className="theory-text">Каждый день планируй: 1 большую задачу, 3 средних и 5 маленьких. Реалистичный план, который не позволяет перегрузить список.</p>
+        </div>
+      </section>
+
+      <section className="theory-section">
+        <h2 className="theory-heading-2">Личный Канбан</h2>
+        <p className="theory-intro">
+          Визуальная доска с тремя колонками. Задачи перемещаются слева направо. Ключевое правило: ограничивай количество задач «В процессе» (обычно не более 3) — это борьба с многозадачностью.
+        </p>
+
+        {/* Иллюстрация: доска Канбан */}
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', margin: '20px 0' }}>
+          {[
+            { title: 'Нужно сделать', color: 'var(--text-tertiary)', cards: ['📝 Написать функцию', '🧪 Добавить тесты', '📚 Прочитать главу'] },
+            { title: 'В процессе', color: 'var(--accent-lime)', limit: 'WIP ≤ 3', cards: ['🔍 Код-ревью PR', '🐛 Чинить баг'] },
+            { title: 'Готово', color: '#64c864', cards: ['✅ Настроить Git', '✅ Залить проект'] },
+          ].map((col, i) => (
+            <div key={i} style={{ flex: '1 1 200px', minWidth: '180px', background: 'var(--bg-secondary)', border: '1px solid var(--border-color)', borderRadius: '10px', padding: '12px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px', paddingBottom: '8px', borderBottom: `2px solid ${col.color}` }}>
+                <span style={{ fontWeight: 700, color: col.color, fontSize: '13px' }}>{col.title}</span>
+                {col.limit && <span style={{ fontSize: '10px', color: 'var(--accent-lime)', border: '1px solid var(--accent-lime)', borderRadius: '4px', padding: '1px 5px' }}>{col.limit}</span>}
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                {col.cards.map((c, j) => (
+                  <div key={j} style={{ background: 'var(--bg-primary)', border: '1px solid var(--border-color)', borderRadius: '6px', padding: '8px', fontSize: '12px', color: 'var(--text-secondary)' }}>{c}</div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="theory-section">
+        <h2 className="theory-heading-2">Приоритизация: матрица Эйзенхауэра</h2>
+        <p className="theory-intro">
+          Делит все задачи на 4 квадранта по двум осям: важность и срочность.
+        </p>
+
+        {/* Иллюстрация: матрица Эйзенхауэра 2x2 */}
+        <div style={{ margin: '20px 0' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'auto 1fr 1fr', gap: '8px', alignItems: 'stretch' }}>
+            <div></div>
+            <div style={{ textAlign: 'center', fontWeight: 700, color: 'var(--text-secondary)', fontSize: '12px', padding: '4px' }}>СРОЧНО</div>
+            <div style={{ textAlign: 'center', fontWeight: 700, color: 'var(--text-secondary)', fontSize: '12px', padding: '4px' }}>НЕ СРОЧНО</div>
+
+            <div style={{ display: 'flex', alignItems: 'center', fontWeight: 700, color: 'var(--text-secondary)', fontSize: '12px', writingMode: 'vertical-rl', transform: 'rotate(180deg)', justifyContent: 'center' }}>ВАЖНО</div>
+            <div style={{ background: 'rgba(255,95,95,0.15)', border: '1px solid rgba(255,95,95,0.4)', borderRadius: '10px', padding: '14px' }}>
+              <div style={{ fontWeight: 700, color: '#ff5f5f', fontSize: '13px', marginBottom: '4px' }}>Квадрант 1 · Делать</div>
+              <div style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>Кризисы, дедлайны, аварии. Чинить баг в продакшене.</div>
+            </div>
+            <div style={{ background: 'rgba(110,181,255,0.15)', border: '1px solid rgba(110,181,255,0.4)', borderRadius: '10px', padding: '14px' }}>
+              <div style={{ fontWeight: 700, color: '#6eb5ff', fontSize: '13px', marginBottom: '4px' }}>Квадрант 2 · Планировать</div>
+              <div style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>Развитие, обучение, здоровье. Самый ценный квадрант!</div>
+            </div>
+
+            <div style={{ display: 'flex', alignItems: 'center', fontWeight: 700, color: 'var(--text-secondary)', fontSize: '12px', writingMode: 'vertical-rl', transform: 'rotate(180deg)', justifyContent: 'center' }}>НЕ ВАЖНО</div>
+            <div style={{ background: 'rgba(255,159,80,0.15)', border: '1px solid rgba(255,159,80,0.4)', borderRadius: '10px', padding: '14px' }}>
+              <div style={{ fontWeight: 700, color: '#ff9f50', fontSize: '13px', marginBottom: '4px' }}>Квадрант 3 · Делегировать</div>
+              <div style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>Чужие просьбы, часть встреч. Иллюзия занятости.</div>
+            </div>
+            <div style={{ background: 'rgba(138,138,154,0.12)', border: '1px solid var(--border-color)', borderRadius: '10px', padding: '14px' }}>
+              <div style={{ fontWeight: 700, color: 'var(--text-tertiary)', fontSize: '13px', marginBottom: '4px' }}>Квадрант 4 · Исключить</div>
+              <div style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>Соцсети, лишние встречи. Сокращай до минимума.</div>
+            </div>
+          </div>
+          <p className="theory-text" style={{ marginTop: '12px' }}>
+            <strong>Главная мысль:</strong> большинство живёт в квадрантах 1 и 3. Перенеси фокус в квадрант 2 — и кризисов станет меньше.
+          </p>
+        </div>
+      </section>
+
+      <section className="theory-section">
+        <h2 className="theory-heading-2">Другие методы приоритизации</h2>
+
+        <div className="theory-subsection">
+          <h3 className="theory-heading-3">Метод MoSCoW</h3>
+          <ul className="theory-list">
+            <li className="theory-list-item"><strong>Must Have</strong> — обязательно (без этого проект не работает)</li>
+            <li className="theory-list-item"><strong>Should Have</strong> — важно, но не критично сейчас</li>
+            <li className="theory-list-item"><strong>Could Have</strong> — хорошо бы при наличии времени</li>
+            <li className="theory-list-item"><strong>Won't Have</strong> — не делаем сейчас, возможно потом</li>
           </ul>
-        </TheoryExample>
+        </div>
+
+        <div className="theory-subsection">
+          <h3 className="theory-heading-3">Метод ABC</h3>
+          <ul className="theory-list">
+            <li className="theory-list-item"><strong>A</strong> — серьёзные последствия за невыполнение (делай первыми)</li>
+            <li className="theory-list-item"><strong>B</strong> — умеренные последствия</li>
+            <li className="theory-list-item"><strong>C</strong> — без последствий</li>
+          </ul>
+          <p className="theory-text">Никогда не берись за B, если не сделаны все A.</p>
+        </div>
+
+        <div className="theory-subsection">
+          <h3 className="theory-heading-3">Правило 80/20 (Принцип Парето)</h3>
+          <p className="theory-text">20% усилий дают 80% результата. Найди те 20% задач, которые приносят наибольший вклад, и фокусируйся на них. Делать не меньше — делать умнее.</p>
+        </div>
       </section>
 
       <section className="theory-section">
-        <h2 className="theory-heading-2">Инструменты для управления задачами</h2>
+        <h2 className="theory-heading-2">Инструменты и приложения</h2>
+        <p className="theory-intro">
+          Инструмент — это не система. Сначала выбери подход (GTD, канбан, Pomodoro), потом подбери инструмент под него.
+        </p>
         <TheoryTable
-          headers={['Инструмент', 'Для чего', 'Бесплатно?']}
+          headers={['Инструмент', 'Для чего', 'Тип пользователя']}
           rows={[
-            ['Notion', 'База знаний + GTD + Канбан', 'Да (базовый)'],
-            ['Todoist', 'Список задач + GTD', 'Да (базовый)'],
-            ['Trello', 'Канбан доска', 'Да (базовый)'],
-            ['GitHub Issues', 'Для проектов (разработка)', 'Да'],
-            ['Google Tasks', 'Простой список', 'Да'],
-            ['Obsidian', 'Конспекты + PKM', 'Да'],
+            ['Trello', 'Визуальные доски, канбан', 'Личное и команды до 10 человек'],
+            ['Notion', 'Всё в одном (задачи, заметки, документы)', 'Индивидуально и малые команды'],
+            ['Jira', 'Agile, спринты, баг-трекинг', 'IT-команды'],
+            ['Linear', 'Быстрый трекер задач', 'Стартапы и продуктовые команды'],
+            ['Todoist', 'Простые личные задачи', 'Индивидуально'],
+            ['TickTick', 'Задачи + привычки + Pomodoro', 'Индивидуально'],
+            ['Obsidian', 'Управление знаниями (Markdown)', 'Разработчики, исследователи'],
           ]}
         />
-      </section>
-
-      <section className="theory-section">
-        <h2 className="theory-heading-2">Советы для разработчиков</h2>
-        <ul className="theory-list">
-          <li className="theory-list-item">Не прерывайся! Переключение контекста стоит 15-20 минут</li>
-          <li className="theory-list-item">Утро для сложного, вечер для простого (энергия выше)</li>
-          <li className="theory-list-item">Закрывай tab с соцсетями и мессенджерами</li>
-          <li className="theory-list-item">Отслеживай сколько времени тратишь на разные задачи</li>
-          <li className="theory-list-item">Планируй неделю в понедельник, день в утро</li>
-        </ul>
       </section>
 
       <section className="theory-section theory-section--closing">
-        <p className="theory-closing-text">Время — самый ценный ресурс. Управляй им мудро! ⏰</p>
+        <p className="theory-closing-text">Инструмент следует за системой, а не наоборот. Регулярный обзор — ключ к любой системе. Время — самый ценный ресурс! ⏰</p>
       </section>
     </div>
   )
