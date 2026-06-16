@@ -260,7 +260,7 @@ seed()
 
 // ── Migrations ──────────────────────────────────────────────────────────────────
 function migrate() {
-  const schemaVersion = db.pragma('user_version')
+  const schemaVersion = db.pragma('user_version', { simple: true })
 
   // Migration 1: Update meeting times from 20:00 to 21:00
   if (schemaVersion < 1) {
