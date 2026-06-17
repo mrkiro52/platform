@@ -67,6 +67,9 @@ export default function Day15TimeManagementTheory() {
           <p className="theory-text" style={{ marginBottom: '12px' }}>
             Работай 25 минут без прерываний (один «помидор»), затем 5 минут отдыха. После четырёх «помидоров» — длинный перерыв 15–30 минут.
           </p>
+          <p className="theory-text" style={{ marginBottom: '12px', fontSize: '12px', color: 'var(--text-tertiary)' }}>
+            Используй таймер: <a href="https://www.forestapp.cc" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-lime)' }}>Forest</a>, <a href="https://www.befocused.com" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-lime)' }}>Be Focused</a> или <a href="https://pomofocus.io" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-lime)' }}>Pomofocus.io</a>
+          </p>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', alignItems: 'center', margin: '12px 0' }}>
             {[
               { l: '25 мин', w: 'работа' }, { l: '5', w: 'отдых' },
@@ -211,18 +214,36 @@ export default function Day15TimeManagementTheory() {
         <p className="theory-intro">
           Инструмент — это не система. Сначала выбери подход (GTD, канбан, Pomodoro), потом подбери инструмент под него.
         </p>
-        <TheoryTable
-          headers={['Инструмент', 'Для чего', 'Тип пользователя']}
-          rows={[
-            ['Trello', 'Визуальные доски, канбан', 'Личное и команды до 10 человек'],
-            ['Notion', 'Всё в одном (задачи, заметки, документы)', 'Индивидуально и малые команды'],
-            ['Jira', 'Agile, спринты, баг-трекинг', 'IT-команды'],
-            ['Linear', 'Быстрый трекер задач', 'Стартапы и продуктовые команды'],
-            ['Todoist', 'Простые личные задачи', 'Индивидуально'],
-            ['TickTick', 'Задачи + привычки + Pomodoro', 'Индивидуально'],
-            ['Obsidian', 'Управление знаниями (Markdown)', 'Разработчики, исследователи'],
-          ]}
-        />
+
+        <div className="theory-subsection">
+          <h3 className="theory-heading-3">🍅 Pomodoro-приложения</h3>
+          <ul className="theory-list">
+            <li className="theory-list-item"><a href="https://www.forestapp.cc" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-lime)' }}>Forest</a> — вырастить виртуальный лес во время работы</li>
+            <li className="theory-list-item"><a href="https://www.befocused.com" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-lime)' }}>Be Focused</a> — простой Pomodoro-таймер для всех устройств</li>
+            <li className="theory-list-item"><a href="https://pomofocus.io" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-lime)' }}>Pomofocus.io</a> — веб-таймер Pomodoro (бесплатно)</li>
+          </ul>
+        </div>
+
+        <div className="theory-subsection">
+          <h3 className="theory-heading-3">📋 Таск-менеджеры и доски</h3>
+          <ul className="theory-list">
+            <li className="theory-list-item"><a href="https://trello.com" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-lime)' }}>Trello</a> — визуальные доски, канбан для личного и командного использования</li>
+            <li className="theory-list-item"><a href="https://notion.so" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-lime)' }}>Notion</a> — всё в одном (задачи, заметки, БД, документы)</li>
+            <li className="theory-list-item"><a href="https://www.atlassian.com/software/jira" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-lime)' }}>Jira</a> — Agile, спринты, баг-трекинг для IT-команд</li>
+            <li className="theory-list-item"><a href="https://linear.app" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-lime)' }}>Linear</a> — быстрый трекер задач для стартапов</li>
+            <li className="theory-list-item"><a href="https://todoist.com" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-lime)' }}>Todoist</a> — простой GTD-таск-менеджер</li>
+            <li className="theory-list-item"><a href="https://www.ticktick.com" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-lime)' }}>TickTick</a> — задачи + привычки + встроенный Pomodoro</li>
+          </ul>
+        </div>
+
+        <div className="theory-subsection">
+          <h3 className="theory-heading-3">🧠 Управление знаниями и заметки</h3>
+          <ul className="theory-list">
+            <li className="theory-list-item"><a href="https://obsidian.md" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-lime)' }}>Obsidian</a> — система личных заметок на основе Markdown (локально на диске)</li>
+            <li className="theory-list-item"><a href="https://google.com/tasks" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-lime)' }}>Google Tasks</a> — простой список задач, интегрирован с Google Calendar и Gmail</li>
+            <li className="theory-list-item"><a href="https://calendar.google.com" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-lime)' }}>Google Calendar</a> — календарь для time blocking и планирования дней</li>
+          </ul>
+        </div>
       </section>
 
       <section className="theory-section theory-section--closing">

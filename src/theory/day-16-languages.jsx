@@ -16,7 +16,7 @@ export default function Day16LanguagesTheory() {
       </section>
 
       <section className="theory-section">
-        <h2 className="theory-heading-2">2.1. Фронтенд</h2>
+        <h2 className="theory-heading-2">Фронтенд</h2>
         <p className="theory-intro">
           Фронтенд — всё, что видит пользователь в браузере. Основа неизменна: HTML, CSS, JavaScript. Всё остальное — инструменты поверх них.
         </p>
@@ -34,27 +34,27 @@ export default function Day16LanguagesTheory() {
         <div className="theory-subsection">
           <h3 className="theory-heading-3">Фреймворки и библиотеки</h3>
           <ul className="theory-list">
-            <li className="theory-list-item"><strong>React</strong> — самая популярная библиотека (Meta). В 2026 — React 19 с серверными компонентами</li>
-            <li className="theory-list-item"><strong>Next.js</strong> — фреймворк поверх React (Vercel): SSR, SSG, маршрутизация, API-роуты</li>
-            <li className="theory-list-item"><strong>Vue.js</strong> — лёгкий вход, Vue 3 с Composition API</li>
-            <li className="theory-list-item"><strong>Svelte / SvelteKit</strong> — компилируемый фреймворк без рантайм-оверхеда</li>
-            <li className="theory-list-item"><strong>Astro</strong> — быстрые контентные сайты, Islands Architecture</li>
+            <li className="theory-list-item"><a href="https://react.dev" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-lime)' }}><strong>React</strong></a> — самая популярная библиотека (Meta). В 2026 — React 19 с серверными компонентами</li>
+            <li className="theory-list-item"><a href="https://nextjs.org" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-lime)' }}><strong>Next.js</strong></a> — фреймворк поверх React (Vercel): SSR, SSG, маршрутизация, API-роуты</li>
+            <li className="theory-list-item"><a href="https://vuejs.org" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-lime)' }}><strong>Vue.js</strong></a> — лёгкий вход, Vue 3 с Composition API</li>
+            <li className="theory-list-item"><a href="https://svelte.dev" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-lime)' }}><strong>Svelte / SvelteKit</strong></a> — компилируемый фреймворк без рантайм-оверхеда</li>
+            <li className="theory-list-item"><a href="https://astro.build" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-lime)' }}><strong>Astro</strong></a> — быстрые контентные сайты, Islands Architecture</li>
           </ul>
         </div>
 
         <div className="theory-subsection">
           <h3 className="theory-heading-3">Дополнительные инструменты</h3>
           <ul className="theory-list">
-            <li className="theory-list-item"><strong>Tailwind CSS</strong> — утилитарный CSS-фреймворк</li>
-            <li className="theory-list-item"><strong>Vite</strong> — быстрый сборщик, заменяет Webpack</li>
-            <li className="theory-list-item"><strong>Figma</strong> — основной инструмент дизайна</li>
-            <li className="theory-list-item"><strong>Storybook</strong> — разработка и документирование UI-компонентов</li>
+            <li className="theory-list-item"><a href="https://tailwindcss.com" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-lime)' }}><strong>Tailwind CSS</strong></a> — утилитарный CSS-фреймворк</li>
+            <li className="theory-list-item"><a href="https://vitejs.dev" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-lime)' }}><strong>Vite</strong></a> — быстрый сборщик, заменяет Webpack</li>
+            <li className="theory-list-item"><a href="https://figma.com" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-lime)' }}><strong>Figma</strong></a> — основной инструмент дизайна</li>
+            <li className="theory-list-item"><a href="https://storybook.js.org" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-lime)' }}><strong>Storybook</strong></a> — разработка и документирование UI-компонентов</li>
           </ul>
         </div>
       </section>
 
       <section className="theory-section">
-        <h2 className="theory-heading-2">2.2. Бэкенд</h2>
+        <h2 className="theory-heading-2">Бэкенд</h2>
         <p className="theory-intro">
           Бэкенд — серверная часть: обработка данных, бизнес-логика, базы данных, API. Выбор зависит от задачи, нагрузки и команды.
         </p>
@@ -68,113 +68,116 @@ export default function Day16LanguagesTheory() {
             ['Rust', 'Actix Web, Axum', 'Производительность, безопасность памяти'],
           ]}
         />
+        <div className="theory-subsection" style={{ marginTop: '16px' }}>
+          <p style={{ marginBottom: '12px', fontSize: '12px' }}>
+            📚 Документации:
+            <a href="https://www.python.org/doc" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-lime)', marginLeft: '8px' }}>Python</a>
+            <span style={{ color: 'var(--text-tertiary)' }}> · </span>
+            <a href="https://fastapi.tiangolo.com" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-lime)', marginLeft: '8px' }}>FastAPI</a>
+            <span style={{ color: 'var(--text-tertiary)' }}> · </span>
+            <a href="https://www.djangoproject.com" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-lime)', marginLeft: '8px' }}>Django</a>
+            <span style={{ color: 'var(--text-tertiary)' }}> · </span>
+            <a href="https://nodejs.org/en/docs" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-lime)', marginLeft: '8px' }}>Node.js</a>
+            <span style={{ color: 'var(--text-tertiary)' }}> · </span>
+            <a href="https://go.dev/doc" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-lime)', marginLeft: '8px' }}>Go</a>
+            <span style={{ color: 'var(--text-tertiary)' }}> · </span>
+            <a href="https://www.rust-lang.org/documentation.html" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-lime)', marginLeft: '8px' }}>Rust</a>
+          </p>
+        </div>
         <div className="theory-subsection">
           <h3 className="theory-heading-3">Базы данных</h3>
           <ul className="theory-list">
-            <li className="theory-list-item"><strong>PostgreSQL</strong> — реляционная БД, стандарт большинства проектов</li>
-            <li className="theory-list-item"><strong>MongoDB</strong> — документо-ориентированная NoSQL</li>
-            <li className="theory-list-item"><strong>Redis</strong> — кэш и брокер сообщений в памяти</li>
-            <li className="theory-list-item"><strong>ClickHouse</strong> — колоночная БД для аналитики</li>
-            <li className="theory-list-item"><strong>ORM:</strong> Prisma, SQLAlchemy, GORM</li>
+            <li className="theory-list-item"><a href="https://www.postgresql.org/docs" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-lime)' }}><strong>PostgreSQL</strong></a> — реляционная БД, стандарт большинства проектов</li>
+            <li className="theory-list-item"><a href="https://docs.mongodb.com" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-lime)' }}><strong>MongoDB</strong></a> — документо-ориентированная NoSQL</li>
+            <li className="theory-list-item"><a href="https://redis.io/docs" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-lime)' }}><strong>Redis</strong></a> — кэш и брокер сообщений в памяти</li>
+            <li className="theory-list-item"><a href="https://clickhouse.com/docs" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-lime)' }}><strong>ClickHouse</strong></a> — колоночная БД для аналитики</li>
+            <li className="theory-list-item"><strong>ORM:</strong> <a href="https://www.prisma.io" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-lime)' }}>Prisma</a>, <a href="https://docs.sqlalchemy.org" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-lime)' }}>SQLAlchemy</a>, <a href="https://gorm.io" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-lime)' }}>GORM</a></li>
           </ul>
         </div>
       </section>
 
       <section className="theory-section">
-        <h2 className="theory-heading-2">2.3. Аналитика данных</h2>
+        <h2 className="theory-heading-2">Аналитика данных</h2>
         <p className="theory-intro">Аналитик собирает, обрабатывает, визуализирует и интерпретирует данные. Основной язык — Python, но SQL важен не меньше.</p>
         <ul className="theory-list">
-          <li className="theory-list-item"><strong>pandas</strong> — работа с табличными данными</li>
-          <li className="theory-list-item"><strong>NumPy</strong> — численные вычисления, матрицы</li>
-          <li className="theory-list-item"><strong>Matplotlib, Seaborn, Plotly</strong> — визуализация</li>
-          <li className="theory-list-item"><strong>Jupyter Notebook</strong> — интерактивная среда анализа</li>
+          <li className="theory-list-item"><a href="https://pandas.pydata.org/docs" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-lime)' }}><strong>pandas</strong></a> — работа с табличными данными</li>
+          <li className="theory-list-item"><a href="https://numpy.org/doc" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-lime)' }}><strong>NumPy</strong></a> — численные вычисления, матрицы</li>
+          <li className="theory-list-item"><strong>Визуализация:</strong> <a href="https://matplotlib.org" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-lime)' }}>Matplotlib</a>, <a href="https://seaborn.pydata.org" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-lime)' }}>Seaborn</a>, <a href="https://plotly.com/python" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-lime)' }}>Plotly</a></li>
+          <li className="theory-list-item"><a href="https://jupyter.org" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-lime)' }}><strong>Jupyter Notebook</strong></a> — интерактивная среда анализа</li>
           <li className="theory-list-item"><strong>SQL</strong> — обязательный инструмент любого аналитика</li>
-          <li className="theory-list-item"><strong>BI:</strong> Tableau, Power BI, Grafana, Superset, Metabase</li>
+          <li className="theory-list-item"><strong>BI:</strong> <a href="https://www.tableau.com" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-lime)' }}>Tableau</a>, <a href="https://powerbi.microsoft.com" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-lime)' }}>Power BI</a>, <a href="https://grafana.com" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-lime)' }}>Grafana</a>, <a href="https://superset.apache.org" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-lime)' }}>Superset</a>, <a href="https://www.metabase.com" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-lime)' }}>Metabase</a></li>
         </ul>
       </section>
 
       <section className="theory-section">
-        <h2 className="theory-heading-2">2.4. Machine Learning</h2>
+        <h2 className="theory-heading-2">Machine Learning</h2>
         <p className="theory-intro">ML-инженер и Data Scientist работают на стыке математики, программирования и предметной области. Порог входа высокий, но спрос устойчив.</p>
         <div className="theory-subsection">
           <h3 className="theory-heading-3">Базовые библиотеки</h3>
           <ul className="theory-list">
-            <li className="theory-list-item"><strong>scikit-learn</strong> — классические ML-алгоритмы</li>
-            <li className="theory-list-item"><strong>XGBoost, LightGBM, CatBoost</strong> — градиентный бустинг (лидер на табличных данных)</li>
+            <li className="theory-list-item"><a href="https://scikit-learn.org" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-lime)' }}><strong>scikit-learn</strong></a> — классические ML-алгоритмы</li>
+            <li className="theory-list-item"><strong>Градиентный бустинг:</strong> <a href="https://xgboost.readthedocs.io" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-lime)' }}>XGBoost</a>, <a href="https://lightgbm.readthedocs.io" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-lime)' }}>LightGBM</a>, <a href="https://catboost.ai" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-lime)' }}>CatBoost</a> (лидер на табличных данных)</li>
           </ul>
         </div>
         <div className="theory-subsection">
           <h3 className="theory-heading-3">Deep Learning и LLM (тренд 2024-2026)</h3>
           <ul className="theory-list">
-            <li className="theory-list-item"><strong>PyTorch</strong> — доминирующий фреймворк для исследований и продакшена</li>
-            <li className="theory-list-item"><strong>TensorFlow / Keras</strong> — по-прежнему используется в энтерпрайзе</li>
-            <li className="theory-list-item"><strong>LangChain, LlamaIndex</strong> — работа с LLM</li>
-            <li className="theory-list-item"><strong>Hugging Face Transformers</strong> — стандарт для NLP</li>
-            <li className="theory-list-item"><strong>Ollama</strong> — запуск локальных LLM</li>
+            <li className="theory-list-item"><a href="https://pytorch.org" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-lime)' }}><strong>PyTorch</strong></a> — доминирующий фреймворк для исследований и продакшена</li>
+            <li className="theory-list-item"><a href="https://tensorflow.org" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-lime)' }}><strong>TensorFlow / Keras</strong></a> — по-прежнему используется в энтерпрайзе</li>
+            <li className="theory-list-item"><strong>LLM фреймворки:</strong> <a href="https://python.langchain.com" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-lime)' }}>LangChain</a>, <a href="https://docs.llamaindex.ai" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-lime)' }}>LlamaIndex</a></li>
+            <li className="theory-list-item"><a href="https://huggingface.co/docs/transformers" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-lime)' }}><strong>Hugging Face Transformers</strong></a> — стандарт для NLP</li>
+            <li className="theory-list-item"><a href="https://ollama.ai" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-lime)' }}><strong>Ollama</strong></a> — запуск локальных LLM</li>
           </ul>
         </div>
       </section>
 
       <section className="theory-section">
-        <h2 className="theory-heading-2">2.5. Кибербезопасность</h2>
+        <h2 className="theory-heading-2">Кибербезопасность</h2>
         <p className="theory-intro">Специалист должен понимать, как работают системы, сети и приложения — и как их взломать, чтобы защитить.</p>
         <div className="theory-subsection">
           <h3 className="theory-heading-3">Языки</h3>
           <ul className="theory-list">
-            <li className="theory-list-item"><strong>Python</strong> — скрипты, автоматизация, инструменты анализа</li>
-            <li className="theory-list-item"><strong>Bash / Shell</strong> — работа в Linux</li>
+            <li className="theory-list-item"><a href="https://www.python.org/doc" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-lime)' }}><strong>Python</strong></a> — скрипты, автоматизация, инструменты анализа</li>
+            <li className="theory-list-item"><a href="https://www.gnu.org/software/bash/manual" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-lime)' }}><strong>Bash / Shell</strong></a> — работа в Linux</li>
             <li className="theory-list-item"><strong>C / C++</strong> — уязвимости низкого уровня, reverse engineering</li>
           </ul>
         </div>
         <div className="theory-subsection">
           <h3 className="theory-heading-3">Ключевые инструменты</h3>
           <ul className="theory-list">
-            <li className="theory-list-item"><strong>Kali Linux / Parrot OS</strong> — дистрибутивы для пентеста</li>
-            <li className="theory-list-item"><strong>Nmap</strong> — сетевое сканирование, <strong>Burp Suite</strong> — анализ веб-приложений</li>
-            <li className="theory-list-item"><strong>Wireshark</strong> — анализ трафика, <strong>Metasploit</strong> — тестирование на проникновение</li>
+            <li className="theory-list-item"><a href="https://www.kali.org" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-lime)' }}><strong>Kali Linux</strong></a> / <a href="https://www.parrotsec.org" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-lime)' }}><strong>Parrot OS</strong></a> — дистрибутивы для пентеста</li>
+            <li className="theory-list-item"><a href="https://nmap.org" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-lime)' }}><strong>Nmap</strong></a> — сетевое сканирование, <a href="https://portswigger.net/burp" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-lime)' }}><strong>Burp Suite</strong></a> — анализ веб-приложений</li>
+            <li className="theory-list-item"><a href="https://www.wireshark.org" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-lime)' }}><strong>Wireshark</strong></a> — анализ трафика, <a href="https://www.metasploit.com" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-lime)' }}><strong>Metasploit</strong></a> — тестирование на проникновение</li>
           </ul>
         </div>
       </section>
 
       <section className="theory-section">
-        <h2 className="theory-heading-2">2.6. Универсальные инструменты разработчика</h2>
+        <h2 className="theory-heading-2">Универсальные инструменты разработчика</h2>
         <p className="theory-intro">Независимо от направления есть инструменты, которые нужны всем.</p>
         <ul className="theory-list">
-          <li className="theory-list-item"><strong>Git</strong> — система контроля версий (абсолютный стандарт). GitHub / GitLab / Bitbucket, CI/CD</li>
-          <li className="theory-list-item"><strong>Командная строка и Linux</strong> — большинство серверов на Linux. SSH, bash-скрипты</li>
-          <li className="theory-list-item"><strong>Docker</strong> — контейнеризация, решает «у меня работает, а на сервере нет». Kubernetes для оркестрации</li>
-          <li className="theory-list-item"><strong>Облачные платформы</strong> — AWS, Google Cloud, Azure</li>
-          <li className="theory-list-item"><strong>REST API и HTTP</strong> — методы, статус-коды, JSON. Postman для тестирования</li>
-          <li className="theory-list-item"><strong>VS Code</strong> — самый популярный редактор. JetBrains IDE, Neovim</li>
-          <li className="theory-list-item"><strong>AI-инструменты</strong> — GitHub Copilot, Cursor, Claude, ChatGPT</li>
+          <li className="theory-list-item"><a href="https://git-scm.com" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-lime)' }}><strong>Git</strong></a> — система контроля версий (абсолютный стандарт). <a href="https://github.com" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-lime)' }}>GitHub</a>, <a href="https://gitlab.com" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-lime)' }}>GitLab</a>, <a href="https://bitbucket.org" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-lime)' }}>Bitbucket</a>, CI/CD</li>
+          <li className="theory-list-item"><strong>Командная строка и Linux</strong> — большинство серверов на Linux. <a href="https://www.man7.org/linux/man-pages/man1/ssh.1.html" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-lime)' }}>SSH</a>, bash-скрипты</li>
+          <li className="theory-list-item"><a href="https://docker.com" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-lime)' }}><strong>Docker</strong></a> — контейнеризация, решает «у меня работает, а на сервере нет». <a href="https://kubernetes.io" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-lime)' }}>Kubernetes</a> для оркестрации</li>
+          <li className="theory-list-item"><strong>Облачные платформы:</strong> <a href="https://aws.amazon.com" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-lime)' }}>AWS</a>, <a href="https://cloud.google.com" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-lime)' }}>Google Cloud</a>, <a href="https://azure.microsoft.com" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-lime)' }}>Azure</a></li>
+          <li className="theory-list-item"><strong>REST API и HTTP</strong> — методы, статус-коды, JSON. <a href="https://www.postman.com" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-lime)' }}>Postman</a> для тестирования</li>
+          <li className="theory-list-item"><a href="https://code.visualstudio.com" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-lime)' }}><strong>VS Code</strong></a> — самый популярный редактор. <a href="https://www.jetbrains.com" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-lime)' }}>JetBrains IDE</a>, <a href="https://neovim.io" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-lime)' }}>Neovim</a></li>
+          <li className="theory-list-item"><strong>AI-инструменты:</strong> <a href="https://github.com/features/copilot" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-lime)' }}>GitHub Copilot</a>, <a href="https://cursor.sh" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-lime)' }}>Cursor</a>, <a href="https://claude.ai" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-lime)' }}>Claude</a>, <a href="https://chatgpt.com" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-lime)' }}>ChatGPT</a></li>
         </ul>
       </section>
 
       <section className="theory-section">
         <h2 className="theory-heading-2">Рынок труда 2026: что выбрать</h2>
         <TheoryTable
-          headers={['Направление', 'Топ-стек', 'Спрос']}
+          headers={['Направление', 'Топ-стек']}
           rows={[
-            ['Фронтенд', 'TypeScript + React/Next.js, Tailwind + Vite', '⭐⭐⭐⭐⭐'],
-            ['Бэкенд', 'Python (FastAPI/Django), Node.js (NestJS), Go', '⭐⭐⭐⭐⭐'],
-            ['Аналитика', 'Python + SQL, dbt, BI-инструменты', '⭐⭐⭐⭐'],
-            ['ML/AI', 'PyTorch + scikit-learn, LangChain, Hugging Face', '⭐⭐⭐⭐⭐'],
-            ['Кибербезопасность', 'Python + Linux + Bash', '⭐⭐⭐⭐'],
+            ['Фронтенд', 'TypeScript + React/Next.js, Tailwind + Vite'],
+            ['Бэкенд', 'Python (FastAPI/Django), Node.js (NestJS), Go'],
+            ['Аналитика', 'Python + SQL, dbt, BI-инструменты'],
+            ['ML/AI', 'PyTorch + scikit-learn, LangChain, Hugging Face'],
+            ['Кибербезопасность', 'Python + Linux + Bash'],
           ]}
         />
-      </section>
-
-      <section className="theory-section">
-        <h2 className="theory-heading-2">Как выбрать первый язык</h2>
-        <TheoryExample title="Хочешь веб (frontend)">
-          <p>🎯 <strong>JavaScript / TypeScript</strong> — единственный выбор для браузера</p>
-        </TheoryExample>
-        <TheoryExample title="Хочешь веб (backend)">
-          <p>🎯 <strong>Python</strong> (просто учиться) или <strong>JavaScript/Node.js</strong></p>
-        </TheoryExample>
-        <TheoryExample title="Хочешь аналитику или ML">
-          <p>🎯 <strong>Python + SQL</strong> — обязательный минимум</p>
-        </TheoryExample>
       </section>
 
       <section className="theory-section theory-section--closing">
