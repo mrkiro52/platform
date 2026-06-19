@@ -5,7 +5,6 @@ import DayModal from './components/DayModal'
 import Dashboard from './pages/Dashboard'
 import Schedule from './pages/Schedule'
 import Library from './pages/Library'
-import Tasks from './pages/Tasks'
 import Links from './pages/Links'
 import TheoryPage from './pages/TheoryPage'
 import QuestionsPage from './pages/QuestionsPage'
@@ -17,7 +16,6 @@ const PAGES = {
   dashboard: Dashboard,
   schedule:  Schedule,
   library:   Library,
-  tasks:     Tasks,
   links:     Links,
   theory:    TheoryPage,
   questions: QuestionsPage,

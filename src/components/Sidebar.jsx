@@ -8,7 +8,6 @@ const NAV_ITEMS = [
   { page:'dashboard', label:'Дэшборд' },
   { page:'schedule',  label:'Расписание' },
   { page:'library',   label:'Библиотека знаний' },
-  { page:'tasks',     label:'Задания' },
   { page:'links',     label:'Полезные ссылки' },
   { page:'likebezy',  label:'Полные ликбезы' },
 ]

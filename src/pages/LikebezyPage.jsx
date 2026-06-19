@@ -18,9 +18,6 @@ const COMING = [
   { title: 'NumPy', tag: 'Python', desc: 'Массивы, линейная алгебра, векторизация' },
   { title: 'SQL (полный курс)', tag: 'Database', desc: 'SELECT до оконных функций и оптимизации' },
   { title: 'Git & GitHub', tag: 'DevOps', desc: 'Ветки, merge, rebase, PR, CI/CD' },
-  { title: 'Docker', tag: 'DevOps', desc: 'Контейнеры, образы, Compose, сети' },
-  { title: 'FastAPI', tag: 'Python', desc: 'REST API: роутинг, модели, авторизация' },
-  { title: 'React', tag: 'JavaScript', desc: 'Компоненты, хуки, управление состоянием' },
 ]
 
 const TAG_COLORS = {

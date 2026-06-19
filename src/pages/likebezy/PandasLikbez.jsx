@@ -1,11 +1,38 @@
 import { useEffect } from 'react'
 
-const Code = ({ code, lang = 'python' }) => (
-  <div className="theory-code-block">
-    <div className="theory-code-label">{lang}</div>
-    <pre className="theory-code"><code>{code}</code></pre>
-  </div>
-)
+const Code = ({ code, lang = 'python' }) => {
+  const lines = code.split('\n')
+  return (
+    <div className="theory-code-block">
+      <div className="theory-code-label">{lang}</div>
+      <pre className="theory-code">
+        <code>
+          {lines.map((line, i) => {
+            const commentIdx = line.indexOf('#')
+            if (commentIdx === -1) {
+              return <span key={i}>{line}{i < lines.length - 1 ? '\n' : ''}</span>
+            }
+            // check if # is inside a string
+            const beforeHash = line.slice(0, commentIdx)
+            const singlesBefore = (beforeHash.match(/'/g) || []).length
+            const doublesBefore = (beforeHash.match(/"/g) || []).length
+            const inString = singlesBefore % 2 !== 0 || doublesBefore % 2 !== 0
+            if (inString) {
+              return <span key={i}>{line}{i < lines.length - 1 ? '\n' : ''}</span>
+            }
+            return (
+              <span key={i}>
+                <span style={{ color: 'var(--text-primary)' }}>{line.slice(0, commentIdx)}</span>
+                <span style={{ color: '#6b7280' }}>{line.slice(commentIdx)}</span>
+                {i < lines.length - 1 ? '\n' : ''}
+              </span>
+            )
+          })}
+        </code>
+      </pre>
+    </div>
+  )
+}
 
 const Note = ({ children }) => (
   <div style={{
@@ -170,7 +197,7 @@ const TOC = [
   { id: 'pivot',        label: '17. Pivot tables' },
   { id: 'window',       label: '18. Оконные функции' },
   { id: 'performance',  label: '19. Производительность' },
-  { id: 'cheatsheet',   label: '20. Шпаргалка методов' },
+  { id: 'cheatsheet',   label: '20. Шпаргалка всех методов' },
 ]
 
 export default function PandasLikbez({ onBack }) {
@@ -243,7 +270,7 @@ export default function PandasLikbez({ onBack }) {
         <div style={{ color: 'var(--text-tertiary)', fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', marginBottom: 14 }}>
           Содержание
         </div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(230px, 1fr))', gap: '6px 24px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '6px 24px' }}>
           {TOC.map(item => (
             <button
               key={item.id}
