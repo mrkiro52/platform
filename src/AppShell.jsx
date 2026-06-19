@@ -11,6 +11,7 @@ import TheoryPage from './pages/TheoryPage'
 import QuestionsPage from './pages/QuestionsPage'
 import HomeworkPage from './pages/HomeworkPage'
 import Announcements from './pages/Announcements'
+import LikebezyPage from './pages/LikebezyPage'
 
 const PAGES = {
   dashboard: Dashboard,
@@ -22,6 +23,7 @@ const PAGES = {
   questions: QuestionsPage,
   homework:  HomeworkPage,
   announcements: Announcements,
+  likebezy: LikebezyPage,
 }
 
 const VALID_PAGES = Object.keys(PAGES)

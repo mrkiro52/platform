@@ -10,6 +10,7 @@ const NAV_ITEMS = [
   { page:'library',   label:'Библиотека знаний' },
   { page:'tasks',     label:'Задания' },
   { page:'links',     label:'Полезные ссылки' },
+  { page:'likebezy',  label:'Полные ликбезы' },
 ]
 
 export default function Sidebar({ user, currentPage, onNavigate, onLogout, onClose }) {
