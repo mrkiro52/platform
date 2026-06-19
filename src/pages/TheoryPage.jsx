@@ -1,5 +1,40 @@
 import { useEffect, useState } from 'react'
 import { SCHEDULE } from '../data'
+import VideoPlayer from '../components/VideoPlayer'
+
+// Ссылки на видео для каждого дня. Пустая строка = нет видео.
+const VIDEO_URLS = {
+  1: '',
+  2: '',
+  3: '',
+  4: 'https://s3.regru.cloud/kirocamp/day4.mov',
+  5: '',
+  6: '',
+  7: '',
+  8: '',
+  9: '',
+  10: '',
+  11: '',
+  12: '',
+  13: '',
+  14: '',
+  15: '',
+  16: '',
+  17: '',
+  18: '',
+  19: '',
+  20: '',
+  21: '',
+  22: '',
+  23: '',
+  24: '',
+  25: '',
+  26: '',
+  27: '',
+  28: '',
+  29: '',
+  30: '',
+}
 import Day1IntroTheory from '../theory/day-1-intro'
 import Day2BasicsTheory from '../theory/day-2-basics'
 import Day3LoopsTheory from '../theory/day-3-loops'
@@ -116,6 +151,7 @@ export default function TheoryPage({ selectedDay, onBack }) {
         </span>
       </div>
 
+      {VIDEO_URLS[selectedDay] && <VideoPlayer src={VIDEO_URLS[selectedDay]} />}
       <TheoryComponent />
 
       <div className="theory-footer">
