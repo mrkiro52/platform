@@ -21,12 +21,6 @@ export default function VideoPlayer({ src }) {
     else { v.pause(); setPlaying(false) }
   }, [])
 
-  const skip = useCallback((sec) => {
-    const v = videoRef.current
-    if (!v) return
-    v.currentTime = Math.max(0, Math.min(v.duration || 0, v.currentTime + sec))
-  }, [])
-
   const setPlaybackSpeed = useCallback((s) => {
     const v = videoRef.current
     if (v) v.playbackRate = s
@@ -100,11 +94,12 @@ export default function VideoPlayer({ src }) {
 
   return (
     <div style={{
+      maxWidth: 800,
+      margin: '0 auto 32px',
       background: '#0d0d18',
       borderRadius: '12px',
       overflow: 'hidden',
       border: '1px solid var(--border-color)',
-      marginBottom: '32px',
     }}>
       {/* Видео */}
       <div style={{ position: 'relative', background: '#000', cursor: 'pointer' }} onClick={togglePlay}>
@@ -114,7 +109,6 @@ export default function VideoPlayer({ src }) {
           style={{ width: '100%', display: 'block', maxHeight: '480px', objectFit: 'contain' }}
           preload="metadata"
         />
-        {/* Большая кнопка play по центру когда на паузе */}
         {!playing && (
           <div style={{
             position: 'absolute', inset: 0, display: 'flex',
@@ -139,24 +133,16 @@ export default function VideoPlayer({ src }) {
       <div
         ref={progressRef}
         onClick={handleProgressClick}
-        style={{
-          height: 4, background: 'var(--bg-tertiary)',
-          cursor: 'pointer', position: 'relative',
-        }}
+        style={{ height: 4, background: 'var(--bg-tertiary)', cursor: 'pointer', position: 'relative' }}
       >
-        {/* Буфер */}
         <div style={{
           position: 'absolute', left: 0, top: 0, height: '100%',
-          width: `${buffered}%`, background: 'rgba(255,255,255,0.1)',
-          transition: 'width 0.3s',
+          width: `${buffered}%`, background: 'rgba(255,255,255,0.1)', transition: 'width 0.3s',
         }} />
-        {/* Прогресс */}
         <div style={{
           position: 'absolute', left: 0, top: 0, height: '100%',
-          width: `${progress}%`, background: 'var(--accent-lime)',
-          transition: 'width 0.1s',
+          width: `${progress}%`, background: 'var(--accent-lime)', transition: 'width 0.1s',
         }} />
-        {/* Ползунок */}
         <div style={{
           position: 'absolute', top: '50%', left: `${progress}%`,
           transform: 'translate(-50%, -50%)',
@@ -168,19 +154,10 @@ export default function VideoPlayer({ src }) {
 
       {/* Контролы */}
       <div style={{
-        display: 'flex', alignItems: 'center', gap: 8,
+        display: 'flex', alignItems: 'center', gap: 12,
         padding: '10px 16px',
         background: 'var(--bg-secondary)',
       }}>
-        {/* Перемотка назад */}
-        <CtrlBtn title="−10 сек" onClick={() => skip(-10)}>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-            <polyline points="1,4 1,10 7,10" />
-            <path d="M3.51 15a9 9 0 1 0 .49-4.5" />
-            <text x="8" y="16" fontSize="6" fill="currentColor" stroke="none" fontWeight="bold">10</text>
-          </svg>
-        </CtrlBtn>
-
         {/* Play/Pause */}
         <button
           onClick={togglePlay}
@@ -189,7 +166,7 @@ export default function VideoPlayer({ src }) {
             background: 'var(--accent-lime)', border: 'none',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             cursor: 'pointer', flexShrink: 0,
-            transition: 'transform 0.15s, opacity 0.15s',
+            transition: 'transform 0.15s',
           }}
           onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.1)'}
           onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
@@ -200,19 +177,10 @@ export default function VideoPlayer({ src }) {
           }
         </button>
 
-        {/* Перемотка вперёд */}
-        <CtrlBtn title="+10 сек" onClick={() => skip(10)}>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-            <polyline points="23,4 23,10 17,10" />
-            <path d="M20.49 15a9 9 0 1 1-.49-4.5" />
-            <text x="8" y="16" fontSize="6" fill="currentColor" stroke="none" fontWeight="bold">10</text>
-          </svg>
-        </CtrlBtn>
-
         {/* Время */}
         <span style={{
           color: 'var(--text-secondary)', fontSize: 13,
-          fontVariantNumeric: 'tabular-nums', flexShrink: 0, marginLeft: 4,
+          fontVariantNumeric: 'tabular-nums', flexShrink: 0,
         }}>
           {fmt(currentTime)} / {fmt(duration)}
         </span>
@@ -241,7 +209,7 @@ export default function VideoPlayer({ src }) {
               padding: '4px 10px', borderRadius: 6,
               background: showSpeedMenu ? 'var(--bg-tertiary)' : 'transparent',
               fontSize: 13, fontWeight: 600, color: 'var(--accent-lime)',
-              minWidth: 44,
+              minWidth: 44, border: '1px solid var(--border-color)',
             }}
           >
             {speed}×
@@ -264,8 +232,7 @@ export default function VideoPlayer({ src }) {
                     background: s === speed ? 'rgba(200,255,0,0.1)' : 'transparent',
                     color: s === speed ? 'var(--accent-lime)' : 'var(--text-primary)',
                     border: 'none', cursor: 'pointer', fontSize: 13, fontWeight: 500,
-                    textAlign: 'center',
-                    transition: 'background 0.15s',
+                    textAlign: 'center', transition: 'background 0.15s',
                   }}
                   onMouseEnter={e => { if (s !== speed) e.currentTarget.style.background = 'rgba(255,255,255,0.05)' }}
                   onMouseLeave={e => { if (s !== speed) e.currentTarget.style.background = 'transparent' }}
@@ -287,26 +254,4 @@ const iconBtnStyle = {
   padding: '4px', borderRadius: 4, display: 'flex',
   alignItems: 'center', justifyContent: 'center',
   transition: 'color 0.15s',
-}
-
-function CtrlBtn({ onClick, title, children }) {
-  return (
-    <button
-      onClick={onClick}
-      title={title}
-      style={{
-        background: 'transparent', border: '1px solid var(--border-color)',
-        borderRadius: 6, padding: '5px 8px',
-        color: 'var(--text-secondary)', cursor: 'pointer',
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-        transition: 'border-color 0.15s, color 0.15s',
-        fontSize: 12, gap: 4,
-      }}
-      onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--accent-lime)'; e.currentTarget.style.color = 'var(--accent-lime)' }}
-      onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--border-color)'; e.currentTarget.style.color = 'var(--text-secondary)' }}
-    >
-      {children}
-      <span style={{ fontSize: 11 }}>{title}</span>
-    </button>
-  )
 }

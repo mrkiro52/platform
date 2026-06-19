@@ -151,8 +151,7 @@ export default function TheoryPage({ selectedDay, onBack }) {
         </span>
       </div>
 
-      {VIDEO_URLS[selectedDay] && <VideoPlayer src={VIDEO_URLS[selectedDay]} />}
-      <TheoryComponent />
+      <TheoryComponent videoUrl={VIDEO_URLS[selectedDay] || null} />
 
       <div className="theory-footer">
         <button className="btn-back" onClick={onBack}>

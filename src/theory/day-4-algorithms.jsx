@@ -1,6 +1,7 @@
 import { TheoryTable, TheoryCode, TheoryExample } from './components/TheoryTable'
+import VideoPlayer from '../components/VideoPlayer'
 
-export default function Day4AlgorithmsTheory() {
+export default function Day4AlgorithmsTheory({ videoUrl }) {
   return (
     <div className="theory-container">
       <section className="theory-section">
@@ -8,6 +9,8 @@ export default function Day4AlgorithmsTheory() {
         <p className="theory-subtitle">Алгоритмическое мышление и Big O</p>
         <p className="theory-date">4 июня 2026</p>
       </section>
+
+      {videoUrl && <VideoPlayer src={videoUrl} />}
 
       <section className="theory-section">
         <h2 className="theory-heading-2">Что такое алгоритм?</h2>
