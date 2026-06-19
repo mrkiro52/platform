@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import PandasLikbez from './likebezy/PandasLikbez'
+import SqlLikbez from './likebezy/SqlLikbez'
 
 const LIKEBEZY = [
   {
@@ -12,11 +13,20 @@ const LIKEBEZY = [
     topics: ['Series & DataFrame', 'Фильтрация и индексация', 'GroupBy & Pivot', 'Merge & Concat', 'Работа с датами'],
     component: PandasLikbez,
   },
+  {
+    id: 'sql',
+    title: 'SQL',
+    subtitle: 'Полный курс по базам данных',
+    tag: 'Database',
+    level: 'Новичок → Middle',
+    time: '~50 мин',
+    topics: ['SELECT & WHERE', 'GROUP BY & JOIN', 'NULL & CASE WHEN', 'Подзапросы', 'PostgreSQL vs MongoDB'],
+    component: SqlLikbez,
+  },
 ]
 
 const COMING = [
   { title: 'NumPy', tag: 'Python', desc: 'Массивы, линейная алгебра, векторизация' },
-  { title: 'SQL (полный курс)', tag: 'Database', desc: 'SELECT до оконных функций и оптимизации' },
   { title: 'Git & GitHub', tag: 'DevOps', desc: 'Ветки, merge, rebase, PR, CI/CD' },
 ]
 
