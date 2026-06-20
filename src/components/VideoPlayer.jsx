@@ -11,8 +11,20 @@ export default function VideoPlayer({ src }) {
   const [muted, setMuted] = useState(false)
   const [buffered, setBuffered] = useState(0)
   const [showSpeedMenu, setShowSpeedMenu] = useState(false)
+  const [isFullscreen, setIsFullscreen] = useState(false)
+  const containerRef = useRef(null)
 
   const SPEEDS = [0.5, 1, 1.5, 2]
+
+  const toggleFullscreen = useCallback(() => {
+    const el = containerRef.current
+    if (!el) return
+    if (!document.fullscreenElement) {
+      el.requestFullscreen()
+    } else {
+      document.exitFullscreen()
+    }
+  }, [])
 
   const togglePlay = useCallback(() => {
     const v = videoRef.current
@@ -83,6 +95,12 @@ export default function VideoPlayer({ src }) {
     return () => document.removeEventListener('click', close)
   }, [])
 
+  useEffect(() => {
+    const onFsChange = () => setIsFullscreen(!!document.fullscreenElement)
+    document.addEventListener('fullscreenchange', onFsChange)
+    return () => document.removeEventListener('fullscreenchange', onFsChange)
+  }, [])
+
   const fmt = (s) => {
     if (!s || isNaN(s)) return '0:00'
     const m = Math.floor(s / 60)
@@ -93,7 +111,7 @@ export default function VideoPlayer({ src }) {
   const progress = duration ? (currentTime / duration) * 100 : 0
 
   return (
-    <div style={{
+    <div ref={containerRef} style={{
       maxWidth: 800,
       margin: '0 auto 32px',
       background: '#0d0d18',
@@ -243,6 +261,14 @@ export default function VideoPlayer({ src }) {
             </div>
           )}
         </div>
+
+        {/* Fullscreen */}
+        <button onClick={toggleFullscreen} style={iconBtnStyle} title={isFullscreen ? 'Свернуть' : 'На весь экран'}>
+          {isFullscreen
+            ? <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M8 3v3a2 2 0 0 1-2 2H3"/><path d="M21 8h-3a2 2 0 0 1-2-2V3"/><path d="M3 16h3a2 2 0 0 1 2 2v3"/><path d="M16 21v-3a2 2 0 0 1 2-2h3"/></svg>
+            : <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg>
+          }
+        </button>
       </div>
     </div>
   )
