@@ -115,16 +115,30 @@ export default function VideoPlayer({ src }) {
       maxWidth: 800,
       margin: '0 auto 32px',
       background: '#0d0d18',
-      borderRadius: '12px',
+      borderRadius: isFullscreen ? 0 : '12px',
       overflow: 'hidden',
       border: '1px solid var(--border-color)',
+      ...(isFullscreen && {
+        display: 'flex', flexDirection: 'column',
+        width: '100vw', height: '100vh',
+        maxWidth: 'none', margin: 0,
+      }),
     }}>
       {/* Видео */}
-      <div style={{ position: 'relative', background: '#000', cursor: 'pointer' }} onClick={togglePlay}>
+      <div
+        style={{
+          position: 'relative', background: '#000', cursor: 'pointer',
+          ...(isFullscreen && { flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }),
+        }}
+        onClick={togglePlay}
+      >
         <video
           ref={videoRef}
           src={src}
-          style={{ width: '100%', display: 'block', maxHeight: '480px', objectFit: 'contain' }}
+          style={{
+            width: '100%', display: 'block',
+            ...(isFullscreen ? { width: '100%', height: '100%', objectFit: 'contain' } : { maxHeight: '480px', objectFit: 'contain' }),
+          }}
           preload="metadata"
         />
         {!playing && (
