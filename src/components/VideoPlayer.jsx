@@ -12,7 +12,10 @@ export default function VideoPlayer({ src }) {
   const [buffered, setBuffered] = useState(0)
   const [showSpeedMenu, setShowSpeedMenu] = useState(false)
   const [isFullscreen, setIsFullscreen] = useState(false)
+  const [dragging, setDragging] = useState(false)
+  const [dragProgress, setDragProgress] = useState(0)
   const containerRef = useRef(null)
+  const wasPausedRef = useRef(false)
 
   const SPEEDS = [0.5, 1, 1.5, 2]
 
@@ -40,14 +43,43 @@ export default function VideoPlayer({ src }) {
     setShowSpeedMenu(false)
   }, [])
 
-  const handleProgressClick = useCallback((e) => {
-    const v = videoRef.current
+  const getRatio = (clientX) => {
     const bar = progressRef.current
-    if (!v || !bar || !v.duration) return
+    if (!bar) return 0
     const rect = bar.getBoundingClientRect()
-    const ratio = (e.clientX - rect.left) / rect.width
-    v.currentTime = ratio * v.duration
+    return Math.max(0, Math.min(1, (clientX - rect.left) / rect.width))
+  }
+
+  const handleProgressMouseDown = useCallback((e) => {
+    const v = videoRef.current
+    if (!v || !v.duration) return
+    wasPausedRef.current = v.paused
+    if (!v.paused) v.pause()
+    setDragging(true)
+    setDragProgress(getRatio(e.clientX) * 100)
   }, [])
+
+  useEffect(() => {
+    const onMouseMove = (e) => {
+      if (!dragging) return
+      setDragProgress(getRatio(e.clientX) * 100)
+    }
+    const onMouseUp = (e) => {
+      if (!dragging) return
+      const v = videoRef.current
+      if (v && v.duration) {
+        v.currentTime = getRatio(e.clientX) * v.duration
+      }
+      setDragging(false)
+      if (!wasPausedRef.current && v) { v.play(); setPlaying(true) }
+    }
+    document.addEventListener('mousemove', onMouseMove)
+    document.addEventListener('mouseup', onMouseUp)
+    return () => {
+      document.removeEventListener('mousemove', onMouseMove)
+      document.removeEventListener('mouseup', onMouseUp)
+    }
+  }, [dragging])
 
   const handleVolumeChange = useCallback((e) => {
     const v = videoRef.current
@@ -108,7 +140,7 @@ export default function VideoPlayer({ src }) {
     return `${m}:${sec.toString().padStart(2, '0')}`
   }
 
-  const progress = duration ? (currentTime / duration) * 100 : 0
+  const progress = dragging ? dragProgress : (duration ? (currentTime / duration) * 100 : 0)
 
   return (
     <div ref={containerRef} style={{
@@ -164,8 +196,13 @@ export default function VideoPlayer({ src }) {
       {/* Прогресс-бар */}
       <div
         ref={progressRef}
-        onClick={handleProgressClick}
-        style={{ height: 4, background: 'var(--bg-tertiary)', cursor: 'pointer', position: 'relative' }}
+        onMouseDown={handleProgressMouseDown}
+        style={{
+          height: dragging ? 6 : 4, background: 'var(--bg-tertiary)',
+          cursor: 'pointer', position: 'relative',
+          transition: 'height 0.1s',
+          userSelect: 'none',
+        }}
       >
         <div style={{
           position: 'absolute', left: 0, top: 0, height: '100%',
@@ -173,14 +210,16 @@ export default function VideoPlayer({ src }) {
         }} />
         <div style={{
           position: 'absolute', left: 0, top: 0, height: '100%',
-          width: `${progress}%`, background: 'var(--accent-lime)', transition: 'width 0.1s',
+          width: `${progress}%`, background: 'var(--accent-lime)',
         }} />
         <div style={{
           position: 'absolute', top: '50%', left: `${progress}%`,
           transform: 'translate(-50%, -50%)',
-          width: 12, height: 12, borderRadius: '50%',
+          width: dragging ? 16 : 12, height: dragging ? 16 : 12,
+          borderRadius: '50%',
           background: 'var(--accent-lime)',
-          boxShadow: '0 0 6px rgba(200,255,0,0.6)',
+          boxShadow: dragging ? '0 0 10px rgba(200,255,0,0.8)' : '0 0 6px rgba(200,255,0,0.6)',
+          transition: 'width 0.1s, height 0.1s, box-shadow 0.1s',
         }} />
       </div>
 
