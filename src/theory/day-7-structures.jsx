@@ -1,6 +1,7 @@
 import { TheoryTable, TheoryCode, TheoryExample } from './components/TheoryTable'
+import VideoPlayer from '../components/VideoPlayer'
 
-export default function Day7StructuresTheory() {
+export default function Day7StructuresTheory({ videoUrl }) {
   return (
     <div className="theory-container">
       <section className="theory-section">
@@ -8,6 +9,8 @@ export default function Day7StructuresTheory() {
         <p className="theory-subtitle">Структуры данных: массивы и связанные списки</p>
         <p className="theory-date">7 июня 2026</p>
       </section>
+
+      {videoUrl && <VideoPlayer src={videoUrl} />}
 
       <section className="theory-section">
         <h2 className="theory-heading-2">Массив (Array)</h2>

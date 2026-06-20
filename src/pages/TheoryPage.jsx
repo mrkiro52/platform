@@ -10,7 +10,7 @@ const VIDEO_URLS = {
   4: 'https://s3.regru.cloud/kirocamp/day4.mp4',
   5: '',
   6: '',
-  7: '',
+  7: 'https://s3.regru.cloud/kirocamp/day7.mp4',
   8: '',
   9: '',
   10: '',
