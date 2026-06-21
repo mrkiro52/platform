@@ -1,7 +1,9 @@
-import { useState, useEffect } from 'react'
+import { useEffect } from 'react'
+import { Routes, Route, Navigate, useNavigate, useParams } from 'react-router-dom'
 import Sidebar from './components/Sidebar'
 import TopBar from './components/TopBar'
 import DayModal from './components/DayModal'
+import { useState } from 'react'
 import Dashboard from './pages/Dashboard'
 import Schedule from './pages/Schedule'
 import Library from './pages/Library'
@@ -12,70 +14,48 @@ import HomeworkPage from './pages/HomeworkPage'
 import Announcements from './pages/Announcements'
 import LikebezyPage from './pages/LikebezyPage'
 
-const PAGES = {
-  dashboard: Dashboard,
-  schedule:  Schedule,
-  library:   Library,
-  links:     Links,
-  theory:    TheoryPage,
-  questions: QuestionsPage,
-  homework:  HomeworkPage,
-  announcements: Announcements,
-  likebezy: LikebezyPage,
+function TheoryRoute() {
+  const { day } = useParams()
+  const navigate = useNavigate()
+  return <TheoryPage selectedDay={Number(day)} onBack={() => navigate('/library')} />
 }
 
-const VALID_PAGES = Object.keys(PAGES)
+function QuestionsRoute() {
+  const { day } = useParams()
+  const navigate = useNavigate()
+  return <QuestionsPage selectedDay={Number(day)} onBack={() => navigate('/library')} />
+}
+
+function HomeworkRoute() {
+  const { day } = useParams()
+  const navigate = useNavigate()
+  return <HomeworkPage selectedDay={Number(day)} onBack={() => navigate('/library')} />
+}
+
+function AnnouncementsRoute() {
+  const navigate = useNavigate()
+  return <Announcements onBack={() => navigate('/dashboard')} />
+}
 
 export default function AppShell({ user, onLogout }) {
-  const [currentPage, setCurrentPage] = useState('dashboard')
+  const navigate = useNavigate()
+  const [dayModal, setDayModal] = useState(null)
   const [sidebarOpen, setSidebarOpen] = useState(false)
-  const [dayModal, setDayModal]       = useState(null)
-  const [selectedDay, setSelectedDay] = useState(null)
 
   useEffect(() => {
     document.body.className = 'app-page'
     return () => { document.body.className = '' }
   }, [])
 
-  const navigate = (page) => {
-    if (VALID_PAGES.includes(page)) {
-      setCurrentPage(page)
-      setSidebarOpen(false)
-    }
-  }
-
-  const openTheory = (day) => {
-    setSelectedDay(day.day)
-    setCurrentPage('theory')
-  }
-
-  const openQuestions = (day) => {
-    setSelectedDay(day.day)
-    setCurrentPage('questions')
-  }
-
-  const openHomework = (day) => {
-    setSelectedDay(day.day)
-    setCurrentPage('homework')
-  }
-
-  const backToLibrary = () => {
-    setCurrentPage('library')
-  }
-
-  const backToDashboard = () => {
-    setCurrentPage('dashboard')
-  }
-
-  const PageComponent = PAGES[currentPage] || Schedule
+  const openTheory    = (day) => navigate(`/library/theory/${day.day}`)
+  const openQuestions = (day) => navigate(`/library/questions/${day.day}`)
+  const openHomework  = (day) => navigate(`/library/homework/${day.day}`)
 
   return (
     <>
       <aside id="sidebar" className={`sidebar${sidebarOpen ? ' open' : ''}`}>
         <Sidebar
           user={user}
-          currentPage={currentPage}
-          onNavigate={navigate}
           onLogout={onLogout}
           onClose={() => setSidebarOpen(false)}
         />
@@ -88,39 +68,32 @@ export default function AppShell({ user, onLogout }) {
       <div className="app-content">
         <TopBar
           user={user}
-          page={currentPage}
           onMenuClick={() => setSidebarOpen(true)}
         />
         <main className="pages-wrap">
-          {currentPage === 'theory' ? (
-            <TheoryPage
-              selectedDay={selectedDay}
-              onBack={backToLibrary}
-            />
-          ) : currentPage === 'questions' ? (
-            <QuestionsPage
-              selectedDay={selectedDay}
-              onBack={backToLibrary}
-            />
-          ) : currentPage === 'homework' ? (
-            <HomeworkPage
-              selectedDay={selectedDay}
-              onBack={backToLibrary}
-            />
-          ) : currentPage === 'announcements' ? (
-            <Announcements
-              onBack={backToDashboard}
-            />
-          ) : (
-            <PageComponent
-              user={user}
-              onNavigate={navigate}
-              onOpenDay={setDayModal}
-              onOpenTheory={openTheory}
-              onOpenQuestions={openQuestions}
-              onOpenHomework={openHomework}
-            />
-          )}
+          <Routes>
+            <Route path="/" element={<Navigate to="/dashboard" replace />} />
+            <Route path="/dashboard" element={
+              <Dashboard user={user} onNavigate={(p) => navigate(`/${p}`)} />
+            } />
+            <Route path="/schedule" element={<Schedule />} />
+            <Route path="/library" element={
+              <Library
+                onOpenDay={setDayModal}
+                onOpenTheory={openTheory}
+                onOpenQuestions={openQuestions}
+                onOpenHomework={openHomework}
+              />
+            } />
+            <Route path="/library/theory/:day"    element={<TheoryRoute />} />
+            <Route path="/library/questions/:day" element={<QuestionsRoute />} />
+            <Route path="/library/homework/:day"  element={<HomeworkRoute />} />
+            <Route path="/links"      element={<Links />} />
+            <Route path="/likebezy"   element={<LikebezyPage />} />
+            <Route path="/likebezy/:id" element={<LikebezyPage />} />
+            <Route path="/announcements" element={<AnnouncementsRoute />} />
+            <Route path="*" element={<Navigate to="/dashboard" replace />} />
+          </Routes>
         </main>
       </div>
 

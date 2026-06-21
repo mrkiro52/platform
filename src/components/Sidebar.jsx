@@ -1,20 +1,34 @@
 import { useState } from 'react'
+import { useNavigate, useLocation } from 'react-router-dom'
 
 function getInitials(name) {
   return (name || '').split(' ').map(p => p[0] || '').join('').toUpperCase().slice(0, 2) || '?'
 }
 
 const NAV_ITEMS = [
-  { page:'dashboard', label:'Дэшборд' },
-  { page:'schedule',  label:'Расписание' },
-  { page:'library',   label:'Библиотека знаний' },
-  { page:'links',     label:'Полезные ссылки' },
-  { page:'likebezy',  label:'Полные ликбезы' },
+  { path: '/dashboard', label: 'Дэшборд' },
+  { path: '/schedule',  label: 'Расписание' },
+  { path: '/library',   label: 'Библиотека знаний' },
+  { path: '/links',     label: 'Полезные ссылки' },
+  { path: '/likebezy',  label: 'Полные ликбезы' },
 ]
 
-export default function Sidebar({ user, currentPage, onNavigate, onLogout, onClose }) {
+export default function Sidebar({ user, onLogout, onClose }) {
   const [confirmLogout, setConfirmLogout] = useState(false)
+  const navigate = useNavigate()
+  const location = useLocation()
   const initials = getInitials(user?.name || '')
+
+  const handleNav = (path) => {
+    navigate(path)
+    onClose()
+  }
+
+  const isActive = (path) => {
+    if (path === '/library') return location.pathname.startsWith('/library')
+    if (path === '/likebezy') return location.pathname.startsWith('/likebezy')
+    return location.pathname === path
+  }
 
   return (
     <>
@@ -34,9 +48,9 @@ export default function Sidebar({ user, currentPage, onNavigate, onLogout, onClo
       <nav className="sidebar-nav">
         {NAV_ITEMS.map(item => (
           <button
-            key={item.page}
-            className={`nav-item${currentPage === item.page ? ' active' : ''}`}
-            onClick={() => onNavigate(item.page)}
+            key={item.path}
+            className={`nav-item${isActive(item.path) ? ' active' : ''}`}
+            onClick={() => handleNav(item.path)}
           >
             {item.label}
           </button>

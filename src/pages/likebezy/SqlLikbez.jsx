@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import SelfCheck from '../../components/SelfCheck'
 
 /* ─── Shared UI ─── */
 const Code = ({ code, lang = 'sql' }) => {
@@ -26,6 +27,17 @@ const Code = ({ code, lang = 'sql' }) => {
           })}
         </code>
       </pre>
+
+      <SelfCheck questions={[
+      {
+        q: 'Что нужно помнить о порядке ключевых слов в SELECT?',
+        a: 'SELECT ... FROM ... JOIN ... ON ... WHERE ... GROUP BY ... HAVING ... ORDER BY ... LIMIT. Нарушение порядка — синтаксическая ошибка. Запомни мнемонику: "Серьёзный Фермер Женился, Где Хотел, Огород Лопатил".',
+      }, {
+        q: 'Какие три типа JOIN используются чаще всего?',
+        a: 'INNER JOIN — пересечение (только совпадения). LEFT JOIN — все из левой + совпадения из правой. FULL OUTER JOIN — все строки из обеих таблиц. RIGHT JOIN используется редко, его можно заменить LEFT JOIN поменяв таблицы местами.',
+      }
+      ]} />
+
     </div>
   )
 }
@@ -263,6 +275,17 @@ export default function SqlLikbez({ onBack }) {
       <T name="users" cols={USERS.cols} rows={USERS.rows} caption="Таблица пользователей — 6 записей, 5 полей" />
       <T name="orders" cols={ORDERS.cols} rows={ORDERS.rows} caption="Таблица заказов — 6 записей, каждый заказ привязан к пользователю через user_id" />
 
+
+      <SelfCheck questions={[
+      {
+        q: 'Чем реляционная БД отличается от нереляционной?',
+        a: 'Реляционная (SQL) хранит данные в таблицах со строгой схемой, связанных через ключи. Нереляционная (NoSQL) — документы, пары ключ-значение или графы. SQL лучше для структурированных данных и сложных запросов.',
+      }, {
+        q: 'Для чего нужен первичный ключ (PRIMARY KEY)?',
+        a: 'Уникально идентифицирует каждую строку таблицы. Не может быть NULL и не может повторяться. Используется для связей между таблицами через внешний ключ (FOREIGN KEY).',
+      }
+      ]} />
+
       {/* ─── 2. CREATE TABLE ─── */}
       <SectionTitle id="create">2. CREATE TABLE — создание таблиц</SectionTitle>
       <P>Прежде чем добавлять данные, нужно создать таблицу и описать её столбцы с типами.</P>
@@ -319,6 +342,17 @@ DROP TABLE IF EXISTS orders;
 DELETE FROM users;   -- медленно, логируется
 TRUNCATE TABLE users; -- быстро (не в SQLite)`} />
 
+
+      <SelfCheck questions={[
+      {
+        q: 'Что такое NOT NULL ограничение?',
+        a: 'Запрещает вставку строки без значения в данном столбце. Если попытаться вставить NULL — получим ошибку. Используется для обязательных полей: email, имя пользователя и т.д.',
+      }, {
+        q: 'Чем VARCHAR отличается от TEXT?',
+        a: 'VARCHAR(n) — строка с ограничением длины n символов. TEXT — строка без ограничения длины. На практике TEXT удобнее, VARCHAR используют когда важно ограничение (например, код страны: VARCHAR(2)).',
+      }
+      ]} />
+
       {/* ─── 3. INSERT ─── */}
       <SectionTitle id="insert">3. INSERT — добавление данных</SectionTitle>
       <Code code={`-- Вставить одну строку
@@ -336,6 +370,17 @@ INSERT INTO users_archive (name, email)
 SELECT name, email FROM users WHERE age > 40;`} />
 
       <T name="users" cols={USERS.cols} rows={USERS.rows} hRows={[0, 1, 2, 3]} caption="Первые 4 строки — только что вставленные данные" />
+
+
+      <SelfCheck questions={[
+      {
+        q: 'Как вставить несколько строк одним запросом?',
+        a: 'INSERT INTO users (name, age) VALUES ("Alice", 25), ("Bob", 30), ("Carol", 22); — перечисли VALUES через запятую. Это быстрее, чем несколько отдельных INSERT.',
+      }, {
+        q: 'Что произойдёт если вставить строку без значения для NOT NULL столбца?',
+        a: 'БД вернёт ошибку и строка не будет добавлена. Если у столбца есть DEFAULT — будет использовано значение по умолчанию вместо NULL.',
+      }
+      ]} />
 
       {/* ─── 4. SELECT ─── */}
       <SectionTitle id="select">4. SELECT — выборка данных</SectionTitle>
@@ -358,6 +403,17 @@ SELECT
     UPPER(name) AS name_upper,        -- функция строк
     ROUND(price * 1.2, 2) AS price_with_vat
 FROM users;`} />
+
+
+      <SelfCheck questions={[
+      {
+        q: 'Что делает SELECT * FROM users?',
+        a: 'Выбирает ВСЕ столбцы всех строк из таблицы users. Звёздочка (*) = все столбцы. Для продакшн-кода лучше указывать конкретные столбцы — это быстрее и понятнее.',
+      }, {
+        q: 'Как создать псевдоним для столбца?',
+        a: 'SELECT name AS full_name, salary * 12 AS annual FROM employees. Ключевое слово AS создаёт псевдоним в результате запроса. Слово AS можно опустить: SELECT salary * 12 annual.',
+      }
+      ]} />
 
       {/* ─── 5. WHERE ─── */}
       <SectionTitle id="where">5. WHERE — фильтрация строк</SectionTitle>
@@ -402,6 +458,17 @@ SELECT * FROM users WHERE name LIKE 'Б_р_с'; -- _ — ровно 1 симво
 
       <Note>LIKE чувствителен к регистру в большинстве СУБД. В PostgreSQL используй ILIKE для регистронезависимого поиска.</Note>
 
+
+      <SelfCheck questions={[
+      {
+        q: 'Как найти записи где возраст от 18 до 30?',
+        a: 'WHERE age BETWEEN 18 AND 30 — включительно с обеих сторон. Или WHERE age >= 18 AND age <= 30. BETWEEN работает и со строками, и датами.',
+      }, {
+        q: 'Как найти всех пользователей из Москвы или Питера?',
+        a: 'WHERE city IN ("Москва", "Санкт-Петербург"). IN заменяет цепочку OR. Аналогично NOT IN для исключения значений.',
+      }
+      ]} />
+
       {/* ─── 6. ORDER BY ─── */}
       <SectionTitle id="orderby">6. ORDER BY, LIMIT, DISTINCT</SectionTitle>
 
@@ -429,6 +496,17 @@ SELECT DISTINCT city, age FROM users;    -- уникальные пары`} />
         </Result>
       </div>
 
+
+      <SelfCheck questions={[
+      {
+        q: 'Как получить 5 самых дорогих товаров?',
+        a: 'SELECT * FROM products ORDER BY price DESC LIMIT 5. DESC — убывающий порядок (от большего к меньшему). ASC (по умолчанию) — возрастающий.',
+      }, {
+        q: 'Что делает DISTINCT?',
+        a: 'SELECT DISTINCT city FROM users — убирает дубликаты, возвращает только уникальные значения. Применяется к результату, а не к исходным данным.',
+      }
+      ]} />
+
       {/* ─── 7. Агрегатные функции ─── */}
       <SectionTitle id="aggregate">7. Агрегатные функции</SectionTitle>
       <P>Агрегатные функции считают что-то по набору строк и возвращают одно значение.</P>
@@ -453,6 +531,17 @@ FROM users;`} />
       <Result>
         <T cols={['total_users', 'avg_age', 'max_age', 'min_age', 'sum_ages']} rows={[[6, 30.0, 42, 19, 180]]} hCols={[0,1,2,3,4]} />
       </Result>
+
+
+      <SelfCheck questions={[
+      {
+        q: 'Какие основные агрегатные функции есть в SQL?',
+        a: 'COUNT(*) — количество строк, SUM(col) — сумма, AVG(col) — среднее, MIN(col) — минимум, MAX(col) — максимум. Агрегатные функции игнорируют NULL, кроме COUNT(*).',
+      }, {
+        q: 'Чем COUNT(*) отличается от COUNT(column)?',
+        a: 'COUNT(*) считает все строки включая те где есть NULL. COUNT(column) считает только строки где данный столбец НЕ NULL. Используй COUNT(*) для подсчёта строк, COUNT(col) для подсчёта заполненных значений.',
+      }
+      ]} />
 
       {/* ─── 8. GROUP BY ─── */}
       <SectionTitle id="groupby">8. GROUP BY и HAVING</SectionTitle>
@@ -506,6 +595,17 @@ HAVING AVG(age) < 30;`} />
 
       <Warn>Нельзя писать WHERE после GROUP BY — используй HAVING. Нельзя использовать алиас из SELECT в HAVING — только исходные выражения.</Warn>
 
+
+      <SelfCheck questions={[
+      {
+        q: 'Зачем нужен GROUP BY?',
+        a: 'Группирует строки с одинаковыми значениями в сводные строки. Например, GROUP BY city покажет одну строку на каждый город. Используется вместе с агрегатными функциями (COUNT, SUM, AVG).',
+      }, {
+        q: 'Чем HAVING отличается от WHERE?',
+        a: 'WHERE фильтрует строки ДО группировки. HAVING фильтрует группы ПОСЛЕ GROUP BY. WHERE быстрее — сначала фильтруй через WHERE, потом группируй, потом применяй HAVING.',
+      }
+      ]} />
+
       {/* ─── 9. UPDATE / DELETE ─── */}
       <SectionTitle id="update">9. UPDATE и DELETE</SectionTitle>
 
@@ -533,6 +633,17 @@ WHERE age > 40;`} />
 SELECT * FROM users WHERE age > 40;  -- проверяем кто попадёт
 -- Убедились? Тогда:
 DELETE FROM users WHERE age > 40;`} />
+
+
+      <SelfCheck questions={[
+      {
+        q: 'Что произойдёт если написать UPDATE users SET salary = 100000 без WHERE?',
+        a: 'Все строки в таблице users получат salary = 100000. Это опасная операция! Всегда добавляй WHERE если нужно обновить конкретные строки. Перед UPDATE проверь условие через SELECT.',
+      }, {
+        q: 'Как безопасно удалить строки из таблицы?',
+        a: 'Сначала проверь: SELECT * FROM users WHERE id = 5. Потом удали: DELETE FROM users WHERE id = 5. Без WHERE — удалит все строки. TRUNCATE TABLE — быстрее, но удаляет всё.',
+      }
+      ]} />
 
       {/* ─── 10. JOIN ─── */}
       <SectionTitle id="joins">10. JOIN — соединение таблиц</SectionTitle>
@@ -641,6 +752,17 @@ JOIN orders AS o ON u.id = o.user_id
 JOIN categories AS c ON o.category_id = c.id
 WHERE u.city = 'Москва';`} />
 
+
+      <SelfCheck questions={[
+      {
+        q: 'Чем INNER JOIN отличается от LEFT JOIN?',
+        a: 'INNER JOIN — только строки где есть совпадение в обеих таблицах. LEFT JOIN — все строки левой таблицы + совпадения из правой (где нет совпадения — NULL). LEFT JOIN "безопаснее" когда связь не обязательна.',
+      }, {
+        q: 'Как работает ON в JOIN?',
+        a: 'ON указывает условие соединения таблиц. Обычно это связь ключей: ON orders.user_id = users.id. Можно использовать любое условие, но чаще всего это связь первичный ключ → внешний ключ.',
+      }
+      ]} />
+
       {/* ─── 11. NULL ─── */}
       <SectionTitle id="null">11. NULL и COALESCE</SectionTitle>
       <P>NULL — не ноль и не пустая строка. Это «значение неизвестно или отсутствует». NULL требует особого обращения.</P>
@@ -668,6 +790,17 @@ SELECT NULLIF(score, 0) FROM results;  -- 0 превратится в NULL
 -- NULL в агрегатах: COUNT(*) считает все строки,
 -- COUNT(col) — только строки где col не NULL
 SELECT COUNT(*), COUNT(city), COUNT(phone) FROM users;`} />
+
+
+      <SelfCheck questions={[
+      {
+        q: 'Почему нельзя использовать = NULL для проверки на NULL?',
+        a: 'NULL означает "отсутствие значения". NULL = NULL возвращает NULL (не TRUE). Для проверки используй IS NULL или IS NOT NULL. Это одна из самых частых ошибок новичков.',
+      }, {
+        q: 'Что делает COALESCE?',
+        a: 'COALESCE(a, b, c) возвращает первое не-NULL значение из списка. Используется для подстановки значения по умолчанию: COALESCE(phone, "Не указан") вернёт phone если он есть, иначе строку.',
+      }
+      ]} />
 
       {/* ─── 12. CASE WHEN ─── */}
       <SectionTitle id="casewhen">12. CASE WHEN — условная логика</SectionTitle>
@@ -715,6 +848,17 @@ ORDER BY
         ELSE 3
     END;`} />
 
+
+      <SelfCheck questions={[
+      {
+        q: 'Для чего используется CASE WHEN в SQL?',
+        a: 'Для условной логики внутри запроса — аналог if/else. Создаёт новый столбец с разными значениями в зависимости от условия. Полезно для категоризации: WHEN age < 18 THEN "Подросток" WHEN age < 65 THEN "Взрослый" ELSE "Пенсионер".',
+      }, {
+        q: 'Можно ли использовать CASE WHEN в GROUP BY?',
+        a: 'Да! SELECT CASE WHEN salary > 100000 THEN "Высокая" ELSE "Обычная" END AS grade, COUNT(*) FROM employees GROUP BY grade — группирует по категориям из CASE WHEN.',
+      }
+      ]} />
+
       {/* ─── 13. Подзапросы ─── */}
       <SectionTitle id="subquery">13. Подзапросы (Subqueries)</SectionTitle>
       <P>Подзапрос — SELECT внутри другого SELECT, WHERE или FROM. Выполняется первым, его результат используется внешним запросом.</P>
@@ -761,6 +905,17 @@ SELECT
     age - (SELECT AVG(age) FROM users) AS diff_from_avg
 FROM users;`} />
 
+
+      <SelfCheck questions={[
+      {
+        q: 'Что такое подзапрос?',
+        a: 'SELECT внутри другого SELECT. Выполняется первым, результат передаётся в основной запрос. Используй подзапросы когда нужно сначала что-то посчитать, а потом использовать результат для фильтрации.',
+      }, {
+        q: 'Чем подзапрос в WHERE отличается от подзапроса в FROM?',
+        a: 'В WHERE: фильтрует строки по результату подзапроса (WHERE id IN (SELECT...)). В FROM: подзапрос создаёт временную таблицу (SELECT * FROM (SELECT...) AS t). Второй вариант гибче для сложных расчётов.',
+      }
+      ]} />
+
       {/* ─── 14. Порядок выполнения ─── */}
       <SectionTitle id="execorder">14. Порядок выполнения SELECT</SectionTitle>
       <P>SQL не выполняется сверху вниз. Порядок выполнения отличается от порядка написания.</P>
@@ -794,6 +949,17 @@ LIMIT    3;                       -- 8. ограничение`} />
           А HAVING может использовать агрегаты — оно выполняется после GROUP BY.
         </P>
       </div>
+
+
+      <SelfCheck questions={[
+      {
+        q: 'В каком порядке SQL выполняет части SELECT-запроса?',
+        a: 'FROM → JOIN → WHERE → GROUP BY → HAVING → SELECT → DISTINCT → ORDER BY → LIMIT. Важно знать: WHERE выполняется ДО GROUP BY, поэтому нельзя использовать алиасы из SELECT в WHERE.',
+      }, {
+        q: 'Почему нельзя использовать псевдоним из SELECT в WHERE?',
+        a: 'Потому что WHERE выполняется раньше SELECT. К моменту фильтрации WHERE псевдонимы ещё не существуют. Либо используй исходное выражение в WHERE, либо оберни в подзапрос.',
+      }
+      ]} />
 
       {/* ─── 15. Виды БД ─── */}
       <SectionTitle id="databases">15. Виды баз данных</SectionTitle>
@@ -906,6 +1072,17 @@ LIMIT    3;                       -- 8. ограничение`} />
         ]}
       />
 
+
+      <SelfCheck questions={[
+      {
+        q: 'Когда выбрать PostgreSQL, а когда MongoDB?',
+        a: 'PostgreSQL: структурированные данные, сложные JOIN и транзакции, финансы, ERP. MongoDB: гибкая схема, документы с вложенными объектами, быстрое прототипирование, когда структура данных часто меняется.',
+      }, {
+        q: 'Что такое ACID в контексте баз данных?',
+        a: 'Atomicity (атомарность) — транзакция выполняется полностью или не выполняется. Consistency — данные всегда в валидном состоянии. Isolation — транзакции не влияют друг на друга. Durability — после commit данные не потеряются.',
+      }
+      ]} />
+
       {/* ─── 16. Шпаргалка ─── */}
       <SectionTitle id="cheatsheet">16. Шпаргалка всех команд</SectionTitle>
 
@@ -977,6 +1154,17 @@ LIMIT    3;                       -- 8. ограничение`} />
           ))}
         </div>
       </div>
+
+
+      <SelfCheck questions={[
+      {
+        q: 'Что нужно помнить о порядке ключевых слов в SELECT?',
+        a: 'SELECT ... FROM ... JOIN ... ON ... WHERE ... GROUP BY ... HAVING ... ORDER BY ... LIMIT. Нарушение порядка — синтаксическая ошибка. Запомни мнемонику: "Серьёзный Фермер Женился, Где Хотел, Огород Лопатил".',
+      }, {
+        q: 'Какие три типа JOIN используются чаще всего?',
+        a: 'INNER JOIN — пересечение (только совпадения). LEFT JOIN — все из левой + совпадения из правой. FULL OUTER JOIN — все строки из обеих таблиц. RIGHT JOIN используется редко, его можно заменить LEFT JOIN поменяв таблицы местами.',
+      }
+      ]} />
 
     </div>
   )

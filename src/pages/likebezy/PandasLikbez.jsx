@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import SelfCheck from '../../components/SelfCheck'
 
 const Code = ({ code, lang = 'python' }) => {
   const lines = code.split('\n')
@@ -30,6 +31,17 @@ const Code = ({ code, lang = 'python' }) => {
           })}
         </code>
       </pre>
+
+      <SelfCheck questions={[
+      {
+        q: 'Какие три метода всегда используют при первом знакомстве с данными?',
+        a: 'df.head() — первые строки, df.info() — типы и пропуски, df.describe() — статистика числовых столбцов. Это стандартный первый шаг любого EDA.',
+      }, {
+        q: 'Как быстро посмотреть количество уникальных значений в каждом столбце?',
+        a: 'df.nunique() — количество уникальных значений. df["col"].value_counts() — частота каждого значения в конкретном столбце.',
+      }
+      ]} />
+
     </div>
   )
 }
@@ -304,6 +316,17 @@ import numpy as np    # часто используется вместе
 
 print(pd.__version__)  # 2.x`} />
 
+
+      <SelfCheck questions={[
+      {
+        q: 'Что такое Pandas и для чего он используется?',
+        a: 'Pandas — главная библиотека Python для работы с табличными данными. Предоставляет Series (одномерный массив) и DataFrame (двумерная таблица). Используется в анализе данных, машинном обучении, ETL-пайплайнах.',
+      }, {
+        q: 'Какие два ключевых объекта предоставляет Pandas?',
+        a: 'Series — одномерный массив с индексом (как столбец таблицы). DataFrame — двумерная таблица, набор Series с общим индексом (как Excel или SQL-таблица).',
+      }
+      ]} />
+
       {/* ─── 2. Series ─── */}
       <SectionTitle id="series">2. Series</SectionTitle>
       <P>
@@ -367,6 +390,17 @@ s1 = pd.Series({'a': 1, 'b': 2})
 s2 = pd.Series({'b': 10, 'c': 20})
 s1 + s2  # a: NaN, b: 12, c: NaN`} />
 
+
+      <SelfCheck questions={[
+      {
+        q: 'Что такое Series в Pandas?',
+        a: 'Одномерный массив с метками (индексом). Думайте о нём как о столбце таблицы или словаре, где ключи стали индексом.',
+      }, {
+        q: 'Чем отличается .iloc[] от .loc[]?',
+        a: ".iloc[] — выборка по числовой позиции (0, 1, 2...). .loc[] — выборка по метке индекса ('a', 'b', 'c'). При строковых индексах используйте именно .loc[].",
+      }
+      ]} />
+
       {/* ─── 3. DataFrame ─── */}
       <SectionTitle id="dataframe">3. DataFrame</SectionTitle>
       <P>
@@ -420,6 +454,17 @@ df = pd.DataFrame(data, index=['r1', 'r2', 'r3'])`} />
         ['df.T',       'Транспонировать',               '—'],
       ]} />
 
+
+      <SelfCheck questions={[
+      {
+        q: 'Что такое DataFrame?',
+        a: 'Двумерная таблица. Каждый столбец — это Series с общим индексом. Аналог таблицы в Excel или SQL.',
+      }, {
+        q: 'Как выбрать несколько столбцов из DataFrame?',
+        a: 'df[["col1", "col2"]] — передай список имён столбцов. Одиночные скобки df["col"] вернут Series, двойные df[["col"]] — DataFrame.',
+      }
+      ]} />
+
       {/* ─── 4. IO ─── */}
       <SectionTitle id="io">4. Чтение и запись данных</SectionTitle>
 
@@ -467,6 +512,17 @@ df.to_json('out.json', orient='records', force_ascii=False)
 df.to_parquet('out.parquet', index=False)
 
 df.to_sql('table_name', conn, if_exists='replace', index=False)`} />
+
+
+      <SelfCheck questions={[
+      {
+        q: 'Какой метод читает CSV-файл в Pandas?',
+        a: 'pd.read_csv("file.csv"). Для Excel — pd.read_excel(). Для JSON — pd.read_json(). Для SQL — pd.read_sql().',
+      }, {
+        q: 'Как сохранить DataFrame в CSV без индекса?',
+        a: 'df.to_csv("file.csv", index=False). Параметр index=False исключает столбец с числовым индексом из файла.',
+      }
+      ]} />
 
       {/* ─── 5. Исследование ─── */}
       <SectionTitle id="explore">5. Исследование данных</SectionTitle>
@@ -518,6 +574,17 @@ df.memory_usage(deep=True)  # память в байтах`} />
         />
       </div>
 
+
+      <SelfCheck questions={[
+      {
+        q: 'Что показывает df.info()?',
+        a: 'Список столбцов, количество непустых значений в каждом, тип данных (dtype) и размер памяти. Незаменим для первичного знакомства с данными.',
+      }, {
+        q: 'Как посмотреть первые 5 строк DataFrame?',
+        a: 'df.head() — первые 5 строк. df.tail() — последние 5. df.head(10) — первые 10. df.sample(5) — 5 случайных строк.',
+      }
+      ]} />
+
       {/* ─── 6. Индексация ─── */}
       <SectionTitle id="indexing">6. Индексация и выборка</SectionTitle>
       <P>Самая важная тема в pandas. Нужно чётко понимать разницу между <code style={{ fontFamily: 'monospace', color: 'var(--accent-lime)' }}>loc</code> и <code style={{ fontFamily: 'monospace', color: 'var(--accent-lime)' }}>iloc</code>.</P>
@@ -563,6 +630,17 @@ df.reindex(columns=['age', 'name', 'score', 'city'])`} />
         Всегда используйте <code style={{ fontFamily: 'monospace' }}>df.loc[0, 'col'] = val</code>.
       </Warning>
 
+
+      <SelfCheck questions={[
+      {
+        q: 'Чем df.loc[] отличается от df.iloc[]?',
+        a: 'df.loc[row_label, col_label] — по меткам. df.iloc[row_pos, col_pos] — по числовым позициям. Для фильтрации по условию используй df.loc[df["age"] > 18].',
+      }, {
+        q: 'Как выбрать строки 2-4 и столбцы "name", "age"?',
+        a: 'df.loc[2:4, ["name", "age"]] — по меткам строк 2,3,4 и именам столбцов. Или df.iloc[2:5, 0:2] — по позициям.',
+      }
+      ]} />
+
       {/* ─── 7. Фильтрация ─── */}
       <SectionTitle id="filtering">7. Фильтрация</SectionTitle>
       <Code code={`# Простые условия
@@ -604,6 +682,17 @@ df['score'].where(df['score'] >= 80)`} />
         highlightRows={[0, 1]}
       />
 
+
+      <SelfCheck questions={[
+      {
+        q: 'Как отфильтровать строки где age > 25 AND city == "Moscow"?',
+        a: 'df[(df["age"] > 25) & (df["city"] == "Moscow")]. Каждое условие в скобках, & вместо and, | вместо or, ~ вместо not.',
+      }, {
+        q: 'Что такое boolean mask?',
+        a: 'Серия True/False, которая при передаче в df[mask] оставляет только строки, где True. Создаётся условием: mask = df["age"] > 18.',
+      }
+      ]} />
+
       {/* ─── 8. Пропущенные значения ─── */}
       <SectionTitle id="missing">8. Пропущенные значения (NaN)</SectionTitle>
       <P>В реальных данных пропуски встречаются почти всегда. Pandas использует <code style={{ fontFamily: 'monospace', color: 'var(--accent-lime)' }}>NaN</code> (Not a Number) из NumPy для числовых столбцов и <code style={{ fontFamily: 'monospace', color: 'var(--accent-lime)' }}>None</code> / <code style={{ fontFamily: 'monospace', color: 'var(--accent-lime)' }}>pd.NA</code> для остальных.</P>
@@ -637,6 +726,17 @@ df.replace({'city': {'Msk': 'Moscow', 'Spb': 'SPb'}})`} />
         <code style={{ fontFamily: 'monospace' }}>dropna()</code> и <code style={{ fontFamily: 'monospace' }}>fillna()</code> по умолчанию возвращают новый DataFrame. Передайте <code style={{ fontFamily: 'monospace' }}>inplace=True</code>, чтобы изменить текущий — но лучше присваивайте результат: <code style={{ fontFamily: 'monospace' }}>df = df.fillna(0)</code>.
       </Note>
 
+
+      <SelfCheck questions={[
+      {
+        q: 'Как найти все строки с пропущенными значениями?',
+        a: 'df[df.isnull().any(axis=1)] — строки где есть хотя бы один NaN. df.isnull().sum() — количество NaN в каждом столбце.',
+      }, {
+        q: 'Чем fillna() отличается от dropna()?',
+        a: 'fillna(value) — заменяет NaN на значение (0, среднее, "Неизвестно"). dropna() — удаляет строки/столбцы с NaN. fillna безопаснее, dropna теряет данные.',
+      }
+      ]} />
+
       {/* ─── 9. Работа со столбцами ─── */}
       <SectionTitle id="columns">9. Работа со столбцами</SectionTitle>
       <Code code={`# Добавить новый столбец
@@ -669,6 +769,17 @@ df = (df
         lambda s: 'A' if s >= 90 else 'B'
     ))
 )`} />
+
+
+      <SelfCheck questions={[
+      {
+        q: 'Как создать новый столбец на основе существующих?',
+        a: 'df["new_col"] = df["col1"] + df["col2"]. Или через apply: df["new"] = df["age"].apply(lambda x: "adult" if x >= 18 else "minor").',
+      }, {
+        q: 'Как переименовать столбцы?',
+        a: 'df.rename(columns={"old": "new"}) — переименовать конкретные. df.columns = ["a", "b", "c"] — задать все имена сразу.',
+      }
+      ]} />
 
       {/* ─── 10. Типы данных ─── */}
       <SectionTitle id="types">10. Типы данных</SectionTitle>
@@ -725,6 +836,17 @@ pd.api.types.is_string_dtype(df['name'])     # True`} />
         </table>
       </div>
 
+
+      <SelfCheck questions={[
+      {
+        q: 'Зачем преобразовывать типы столбцов?',
+        a: 'Неправильный тип замедляет работу и ломает операции. Числа как строки нельзя суммировать. Категории вместо строк экономят память и ускоряют groupby.',
+      }, {
+        q: 'Как преобразовать столбец к числовому типу?',
+        a: 'df["col"] = pd.to_numeric(df["col"], errors="coerce"). errors="coerce" заменяет непарсируемые значения на NaN вместо ошибки.',
+      }
+      ]} />
+
       {/* ─── 11. Сортировка ─── */}
       <SectionTitle id="sorting">11. Сортировка</SectionTitle>
       <Code code={`# Сортировка по значениям столбца
@@ -760,6 +882,17 @@ df['rank'] = df['score'].rank(ascending=False, method='min')`} />
         ]}
         highlightCols={[3]}
       />
+
+
+      <SelfCheck questions={[
+      {
+        q: 'Как отсортировать DataFrame по двум столбцам?',
+        a: 'df.sort_values(["city", "age"], ascending=[True, False]) — сначала по городу по возрастанию, потом по возрасту по убыванию.',
+      }, {
+        q: 'Что делает inplace=True в sort_values?',
+        a: 'Изменяет DataFrame на месте без создания копии. Без inplace=True нужно df = df.sort_values(...). Лучше избегать inplace= в пайплайнах.',
+      }
+      ]} />
 
       {/* ─── 12. GroupBy ─── */}
       <SectionTitle id="groupby">12. Группировка (groupby)</SectionTitle>
@@ -840,6 +973,17 @@ df.groupby('city').filter(lambda x: x['score'].mean() > 85)`} />
         ['nunique()', 'Число уникальных',          "g['city'].nunique()"],
       ]} />
 
+
+      <SelfCheck questions={[
+      {
+        q: 'Что делает df.groupby("city")["salary"].mean()?',
+        a: 'Группирует строки по уникальным значениям city, затем для каждой группы вычисляет среднее значение salary. Результат — Series: город → среднее.',
+      }, {
+        q: 'Как применить несколько агрегаций одновременно?',
+        a: 'df.groupby("city")["salary"].agg(["mean", "max", "count"]) или .agg(avg=("salary","mean"), total=("salary","sum")) — именованные агрегации.',
+      }
+      ]} />
+
       {/* ─── 13. Apply / Map ─── */}
       <SectionTitle id="apply">13. apply / map / applymap</SectionTitle>
       <Code code={`# map() — для Series (поэлементно)
@@ -873,6 +1017,17 @@ df['score'] * 2`} />
       <Warning>
         <code style={{ fontFamily: 'monospace' }}>apply()</code> — это Python-цикл. Если есть векторизованный аналог (арифметика, <code style={{ fontFamily: 'monospace' }}>str.</code>, <code style={{ fontFamily: 'monospace' }}>dt.</code>, numpy-функции), используйте его — он в 10–100 раз быстрее.
       </Warning>
+
+
+      <SelfCheck questions={[
+      {
+        q: 'Когда использовать apply() вместо векторных операций?',
+        a: 'apply() медленнее, но необходим для сложной логики, которую нельзя выразить через +, *, str.replace и т.д. Векторные операции всегда быстрее — используй apply только когда нет альтернативы.',
+      }, {
+        q: 'Чем map() отличается от apply() для столбца?',
+        a: 'map() работает только с Series (одним столбцом), apply() — и со столбцом, и с строками (axis=1). map() немного быстрее для простых преобразований.',
+      }
+      ]} />
 
       {/* ─── 14. Объединение ─── */}
       <SectionTitle id="merge">14. Объединение данных</SectionTitle>
@@ -929,6 +1084,17 @@ pd.merge(df1, df2, on='id', suffixes=('_left', '_right'))`} />
 df1.join(df2, how='left')
 df1.join(df2, on='city')  # из df1 использовать столбец city`} />
 
+
+      <SelfCheck questions={[
+      {
+        q: 'Чем merge() отличается от concat()?',
+        a: 'merge() — объединяет таблицы по ключевому столбцу (как SQL JOIN). concat() — склеивает таблицы по строкам или столбцам без сопоставления ключей.',
+      }, {
+        q: 'Что такое LEFT JOIN в pandas merge?',
+        a: 'pd.merge(left, right, how="left") — все строки левой таблицы сохраняются, правая присоединяется где есть совпадение. Где совпадения нет — NaN.',
+      }
+      ]} />
+
       {/* ─── 15. Строки ─── */}
       <SectionTitle id="strings">15. Работа со строками (str accessor)</SectionTitle>
       <P>Все строковые операции доступны через атрибут <code style={{ fontFamily: 'monospace', color: 'var(--accent-lime)' }}>.str</code> — они векторизованы и корректно обрабатывают NaN.</P>
@@ -961,6 +1127,17 @@ s.str.findall(r'\d+')           # все совпадения → списки
 
 s.str.pad(10, fillchar='*')     # дополнить до длины
 s.str.zfill(5)                  # дополнить нулями слева`} />
+
+
+      <SelfCheck questions={[
+      {
+        q: 'Как привести все строки столбца к нижнему регистру?',
+        a: 'df["col"].str.lower(). Аксессор .str позволяет применять строковые методы ко всему столбцу: .upper(), .strip(), .contains(), .replace().',
+      }, {
+        q: 'Как проверить содержит ли строка подстроку "Moscow"?',
+        a: 'df["city"].str.contains("Moscow") — возвращает boolean Series. Используй для фильтрации: df[df["city"].str.contains("Moscow")].',
+      }
+      ]} />
 
       {/* ─── 16. Даты ─── */}
       <SectionTitle id="datetime">16. Даты и время</SectionTitle>
@@ -1002,6 +1179,17 @@ df['revenue'].resample('D').ffill()  # заполнить по дням
 df['score'].shift(1)   # сдвиг на 1 вперёд (предыдущее значение)
 df['score'].shift(-1)  # сдвиг на 1 назад (следующее значение)
 df['score'].diff()     # разница с предыдущей строкой`} />
+
+
+      <SelfCheck questions={[
+      {
+        q: 'Как преобразовать строковый столбец с датами в datetime?',
+        a: 'pd.to_datetime(df["date_col"]) или df["date"] = pd.to_datetime(df["date"]). После этого доступен аксессор .dt для работы с компонентами даты.',
+      }, {
+        q: 'Как выделить год и месяц из столбца с датой?',
+        a: 'df["year"] = df["date"].dt.year; df["month"] = df["date"].dt.month. Аксессор .dt даёт .year, .month, .day, .hour, .dayofweek и другие.',
+      }
+      ]} />
 
       {/* ─── 17. Pivot ─── */}
       <SectionTitle id="pivot">17. Pivot tables</SectionTitle>
@@ -1046,6 +1234,17 @@ df_long = df.melt(
         highlightRows={[3]}
       />
 
+
+      <SelfCheck questions={[
+      {
+        q: 'Чем pivot_table() отличается от pivot()?',
+        a: 'pivot() — простой поворот без агрегации, требует уникальных комбинаций. pivot_table() — поворот с агрегацией (sum, mean и т.д.), обрабатывает дубликаты.',
+      }, {
+        q: 'Что делает параметр margins=True в pivot_table?',
+        a: 'Добавляет строку и столбец "All" с итоговыми значениями (суммой или средним по всем группам). Удобно для сводных отчётов.',
+      }
+      ]} />
+
       {/* ─── 18. Оконные функции ─── */}
       <SectionTitle id="window">18. Оконные функции</SectionTitle>
       <Code code={`# rolling() — скользящее окно
@@ -1082,6 +1281,17 @@ df['score'].cummax()   # нарастающий максимум`} />
         ]}
         highlightCols={[2]}
       />
+
+
+      <SelfCheck questions={[
+      {
+        q: 'Что такое скользящее среднее и как его считать?',
+        a: 'Среднее за последние N периодов. df["col"].rolling(window=7).mean() — скользящее среднее за 7 дней. Каждая строка получает среднее своих и предыдущих N-1 значений.',
+      }, {
+        q: 'Чем expanding() отличается от rolling()?',
+        a: 'rolling(N) — фиксированное окно N последних значений. expanding() — окно от начала до текущей строки, растёт с каждой строкой. expanding().mean() = накопленное среднее.',
+      }
+      ]} />
 
       {/* ─── 19. Производительность ─── */}
       <SectionTitle id="performance">19. Производительность</SectionTitle>
@@ -1124,6 +1334,17 @@ def optimize_dtypes(df):
     for col in df.select_dtypes('int64').columns:
         df[col] = pd.to_numeric(df[col], downcast='integer')
     return df`} />
+
+
+      <SelfCheck questions={[
+      {
+        q: 'Почему следует избегать iterrows() в Pandas?',
+        a: 'iterrows() очень медленный — обходит строки в Python-цикле, теряя все преимущества векторизации NumPy. Замени на vectorized операции, apply() или numpy where().',
+      }, {
+        q: 'Как уменьшить использование памяти для большого DataFrame?',
+        a: 'Используй df.astype({"col": "int32"}) для числовых столбцов, pd.Categorical для строк с повторениями. df.info(memory_usage="deep") покажет сколько занимает каждый столбец.',
+      }
+      ]} />
 
       {/* ─── 20. Шпаргалка ─── */}
       <SectionTitle id="cheatsheet">20. Шпаргалка всех методов</SectionTitle>
@@ -1219,6 +1440,17 @@ def optimize_dtypes(df):
           ))}
         </div>
       </div>
+
+
+      <SelfCheck questions={[
+      {
+        q: 'Какие три метода всегда используют при первом знакомстве с данными?',
+        a: 'df.head() — первые строки, df.info() — типы и пропуски, df.describe() — статистика числовых столбцов. Это стандартный первый шаг любого EDA.',
+      }, {
+        q: 'Как быстро посмотреть количество уникальных значений в каждом столбце?',
+        a: 'df.nunique() — количество уникальных значений. df["col"].value_counts() — частота каждого значения в конкретном столбце.',
+      }
+      ]} />
 
     </div>
   )

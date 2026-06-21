@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useParams, useNavigate } from 'react-router-dom'
 import PandasLikbez from './likebezy/PandasLikbez'
 import SqlLikbez from './likebezy/SqlLikbez'
 
@@ -38,15 +39,18 @@ const TAG_COLORS = {
 }
 
 export default function LikebezyPage() {
-  const [open, setOpen] = useState(null)
+  const { id } = useParams()
+  const navigate = useNavigate()
 
-  if (open) {
-    const item = LIKEBEZY.find(l => l.id === open)
+  if (id) {
+    const item = LIKEBEZY.find(l => l.id === id)
     if (item) {
       const Component = item.component
-      return <Component onBack={() => setOpen(null)} />
+      return <Component onBack={() => navigate('/likebezy')} />
     }
   }
+
+  const openLikbez = (itemId) => navigate(`/likebezy/${itemId}`)
 
   return (
     <div style={{ maxWidth: 1000, margin: '0 auto', padding: 'clamp(16px, 4vw, 32px) clamp(12px, 3vw, 24px)' }}>
@@ -96,7 +100,7 @@ export default function LikebezyPage() {
                   e.currentTarget.style.borderColor = 'var(--border-color)'
                   e.currentTarget.style.transform = 'translateY(0)'
                 }}
-                onClick={() => setOpen(item.id)}
+                onClick={() => openLikbez(item.id)}
               >
                 <div style={{ display: 'flex', gap: 8, marginBottom: 14, flexWrap: 'wrap' }}>
                   <span style={{

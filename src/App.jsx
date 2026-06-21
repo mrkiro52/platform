@@ -1,4 +1,5 @@
 import { useState, useCallback, useEffect } from 'react'
+import { Routes, Route, Navigate, useNavigate } from 'react-router-dom'
 import LoginPage from './pages/Login'
 import AppShell from './AppShell'
 
@@ -80,17 +81,31 @@ export default function App() {
     }
   }, [])
 
+  const navigate = useNavigate()
+
   const handleLogin = useCallback((userData) => {
     localStorage.setItem('kiro_user', JSON.stringify(userData))
     setUser(userData)
-  }, [])
+    navigate('/dashboard')
+  }, [navigate])
 
   const handleLogout = useCallback(() => {
     localStorage.removeItem('kiro_user')
     localStorage.setItem('sessionExpired', 'true')
     setUser(null)
-  }, [])
+    navigate('/login')
+  }, [navigate])
 
-  if (!user) return <LoginPage onLogin={handleLogin} />
-  return <AppShell user={user} onLogout={handleLogout} />
+  return (
+    <Routes>
+      <Route path="/login" element={
+        user ? <Navigate to="/dashboard" replace /> : <LoginPage onLogin={handleLogin} />
+      } />
+      <Route path="/*" element={
+        user
+          ? <AppShell user={user} onLogout={handleLogout} />
+          : <Navigate to="/login" replace />
+      } />
+    </Routes>
+  )
 }
