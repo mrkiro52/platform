@@ -11,6 +11,8 @@ const LIKEBEZY = [
     tag: 'Python',
     level: 'Junior → Middle',
     time: '~45 мин',
+    chapters: 20,
+    questions: 60,
     topics: ['Series & DataFrame', 'Фильтрация и индексация', 'GroupBy & Pivot', 'Merge & Concat', 'Работа с датами'],
     component: PandasLikbez,
   },
@@ -21,6 +23,8 @@ const LIKEBEZY = [
     tag: 'Database',
     level: 'Новичок → Middle',
     time: '~50 мин',
+    chapters: 16,
+    questions: 48,
     topics: ['SELECT & WHERE', 'GROUP BY & JOIN', 'NULL & CASE WHEN', 'Подзапросы', 'PostgreSQL vs MongoDB'],
     component: SqlLikbez,
   },
@@ -70,6 +74,7 @@ export default function LikebezyPage() {
         <p style={{ color: 'var(--text-secondary)', fontSize: 15, lineHeight: 1.7, maxWidth: 640 }}>
           Структурированные конспекты по конкретным технологиям — всё необходимое от основ до уверенного
           применения в одном месте. Читай, разбирай примеры и сразу применяй на практике.
+          После каждого раздела — вопросы для самопроверки с ответами.
         </p>
       </div>
 
@@ -130,6 +135,10 @@ export default function LikebezyPage() {
                   ))}
                 </div>
 
+                <div style={{ display: 'flex', gap: 12, marginBottom: 16, color: 'var(--text-tertiary)', fontSize: 12 }}>
+                  <span>~{item.chapters} глав</span>
+                  <span>~{item.questions} вопросов для самопроверки</span>
+                </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <span style={{ fontSize: 12, color: 'var(--text-tertiary)' }}>{item.time}</span>
                   <span style={{
