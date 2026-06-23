@@ -54,7 +54,7 @@ import Day17TrendsTheory from '../theory/day-17-trends'
 import Day18TestingTheory from '../theory/day-18-testing'
 import Day19SqlTheory from '../theory/day-19-sql'
 import Day20ApiTheory from '../theory/day-20-api'
-import Day23SortingTheory from '../theory/day-23-sorting'
+import Day22SortingTheory from '../theory/day-22-sorting'
 import Day24PatternsTheory from '../theory/day-24-patterns'
 import Day25SecurityTheory from '../theory/day-25-security'
 import Day26SoftSkillsTheory from '../theory/day-26-softs-kills'
@@ -82,9 +82,9 @@ const THEORY_COMPONENTS = {
   18: Day18TestingTheory,
   19: Day19SqlTheory,
   20: Day20ApiTheory,
-  23: Day23SortingTheory,
-  24: Day24PatternsTheory,
-  25: Day25SecurityTheory,
+  22: Day22SortingTheory,
+  23: Day24PatternsTheory,
+  24: Day25SecurityTheory,
   26: Day26SoftSkillsTheory,
   27: Day27LearningTheory,
   29: Day29ResumeTheory,

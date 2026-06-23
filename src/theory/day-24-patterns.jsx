@@ -4,9 +4,9 @@ export default function Day24PatternsTheory() {
   return (
     <div className="theory-container">
       <section className="theory-section">
-        <h1 className="theory-title">День 24</h1>
+        <h1 className="theory-title">День 23</h1>
         <p className="theory-subtitle">Паттерны алгоритмических задач</p>
-        <p className="theory-date">24 июня 2026</p>
+        <p className="theory-date">23 июня 2026</p>
       </section>
 
       <section className="theory-section">

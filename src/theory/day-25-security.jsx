@@ -4,9 +4,9 @@ export default function Day25SecurityTheory() {
   return (
     <div className="theory-container">
       <section className="theory-section">
-        <h1 className="theory-title">День 25</h1>
+        <h1 className="theory-title">День 24</h1>
         <p className="theory-subtitle">Кибербезопасность для разработчика</p>
-        <p className="theory-date">25 июня 2026</p>
+        <p className="theory-date">24 июня 2026</p>
       </section>
 
       <section className="theory-section">
