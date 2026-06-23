@@ -1,5 +1,6 @@
 import { TheoryTable, TheoryCode } from './components/TheoryTable'
 import SortVisualizer from './components/SortVisualizer'
+import DivideSortViz from './components/DivideSortViz'
 import VideoPlayer from '../components/VideoPlayer'
 
 export default function Day22SortingTheory({ videoUrl }) {
@@ -176,6 +177,12 @@ def _merge(left: list, right: list) -> list:
 print(merge_sort([38, 27, 43, 3, 9, 82, 10]))
 # → [3, 9, 10, 27, 38, 43, 82]`} />
         <p><strong>Когда использовать:</strong> нужна гарантированная производительность и стабильность, сортировка связных списков, внешняя сортировка (данные не помещаются в ОЗУ), параллельные вычисления.</p>
+        <p style={{ marginTop: '14px' }}>
+          <strong>Посмотри вживую:</strong> сверху исходный массив делится пополам, ниже появляются
+          подмассивы — и так до одиночных элементов. Затем снизу идёт слияние: соседние куски
+          сравниваются поэлементно и собираются обратно в один отсортированный массив.
+        </p>
+        <DivideSortViz kind="merge" />
       </section>
 
       {/* ─── Quick ─── */}
@@ -207,6 +214,12 @@ def quick_sort(arr: list) -> list:
 print(quick_sort([10, 7, 8, 9, 1, 5]))
 # → [1, 5, 7, 8, 9, 10]`} />
         <p><strong>Когда использовать:</strong> общий случай, нужна высокая практическая скорость и не нужна стабильность. Лежит в основе std::sort в C++ и Arrays.sort для примитивов в Java.</p>
+        <p style={{ marginTop: '14px' }}>
+          <strong>Посмотри вживую:</strong> опорный элемент (pivot) подсвечен жёлтым. На каждом шаге
+          массив разбивается на «меньше pivot» слева и «больше pivot» справа — и так рекурсивно вниз
+          для каждого куска. Нижняя строка слева направо — уже отсортированный результат.
+        </p>
+        <DivideSortViz kind="quick" />
       </section>
 
       {/* ─── Heap ─── */}
