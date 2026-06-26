@@ -32,7 +32,7 @@ const LIKEBEZY = [
   {
     id: 'ml',
     title: 'Machine Learning',
-    subtitle: 'Подготовка к собеседованию стажёра/джуниора',
+    subtitle: 'Вся теория для собеседования на ML в БигТехе — мастхэв для стажёра/джуниора',
     tag: 'ML',
     level: 'Стажёр → Junior',
     time: '~90 мин',
