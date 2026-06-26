@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import PandasLikbez from './likebezy/PandasLikbez'
 import SqlLikbez from './likebezy/SqlLikbez'
+import MlLikbez from './likebezy/MlLikbez'
 
 const LIKEBEZY = [
   {
@@ -28,6 +29,18 @@ const LIKEBEZY = [
     topics: ['SELECT & WHERE', 'GROUP BY & JOIN', 'NULL & CASE WHEN', 'Подзапросы', 'PostgreSQL vs MongoDB'],
     component: SqlLikbez,
   },
+  {
+    id: 'ml',
+    title: 'Machine Learning',
+    subtitle: 'Подготовка к собеседованию стажёра/джуниора',
+    tag: 'ML',
+    level: 'Стажёр → Junior',
+    time: '~90 мин',
+    chapters: 5,
+    questions: 67,
+    topics: ['Линейные модели', 'Классификация', 'Деревья', 'Леса и бустинг', 'Кластеризация'],
+    component: MlLikbez,
+  },
 ]
 
 const COMING = [
@@ -40,6 +53,7 @@ const TAG_COLORS = {
   'Database':   { bg: 'rgba(168,85,247,0.1)',  border: 'rgba(168,85,247,0.25)', text: '#c084fc' },
   'DevOps':     { bg: 'rgba(251,146,60,0.1)',  border: 'rgba(251,146,60,0.25)', text: '#fb923c' },
   'JavaScript': { bg: 'rgba(234,179,8,0.1)',   border: 'rgba(234,179,8,0.25)',  text: '#facc15' },
+  'ML':         { bg: 'rgba(34,197,94,0.1)',   border: 'rgba(34,197,94,0.25)',  text: '#4ade80' },
 }
 
 export default function LikebezyPage() {
