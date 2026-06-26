@@ -6,6 +6,86 @@ import { SkeletonNewsCard, SkeletonCampProgress, SkeletonEventCard } from '../co
 const RU_MONTHS  = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря']
 const RU_WEEKDAY = ['воскресенье','понедельник','вторник','среда','четверг','пятница','суббота']
 
+const JUNE_CHECKLIST = [
+  'Основы программирования',
+  'Оценка алгоритмов по Big O',
+  'Основы дискретной математики — множества и графы',
+  'Структуры данных — массивы и связные списки',
+  'Структуры данных — стек и очередь',
+  'Структуры данных — хеш-таблицы',
+  'Структуры данных — деревья',
+  'Работа с Git',
+  'Работа с ИИ-инструментами (Claude Code, Copilot и др.)',
+  'Мини-проект на визуализацию алгоритма',
+  'Тайм и таск-менеджмент',
+  'Базы данных и SQL',
+  'Алгоритмы сортировок',
+  'Паттерны алгоритмических задач',
+  'Soft skills',
+  'Набросок резюме',
+]
+
+function JuneChecklist({ user }) {
+  const storageKey = 'kiro_june_checklist'
+  const [checked, setChecked] = useState(() => {
+    try { return JSON.parse(localStorage.getItem(storageKey)) || {} } catch { return {} }
+  })
+
+  const toggle = (i) => {
+    const next = { ...checked, [i]: !checked[i] }
+    setChecked(next)
+    localStorage.setItem(storageKey, JSON.stringify(next))
+  }
+
+  const download = () => {
+    const nickname = user?.nickname || user?.name || 'Участник'
+    const doneCount = JUNE_CHECKLIST.filter((_, i) => checked[i]).length
+    const lines = [
+      `Чек-лист за июнь — ${nickname}`,
+      `Выполнено: ${doneCount} из ${JUNE_CHECKLIST.length}`,
+      '',
+      ...JUNE_CHECKLIST.map((item, i) => `[${checked[i] ? 'x' : ' '}] ${item}`),
+    ]
+    const blob = new Blob([lines.join('\n')], { type: 'text/plain;charset=utf-8' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `kiro-checklist-june-${nickname}.txt`
+    a.click()
+    URL.revokeObjectURL(url)
+  }
+
+  const doneCount = JUNE_CHECKLIST.filter((_, i) => checked[i]).length
+
+  return (
+    <div className="widget" style={{ marginBottom: 20 }}>
+      <div className="widget-header">
+        <span className="widget-title">Чек-лист за июнь</span>
+        <span style={{ fontSize: 12, color: 'var(--text-tertiary)' }}>{doneCount}/{JUNE_CHECKLIST.length}</span>
+      </div>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px 20px', marginBottom: 14 }}>
+        {JUNE_CHECKLIST.map((item, i) => (
+          <label key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 8, cursor: 'pointer', fontSize: 13, lineHeight: 1.4, color: checked[i] ? 'var(--text-tertiary)' : 'var(--text-primary)', textDecoration: checked[i] ? 'line-through' : 'none', userSelect: 'none' }}>
+            <input
+              type="checkbox"
+              checked={!!checked[i]}
+              onChange={() => toggle(i)}
+              style={{ marginTop: 2, accentColor: 'var(--accent)', flexShrink: 0 }}
+            />
+            {item}
+          </label>
+        ))}
+      </div>
+      <button
+        onClick={download}
+        style={{ fontSize: 13, padding: '7px 16px', borderRadius: 8, border: '1px solid var(--border)', background: 'var(--bg-secondary)', color: 'var(--text-primary)', cursor: 'pointer', fontWeight: 500 }}
+      >
+        Скачать чек-лист
+      </button>
+    </div>
+  )
+}
+
 function CampProgress() {
   const today = new Date()
   today.setHours(0, 0, 0, 0)
@@ -49,7 +129,7 @@ function fmt(s) {
   return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`
 }
 
-export default function Dashboard({ onOpenDay, onNavigate }) {
+export default function Dashboard({ user, onOpenDay, onNavigate }) {
   const [announcements, setAnnouncements] = useState([])
   const [schedule, setSchedule] = useState(SCHEDULE)
   const [library, setLibrary]   = useState(LIBRARY)
@@ -123,6 +203,8 @@ export default function Dashboard({ onOpenDay, onNavigate }) {
       <div className="dash-grid">
         {/* LEFT */}
         <div className="dash-col">
+          <JuneChecklist user={user} />
+
           <div className="widget">
             <div className="widget-header">
               <span className="widget-title">Новости и обновления</span>
