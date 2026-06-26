@@ -313,8 +313,8 @@ function RocViz() {
   const curve = roc.map(([x, y], i) => (i === 0 ? 'M' : 'L') + sx(x) + ' ' + sy(y)).join(' ')
   const area = curve + ` L ${sx(1)} ${sy(0)} Z`
   const [fpr, tpr] = roc[t]
-  const P = 50, N = 50
-  const TP = Math.round(tpr * P), FN = P - TP, FP = Math.round(fpr * N), TN = N - FP
+  const pos = 50, neg = 50
+  const TP = Math.round(tpr * pos), FN = pos - TP, FP = Math.round(fpr * neg), TN = neg - FP
 
   return (
     <VizBox title="ROC-кривая и порог классификатора">
