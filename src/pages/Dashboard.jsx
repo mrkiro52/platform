@@ -40,22 +40,122 @@ function JuneChecklist({ user }) {
   const download = () => {
     const nickname = user?.nickname || user?.name || 'Участник'
     const doneCount = JUNE_CHECKLIST.filter((_, i) => checked[i]).length
-    const lines = [
-      `Чек-лист за июнь — ${nickname}`,
-      `Выполнено: ${doneCount} из ${JUNE_CHECKLIST.length}`,
-      '',
-      ...JUNE_CHECKLIST.map((item, i) => `[${checked[i] ? 'x' : ' '}] ${item}`),
-    ]
-    const blob = new Blob([lines.join('\n')], { type: 'text/plain;charset=utf-8' })
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = `kiro-checklist-june-${nickname}.txt`
-    a.click()
-    URL.revokeObjectURL(url)
+    const GREEN = '#c6f135'
+    const BG = '#111111'
+    const CARD = '#1a1a1a'
+    const WHITE = '#ffffff'
+    const GRAY = '#888888'
+    const cols = 2
+    const rows = Math.ceil(JUNE_CHECKLIST.length / cols)
+    const colW = 480
+    const rowH = 44
+    const padX = 40
+    const padY = 40
+    const headerH = 80
+    const footerH = 50
+    const totalW = colW * cols + padX * 2
+    const totalH = headerH + rows * rowH + padY + footerH
+    const canvas = document.createElement('canvas')
+    canvas.width = totalW
+    canvas.height = totalH
+    const ctx = canvas.getContext('2d')
+
+    ctx.fillStyle = BG
+    ctx.fillRect(0, 0, totalW, totalH)
+
+    // card bg
+    ctx.fillStyle = CARD
+    ctx.beginPath()
+    ctx.roundRect(padX - 16, padY - 16, totalW - (padX - 16) * 2, totalH - (padY - 16) * 2, 16)
+    ctx.fill()
+
+    // header
+    ctx.fillStyle = GREEN
+    ctx.font = 'bold 22px system-ui, -apple-system, sans-serif'
+    ctx.fillText('KIRO', padX, padY + 18)
+    ctx.fillStyle = WHITE
+    ctx.font = '22px system-ui, -apple-system, sans-serif'
+    ctx.fillText('  Чек-лист за июнь', padX + 52, padY + 18)
+    ctx.fillStyle = GRAY
+    ctx.font = '14px system-ui, -apple-system, sans-serif'
+    ctx.fillText(`${nickname}  ·  Выполнено: ${doneCount} из ${JUNE_CHECKLIST.length}`, padX, padY + 44)
+
+    // divider
+    ctx.fillStyle = '#333'
+    ctx.fillRect(padX, padY + 56, totalW - padX * 2, 1)
+
+    // items
+    JUNE_CHECKLIST.forEach((item, i) => {
+      const col = i % cols
+      const row = Math.floor(i / cols)
+      const x = padX + col * colW
+      const y = headerH + padY + row * rowH
+      const isChecked = !!checked[i]
+      const boxSize = 18
+
+      // checkbox box
+      ctx.strokeStyle = WHITE
+      ctx.lineWidth = 2
+      if (isChecked) {
+        ctx.fillStyle = GREEN
+        ctx.beginPath()
+        ctx.roundRect(x, y, boxSize, boxSize, 4)
+        ctx.fill()
+        // checkmark
+        ctx.strokeStyle = BG
+        ctx.lineWidth = 2.5
+        ctx.beginPath()
+        ctx.moveTo(x + 4, y + 9)
+        ctx.lineTo(x + 8, y + 13)
+        ctx.lineTo(x + 14, y + 5)
+        ctx.stroke()
+      } else {
+        ctx.strokeStyle = WHITE
+        ctx.lineWidth = 2
+        ctx.beginPath()
+        ctx.roundRect(x, y, boxSize, boxSize, 4)
+        ctx.stroke()
+      }
+
+      // text
+      ctx.fillStyle = isChecked ? GRAY : WHITE
+      ctx.font = `${isChecked ? '' : ''}14px system-ui, -apple-system, sans-serif`
+      ctx.fillText(item, x + boxSize + 10, y + 13)
+
+      // strikethrough
+      if (isChecked) {
+        const textW = ctx.measureText(item).width
+        ctx.fillStyle = GRAY
+        ctx.fillRect(x + boxSize + 10, y + 7, textW, 1)
+      }
+    })
+
+    // footer
+    ctx.fillStyle = GRAY
+    ctx.font = '12px system-ui, -apple-system, sans-serif'
+    ctx.fillText('kiroplatform.ru  ·  IT Summer Camp \'26', padX, totalH - padY + 10)
+
+    const link = document.createElement('a')
+    link.href = canvas.toDataURL('image/png')
+    link.download = `kiro-checklist-june-${nickname}.png`
+    link.click()
   }
 
   const doneCount = JUNE_CHECKLIST.filter((_, i) => checked[i]).length
+
+  const cbStyle = (isChecked) => ({
+    width: 18,
+    height: 18,
+    borderRadius: 4,
+    border: '2px solid #fff',
+    background: isChecked ? '#c6f135' : 'transparent',
+    flexShrink: 0,
+    marginTop: 1,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    transition: 'background 0.15s',
+  })
 
   return (
     <div className="widget" style={{ marginBottom: 20 }}>
@@ -63,22 +163,27 @@ function JuneChecklist({ user }) {
         <span className="widget-title">Чек-лист за июнь</span>
         <span style={{ fontSize: 12, color: 'var(--text-tertiary)' }}>{doneCount}/{JUNE_CHECKLIST.length}</span>
       </div>
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px 20px', marginBottom: 14 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px 20px', marginBottom: 16 }}>
         {JUNE_CHECKLIST.map((item, i) => (
-          <label key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 8, cursor: 'pointer', fontSize: 13, lineHeight: 1.4, color: checked[i] ? 'var(--text-tertiary)' : 'var(--text-primary)', textDecoration: checked[i] ? 'line-through' : 'none', userSelect: 'none' }}>
-            <input
-              type="checkbox"
-              checked={!!checked[i]}
-              onChange={() => toggle(i)}
-              style={{ marginTop: 2, accentColor: 'var(--accent)', flexShrink: 0 }}
-            />
+          <div
+            key={i}
+            onClick={() => toggle(i)}
+            style={{ display: 'flex', alignItems: 'flex-start', gap: 9, cursor: 'pointer', fontSize: 13, lineHeight: 1.4, color: checked[i] ? 'var(--text-tertiary)' : 'var(--text-primary)', textDecoration: checked[i] ? 'line-through' : 'none', userSelect: 'none' }}
+          >
+            <div style={cbStyle(!!checked[i])}>
+              {checked[i] && (
+                <svg width="11" height="8" viewBox="0 0 11 8" fill="none">
+                  <path d="M1 3.5L4 6.5L10 1" stroke="#111" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              )}
+            </div>
             {item}
-          </label>
+          </div>
         ))}
       </div>
       <button
         onClick={download}
-        style={{ fontSize: 13, padding: '7px 16px', borderRadius: 8, border: '1px solid var(--border)', background: 'var(--bg-secondary)', color: 'var(--text-primary)', cursor: 'pointer', fontWeight: 500 }}
+        style={{ fontSize: 13, padding: '8px 18px', borderRadius: 8, border: 'none', background: '#c6f135', color: '#111', cursor: 'pointer', fontWeight: 700 }}
       >
         Скачать чек-лист
       </button>
