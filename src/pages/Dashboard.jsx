@@ -7,22 +7,22 @@ const RU_MONTHS  = ['января','февраля','марта','апреля',
 const RU_WEEKDAY = ['воскресенье','понедельник','вторник','среда','четверг','пятница','суббота']
 
 const JUNE_CHECKLIST = [
-  'Основы программирования',
-  'Оценка алгоритмов по Big O',
-  'Основы дискретной математики — множества и графы',
-  'Структуры данных — массивы и связные списки',
-  'Структуры данных — стек и очередь',
-  'Структуры данных — хеш-таблицы',
-  'Структуры данных — деревья',
-  'Работа с Git',
-  'Работа с ИИ-инструментами (Claude Code, Copilot и др.)',
-  'Мини-проект на визуализацию алгоритма',
-  'Тайм и таск-менеджмент',
-  'Базы данных и SQL',
-  'Алгоритмы сортировок',
-  'Паттерны алгоритмических задач',
-  'Soft skills',
-  'Набросок резюме',
+  { title: 'Основы программирования',        desc: 'переменные, циклы, if-else, функции' },
+  { title: 'Оценка алгоритмов по Big O',     desc: 'O(1), O(n), O(log n) — время и память' },
+  { title: 'Дискретная математика',           desc: 'множества, графы, теория вероятностей' },
+  { title: 'Массивы и связные списки',        desc: 'операции, сложность, отличия' },
+  { title: 'Стек и очередь',                 desc: 'LIFO, FIFO, применение' },
+  { title: 'Хеш-таблицы',                    desc: 'хеш-функция, коллизии, поиск за O(1)' },
+  { title: 'Деревья',                         desc: 'BST, обходы, высота, балансировка' },
+  { title: 'Работа с Git',                    desc: 'commit, branch, merge, pull request' },
+  { title: 'ИИ-инструменты',                  desc: 'Claude Code, Copilot, промпт-инжиниринг' },
+  { title: 'Мини-проект',                     desc: 'визуализация алгоритма, публичный репозиторий' },
+  { title: 'Тайм и таск-менеджмент',          desc: 'Pomodoro, Notion, приоритеты' },
+  { title: 'Базы данных и SQL',               desc: 'SELECT, JOIN, индексы, нормализация' },
+  { title: 'Алгоритмы сортировок',            desc: 'bubble, merge, quick — сложность и идеи' },
+  { title: 'Паттерны задач',                  desc: 'two pointers, sliding window, DP, BFS/DFS' },
+  { title: 'Soft skills',                     desc: 'коммуникация, фидбек, STAR-метод' },
+  { title: 'Набросок резюме',                 desc: 'стек, проекты, опыт, формат' },
 ]
 
 function JuneChecklist({ user }) {
@@ -48,7 +48,7 @@ function JuneChecklist({ user }) {
     const cols = 2
     const rows = Math.ceil(JUNE_CHECKLIST.length / cols)
     const colW = 480
-    const rowH = 44
+    const rowH = 56
     const padX = 40
     const padY = 40
     const headerH = 80
@@ -85,7 +85,7 @@ function JuneChecklist({ user }) {
     ctx.fillRect(padX, padY + 56, totalW - padX * 2, 1)
 
     // items
-    JUNE_CHECKLIST.forEach((item, i) => {
+    JUNE_CHECKLIST.forEach(({ title, desc }, i) => {
       const col = i % cols
       const row = Math.floor(i / cols)
       const x = padX + col * colW
@@ -93,41 +93,40 @@ function JuneChecklist({ user }) {
       const isChecked = !!checked[i]
       const boxSize = 18
 
-      // checkbox box
-      ctx.strokeStyle = WHITE
-      ctx.lineWidth = 2
       if (isChecked) {
         ctx.fillStyle = GREEN
         ctx.beginPath()
-        ctx.roundRect(x, y, boxSize, boxSize, 4)
+        ctx.roundRect(x, y + 4, boxSize, boxSize, 4)
         ctx.fill()
-        // checkmark
         ctx.strokeStyle = BG
         ctx.lineWidth = 2.5
         ctx.beginPath()
-        ctx.moveTo(x + 4, y + 9)
-        ctx.lineTo(x + 8, y + 13)
-        ctx.lineTo(x + 14, y + 5)
+        ctx.moveTo(x + 4, y + 13)
+        ctx.lineTo(x + 8, y + 17)
+        ctx.lineTo(x + 14, y + 9)
         ctx.stroke()
       } else {
         ctx.strokeStyle = WHITE
         ctx.lineWidth = 2
         ctx.beginPath()
-        ctx.roundRect(x, y, boxSize, boxSize, 4)
+        ctx.roundRect(x, y + 4, boxSize, boxSize, 4)
         ctx.stroke()
       }
 
-      // text
+      // title
       ctx.fillStyle = isChecked ? GRAY : WHITE
-      ctx.font = `${isChecked ? '' : ''}14px system-ui, -apple-system, sans-serif`
-      ctx.fillText(item, x + boxSize + 10, y + 13)
-
-      // strikethrough
+      ctx.font = `bold 14px system-ui, -apple-system, sans-serif`
+      ctx.fillText(title, x + boxSize + 10, y + 16)
       if (isChecked) {
-        const textW = ctx.measureText(item).width
+        const tw = ctx.measureText(title).width
         ctx.fillStyle = GRAY
-        ctx.fillRect(x + boxSize + 10, y + 7, textW, 1)
+        ctx.fillRect(x + boxSize + 10, y + 10, tw, 1)
       }
+
+      // desc
+      ctx.fillStyle = GRAY
+      ctx.font = `12px system-ui, -apple-system, sans-serif`
+      ctx.fillText(desc, x + boxSize + 10, y + 33)
     })
 
     // footer
@@ -163,21 +162,24 @@ function JuneChecklist({ user }) {
         <span className="widget-title">Чек-лист за июнь</span>
         <span style={{ fontSize: 12, color: 'var(--text-tertiary)' }}>{doneCount}/{JUNE_CHECKLIST.length}</span>
       </div>
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px 20px', marginBottom: 16 }}>
-        {JUNE_CHECKLIST.map((item, i) => (
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px 20px', marginBottom: 16 }}>
+        {JUNE_CHECKLIST.map(({ title, desc }, i) => (
           <div
             key={i}
             onClick={() => toggle(i)}
-            style={{ display: 'flex', alignItems: 'flex-start', gap: 9, cursor: 'pointer', fontSize: 13, lineHeight: 1.4, color: checked[i] ? 'var(--text-tertiary)' : 'var(--text-primary)', textDecoration: checked[i] ? 'line-through' : 'none', userSelect: 'none' }}
+            style={{ display: 'flex', alignItems: 'flex-start', gap: 9, cursor: 'pointer', userSelect: 'none' }}
           >
-            <div style={cbStyle(!!checked[i])}>
+            <div style={{ ...cbStyle(!!checked[i]), marginTop: 3 }}>
               {checked[i] && (
                 <svg width="11" height="8" viewBox="0 0 11 8" fill="none">
                   <path d="M1 3.5L4 6.5L10 1" stroke="#111" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
               )}
             </div>
-            {item}
+            <div>
+              <div style={{ fontSize: 13, fontWeight: 600, lineHeight: 1.3, color: checked[i] ? 'var(--text-tertiary)' : 'var(--text-primary)', textDecoration: checked[i] ? 'line-through' : 'none' }}>{title}</div>
+              <div style={{ fontSize: 11, color: 'var(--text-tertiary)', lineHeight: 1.3, marginTop: 1 }}>{desc}</div>
+            </div>
           </div>
         ))}
       </div>
