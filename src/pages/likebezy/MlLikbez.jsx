@@ -65,17 +65,26 @@ const SectionTitle = ({ id, kicker, children }) => (
   </div>
 )
 
-const QA = ({ n, q, children }) => (
-  <div style={{ margin: '30px 0' }}>
-    <div style={{ display: 'flex', gap: 10, alignItems: 'baseline', marginBottom: 10 }}>
-      <span style={{ fontFamily: 'monospace', fontWeight: 700, color: 'var(--accent-lime)', fontSize: 14, flexShrink: 0 }}>{n}.</span>
-      <h3 style={{ color: 'var(--text-primary)', fontSize: 'clamp(15px, 2.4vw, 18px)', fontWeight: 700, margin: 0, lineHeight: 1.45 }}>{q}</h3>
+const QA = ({ n, q, children }) => {
+  const [open, setOpen] = useState(false)
+  return (
+    <div style={{ margin: '16px 0', border: '1px solid var(--border-color)', borderRadius: 10, overflow: 'hidden' }}>
+      <button
+        onClick={() => setOpen(o => !o)}
+        style={{ width: '100%', background: open ? 'var(--bg-secondary)' : 'var(--bg-tertiary)', border: 'none', cursor: 'pointer', padding: '14px 16px', textAlign: 'left', display: 'flex', gap: 10, alignItems: 'flex-start' }}
+      >
+        <span style={{ fontFamily: 'monospace', fontWeight: 700, color: 'var(--accent-lime)', fontSize: 14, flexShrink: 0, lineHeight: 1.5 }}>{n}.</span>
+        <span style={{ color: 'var(--text-primary)', fontSize: 'clamp(14px, 2.2vw, 16px)', fontWeight: 600, lineHeight: 1.5, flex: 1, textAlign: 'left' }}>{q}</span>
+        <span style={{ color: open ? 'var(--accent-lime)' : 'var(--text-tertiary)', fontSize: 18, flexShrink: 0, lineHeight: 1, marginTop: 2, transition: 'transform 0.2s', display: 'inline-block', transform: open ? 'rotate(180deg)' : 'rotate(0deg)' }}>⌄</span>
+      </button>
+      {open && (
+        <div style={{ borderTop: '1px solid var(--border-color)', padding: '16px 16px 16px 42px', background: 'var(--bg-secondary)' }}>
+          {children}
+        </div>
+      )}
     </div>
-    <div style={{ borderLeft: '2px solid var(--border-color)', paddingLeft: 18, marginLeft: 4 }}>
-      {children}
-    </div>
-  </div>
-)
+  )
+}
 
 const VizBox = ({ title, children }) => (
   <div style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border-color)', borderRadius: 12, padding: 'clamp(14px, 3vw, 22px)', margin: '18px 0' }}>
