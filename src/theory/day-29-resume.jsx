@@ -92,7 +92,15 @@ function XYZBuilder() {
 
 /* ─── Interactive: ATS scanner ─── */
 function ATSChecker() {
-  const keywords = ['Python', 'JavaScript', 'React', 'SQL', 'Git', 'REST API', 'Docker', 'TypeScript', 'Node.js', 'PostgreSQL']
+  const keywords = [
+    'Python', 'JavaScript', 'TypeScript', 'React', 'Vue', 'Angular',
+    'Node.js', 'FastAPI', 'Django', 'Flask', 'Spring',
+    'SQL', 'PostgreSQL', 'MySQL', 'MongoDB', 'Redis', 'SQLite',
+    'Git', 'Docker', 'Kubernetes', 'CI/CD', 'Linux',
+    'REST API', 'GraphQL', 'gRPC', 'Kafka',
+    'pytest', 'Jest', 'Selenium',
+    'Figma', 'AWS', 'GCP', 'Nginx',
+  ]
   const [text, setText] = useState('')
   const found = keywords.filter(k => text.toLowerCase().includes(k.toLowerCase()))
   const missing = keywords.filter(k => !text.toLowerCase().includes(k.toLowerCase()))
@@ -135,44 +143,31 @@ function ATSChecker() {
 
 /* ─── Interactive: Photo check ─── */
 function PhotoCheck() {
-  const [selected, setSelected] = useState(null)
-  const photos = [
-    { id: 'ok1', label: 'Деловое фото', icon: '👔', good: true, tip: 'Нейтральный фон, деловой или smart casual стиль, смотришь в камеру, улыбка.' },
-    { id: 'ok2', label: 'Светлый фон', icon: '🧑‍💻', good: true, tip: 'Офисный или нейтральный фон, хорошее освещение лица.' },
-    { id: 'bad1', label: 'Вечеринка', icon: '🎉', good: false, tip: 'Фотографии с праздников, алкоголем, в расслабленной обстановке — нет.' },
-    { id: 'bad2', label: 'Отпуск / природа', icon: '🏖️', good: false, tip: 'Пляжные или туристические фото — не подходят для резюме.' },
-    { id: 'bad3', label: 'Групповое фото', icon: '👥', good: false, tip: 'HR не должен угадывать, кто ты на фото.' },
-    { id: 'bad4', label: 'Селфи', icon: '🤳', good: false, tip: 'Селфи с телефона выглядит непрофессионально.' },
-  ]
   return (
     <Card>
       <div style={{ color: 'var(--text-tertiary)', fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', marginBottom: 14 }}>Какое фото ставить в резюме?</div>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(130px, 1fr))', gap: 10, marginBottom: 14 }}>
-        {photos.map(p => (
-          <div
-            key={p.id}
-            onClick={() => setSelected(selected === p.id ? null : p.id)}
-            style={{
-              background: selected === p.id ? (p.good ? 'rgba(74,222,128,0.12)' : 'rgba(248,113,113,0.12)') : 'var(--bg-tertiary)',
-              border: `1px solid ${selected === p.id ? (p.good ? 'rgba(74,222,128,0.4)' : 'rgba(248,113,113,0.4)') : 'var(--border-color)'}`,
-              borderRadius: 8, padding: '12px 10px', cursor: 'pointer', textAlign: 'center', transition: 'all 0.15s',
-            }}
-          >
-            <div style={{ fontSize: 28, marginBottom: 6 }}>{p.icon}</div>
-            <div style={{ fontSize: 12, color: 'var(--text-secondary)', fontWeight: 500 }}>{p.label}</div>
-            <div style={{ fontSize: 18, marginTop: 4 }}>{p.good ? '✅' : '❌'}</div>
-          </div>
-        ))}
+      <div style={{ marginBottom: 10 }}>
+        <div style={{ color: 'var(--accent-lime)', fontWeight: 700, fontSize: 13, marginBottom: 6 }}>Подходит</div>
+        <ul style={{ paddingLeft: 20, margin: 0 }}>
+          {[
+            'Деловой или smart casual стиль одежды, нейтральный фон (белый, серый, светлый).',
+            'Лицо хорошо освещено, занимает 60–70% кадра, смотришь в камеру.',
+            'Профессиональная съёмка или качественное фото с хорошим смартфоном.',
+          ].map((t, i) => <li key={i} style={{ color: 'var(--text-secondary)', fontSize: 14, lineHeight: 1.75, marginBottom: 4 }}>{t}</li>)}
+        </ul>
       </div>
-      {selected && (
-        <div style={{
-          background: photos.find(p => p.id === selected)?.good ? 'rgba(74,222,128,0.07)' : 'rgba(248,113,113,0.07)',
-          border: `1px solid ${photos.find(p => p.id === selected)?.good ? 'rgba(74,222,128,0.25)' : 'rgba(248,113,113,0.25)'}`,
-          borderRadius: 8, padding: '10px 14px', fontSize: 13.5, color: 'var(--text-secondary)', lineHeight: 1.6,
-        }}>
-          {photos.find(p => p.id === selected)?.tip}
-        </div>
-      )}
+      <div>
+        <div style={{ color: '#f87171', fontWeight: 700, fontSize: 13, marginBottom: 6 }}>Не подходит</div>
+        <ul style={{ paddingLeft: 20, margin: 0 }}>
+          {[
+            'Фото с вечеринок, праздников, с алкоголем или в неформальной обстановке.',
+            'Пляжные и туристические снимки.',
+            'Групповые фото — HR не должен угадывать, кто ты.',
+            'Селфи с телефона, особенно в зеркало.',
+            'Фото в тёмном месте, против света или сильно размытые.',
+          ].map((t, i) => <li key={i} style={{ color: 'var(--text-secondary)', fontSize: 14, lineHeight: 1.75, marginBottom: 4 }}>{t}</li>)}
+        </ul>
+      </div>
     </Card>
   )
 }
@@ -405,16 +400,18 @@ export default function Day29ResumeTheory() {
       <Card>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 12 }}>
           {[
-            { title: '💻 Языки', items: ['Python 3', 'JavaScript (ES6+)', 'TypeScript', 'SQL'] },
-            { title: '🛠️ Фреймворки', items: ['FastAPI', 'React', 'Node.js', 'aiogram'] },
-            { title: '🗄️ Базы данных', items: ['PostgreSQL', 'SQLite', 'Redis'] },
-            { title: '⚙️ Инструменты', items: ['Git', 'Docker', 'Linux', 'VS Code'] },
+            { title: 'Языки', items: ['Python 3', 'JavaScript (ES6+)', 'TypeScript', 'SQL'] },
+            { title: 'Фреймворки', items: ['FastAPI', 'React', 'Node.js', 'aiogram'] },
+            { title: 'Базы данных', items: ['PostgreSQL', 'SQLite', 'Redis'] },
+            { title: 'Инструменты', items: ['Git', 'Docker', 'Linux', 'VS Code'] },
           ].map(cat => (
             <div key={cat.title} style={{ background: 'var(--bg-tertiary)', borderRadius: 8, padding: '12px 14px' }}>
               <div style={{ fontWeight: 700, color: 'var(--text-primary)', fontSize: 13, marginBottom: 8 }}>{cat.title}</div>
-              {cat.items.map(i => (
-                <div key={i} style={{ display: 'inline-block', background: 'var(--bg-secondary)', border: '1px solid var(--border-color)', borderRadius: 4, padding: '2px 8px', fontSize: 12, color: 'var(--text-secondary)', margin: '2px' }}>{i}</div>
-              ))}
+              <ul style={{ paddingLeft: 18, margin: 0 }}>
+                {cat.items.map(i => (
+                  <li key={i} style={{ color: 'var(--text-secondary)', fontSize: 13, lineHeight: 1.7 }}>{i}</li>
+                ))}
+              </ul>
             </div>
           ))}
         </div>
@@ -479,22 +476,13 @@ export default function Day29ResumeTheory() {
       <SectionHead n="10" title="Формат, инструменты и чеклист" sub="Где создать резюме и как проверить перед отправкой" />
 
       <S>Лучшие инструменты для создания резюме:</S>
-
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 10, margin: '14px 0' }}>
-        {[
-          { name: 'Google Docs', stars: '⭐⭐⭐⭐⭐', desc: 'Бесплатно, просто, легко редактировать, ATS-friendly.' },
-          { name: 'Notion', stars: '⭐⭐⭐⭐', desc: 'Гибко, красиво. Экспортируй в PDF без блоков.' },
-          { name: 'Canva', stars: '⭐⭐⭐', desc: 'Красивые шаблоны, но сложная вёрстка ломает ATS.' },
-          { name: 'LaTeX (Overleaf)', stars: '⭐⭐⭐⭐⭐', desc: 'Идеально для tech-позиций, но требует навыков.' },
-          { name: 'hh.ru конструктор', stars: '⭐⭐⭐⭐', desc: 'Если подаёшь через HH — оптимален для их ATS.' },
-        ].map(t => (
-          <div key={t.name} style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border-color)', borderRadius: 8, padding: '12px 14px' }}>
-            <div style={{ fontWeight: 700, color: 'var(--text-primary)', fontSize: 14 }}>{t.name}</div>
-            <div style={{ color: 'var(--accent-lime)', fontSize: 13, margin: '3px 0' }}>{t.stars}</div>
-            <div style={{ color: 'var(--text-secondary)', fontSize: 12, lineHeight: 1.5 }}>{t.desc}</div>
-          </div>
-        ))}
-      </div>
+      <Ul items={[
+        'Google Docs — бесплатно, просто, легко редактировать, хорошо парсится ATS.',
+        'Notion — гибко и красиво, экспортируй в PDF без лишних блоков.',
+        'LaTeX (Overleaf) — идеально для tech-позиций, выглядит профессионально, но требует базовых навыков.',
+        'hh.ru конструктор — если подаёшь через HH, оптимален для их внутреннего ATS.',
+        'Canva — красивые шаблоны, но сложная вёрстка часто ломает ATS-парсинг. Использовать с осторожностью.',
+      ]} />
 
       <S style={{ marginTop: 20 }}>Чеклист перед отправкой:</S>
 
@@ -520,7 +508,7 @@ export default function Day29ResumeTheory() {
       </div>
 
       <section className="theory-section theory-section--closing" style={{ marginTop: 48 }}>
-        <p className="theory-closing-text">Резюме — не цель, а инструмент. Лучший способ его улучшить — получить отказ, понять причину и переписать. Итерируй. 🚀</p>
+        <p className="theory-closing-text">Лучший способ улучшить резюме — отправить его, получить отказ и узнать причину.</p>
       </section>
     </div>
   )
