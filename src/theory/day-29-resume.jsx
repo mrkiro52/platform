@@ -82,7 +82,7 @@ function XYZBuilder() {
           </div>
         ))}
       </div>
-      <div style={{ background: 'var(--bg-tertiary)', borderRadius: 8, padding: '14px 16px', borderLeft: '3px solid var(--accent-lime)' }}>
+      <div style={{ background: 'var(--bg-tertiary)', borderRadius: 8, padding: '14px 16px' }}>
         <div style={{ fontSize: 11, color: 'var(--accent-lime)', fontWeight: 700, marginBottom: 6 }}>Готовая фраза для резюме:</div>
         <div style={{ color: 'var(--text-primary)', fontSize: 14, lineHeight: 1.6, fontStyle: 'italic' }}>"{result}"</div>
       </div>
@@ -93,17 +93,29 @@ function XYZBuilder() {
 /* ─── Interactive: ATS scanner ─── */
 function ATSChecker() {
   const keywords = [
-    'Python', 'JavaScript', 'TypeScript', 'React', 'Vue', 'Angular',
-    'Node.js', 'FastAPI', 'Django', 'Flask', 'Spring',
-    'SQL', 'PostgreSQL', 'MySQL', 'MongoDB', 'Redis', 'SQLite',
-    'Git', 'Docker', 'Kubernetes', 'CI/CD', 'Linux',
-    'REST API', 'GraphQL', 'gRPC', 'Kafka',
-    'pytest', 'Jest', 'Selenium',
-    'Figma', 'AWS', 'GCP', 'Nginx',
+    // Frontend
+    'JavaScript', 'TypeScript', 'React', 'Vue', 'Angular', 'Next.js', 'Nuxt', 'Svelte',
+    'HTML', 'CSS', 'Sass', 'Tailwind', 'Webpack', 'Vite', 'Redux', 'Zustand',
+    'Jest', 'Cypress', 'Figma', 'WebSocket',
+    // Backend
+    'Python', 'Node.js', 'Java', 'Go', 'Kotlin', 'C#', 'PHP', 'Ruby',
+    'FastAPI', 'Django', 'Flask', 'Express', 'Spring', 'NestJS', 'Laravel',
+    'REST API', 'GraphQL', 'gRPC', 'Kafka', 'RabbitMQ', 'Celery',
+    'JWT', 'OAuth', 'OpenAPI', 'Swagger',
+    // Базы данных
+    'SQL', 'PostgreSQL', 'MySQL', 'SQLite', 'MongoDB', 'Redis', 'Elasticsearch',
+    'ClickHouse', 'Cassandra', 'DynamoDB',
+    // DevOps
+    'Git', 'Docker', 'Kubernetes', 'CI/CD', 'Linux', 'Nginx', 'Ansible', 'Terraform',
+    'GitHub Actions', 'GitLab CI', 'Jenkins', 'AWS', 'GCP', 'Azure',
+    // ML / Data
+    'TensorFlow', 'PyTorch', 'scikit-learn', 'pandas', 'NumPy', 'Jupyter',
+    'Airflow', 'MLflow', 'Spark', 'dbt', 'Tableau', 'Power BI',
+    // Аналитика
+    'Excel', 'Google Sheets', 'Looker', 'Metabase', 'A/B testing', 'Matplotlib', 'Seaborn',
   ]
   const [text, setText] = useState('')
   const found = keywords.filter(k => text.toLowerCase().includes(k.toLowerCase()))
-  const missing = keywords.filter(k => !text.toLowerCase().includes(k.toLowerCase()))
   const score = Math.round((found.length / keywords.length) * 100)
 
   return (
@@ -127,15 +139,15 @@ function ATSChecker() {
           </div>
           <span style={{ fontFamily: 'monospace', fontWeight: 700, fontSize: 15, color: score >= 60 ? 'var(--accent-lime)' : score >= 30 ? '#fb923c' : '#f87171', minWidth: 44 }}>{score}%</span>
         </div>
-        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 8 }}>
-          {found.map(k => <span key={k} style={{ background: 'rgba(74,222,128,0.15)', border: '1px solid rgba(74,222,128,0.3)', color: '#4ade80', borderRadius: 5, padding: '2px 8px', fontSize: 12 }}>{k}</span>)}
-        </div>
-        {missing.length > 0 && text.length > 0 && (
-          <div style={{ fontSize: 12, color: 'var(--text-tertiary)' }}>
-            Не найдено: {missing.map(k => <span key={k} style={{ background: 'rgba(248,113,113,0.12)', border: '1px solid rgba(248,113,113,0.25)', color: '#f87171', borderRadius: 5, padding: '2px 8px', fontSize: 12, marginRight: 4 }}>{k}</span>)}
+        {found.length > 0 && (
+          <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 8 }}>
+            {found.map(k => <span key={k} style={{ background: 'rgba(74,222,128,0.15)', border: '1px solid rgba(74,222,128,0.3)', color: '#4ade80', borderRadius: 5, padding: '2px 8px', fontSize: 12 }}>{k}</span>)}
           </div>
         )}
-        {text.length === 0 && <S style={{ fontSize: 12 }}>Начни вводить текст — покажем какие ключевые слова нашёл ATS-робот.</S>}
+        {text.length === 0
+          ? <S style={{ fontSize: 12 }}>Начни вводить текст — покажем какие ключевые слова нашёл ATS-робот.</S>
+          : <S style={{ fontSize: 12, margin: 0 }}>Найдено {found.length} из {keywords.length} технологий в базе.</S>
+        }
       </div>
     </Card>
   )
@@ -265,7 +277,7 @@ function ATSStructure() {
         ))}
       </div>
       {hover && (
-        <div style={{ marginTop: 14, background: 'var(--bg-tertiary)', borderRadius: 8, padding: '12px 14px', fontSize: 13.5, color: 'var(--text-secondary)', lineHeight: 1.7, borderLeft: `3px solid ${colors[blocks.find(b => b.id === hover)?.weight]}` }}>
+        <div style={{ marginTop: 14, background: 'var(--bg-tertiary)', borderRadius: 8, padding: '12px 14px', fontSize: 13.5, color: 'var(--text-secondary)', lineHeight: 1.7 }}>
           {blocks.find(b => b.id === hover)?.tip}
         </div>
       )}
@@ -398,23 +410,23 @@ export default function Day29ResumeTheory() {
       <S>Пиши технологии <B>так же как написано в вакансии</B>. ATS ищет точные совпадения: "PostgreSQL" ≠ "Postgres" ≠ "psql". Если в вакансии написано "React.js" — пиши "React.js", а не просто "React".</S>
 
       <Card>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 12 }}>
+        <ul style={{ paddingLeft: 20, margin: 0, columns: 2, columnGap: 32 }}>
           {[
             { title: 'Языки', items: ['Python 3', 'JavaScript (ES6+)', 'TypeScript', 'SQL'] },
             { title: 'Фреймворки', items: ['FastAPI', 'React', 'Node.js', 'aiogram'] },
             { title: 'Базы данных', items: ['PostgreSQL', 'SQLite', 'Redis'] },
             { title: 'Инструменты', items: ['Git', 'Docker', 'Linux', 'VS Code'] },
           ].map(cat => (
-            <div key={cat.title} style={{ background: 'var(--bg-tertiary)', borderRadius: 8, padding: '12px 14px' }}>
-              <div style={{ fontWeight: 700, color: 'var(--text-primary)', fontSize: 13, marginBottom: 8 }}>{cat.title}</div>
+            <li key={cat.title} style={{ listStyle: 'none', marginBottom: 14, breakInside: 'avoid' }}>
+              <div style={{ fontWeight: 700, color: 'var(--text-primary)', fontSize: 13, marginBottom: 4 }}>{cat.title}</div>
               <ul style={{ paddingLeft: 18, margin: 0 }}>
                 {cat.items.map(i => (
-                  <li key={i} style={{ color: 'var(--text-secondary)', fontSize: 13, lineHeight: 1.7 }}>{i}</li>
+                  <li key={i} style={{ color: 'var(--text-secondary)', fontSize: 13, lineHeight: 1.75 }}>{i}</li>
                 ))}
               </ul>
-            </div>
+            </li>
           ))}
-        </div>
+        </ul>
       </Card>
 
       <S>Что <Red>не стоит</Red> писать в навыках:</S>
@@ -488,20 +500,20 @@ export default function Day29ResumeTheory() {
 
       <div style={{ display: 'grid', gap: 6, margin: '10px 0' }}>
         {[
-          '✅ Резюме — PDF, не Word (если не просят Word)',
-          '✅ Имя файла: Фамилия_Имя_Роль.pdf',
-          '✅ Нет орфографических ошибок (проверь в Grammarly / LanguageTool)',
-          '✅ Все ссылки работают: GitHub, LinkedIn, портфолио',
-          '✅ Email рабочий — не "pupkin007@mail.ru"',
-          '✅ Телефон актуальный',
-          '✅ Фото профессиональное (если добавляешь)',
-          '✅ Summary адаптировано под эту конкретную вакансию',
-          '✅ Ключевые слова из вакансии присутствуют',
-          '✅ Опыт описан по формуле XYZ с цифрами',
-          '✅ Нет таблиц и колонок (портят ATS-парсинг)',
-          '✅ 1 страница для джуна (максимум 2)',
-          '✅ Хронология обратная (новое сверху)',
-          '✅ GitHub профиль заполнен: фото, bio, закреплены лучшие репозитории',
+          'Резюме — PDF, не Word (если не просят Word)',
+          'Имя файла: Фамилия_Имя_Роль.pdf',
+          'Нет орфографических ошибок (проверь в Grammarly / LanguageTool)',
+          'Все ссылки работают: GitHub, LinkedIn, портфолио',
+          'Email рабочий — не "pupkin007@mail.ru"',
+          'Телефон актуальный',
+          'Фото профессиональное (если добавляешь)',
+          'Summary адаптировано под эту конкретную вакансию',
+          'Ключевые слова из вакансии присутствуют',
+          'Опыт описан по формуле XYZ с цифрами',
+          'Нет таблиц и колонок (портят ATS-парсинг)',
+          '1 страница для джуна (максимум 2)',
+          'Хронология обратная (новое сверху)',
+          'GitHub профиль заполнен: фото, bio, закреплены лучшие репозитории',
         ].map((item, i) => (
           <div key={i} style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border-color)', borderRadius: 6, padding: '8px 14px', fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.5 }}>{item}</div>
         ))}
