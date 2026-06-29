@@ -59,6 +59,7 @@ import Day24PatternsTheory from '../theory/day-24-patterns'
 import Day25SecurityTheory from '../theory/day-25-security'
 import Day26SoftSkillsTheory from '../theory/day-26-softs-kills'
 import Day27LearningTheory from '../theory/day-27-learning'
+import Day21Insider2Theory from '../theory/day-21-insider2'
 import Day29ResumeTheory from '../theory/day-29-resume'
 
 // Маппинг дней на компоненты с теорией
@@ -82,6 +83,7 @@ const THEORY_COMPONENTS = {
   18: Day18TestingTheory,
   19: Day19SqlTheory,
   20: Day20ApiTheory,
+  21: Day21Insider2Theory,
   22: Day22SortingTheory,
   23: Day24PatternsTheory,
   24: Day25SecurityTheory,
