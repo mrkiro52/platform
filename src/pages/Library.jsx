@@ -140,6 +140,31 @@ function buildJuneDays(scheduleData, libraryData) {
   })
 }
 
+const libBtnStyle = {
+  display: 'inline-flex', alignItems: 'center', gap: 5,
+  background: 'var(--bg-tertiary)', border: '1px solid var(--border-color)',
+  borderRadius: 8, padding: '6px 12px', fontSize: 12.5, fontWeight: 600,
+  color: 'var(--text-secondary)', cursor: 'pointer', whiteSpace: 'nowrap',
+  transition: 'border-color 0.15s, color 0.15s',
+}
+const libBtnHover = (e, on) => {
+  e.currentTarget.style.borderColor = on ? 'rgba(200,255,0,0.4)' : 'var(--border-color)'
+  e.currentTarget.style.color = on ? 'var(--accent-lime)' : 'var(--text-secondary)'
+}
+
+function LibButton({ emoji, text, onClick }) {
+  return (
+    <button
+      style={libBtnStyle}
+      onMouseEnter={e => libBtnHover(e, true)}
+      onMouseLeave={e => libBtnHover(e, false)}
+      onClick={(e) => { e.stopPropagation(); onClick() }}
+    >
+      <span>{emoji}</span>{text}
+    </button>
+  )
+}
+
 function DayCard({ day, onOpen, onOpenTheory, onOpenQuestions, onOpenHomework }) {
   const locked = !isAvailable(day.day)
   const showButtons = shouldShowButtons(day.day)
@@ -149,10 +174,9 @@ function DayCard({ day, onOpen, onOpenTheory, onOpenQuestions, onOpenHomework })
   return (
     <div
       className={`sched-day${!locked && hasMats ? ' sched-day--open' : ''}`}
-      style={locked ? { opacity: 0.4 } : hasMats ? { cursor:'pointer', borderColor:'rgba(200,255,0,0.1)' } : { cursor:'default' }}
-      onClick={!locked && hasMats ? () => onOpen(day) : undefined}
+      style={locked ? { opacity: 0.4 } : { cursor:'default' }}
     >
-      <div className="sched-day-header" style={{ pointerEvents:'none' }}>
+      <div className="sched-day-header" style={{ flexWrap: 'wrap', rowGap: 10 }}>
         <div className="sched-day-stripe" style={{ background: color }} />
         <div className="sched-day-meta">
           <span className="sched-day-num">{String(day.day).padStart(2,'0')}</span>
@@ -160,54 +184,18 @@ function DayCard({ day, onOpen, onOpenTheory, onOpenQuestions, onOpenHomework })
           <span className="sched-day-date">{dayDateLabel(day.day)}</span>
         </div>
         <div className="sched-day-title">{day.title}</div>
-        <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexShrink: 0 }}>
+        <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap', flexShrink: 0 }}>
           {showButtons && (
             <>
-              <button
-                className="theory-file-btn"
-                onClick={(e) => {
-                  e.stopPropagation()
-                  onOpenTheory(day)
-                }}
-                title="Открыть теорию"
-              >
-                📚
-              </button>
+              <LibButton emoji="📚" text="Теория" onClick={() => onOpenTheory(day)} />
               {day.day !== 13 && (
-                <button
-                  className="theory-file-btn"
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    onOpenQuestions(day)
-                  }}
-                  title="Открыть задачи для тренировки"
-                >
-                  ✅
-                </button>
+                <LibButton emoji="✅" text="Онлайн тесты" onClick={() => onOpenQuestions(day)} />
               )}
-              <button
-                className="theory-file-btn"
-                onClick={(e) => {
-                  e.stopPropagation()
-                  onOpenHomework(day)
-                }}
-                title="Открыть домашние задания"
-              >
-                📝
-              </button>
+              <LibButton emoji="📝" text="Домашние задания" onClick={() => onOpenHomework(day)} />
             </>
           )}
           {!locked && hasMats && (
-            <button
-              className="theory-file-btn"
-              onClick={(e) => {
-                e.stopPropagation()
-                onOpen(day)
-              }}
-              title="Открыть материалы"
-            >
-              🔗
-            </button>
+            <LibButton emoji="🎬" text="Видео-лекция" onClick={() => onOpen(day)} />
           )}
         </div>
       </div>
@@ -216,7 +204,7 @@ function DayCard({ day, onOpen, onOpenTheory, onOpenQuestions, onOpenHomework })
 }
 
 export default function Library({ onOpenDay, onOpenTheory, onOpenQuestions, onOpenHomework }) {
-  const [activeMonth, setActiveMonth] = useState('june')
+  const [activeMonth, setActiveMonth] = useState('july')
   const [library, setLibrary]         = useState(LIBRARY)
   const [schedule, setSchedule]       = useState(SCHEDULE)
   const [loading, setLoading]         = useState(true)
