@@ -178,7 +178,7 @@ function JulySessionCard({ session }) {
             return (
               <span key={t} style={{
                 background: c.bg, border: `1px solid ${c.border}`, color: c.text,
-                borderRadius: 5, padding: '2px 8px', fontSize: 11, fontWeight: 600,
+                borderRadius: 999, padding: '3px 12px', fontSize: 11, fontWeight: 600,
               }}>{t}</span>
             )
           })}
@@ -215,7 +215,7 @@ function JulyDayGroup({ dayNum, dateLabel, sessions }) {
             return (
               <span key={t} style={{
                 background: c.bg, border: `1px solid ${c.border}`, color: c.text,
-                borderRadius: 4, padding: '2px 7px', fontSize: 10, fontWeight: 700,
+                borderRadius: 999, padding: '3px 10px', fontSize: 10, fontWeight: 700,
               }}>{t}</span>
             )
           })}

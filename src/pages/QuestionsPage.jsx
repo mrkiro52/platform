@@ -24,6 +24,17 @@ import Day25SecurityTasks from '../questions/day-25-security'
 import Day26SoftSkillsTasks from '../questions/day-26-softs-kills'
 import Day27LearningTasks from '../questions/day-27-learning'
 import Day29ResumeTasks from '../questions/day-29-resume'
+import July1PythonTasks from '../questions/july-1-python'
+import July1HtmlTasks from '../questions/july-1-html'
+import July1BackendTasks from '../questions/july-1-backend'
+import July1SecurityTasks from '../questions/july-1-security'
+
+const JULY_TRACK_LABELS = {
+  101: '1 июля · Frontend — Основы HTML',
+  102: '1 июля · Backend — Python vs Go',
+  103: '1 июля · ML/Аналитика — Основы Python',
+  104: '1 июля · Кибербезопасность — Основы ИБ',
+}
 
 const QUESTIONS_COMPONENTS = {
   2: Day2BasicsTasks,
@@ -50,6 +61,11 @@ const QUESTIONS_COMPONENTS = {
   26: Day26SoftSkillsTasks,
   27: Day27LearningTasks,
   29: Day29ResumeTasks,
+  // Июль — специализация (треки)
+  101: July1HtmlTasks,     // Frontend
+  102: July1BackendTasks,  // Backend
+  103: July1PythonTasks,   // ML / Аналитика
+  104: July1SecurityTasks, // Кибербезопасность
 }
 
 function QuestionCard({ question, taskIndex, totalTasks, onAnswer, isSolved, savedAnswer }) {
@@ -297,6 +313,7 @@ export default function QuestionsPage({ selectedDay, onBack }) {
   }
 
   function getDayLabel(dayNum) {
+    if (JULY_TRACK_LABELS[dayNum]) return JULY_TRACK_LABELS[dayNum]
     const schedule = SCHEDULE.find(e => e.day === dayNum)
     return schedule ? schedule.title : `День ${dayNum}`
   }
@@ -334,7 +351,7 @@ export default function QuestionsPage({ selectedDay, onBack }) {
         </button>
         <span className="breadcrumb-sep">/</span>
         <span className="breadcrumb-current">
-          День {selectedDay} · {getDayLabel(selectedDay)}
+          {JULY_TRACK_LABELS[selectedDay] ? getDayLabel(selectedDay) : `День ${selectedDay} · ${getDayLabel(selectedDay)}`}
         </span>
       </div>
 

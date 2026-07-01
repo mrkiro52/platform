@@ -61,6 +61,10 @@ import Day26SoftSkillsTheory from '../theory/day-26-softs-kills'
 import Day27LearningTheory from '../theory/day-27-learning'
 import Day21Insider2Theory from '../theory/day-21-insider2'
 import Day29ResumeTheory from '../theory/day-29-resume'
+import July1PythonTheory from '../theory/july-1-python'
+import July1HtmlTheory from '../theory/july-1-html'
+import July1BackendTheory from '../theory/july-1-backend'
+import July1SecurityTheory from '../theory/july-1-security'
 
 // Маппинг дней на компоненты с теорией
 const THEORY_COMPONENTS = {
@@ -90,6 +94,19 @@ const THEORY_COMPONENTS = {
   26: Day26SoftSkillsTheory,
   27: Day27LearningTheory,
   29: Day29ResumeTheory,
+  // Июль — специализация (треки)
+  101: July1HtmlTheory,     // Frontend
+  102: July1BackendTheory,  // Backend
+  103: July1PythonTheory,   // ML / Аналитика
+  104: July1SecurityTheory, // Кибербезопасность
+}
+
+// Заголовки для июльских треков (синтетические id)
+export const JULY_TRACK_LABELS = {
+  101: '1 июля · Frontend — Основы HTML',
+  102: '1 июля · Backend — Python vs Go',
+  103: '1 июля · ML/Аналитика — Основы Python',
+  104: '1 июля · Кибербезопасность — Основы ИБ',
 }
 
 const THEORY_TITLES = {
@@ -98,6 +115,7 @@ const THEORY_TITLES = {
 }
 
 function getDayLabel(dayNum) {
+  if (JULY_TRACK_LABELS[dayNum]) return JULY_TRACK_LABELS[dayNum]
   const schedule = SCHEDULE.find(e => e.day === dayNum)
   return schedule ? schedule.title : `День ${dayNum}`
 }
@@ -149,7 +167,7 @@ export default function TheoryPage({ selectedDay, onBack }) {
         </button>
         <span className="breadcrumb-sep">/</span>
         <span className="breadcrumb-current">
-          День {selectedDay} · {getDayLabel(selectedDay)}
+          {JULY_TRACK_LABELS[selectedDay] ? getDayLabel(selectedDay) : `День ${selectedDay} · ${getDayLabel(selectedDay)}`}
         </span>
       </div>
 

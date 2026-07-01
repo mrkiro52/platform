@@ -5,9 +5,84 @@ import { SkeletonLibraryDay } from '../components/Skeleton'
 
 const TABS = [
   { value:'june',   label:'Июнь — Фундамент',    locked: false },
-  { value:'july',   label:'Июль — Специализация', locked: true  },
+  { value:'july',   label:'Июль — Специализация', locked: false },
   { value:'august', label:'Август — Карьера',      locked: true  },
 ]
+
+// Треки июля: направление → синтетический id дня с контентом (теория/тесты/ДЗ)
+const JULY_TRACKS = [
+  { name: 'Frontend',          id: 101, lesson: 'Основы HTML',                        color: { bg:'rgba(234,179,8,0.12)',  border:'rgba(234,179,8,0.3)',  text:'#facc15' } },
+  { name: 'Backend',           id: 102, lesson: 'Python vs Go',                       color: { bg:'rgba(59,130,246,0.12)', border:'rgba(59,130,246,0.3)', text:'#60a5fa' } },
+  { name: 'Аналитика / ML',    id: 103, lesson: 'Основы Python',                      color: { bg:'rgba(34,197,94,0.12)',  border:'rgba(34,197,94,0.3)',  text:'#4ade80' } },
+  { name: 'Кибербезопасность', id: 104, lesson: 'Основы информационной безопасности', color: { bg:'rgba(239,68,68,0.12)', border:'rgba(239,68,68,0.3)',  text:'#f87171' } },
+]
+
+const JULY_DAYS = [
+  { day: 1, date: 'ср, 1 июля', tracks: JULY_TRACKS },
+]
+
+function JulyTrackRow({ track, onOpenTheory, onOpenQuestions, onOpenHomework }) {
+  const c = track.color
+  const target = { day: track.id }
+  const btn = {
+    display: 'inline-flex', alignItems: 'center', gap: 5,
+    background: 'var(--bg-tertiary)', border: '1px solid var(--border-color)',
+    borderRadius: 8, padding: '6px 12px', fontSize: 12.5, fontWeight: 600,
+    color: 'var(--text-secondary)', cursor: 'pointer', whiteSpace: 'nowrap',
+    transition: 'border-color 0.15s, color 0.15s',
+  }
+  const hover = (e, on) => {
+    e.currentTarget.style.borderColor = on ? 'rgba(200,255,0,0.4)' : 'var(--border-color)'
+    e.currentTarget.style.color = on ? 'var(--accent-lime)' : 'var(--text-secondary)'
+  }
+  return (
+    <div style={{
+      display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap',
+      padding: '14px 16px', borderTop: '1px solid var(--border-color)',
+    }}>
+      <div style={{ minWidth: 190, flex: '1 1 190px' }}>
+        <span style={{
+          display: 'inline-block', background: c.bg, border: `1px solid ${c.border}`,
+          color: c.text, borderRadius: 999, padding: '3px 12px', fontSize: 12, fontWeight: 700,
+          marginBottom: 4,
+        }}>{track.name}</span>
+        <div style={{ color: 'var(--text-primary)', fontSize: 13.5, fontWeight: 500 }}>{track.lesson}</div>
+      </div>
+      <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+        <button style={btn} onMouseEnter={e => hover(e, true)} onMouseLeave={e => hover(e, false)} onClick={() => onOpenTheory(target)}>📚 Теория</button>
+        <button style={btn} onMouseEnter={e => hover(e, true)} onMouseLeave={e => hover(e, false)} onClick={() => onOpenQuestions(target)}>✅ Онлайн тесты</button>
+        <button style={btn} onMouseEnter={e => hover(e, true)} onMouseLeave={e => hover(e, false)} onClick={() => onOpenHomework(target)}>📝 Домашние задания</button>
+      </div>
+    </div>
+  )
+}
+
+function JulyDayCard({ day, onOpenTheory, onOpenQuestions, onOpenHomework }) {
+  return (
+    <div className="sched-day sched-day--open" style={{ marginBottom: 8 }}>
+      <div className="sched-day-header" style={{ pointerEvents: 'none' }}>
+        <div className="sched-day-stripe" style={{ background: '#a07aff' }} />
+        <div className="sched-day-meta">
+          <span className="sched-day-num">День {day.day}</span>
+          <span className="sched-day-sep">·</span>
+          <span className="sched-day-date">{day.date}</span>
+        </div>
+        <div className="sched-day-title">Специализация по трекам</div>
+      </div>
+      <div style={{ padding: '0 0 6px' }}>
+        {day.tracks.map(track => (
+          <JulyTrackRow
+            key={track.id}
+            track={track}
+            onOpenTheory={onOpenTheory}
+            onOpenQuestions={onOpenQuestions}
+            onOpenHomework={onOpenHomework}
+          />
+        ))}
+      </div>
+    </div>
+  )
+}
 
 const WEEKS = [
   { label:'Неделя 1 · 1–7 июня',   start:1,  end:7  },
@@ -182,7 +257,7 @@ export default function Library({ onOpenDay, onOpenTheory, onOpenQuestions, onOp
         ))}
       </div>
 
-      {activeMonth === 'june' ? (
+      {activeMonth === 'june' && (
         loading ? (
           <div className="sched-week">
             {[1, 2, 3, 4, 5, 6].map(i => (
@@ -205,7 +280,25 @@ export default function Library({ onOpenDay, onOpenTheory, onOpenQuestions, onOp
             )
           })
         )
-      ) : (
+      )}
+
+      {activeMonth === 'july' && (
+        <div className="sched-week">
+          <div className="schedule-date-label">Июль 2026 · специализация</div>
+          {JULY_DAYS.map(day => (
+            <div key={day.day} className="fade-in">
+              <JulyDayCard
+                day={day}
+                onOpenTheory={onOpenTheory}
+                onOpenQuestions={onOpenQuestions}
+                onOpenHomework={onOpenHomework}
+              />
+            </div>
+          ))}
+        </div>
+      )}
+
+      {activeMonth === 'august' && (
         <p style={{ color:'var(--text-tertiary)', padding:'20px 0' }}>Материалы появятся позже</p>
       )}
     </section>

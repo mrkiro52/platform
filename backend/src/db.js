@@ -318,9 +318,9 @@ function migrate() {
       const julyCount = db.prepare("SELECT COUNT(*) as c FROM schedule WHERE month='july'").get().c
       if (julyCount === 0) {
         const ins = db.prepare(`INSERT INTO schedule (day_num, date_label, type, title, theory, tasks, hw, month, meeting_time, tracks, description) VALUES (?,?,?,?,?,?,?,?,?,?,?)`)
-        ins.run(1,'ср, 1 июля','lecture','Основы Python: вспоминаем','[]','[]','','july','20:00','["ML","Аналитика"]','Повторяем базовый синтаксис Python: типы данных, циклы, функции. Разбираем NumPy и pandas — основные инструменты для работы с данными.')
+        ins.run(1,'ср, 1 июля','lecture','Основы Python','[]','[]','','july','20:00','["ML","Аналитика"]','Повторяем базовый синтаксис Python: типы данных, циклы, функции. Анонс библиотек для последующей работы: numpy, pandas, matplotlib, seaborn, scikit-learn — с ними будем работать на треках аналитики и машинного обучения.')
         ins.run(1,'ср, 1 июля','lecture','Основы HTML','[]','[]','','july','20:30','["Frontend"]','Структура HTML-документа, семантические теги, формы и таблицы. Пишем первую страницу с нуля.')
-        ins.run(1,'ср, 1 июля','lecture','Обзор Python vs Go','[]','[]','','july','21:00','["Backend"]','Сравниваем два популярных бэкенд-языка: синтаксис, типизация, экосистема, производительность. Выбираем стек для трека.')
+        ins.run(1,'ср, 1 июля','lecture','Обзор Python vs Go','[]','[]','','july','21:00','["Backend"]','Сравниваем два популярных бэкенд-языка: синтаксис, типизация, экосистема, производительность.')
         ins.run(1,'ср, 1 июля','lecture','Основы информационной безопасности','[]','[]','','july','21:30','["Кибербезопасность"]','CIA-триада, угрозы и атаки, модели нарушителя. Обзор направлений: AppSec, сети, криптография, реагирование на инциденты.')
       }
 
@@ -328,6 +328,20 @@ function migrate() {
       console.log('✅ Migration 3 completed: tracks/description columns + July sessions')
     } catch (err) {
       console.error('❌ Migration 3 failed:', err.message)
+    }
+  }
+
+  // Migration 4: refine July 1 session titles/descriptions
+  if (schemaVersion < 4) {
+    try {
+      db.prepare("UPDATE schedule SET title='Основы Python', description=? WHERE month='july' AND (title='Основы Python: вспоминаем' OR title='Основы Python')")
+        .run('Повторяем базовый синтаксис Python: типы данных, циклы, функции. Анонс библиотек для последующей работы: numpy, pandas, matplotlib, seaborn, scikit-learn — с ними будем работать на треках аналитики и машинного обучения.')
+      db.prepare("UPDATE schedule SET description=? WHERE month='july' AND title='Обзор Python vs Go'")
+        .run('Сравниваем два популярных бэкенд-языка: синтаксис, типизация, экосистема, производительность.')
+      db.pragma('user_version = 4')
+      console.log('✅ Migration 4 completed: refined July session texts')
+    } catch (err) {
+      console.error('❌ Migration 4 failed:', err.message)
     }
   }
 }

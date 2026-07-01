@@ -453,7 +453,7 @@ img { max-width: 100%; display: block; }
 .sched-chevron { font-size: 10px; color: var(--text-tertiary); flex-shrink: 0; margin-left: 4px; }
 
 .sched-day-body {
-  padding: 0 16px 16px 16px;
+  padding: 16px;
   border-top: 1px solid var(--border-color);
 }
 
