@@ -17,6 +17,8 @@ router.get('/', (req, res) => {
     month: r.month,
     meeting_link: r.meeting_link || '',
     meeting_time: r.meeting_time || '',
+    tracks: JSON.parse(r.tracks || '[]'),
+    description: r.description || '',
   })))
 })
 

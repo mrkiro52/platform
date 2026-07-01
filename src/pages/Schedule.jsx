@@ -3,15 +3,13 @@ import { SCHEDULE, TYPE_COLORS, TYPE_LABELS, TYPE_BADGE, HW_LINKS } from '../dat
 import { api } from '../api'
 import { SkeletonScheduleDay, SkeletonCampProgress } from '../components/Skeleton'
 
-const FILTERS = [
-  { value:'all',     label:'Все' },
-  { value:'lecture', label:'Лекции' },
-  { value:'project', label:'Проекты' },
-  { value:'insider', label:'Insider Show' },
-  { value:'org',     label:'Орг' },
+const MONTH_TABS = [
+  { value: 'june',   label: 'Июнь',   locked: false },
+  { value: 'july',   label: 'Июль',   locked: false },
+  { value: 'august', label: 'Август', locked: true  },
 ]
 
-const WEEKS = [
+const JUNE_WEEKS = [
   { label:'Неделя 1 · 1–7 июня',   start:1,  end:7  },
   { label:'Неделя 2 · 8–14 июня',  start:8,  end:14 },
   { label:'Неделя 3 · 15–21 июня', start:15, end:21 },
@@ -19,34 +17,41 @@ const WEEKS = [
   { label:'Неделя 5 · 29–30 июня', start:29, end:99 },
 ]
 
-function getDayDate(dayNum) {
-  if (dayNum <= 30) return new Date(2026, 5, dayNum)
-  return new Date(2026, 6, dayNum - 30)
+const TRACK_COLORS = {
+  'ML':               { bg: 'rgba(34,197,94,0.12)',  border: 'rgba(34,197,94,0.3)',  text: '#4ade80' },
+  'Аналитика':        { bg: 'rgba(99,102,241,0.12)', border: 'rgba(99,102,241,0.3)', text: '#818cf8' },
+  'Frontend':         { bg: 'rgba(234,179,8,0.12)',  border: 'rgba(234,179,8,0.3)',  text: '#facc15' },
+  'Backend':          { bg: 'rgba(59,130,246,0.12)', border: 'rgba(59,130,246,0.3)', text: '#60a5fa' },
+  'Кибербезопасность':{ bg: 'rgba(239,68,68,0.12)', border: 'rgba(239,68,68,0.3)',  text: '#f87171' },
 }
 
-function isAvailable(dayNum) {
+function getDayDate(dayNum, month) {
+  if (month === 'july') return new Date(2026, 6, dayNum)
+  if (month === 'august') return new Date(2026, 7, dayNum)
+  return new Date(2026, 5, dayNum)
+}
+
+function isAvailable(dayNum, month) {
   const today = new Date()
   today.setHours(0, 0, 0, 0)
-  return getDayDate(dayNum) <= today
+  return getDayDate(dayNum, month) <= today
 }
 
 function findTodayId(events) {
   const today = new Date()
   if (today.getFullYear() !== 2026 || today.getMonth() !== 5) return null
-  const found = events.find(e => e.day === today.getDate())
+  const found = events.find(e => e.day === today.getDate() && e.month === 'june')
   return found ? found.id : null
 }
 
 function CampProgress() {
   const today = new Date()
   today.setHours(0, 0, 0, 0)
-
   const months = [
     { label:'Июнь',   total:30, start: new Date(2026, 5, 1) },
     { label:'Июль',   total:31, start: new Date(2026, 6, 1) },
     { label:'Август', total:31, start: new Date(2026, 7, 1) },
   ]
-
   return (
     <div className="camp-progress">
       {months.map(m => {
@@ -78,12 +83,13 @@ function CampProgress() {
   )
 }
 
-function DayCard({ day, expanded, onToggle }) {
+// Карточка для июня (старый формат — один урок в день)
+function JuneDayCard({ day, expanded, onToggle }) {
   const color = TYPE_COLORS[day.type] || '#8a8a9a'
   const badge = TYPE_BADGE[day.type]  || 'badge--gray'
   const label = TYPE_LABELS[day.type] || day.type
   const hwUrl = HW_LINKS[day.day]
-  const available = isAvailable(day.day)
+  const available = isAvailable(day.day, 'june')
 
   return (
     <div className={`sched-day${expanded ? ' sched-day--open' : ''}`}>
@@ -145,33 +151,119 @@ function DayCard({ day, expanded, onToggle }) {
   )
 }
 
+// Карточка занятия для июля (трек + время + описание)
+function JulySessionCard({ session }) {
+  const tracks = session.tracks || []
+
+  return (
+    <div style={{
+      background: 'var(--bg-secondary)',
+      border: '1px solid var(--border-color)',
+      borderRadius: 10,
+      padding: '14px 16px',
+      display: 'flex',
+      flexDirection: 'column',
+      gap: 8,
+    }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
+        <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--accent-lime)', minWidth: 44 }}>
+          {session.meeting_time}
+        </span>
+        <span style={{ fontWeight: 600, fontSize: 14, color: 'var(--text-primary)', flex: 1 }}>
+          {session.title}
+        </span>
+        <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+          {tracks.map(t => {
+            const c = TRACK_COLORS[t] || { bg: 'rgba(255,255,255,0.07)', border: 'rgba(255,255,255,0.15)', text: 'var(--text-secondary)' }
+            return (
+              <span key={t} style={{
+                background: c.bg, border: `1px solid ${c.border}`, color: c.text,
+                borderRadius: 5, padding: '2px 8px', fontSize: 11, fontWeight: 600,
+              }}>{t}</span>
+            )
+          })}
+        </div>
+      </div>
+      {session.description && (
+        <p style={{ color: 'var(--text-secondary)', fontSize: 13, lineHeight: 1.6, margin: 0 }}>
+          {session.description}
+        </p>
+      )}
+    </div>
+  )
+}
+
+// Группировка занятий июля по дням
+function JulyDayGroup({ dayNum, dateLabel, sessions }) {
+  const [open, setOpen] = useState(true)
+
+  return (
+    <div className={`sched-day${open ? ' sched-day--open' : ''}`} style={{ marginBottom: 8 }}>
+      <div className="sched-day-header" onClick={() => setOpen(o => !o)} style={{ cursor: 'pointer' }}>
+        <div className="sched-day-stripe" style={{ background: '#a07aff' }} />
+        <div className="sched-day-meta">
+          <span className="sched-day-num">День {dayNum}</span>
+          <span className="sched-day-sep">·</span>
+          <span className="sched-day-date">{dateLabel}</span>
+        </div>
+        <div className="sched-day-title" style={{ flex: 1 }}>
+          {sessions.length} {sessions.length === 1 ? 'занятие' : sessions.length < 5 ? 'занятия' : 'занятий'}
+        </div>
+        <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap', marginRight: 8 }}>
+          {[...new Set(sessions.flatMap(s => s.tracks || []))].map(t => {
+            const c = TRACK_COLORS[t] || {}
+            return (
+              <span key={t} style={{
+                background: c.bg, border: `1px solid ${c.border}`, color: c.text,
+                borderRadius: 4, padding: '2px 7px', fontSize: 10, fontWeight: 700,
+              }}>{t}</span>
+            )
+          })}
+        </div>
+        <span className="sched-chevron">{open ? '▴' : '▾'}</span>
+      </div>
+      {open && (
+        <div className="sched-day-body" style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+          {sessions.sort((a, b) => (a.meeting_time || '').localeCompare(b.meeting_time || '')).map(s => (
+            <JulySessionCard key={s.id} session={s} />
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
 export default function Schedule() {
-  const [filter, setFilter]         = useState('all')
-  const [events, setEvents]         = useState(SCHEDULE)
-  const [expandedId, setExpandedId] = useState(() => findTodayId(SCHEDULE))
-  const [loading, setLoading]       = useState(true)
+  const [activeMonth, setActiveMonth] = useState('july')
+  const [events, setEvents]           = useState(SCHEDULE)
+  const [expandedId, setExpandedId]   = useState(() => findTodayId(SCHEDULE))
+  const [loading, setLoading]         = useState(true)
 
   useEffect(() => {
     const startTime = Date.now()
-    const minLoadTime = 500
-
     api.schedule().then(data => {
       setEvents(data)
       const id = findTodayId(data)
       if (id !== null) setExpandedId(id)
-
       const elapsed = Date.now() - startTime
-      const remaining = Math.max(0, minLoadTime - elapsed)
-      setTimeout(() => setLoading(false), remaining)
+      setTimeout(() => setLoading(false), Math.max(0, 500 - elapsed))
     }).catch(() => {
-      const elapsed = Date.now() - startTime
-      const remaining = Math.max(0, minLoadTime - elapsed)
-      setTimeout(() => setLoading(false), remaining)
+      setTimeout(() => setLoading(false), 500)
     })
   }, [])
 
-  const filtered = filter === 'all' ? events : events.filter(e => e.type === filter)
-  const toggle   = (id) => setExpandedId(prev => prev === id ? null : id)
+  const toggle = (id) => setExpandedId(prev => prev === id ? null : id)
+
+  const juneEvents = events.filter(e => e.month === 'june' || !e.month)
+  const julyEvents = events.filter(e => e.month === 'july')
+
+  // Группируем июль по дням
+  const julyByDay = {}
+  julyEvents.forEach(e => {
+    if (!julyByDay[e.day]) julyByDay[e.day] = []
+    julyByDay[e.day].push(e)
+  })
+  const julyDays = Object.keys(julyByDay).map(Number).sort((a, b) => a - b)
 
   return (
     <section className="page active">
@@ -182,48 +274,92 @@ export default function Schedule() {
 
       {loading ? <SkeletonCampProgress /> : <CampProgress />}
 
-      <div className="schedule-controls">
-        {FILTERS.map(f => (
+      {/* Вкладки месяцев */}
+      <div style={{ display: 'flex', gap: 8, margin: '20px 0 24px' }}>
+        {MONTH_TABS.map(tab => (
           <button
-            key={f.value}
-            className={`filter-btn${filter === f.value ? ' active' : ''}`}
-            onClick={() => { setFilter(f.value); setExpandedId(null) }}
-            disabled={loading}
+            key={tab.value}
+            disabled={tab.locked || loading}
+            onClick={() => !tab.locked && setActiveMonth(tab.value)}
+            style={{
+              padding: '8px 20px',
+              borderRadius: 8,
+              border: activeMonth === tab.value
+                ? '1px solid rgba(200,255,0,0.4)'
+                : '1px solid var(--border-color)',
+              background: activeMonth === tab.value
+                ? 'rgba(200,255,0,0.08)'
+                : 'var(--bg-secondary)',
+              color: tab.locked
+                ? 'var(--text-tertiary)'
+                : activeMonth === tab.value
+                  ? 'var(--accent-lime)'
+                  : 'var(--text-secondary)',
+              fontWeight: 600,
+              fontSize: 14,
+              cursor: tab.locked ? 'not-allowed' : 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 6,
+              transition: 'all 0.15s',
+              opacity: tab.locked ? 0.5 : 1,
+            }}
           >
-            {f.label}
+            {tab.locked && <span style={{ fontSize: 12 }}>🔒</span>}
+            {tab.label}
           </button>
         ))}
       </div>
 
-      {loading ? (
-        <div className="sched-week">
-          {[1, 2, 3, 4, 5].map(i => (
-            <SkeletonScheduleDay key={i} />
-          ))}
-        </div>
-      ) : (
-        WEEKS.map(week => {
-          const days = filtered.filter(d => d.day >= week.start && d.day <= week.end)
-          if (!days.length) return null
-          return (
-            <div key={week.label} className="sched-week">
-              <div className="schedule-date-label">{week.label}</div>
-              {days.map((day, i) => (
-                <div key={day.id} className="fade-in" style={{ animationDelay: `${i * 0.02}s` }}>
-                  <DayCard
-                    day={day}
-                    expanded={expandedId === day.id}
-                    onToggle={() => toggle(day.id)}
-                  />
-                </div>
-              ))}
-            </div>
-          )
-        })
+      {/* Июнь */}
+      {activeMonth === 'june' && (
+        loading ? (
+          <div className="sched-week">
+            {[1,2,3,4,5].map(i => <SkeletonScheduleDay key={i} />)}
+          </div>
+        ) : (
+          JUNE_WEEKS.map(week => {
+            const days = juneEvents.filter(d => d.day >= week.start && d.day <= week.end)
+            if (!days.length) return null
+            return (
+              <div key={week.label} className="sched-week">
+                <div className="schedule-date-label">{week.label}</div>
+                {days.map((day, i) => (
+                  <div key={day.id} className="fade-in" style={{ animationDelay: `${i * 0.02}s` }}>
+                    <JuneDayCard
+                      day={day}
+                      expanded={expandedId === day.id}
+                      onToggle={() => toggle(day.id)}
+                    />
+                  </div>
+                ))}
+              </div>
+            )
+          })
+        )
       )}
 
-      {!loading && !filtered.length && (
-        <p style={{ color:'var(--text-tertiary)', padding:'20px 0' }}>Нет занятий для этого фильтра</p>
+      {/* Июль */}
+      {activeMonth === 'july' && (
+        loading ? (
+          <div className="sched-week">
+            {[1,2].map(i => <SkeletonScheduleDay key={i} />)}
+          </div>
+        ) : julyDays.length === 0 ? (
+          <p style={{ color: 'var(--text-tertiary)', padding: '20px 0' }}>Расписание июля скоро появится</p>
+        ) : (
+          <div className="sched-week">
+            <div className="schedule-date-label">Июль 2026</div>
+            {julyDays.map(dayNum => (
+              <JulyDayGroup
+                key={dayNum}
+                dayNum={dayNum}
+                dateLabel={julyByDay[dayNum][0]?.date || `${dayNum} июля`}
+                sessions={julyByDay[dayNum]}
+              />
+            ))}
+          </div>
+        )
       )}
     </section>
   )
