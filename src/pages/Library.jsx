@@ -34,8 +34,9 @@ function isAvailable(dayNum) {
 
 function shouldShowButtons(dayNum) {
   const today = new Date()
-  const currentDay = today.getDate()
-  return dayNum >= 2 && dayNum <= currentDay
+  today.setHours(0, 0, 0, 0)
+  const dayDate = new Date(2026, 5, dayNum)
+  return dayNum >= 2 && dayDate <= today
 }
 
 function buildJuneDays(scheduleData, libraryData) {
