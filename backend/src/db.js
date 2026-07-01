@@ -293,6 +293,43 @@ function migrate() {
       console.error('❌ Migration 2 failed:', err.message)
     }
   }
+
+  // Migration 3: add tracks/description columns + July 1 sessions
+  if (schemaVersion < 3) {
+    try {
+      const cols = db.prepare("PRAGMA table_info(schedule)").all().map(c => c.name)
+      if (!cols.includes('tracks'))      db.prepare("ALTER TABLE schedule ADD COLUMN tracks TEXT DEFAULT '[]'").run()
+      if (!cols.includes('description')) db.prepare("ALTER TABLE schedule ADD COLUMN description TEXT DEFAULT ''").run()
+
+      // Fix schedule: Insider Show #2 должен быть на day 25, не на 21
+      const existing21 = db.prepare("SELECT type FROM schedule WHERE day_num=21 AND month='june'").get()
+      if (existing21 && existing21.type === 'insider') {
+        db.prepare("UPDATE schedule SET day_num=122 WHERE day_num=21 AND month='june' AND type='insider'").run()
+        db.prepare("UPDATE schedule SET day_num=123 WHERE day_num=22 AND month='june'").run()
+        db.prepare("UPDATE schedule SET day_num=124 WHERE day_num=23 AND month='june'").run()
+        db.prepare("UPDATE schedule SET day_num=125 WHERE day_num=24 AND month='june'").run()
+        db.prepare("UPDATE schedule SET day_num=21  WHERE day_num=123 AND month='june'").run()
+        db.prepare("UPDATE schedule SET day_num=22  WHERE day_num=124 AND month='june'").run()
+        db.prepare("UPDATE schedule SET day_num=23  WHERE day_num=125 AND month='june'").run()
+        db.prepare("UPDATE schedule SET day_num=25  WHERE day_num=122 AND month='june'").run()
+      }
+
+      // Add July 1 sessions if not present
+      const julyCount = db.prepare("SELECT COUNT(*) as c FROM schedule WHERE month='july'").get().c
+      if (julyCount === 0) {
+        const ins = db.prepare(`INSERT INTO schedule (day_num, date_label, type, title, theory, tasks, hw, month, meeting_time, tracks, description) VALUES (?,?,?,?,?,?,?,?,?,?,?)`)
+        ins.run(1,'ср, 1 июля','lecture','Основы Python: вспоминаем','[]','[]','','july','20:00','["ML","Аналитика"]','Повторяем базовый синтаксис Python: типы данных, циклы, функции. Разбираем NumPy и pandas — основные инструменты для работы с данными.')
+        ins.run(1,'ср, 1 июля','lecture','Основы HTML','[]','[]','','july','20:30','["Frontend"]','Структура HTML-документа, семантические теги, формы и таблицы. Пишем первую страницу с нуля.')
+        ins.run(1,'ср, 1 июля','lecture','Обзор Python vs Go','[]','[]','','july','21:00','["Backend"]','Сравниваем два популярных бэкенд-языка: синтаксис, типизация, экосистема, производительность. Выбираем стек для трека.')
+        ins.run(1,'ср, 1 июля','lecture','Основы информационной безопасности','[]','[]','','july','21:30','["Кибербезопасность"]','CIA-триада, угрозы и атаки, модели нарушителя. Обзор направлений: AppSec, сети, криптография, реагирование на инциденты.')
+      }
+
+      db.pragma('user_version = 3')
+      console.log('✅ Migration 3 completed: tracks/description columns + July sessions')
+    } catch (err) {
+      console.error('❌ Migration 3 failed:', err.message)
+    }
+  }
 }
 
 migrate()
