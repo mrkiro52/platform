@@ -65,29 +65,48 @@ function JulyTrackRow({ track, onOpenTheory, onOpenQuestions, onOpenHomework }) 
   )
 }
 
-function JulyDayCard({ day, onOpenTheory, onOpenQuestions, onOpenHomework }) {
+// Число сегодняшнего дня, если сейчас июль 2026, иначе null
+function getTodayJulyDay() {
+  const today = new Date()
+  if (today.getFullYear() !== 2026 || today.getMonth() !== 6) return null
+  return today.getDate()
+}
+
+function JulyDayCard({ day, defaultOpen, onOpenTheory, onOpenQuestions, onOpenHomework }) {
+  const [open, setOpen] = useState(defaultOpen)
   return (
-    <div className="sched-day sched-day--open" style={{ marginBottom: 8 }}>
-      <div className="sched-day-header" style={{ pointerEvents: 'none' }}>
+    <div className={`sched-day${open ? ' sched-day--open' : ''}`} style={{ marginBottom: 8 }}>
+      <div className="sched-day-header" onClick={() => setOpen(o => !o)} style={{ cursor: 'pointer' }}>
         <div className="sched-day-stripe" style={{ background: '#a07aff' }} />
         <div className="sched-day-meta">
           <span className="sched-day-num">День {day.day}</span>
           <span className="sched-day-sep">·</span>
           <span className="sched-day-date">{day.date}</span>
         </div>
-        <div className="sched-day-title">Специализация по трекам</div>
+        <div className="sched-day-title" style={{ flex: 1 }}>Специализация по трекам</div>
+        <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap', marginRight: 8 }}>
+          {day.tracks.map(t => (
+            <span key={t.id} style={{
+              background: t.color.bg, border: `1px solid ${t.color.border}`, color: t.color.text,
+              borderRadius: 999, padding: '3px 10px', fontSize: 10, fontWeight: 700,
+            }}>{t.name}</span>
+          ))}
+        </div>
+        <span className="sched-chevron">{open ? '▴' : '▾'}</span>
       </div>
-      <div style={{ padding: '0 0 6px' }}>
-        {day.tracks.map(track => (
-          <JulyTrackRow
-            key={track.id}
-            track={track}
-            onOpenTheory={onOpenTheory}
-            onOpenQuestions={onOpenQuestions}
-            onOpenHomework={onOpenHomework}
-          />
-        ))}
-      </div>
+      {open && (
+        <div style={{ padding: '0 0 6px' }}>
+          {day.tracks.map(track => (
+            <JulyTrackRow
+              key={track.id}
+              track={track}
+              onOpenTheory={onOpenTheory}
+              onOpenQuestions={onOpenQuestions}
+              onOpenHomework={onOpenHomework}
+            />
+          ))}
+        </div>
+      )}
     </div>
   )
 }
@@ -232,6 +251,7 @@ export default function Library({ onOpenDay, onOpenTheory, onOpenQuestions, onOp
   }, [])
 
   const juneDays = buildJuneDays(schedule, library)
+  const todayJulyDay = getTodayJulyDay()
 
   return (
     <section className="page active">
@@ -285,6 +305,7 @@ export default function Library({ onOpenDay, onOpenTheory, onOpenQuestions, onOp
             <div key={day.day} className="fade-in">
               <JulyDayCard
                 day={day}
+                defaultOpen={day.day === todayJulyDay}
                 onOpenTheory={onOpenTheory}
                 onOpenQuestions={onOpenQuestions}
                 onOpenHomework={onOpenHomework}

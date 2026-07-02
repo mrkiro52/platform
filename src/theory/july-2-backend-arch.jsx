@@ -1,5 +1,19 @@
 import { TheoryTable, TheoryExample } from './components/TheoryTable'
 
+const C = { text: 'var(--text-primary)', sub: 'var(--text-secondary)', lime: '#c8ff00', border: '#2a2a3a' }
+
+function Fig({ children, caption }) {
+  return (
+    <figure style={{ margin: '18px 0', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
+      <div style={{
+        width: '100%', maxWidth: 620, background: 'var(--bg-secondary)', border: '1px solid var(--border-color)',
+        borderRadius: 10, padding: '16px', display: 'flex', justifyContent: 'center', overflowX: 'auto',
+      }}>{children}</div>
+      {caption && <figcaption style={{ color: 'var(--text-tertiary)', fontSize: 12.5, textAlign: 'center' }}>{caption}</figcaption>}
+    </figure>
+  )
+}
+
 export default function July2BackendArchTheory() {
   return (
     <div className="theory-container">
@@ -13,11 +27,56 @@ export default function July2BackendArchTheory() {
           приложение) отправляет запрос по сети → сервер обрабатывает его согласно бизнес-логике → сервер
           обращается к хранилищу данных → формирует и возвращает ответ клиенту.
         </p>
+        <Fig caption="Модель клиент–сервер: клиент шлёт запрос, сервер обрабатывает его и обращается к базе данных, затем возвращает ответ">
+          <svg viewBox="0 0 560 130" width="100%" style={{ maxWidth: 560 }} xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <marker id="bk" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto">
+                <path d="M0,0 L6,3 L0,6 Z" fill={C.lime} />
+              </marker>
+            </defs>
+            {[
+              { x: 20,  label: 'Клиент', sub: 'браузер / моб.' },
+              { x: 220, label: 'Сервер (бэкенд)', sub: 'бизнес-логика' },
+              { x: 430, label: 'База данных', sub: 'хранилище' },
+            ].map((b, i) => (
+              <g key={i}>
+                <rect x={b.x} y="35" width="130" height="56" rx="8" fill="#242b3a" stroke={i===1?C.lime:C.border} />
+                <text x={b.x + 65} y="60" fill={C.text} fontSize="13" fontWeight="700" textAnchor="middle">{b.label}</text>
+                <text x={b.x + 65} y="78" fill={C.sub} fontSize="11" textAnchor="middle">{b.sub}</text>
+              </g>
+            ))}
+            <line x1="150" y1="52" x2="220" y2="52" stroke={C.lime} strokeWidth="2" markerEnd="url(#bk)" />
+            <text x="185" y="46" fill={C.lime} fontSize="10" textAnchor="middle">запрос</text>
+            <line x1="220" y1="74" x2="150" y2="74" stroke={C.sub} strokeWidth="1.5" markerEnd="url(#bk)" />
+            <text x="185" y="90" fill={C.sub} fontSize="10" textAnchor="middle">ответ</text>
+            <line x1="350" y1="52" x2="430" y2="52" stroke={C.lime} strokeWidth="2" markerEnd="url(#bk)" />
+            <text x="390" y="46" fill={C.lime} fontSize="10" textAnchor="middle">запрос</text>
+            <line x1="430" y1="74" x2="350" y2="74" stroke={C.sub} strokeWidth="1.5" markerEnd="url(#bk)" />
+            <text x="390" y="90" fill={C.sub} fontSize="10" textAnchor="middle">данные</text>
+          </svg>
+        </Fig>
       </section>
 
       {/* Слои */}
       <section className="theory-section">
         <h2 className="theory-heading-2">1. Слои бэкенд-архитектуры</h2>
+        <Fig caption="Запрос проходит слои сверху вниз; каждый слой знает только о соседнем нижнем">
+          <svg viewBox="0 0 560 220" width="100%" style={{ maxWidth: 560 }} xmlns="http://www.w3.org/2000/svg">
+            {[
+              { y: 12,  label: 'Слой представления (API)', sub: 'приём запросов, валидация, формирование ответа' },
+              { y: 62,  label: 'Слой бизнес-логики (service)', sub: 'правила и сценарии приложения' },
+              { y: 112, label: 'Слой доступа к данным (DAL)', sub: 'работа с БД и хранилищами' },
+              { y: 162, label: 'Слой инфраструктуры', sub: 'логи, конфигурация, очереди, интеграции' },
+            ].map((r, i) => (
+              <g key={i}>
+                <rect x="40" y={r.y} width="480" height="42" rx="7" fill={i===0?'rgba(96,165,250,0.12)':'#242b3a'} stroke={i===0?'#60a5fa':C.border} />
+                <text x="55" y={r.y + 19} fill={C.text} fontSize="13" fontWeight="700">{r.label}</text>
+                <text x="55" y={r.y + 35} fill={C.sub} fontSize="11">{r.sub}</text>
+                {i < 3 && <text x="280" y={r.y + 52} fill={C.sub} fontSize="14" textAnchor="middle">↓</text>}
+              </g>
+            ))}
+          </svg>
+        </Fig>
         <ul className="theory-list">
           <li><strong>Слой представления (API layer)</strong> — принимает запросы от клиентов, валидирует данные, формирует ответы.</li>
           <li><strong>Слой бизнес-логики (service layer)</strong> — реализует основные правила и сценарии работы приложения.</li>
@@ -59,6 +118,23 @@ export default function July2BackendArchTheory() {
           <li><strong>5. Работа с данными</strong> — слой доступа к данным читает или записывает информацию в БД/кэш.</li>
           <li><strong>6. Формирование ответа</strong> — сервер собирает результат и возвращает клиенту в согласованном формате (JSON, HTML).</li>
         </ul>
+        <Fig caption="Путь запроса: от клиента через веб-сервер, middleware и бизнес-логику к базе данных — и обратно с ответом">
+          <svg viewBox="0 0 560 120" width="100%" style={{ maxWidth: 560 }} xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <marker id="lc" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+                <path d="M0,0 L6,3 L0,6 Z" fill={C.lime} />
+              </marker>
+            </defs>
+            {['Клиент','Веб-сервер','Middleware','Бизнес-логика','БД'].map((t,i)=>(
+              <g key={i}>
+                <rect x={8+i*112} y="40" width="96" height="40" rx="7" fill="#242b3a" stroke={C.border} />
+                <text x={56+i*112} y="64" fill={C.text} fontSize="11.5" fontWeight="600" textAnchor="middle">{t}</text>
+                {i < 4 && <line x1={104+i*112} y1="60" x2={120+i*112} y2="60" stroke={C.lime} strokeWidth="2" markerEnd="url(#lc)" />}
+              </g>
+            ))}
+            <text x="280" y="22" fill={C.sub} fontSize="11" textAnchor="middle">→ запрос идёт вправо, ответ возвращается тем же путём обратно ←</text>
+          </svg>
+        </Fig>
       </section>
 
       {/* Монолит vs микросервисы */}
