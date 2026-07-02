@@ -21,7 +21,6 @@ export default function AntiReels() {
   // sequence — упорядоченный список показанных/готовых карточек (он же «просмотренные»)
   const [sequence, setSequence] = useState(() => [pickRandom([])])
   const [pos, setPos] = useState(0)
-  const [loading, setLoading] = useState(false)
   // slide: { dir: 'next'|'prev', fromIdx, toIdx, reset, active }
   const [slide, setSlide] = useState(null)
   const resetPickRef = useRef(null)
@@ -46,7 +45,7 @@ export default function AntiReels() {
 
   // Держим следующую карточку уже сгенерированной ("на готове"), пока показываем текущую
   useEffect(() => {
-    if (loading || slide) return
+    if (slide) return
     if (sequence.length < CARDS.length) {
       if (sequence.length === pos + 1) {
         setSequence(seq => (seq.length === pos + 1 ? [...seq, pickRandom(seq)] : seq))
@@ -56,7 +55,7 @@ export default function AntiReels() {
       // весь контент показан — заранее готовим карточку для нового круга
       resetPickRef.current = pickRandom([])
     }
-  }, [sequence, pos, loading, slide])
+  }, [sequence, pos, slide])
 
   // Активируем CSS-переход на следующем тике (иначе браузер схлопнёт transform в один кадр)
   useEffect(() => {
@@ -88,7 +87,7 @@ export default function AntiReels() {
   }, [slide])
 
   const goNext = useCallback(() => {
-    if (loading || slide) return
+    if (slide) return
     const fromIdx = sequence[pos]
     if (pos < sequence.length - 1) {
       setSlide({ dir: 'next', fromIdx, toIdx: sequence[pos + 1], reset: false, active: false })
@@ -103,24 +102,12 @@ export default function AntiReels() {
     const toIdx = pickRandom(sequence)
     setSequence([...sequence, toIdx])
     setSlide({ dir: 'next', fromIdx, toIdx, reset: false, active: false })
-  }, [loading, slide, sequence, pos])
+  }, [slide, sequence, pos])
 
   const goPrev = useCallback(() => {
-    if (loading || slide) return
-    if (pos === 0) {
-      // первая карточка + листание назад → лоадер 1с и обнуление просмотренных
-      setLoading(true)
-      setTimeout(() => {
-        const first = pickRandom([])
-        setSequence([first])
-        setPos(0)
-        resetPickRef.current = null
-        setLoading(false)
-      }, 1000)
-      return
-    }
+    if (slide || pos === 0) return
     setSlide({ dir: 'prev', fromIdx: sequence[pos], toIdx: sequence[pos - 1], reset: false, active: false })
-  }, [loading, slide, sequence, pos])
+  }, [slide, sequence, pos])
 
   const goNextRef = useRef(goNext)
   const goPrevRef = useRef(goPrev)
@@ -196,11 +183,7 @@ export default function AntiReels() {
           className="reels-box"
           onWheel={mobile ? undefined : onWheel}
         >
-          {loading ? (
-            <div className="reels-loader">
-              <div className="reels-spinner" />
-            </div>
-          ) : slide ? (
+          {slide ? (
             <>
               <div
                 className="reels-slide-layer"
@@ -228,8 +211,8 @@ export default function AntiReels() {
 
         {!mobile && (
           <div className="reels-controls">
-            <button className="reels-nav-btn" onClick={goPrev} disabled={loading || !!slide} title="Вверх" aria-label="Вверх">▲</button>
-            <button className="reels-nav-btn" onClick={goNext} disabled={loading || !!slide} title="Вниз" aria-label="Вниз">▼</button>
+            <button className="reels-nav-btn" onClick={goPrev} disabled={!!slide || pos === 0} title="Вверх" aria-label="Вверх">▲</button>
+            <button className="reels-nav-btn" onClick={goNext} disabled={!!slide} title="Вниз" aria-label="Вниз">▼</button>
           </div>
         )}
       </div>
