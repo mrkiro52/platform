@@ -1760,21 +1760,25 @@ img { max-width: 100%; display: block; }
 
 /* ─────────── AntiReels ─────────── */
 .reels-page {
+  --reels-chrome: 56px; /* высота отступов pages-wrap (28px * 2), учтена ниже */
+  height: calc(100dvh - var(--reels-chrome));
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: calc(100dvh - 120px);
+  overflow: hidden;
 }
 .reels-stage {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 20px;
+  height: 100%;
 }
 .reels-box {
   position: relative;
-  height: min(82vh, 780px);
+  height: 100%;
+  width: auto;
   aspect-ratio: 9 / 16;
   max-width: 100%;
   border: 1px solid var(--border-color);
@@ -1782,24 +1786,20 @@ img { max-width: 100%; display: block; }
   overflow: hidden;
   background: var(--bg-secondary);
   box-shadow: 0 12px 40px rgba(0,0,0,0.35);
+  touch-action: none;
+  overscroll-behavior: contain;
 }
-.reels-card-anim {
+.reels-card-still {
   width: 100%;
   height: 100%;
-  animation: reelIn 0.35s ease;
 }
-@keyframes reelIn {
-  from { opacity: 0; transform: translateY(24px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-.reels-progress {
+.reels-slide-layer {
   position: absolute;
-  top: 12px; right: 14px;
-  background: rgba(0,0,0,0.45);
-  color: var(--text-secondary);
-  font-size: 11px; font-weight: 700;
-  padding: 3px 10px; border-radius: 999px;
-  pointer-events: none;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transition: transform 380ms cubic-bezier(0.22, 0.61, 0.36, 1);
+  will-change: transform;
 }
 .reels-loader {
   width: 100%; height: 100%;
@@ -1834,28 +1834,25 @@ img { max-width: 100%; display: block; }
   background: rgba(200,255,0,0.08);
 }
 .reels-nav-btn:active { transform: scale(0.92); }
-.reels-hint {
-  margin-top: 18px;
-  color: var(--text-tertiary);
-  font-size: 12.5px;
-  text-align: center;
-}
+.reels-nav-btn:disabled { opacity: 0.35; cursor: default; }
 
 @media (max-width: 768px) {
   .reels-page {
-    min-height: 0;
-    height: calc(100dvh - 64px);
+    --reels-chrome: 92px; /* topbar 60px + pages-wrap padding 16px*2 */
     padding: 0;
-    justify-content: stretch;
   }
-  .reels-stage { width: 100%; height: 100%; gap: 0; }
+  .reels-stage { width: 100%; gap: 0; }
   .reels-box {
-    height: 100%;
     width: 100%;
     aspect-ratio: auto;
     border-radius: 0;
     border-left: none;
     border-right: none;
     box-shadow: none;
+  }
+}
+@media (max-width: 480px) {
+  .reels-page {
+    --reels-chrome: 84px; /* topbar 60px + pages-wrap padding 12px*2 */
   }
 }

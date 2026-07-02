@@ -27,7 +27,7 @@ export function Card({ track, title, children }) {
       }}>{t.label}</span>
 
       <h2 style={{
-        fontFamily: 'var(--font-syne)', fontWeight: 800,
+        fontFamily: 'var(--font-inter)', fontWeight: 800,
         fontSize: 'clamp(20px, 5.5vw, 30px)', lineHeight: 1.15,
         color: 'var(--text-primary)', margin: '0 0 16px', flexShrink: 0,
       }}>{title}</h2>
