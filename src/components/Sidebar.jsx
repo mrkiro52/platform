@@ -11,6 +11,7 @@ const NAV_ITEMS = [
   { path: '/library',   label: 'Библиотека знаний' },
   { path: '/links',     label: 'Полезные ссылки' },
   { path: '/likebezy',  label: 'Полные ликбезы' },
+  { path: '/antireels', label: 'AntiReels' },
 ]
 
 export default function Sidebar({ user, onLogout, onClose }) {

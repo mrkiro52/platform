@@ -13,6 +13,7 @@ import QuestionsPage from './pages/QuestionsPage'
 import HomeworkPage from './pages/HomeworkPage'
 import Announcements from './pages/Announcements'
 import LikebezyPage from './pages/LikebezyPage'
+import AntiReels from './pages/AntiReels'
 
 function TheoryRoute() {
   const { day } = useParams()
@@ -91,6 +92,7 @@ export default function AppShell({ user, onLogout }) {
             <Route path="/links"      element={<Links />} />
             <Route path="/likebezy"   element={<LikebezyPage />} />
             <Route path="/likebezy/:id" element={<LikebezyPage />} />
+            <Route path="/antireels" element={<AntiReels />} />
             <Route path="/announcements" element={<AnnouncementsRoute />} />
             <Route path="*" element={<Navigate to="/dashboard" replace />} />
           </Routes>
