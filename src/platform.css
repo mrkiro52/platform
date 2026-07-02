@@ -16,7 +16,7 @@
   --sidebar-width:  260px;
   --topbar-height:  60px;
   --font-inter:     'Inter', sans-serif;
-  --font-syne:      'Syne', sans-serif;
+  --font-syne:      'Inter', sans-serif;
   --font-clash:     'Clash Display', sans-serif;
 }
 
@@ -1093,7 +1093,7 @@ img { max-width: 100%; display: block; }
 .theory-subtitle {
   font-family: var(--font-syne);
   font-size: 20px;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--text-primary);
   margin-bottom: 8px;
 }
@@ -1116,7 +1116,7 @@ img { max-width: 100%; display: block; }
 .theory-heading-3 {
   font-family: var(--font-syne);
   font-size: 16px;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--text-primary);
   margin-bottom: 12px;
 }
@@ -1219,7 +1219,7 @@ img { max-width: 100%; display: block; }
   color: var(--accent-lime);
   font-family: var(--font-syne);
   font-size: 18px;
-  font-weight: 600;
+  font-weight: 700;
   margin: 0;
   letter-spacing: -0.3px;
 }

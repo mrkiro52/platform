@@ -344,6 +344,24 @@ function migrate() {
       console.error('❌ Migration 4 failed:', err.message)
     }
   }
+
+  // Migration 5: add July 2 sessions
+  if (schemaVersion < 5) {
+    try {
+      const july2Count = db.prepare("SELECT COUNT(*) as c FROM schedule WHERE month='july' AND day_num=2").get().c
+      if (july2Count === 0) {
+        const ins = db.prepare(`INSERT INTO schedule (day_num, date_label, type, title, theory, tasks, hw, month, meeting_time, tracks, description) VALUES (?,?,?,?,?,?,?,?,?,?,?)`)
+        ins.run(2,'чт, 2 июля','lecture','Комбинаторика и основы теории вероятностей','[]','[]','','july','21:00','["Аналитика"]','Считаем количество вариантов: перестановки, сочетания, размещения. Основы вероятности: события, вероятность события, независимость.')
+        ins.run(2,'чт, 2 июля','lecture','Введение в ML','[]','[]','','july','21:30','["ML"]','Что такое машинное обучение, какие бывают типы задач, чем ML отличается от классического программирования.')
+        ins.run(2,'чт, 2 июля','lecture','Архитектура веб-приложения','[]','[]','','july','22:00','["Backend"]','Из чего состоит веб-приложение: клиент, сервер, база данных. Как компоненты взаимодействуют друг с другом.')
+        ins.run(2,'чт, 2 июля','lecture','Операционные системы','[]','[]','','july','22:30','["Кибербезопасность"]','Основы устройства ОС: процессы, память, файловая система, права доступа — база для понимания атак и защиты.')
+      }
+      db.pragma('user_version = 5')
+      console.log('✅ Migration 5 completed: added July 2 sessions')
+    } catch (err) {
+      console.error('❌ Migration 5 failed:', err.message)
+    }
+  }
 }
 
 migrate()

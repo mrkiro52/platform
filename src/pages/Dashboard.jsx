@@ -314,6 +314,45 @@ export default function Dashboard({ user, onOpenDay, onNavigate }) {
 
           <div className="widget">
             <div className="widget-header">
+              <span className="widget-title">Таймер</span>
+            </div>
+            {timerLeft !== null ? (
+              <div className={`timer-display${timerLeft === 0 ? ' timer-done' : ''}`}>
+                {timerLeft === 0 ? 'Время вышло!' : fmt(timerLeft)}
+              </div>
+            ) : (
+              <div className="timer-setup">
+                <input type="number" min="0" max="23" value={timerH}
+                  onChange={e => setTimerH(Math.max(0, Math.min(23, +e.target.value||0)))} />
+                <span>ч</span>
+                <input type="number" min="0" max="59" value={timerM}
+                  onChange={e => setTimerM(Math.max(0, Math.min(59, +e.target.value||0)))} />
+                <span>мин</span>
+                <input type="number" min="0" max="59" value={timerS}
+                  onChange={e => setTimerS(Math.max(0, Math.min(59, +e.target.value||0)))} />
+                <span>сек</span>
+              </div>
+            )}
+            <div className="timer-btns">
+              {timerLeft === null
+                ? <button className="timer-btn-start" onClick={startTimer} disabled={totalSecs === 0}>Старт</button>
+                : timerRunning
+                  ? <button className="timer-btn-pause" onClick={pauseTimer}>Пауза</button>
+                  : timerLeft > 0
+                    ? <button className="timer-btn-start" onClick={startTimer}>Продолжить</button>
+                    : null
+              }
+              {timerLeft !== null && (
+                <button className="timer-btn-reset" onClick={resetTimer}>Сбросить</button>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* RIGHT */}
+        <div className="dash-col">
+          <div className="widget">
+            <div className="widget-header">
               <span className="widget-title">Новости и обновления</span>
             </div>
             {loading
@@ -353,45 +392,6 @@ export default function Dashboard({ user, onOpenDay, onNavigate }) {
               onChange={handleNotes}
               placeholder="Пиши здесь что угодно — сохраняется автоматически"
             />
-          </div>
-        </div>
-
-        {/* RIGHT */}
-        <div className="dash-col">
-          <div className="widget">
-            <div className="widget-header">
-              <span className="widget-title">Таймер</span>
-            </div>
-            {timerLeft !== null ? (
-              <div className={`timer-display${timerLeft === 0 ? ' timer-done' : ''}`}>
-                {timerLeft === 0 ? 'Время вышло!' : fmt(timerLeft)}
-              </div>
-            ) : (
-              <div className="timer-setup">
-                <input type="number" min="0" max="23" value={timerH}
-                  onChange={e => setTimerH(Math.max(0, Math.min(23, +e.target.value||0)))} />
-                <span>ч</span>
-                <input type="number" min="0" max="59" value={timerM}
-                  onChange={e => setTimerM(Math.max(0, Math.min(59, +e.target.value||0)))} />
-                <span>мин</span>
-                <input type="number" min="0" max="59" value={timerS}
-                  onChange={e => setTimerS(Math.max(0, Math.min(59, +e.target.value||0)))} />
-                <span>сек</span>
-              </div>
-            )}
-            <div className="timer-btns">
-              {timerLeft === null
-                ? <button className="timer-btn-start" onClick={startTimer} disabled={totalSecs === 0}>Старт</button>
-                : timerRunning
-                  ? <button className="timer-btn-pause" onClick={pauseTimer}>Пауза</button>
-                  : timerLeft > 0
-                    ? <button className="timer-btn-start" onClick={startTimer}>Продолжить</button>
-                    : null
-              }
-              {timerLeft !== null && (
-                <button className="timer-btn-reset" onClick={resetTimer}>Сбросить</button>
-              )}
-            </div>
           </div>
         </div>
       </div>

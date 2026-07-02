@@ -62,7 +62,7 @@ export function Formula({ children }) {
       borderRadius: 10, padding: '14px 16px', textAlign: 'center',
       fontFamily: 'var(--font-mono, monospace)', fontSize: 'clamp(13px, 3.8vw, 17px)',
       color: 'var(--text-primary)', maxWidth: '100%', boxSizing: 'border-box',
-      overflowX: 'auto', overflowWrap: 'anywhere', WebkitOverflowScrolling: 'touch',
+      whiteSpace: 'pre-wrap', overflowWrap: 'anywhere', wordBreak: 'break-word',
     }}>{children}</div>
   )
 }
@@ -73,10 +73,10 @@ export function Code({ children }) {
       background: 'rgba(0,0,0,0.3)', border: '1px solid var(--border-color)',
       borderRadius: 10, padding: '14px 16px', margin: 0,
       maxWidth: '100%', boxSizing: 'border-box',
-      overflowX: 'auto', WebkitOverflowScrolling: 'touch',
+      whiteSpace: 'pre-wrap', overflowWrap: 'anywhere', wordBreak: 'break-word',
       fontFamily: 'var(--font-mono, monospace)', fontSize: 'clamp(12px, 3.4vw, 14.5px)',
       lineHeight: 1.55, color: 'var(--text-primary)',
-    }}><code>{children}</code></pre>
+    }}><code style={{ whiteSpace: 'inherit', overflowWrap: 'inherit', wordBreak: 'inherit' }}>{children}</code></pre>
   )
 }
 
