@@ -37,6 +37,13 @@ function isAvailable(dayNum, month) {
   return getDayDate(dayNum, month) <= today
 }
 
+// Число сегодняшнего дня, если сегодня июль 2026, иначе null
+function getTodayJulyDay() {
+  const today = new Date()
+  if (today.getFullYear() !== 2026 || today.getMonth() !== 6) return null
+  return today.getDate()
+}
+
 function findTodayId(events) {
   const today = new Date()
   if (today.getFullYear() !== 2026 || today.getMonth() !== 5) return null
@@ -194,8 +201,8 @@ function JulySessionCard({ session }) {
 }
 
 // Группировка занятий июля по дням
-function JulyDayGroup({ dayNum, dateLabel, sessions }) {
-  const [open, setOpen] = useState(true)
+function JulyDayGroup({ dayNum, dateLabel, sessions, defaultOpen }) {
+  const [open, setOpen] = useState(defaultOpen)
 
   return (
     <div className={`sched-day${open ? ' sched-day--open' : ''}`} style={{ marginBottom: 8 }}>
@@ -264,6 +271,7 @@ export default function Schedule() {
     julyByDay[e.day].push(e)
   })
   const julyDays = Object.keys(julyByDay).map(Number).sort((a, b) => a - b)
+  const todayJulyDay = getTodayJulyDay()
 
   return (
     <section className="page active">
@@ -356,6 +364,7 @@ export default function Schedule() {
                 dayNum={dayNum}
                 dateLabel={julyByDay[dayNum][0]?.date || `${dayNum} июля`}
                 sessions={julyByDay[dayNum]}
+                defaultOpen={dayNum === todayJulyDay}
               />
             ))}
           </div>
