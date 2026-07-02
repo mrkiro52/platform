@@ -360,62 +360,6 @@ export default function Dashboard({ user, onOpenDay, onNavigate }) {
         <div className="dash-col">
           <div className="widget">
             <div className="widget-header">
-              <span className="widget-title">{todayDay ? `Сегодня — День ${todayDay}` : 'Сегодня'}</span>
-            </div>
-            {!todayDay ? (
-              <p style={{ color:'var(--text-tertiary)', fontSize:13 }}>Лагерь ещё не начался или завершился</p>
-            ) : (
-              <>
-                {todayHwUrl && (
-                  <a href={todayHwUrl} target="_blank" rel="noopener" className="today-block">
-                    <div>
-                      <div className="today-block-label">Домашнее задание</div>
-                      <div className="today-block-link">Открыть папку с ДЗ →</div>
-                    </div>
-                  </a>
-                )}
-                {todayLibDay && (
-                  <>
-                    <div
-                      className="today-block"
-                      style={todayLibDay.mats?.length ? { cursor:'pointer' } : undefined}
-                      onClick={todayLibDay.mats?.length ? () => onOpenDay(todayLibDay) : undefined}
-                    >
-                      <div>
-                        <div className="today-block-label">Материалы дня</div>
-                        <div className="today-block-text">{todayLibDay.title}{todayLibDay.mats?.length ? ' →' : ''}</div>
-                      </div>
-                    </div>
-                    <div className="dash-nav-link" onClick={() => onNavigate('library')}>Все материалы →</div>
-                  </>
-                )}
-              </>
-            )}
-          </div>
-
-          <div className="widget">
-            <div className="widget-header">
-              <span className="widget-title">Ближайшие события</span>
-            </div>
-            {loading
-              ? [1, 2, 3].map(i => <SkeletonEventCard key={i} />)
-              : upcoming.length === 0
-              ? <p style={{ color:'var(--text-tertiary)', fontSize:13 }}>Событий нет</p>
-              : upcoming.map((e, i) => (
-                <div key={i} className="event-mini fade-in" style={{ animationDelay: `${i * 0.05}s` }}>
-                  <div className="event-mini-day">День {e.day}</div>
-                  <div className="event-mini-title">{e.title}</div>
-                  <span className={`badge ${TYPE_BADGE[e.type]||'badge--gray'}`} style={{ flexShrink:0 }}>
-                    {TYPE_LABELS[e.type]||e.type}
-                  </span>
-                </div>
-              ))
-            }
-            <div className="dash-nav-link" style={{ marginTop:10 }} onClick={() => onNavigate('schedule')}>Все события →</div>
-          </div>
-
-          <div className="widget">
-            <div className="widget-header">
               <span className="widget-title">Таймер</span>
             </div>
             {timerLeft !== null ? (

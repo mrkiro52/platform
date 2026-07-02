@@ -3,8 +3,21 @@ import { useParams, useNavigate } from 'react-router-dom'
 import PandasLikbez from './likebezy/PandasLikbez'
 import SqlLikbez from './likebezy/SqlLikbez'
 import MlLikbez from './likebezy/MlLikbez'
+import PythonLikbez from './likebezy/PythonLikbez'
 
 const LIKEBEZY = [
+  {
+    id: 'python',
+    title: 'Python',
+    subtitle: 'Все основы языка с нуля',
+    tag: 'Python',
+    level: 'С нуля → База',
+    time: '~60 мин',
+    chapters: 9,
+    questions: 27,
+    topics: ['Типы данных', 'Строки', 'Условия и циклы', 'Коллекции', 'Функции', 'ООП основы'],
+    component: PythonLikbez,
+  },
   {
     id: 'pandas',
     title: 'Pandas',
