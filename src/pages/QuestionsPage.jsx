@@ -28,12 +28,20 @@ import July1PythonTasks from '../questions/july-1-python'
 import July1HtmlTasks from '../questions/july-1-html'
 import July1BackendTasks from '../questions/july-1-backend'
 import July1SecurityTasks from '../questions/july-1-security'
+import July2OsTasks from '../questions/july-2-os'
+import July2CombinatoricsTasks from '../questions/july-2-combinatorics'
+import July2MlIntroTasks from '../questions/july-2-ml-intro'
+import July2BackendArchTasks from '../questions/july-2-backend-arch'
 
 const JULY_TRACK_LABELS = {
   101: '1 июля · Frontend — Основы HTML',
   102: '1 июля · Backend — Python vs Go',
   103: '1 июля · ML/Аналитика — Основы Python',
   104: '1 июля · Кибербезопасность — Основы ИБ',
+  105: '2 июля · Кибербезопасность — Операционные системы',
+  106: '2 июля · Аналитика — Комбинаторика и теория вероятностей',
+  107: '2 июля · ML — Введение в машинное обучение',
+  108: '2 июля · Backend — Архитектура веб-приложения',
 }
 
 const QUESTIONS_COMPONENTS = {
@@ -66,6 +74,10 @@ const QUESTIONS_COMPONENTS = {
   102: July1BackendTasks,  // Backend
   103: July1PythonTasks,   // ML / Аналитика
   104: July1SecurityTasks, // Кибербезопасность
+  105: July2OsTasks,             // Кибербезопасность, 2 июля
+  106: July2CombinatoricsTasks,  // Аналитика, 2 июля
+  107: July2MlIntroTasks,        // ML, 2 июля
+  108: July2BackendArchTasks,    // Backend, 2 июля
 }
 
 function QuestionCard({ question, taskIndex, totalTasks, onAnswer, isSolved, savedAnswer }) {

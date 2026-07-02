@@ -17,8 +17,16 @@ const JULY_TRACKS = [
   { name: 'Кибербезопасность', id: 104, lesson: 'Основы информационной безопасности', color: { bg:'rgba(239,68,68,0.12)', border:'rgba(239,68,68,0.3)',  text:'#f87171' } },
 ]
 
+const JULY_TRACKS_DAY2 = [
+  { name: 'Кибербезопасность', id: 105, lesson: 'Операционные системы',                          color: { bg:'rgba(239,68,68,0.12)', border:'rgba(239,68,68,0.3)',  text:'#f87171' } },
+  { name: 'Аналитика',         id: 106, lesson: 'Комбинаторика и основы теории вероятностей',     color: { bg:'rgba(99,102,241,0.12)', border:'rgba(99,102,241,0.3)', text:'#818cf8' } },
+  { name: 'Machine Learning',  id: 107, lesson: 'Введение в машинное обучение',                    color: { bg:'rgba(34,197,94,0.12)',  border:'rgba(34,197,94,0.3)',  text:'#4ade80' } },
+  { name: 'Backend',           id: 108, lesson: 'Архитектура веб-приложения',                      color: { bg:'rgba(59,130,246,0.12)', border:'rgba(59,130,246,0.3)', text:'#60a5fa' } },
+]
+
 const JULY_DAYS = [
   { day: 1, date: 'ср, 1 июля', tracks: JULY_TRACKS },
+  { day: 2, date: 'чт, 2 июля', tracks: JULY_TRACKS_DAY2 },
 ]
 
 function JulyTrackRow({ track, onOpenTheory, onOpenQuestions, onOpenHomework }) {

@@ -65,6 +65,10 @@ import July1PythonTheory from '../theory/july-1-python'
 import July1HtmlTheory from '../theory/july-1-html'
 import July1BackendTheory from '../theory/july-1-backend'
 import July1SecurityTheory from '../theory/july-1-security'
+import July2OsTheory from '../theory/july-2-os'
+import July2CombinatoricsTheory from '../theory/july-2-combinatorics'
+import July2MlIntroTheory from '../theory/july-2-ml-intro'
+import July2BackendArchTheory from '../theory/july-2-backend-arch'
 
 // Маппинг дней на компоненты с теорией
 const THEORY_COMPONENTS = {
@@ -99,6 +103,10 @@ const THEORY_COMPONENTS = {
   102: July1BackendTheory,  // Backend
   103: July1PythonTheory,   // ML / Аналитика
   104: July1SecurityTheory, // Кибербезопасность
+  105: July2OsTheory,             // Кибербезопасность, 2 июля
+  106: July2CombinatoricsTheory,  // Аналитика, 2 июля
+  107: July2MlIntroTheory,        // ML, 2 июля
+  108: July2BackendArchTheory,    // Backend, 2 июля
 }
 
 // Заголовки для июльских треков (синтетические id)
@@ -107,6 +115,10 @@ export const JULY_TRACK_LABELS = {
   102: '1 июля · Backend — Python vs Go',
   103: '1 июля · ML/Аналитика — Основы Python',
   104: '1 июля · Кибербезопасность — Основы ИБ',
+  105: '2 июля · Кибербезопасность — Операционные системы',
+  106: '2 июля · Аналитика — Комбинаторика и теория вероятностей',
+  107: '2 июля · ML — Введение в машинное обучение',
+  108: '2 июля · Backend — Архитектура веб-приложения',
 }
 
 const THEORY_TITLES = {
