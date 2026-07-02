@@ -1835,24 +1835,32 @@ img { max-width: 100%; display: block; }
 }
 .reels-nav-btn:active { transform: scale(0.92); }
 .reels-nav-btn:disabled { opacity: 0.35; cursor: default; }
+.antireels-fig-wrap svg { max-width: 100%; height: auto; }
+
+/* На мобильных вкладка занимает строго 100% экрана: часть — шапка платформы
+   (--topbar-height), остальное ровно — блок с карточками. Паддинги pages-wrap
+   на этой странице обнуляются, чтобы не съедать высоту. */
+body.reels-lock {
+  overflow: hidden;
+  position: fixed;
+  inset: 0;
+  width: 100%;
+}
 
 @media (max-width: 768px) {
+  body.reels-lock .pages-wrap { padding: 0; }
   .reels-page {
-    --reels-chrome: 92px; /* topbar 60px + pages-wrap padding 16px*2 */
-    padding: 0;
+    height: calc(100dvh - var(--topbar-height));
+    width: 100%;
   }
-  .reels-stage { width: 100%; gap: 0; }
+  .reels-stage { width: 100%; height: 100%; gap: 0; }
   .reels-box {
     width: 100%;
+    height: 100%;
     aspect-ratio: auto;
     border-radius: 0;
     border-left: none;
     border-right: none;
     box-shadow: none;
-  }
-}
-@media (max-width: 480px) {
-  .reels-page {
-    --reels-chrome: 84px; /* topbar 60px + pages-wrap padding 12px*2 */
   }
 }

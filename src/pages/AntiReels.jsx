@@ -3,6 +3,7 @@ import { CARDS } from '../antireels/cards'
 import { Card } from '../antireels/CardKit'
 
 const SLIDE_MS = 380
+const SWIPE_THRESHOLD = 45
 
 function pickRandom(excludeArr) {
   const ex = new Set(excludeArr)
@@ -24,6 +25,7 @@ export default function AntiReels() {
   // slide: { dir: 'next'|'prev', fromIdx, toIdx, reset, active }
   const [slide, setSlide] = useState(null)
   const resetPickRef = useRef(null)
+  const boxRef = useRef(null)
   const [mobile, setMobile] = useState(() =>
     typeof window !== 'undefined' && window.matchMedia('(max-width: 768px)').matches
   )
@@ -33,6 +35,13 @@ export default function AntiReels() {
     const handler = e => setMobile(e.matches)
     mq.addEventListener('change', handler)
     return () => mq.removeEventListener('change', handler)
+  }, [])
+
+  // Полностью блокируем прокрутку страницы, пока открыта вкладка AntiReels —
+  // листаться должен только блок с карточками, а не сайт целиком.
+  useEffect(() => {
+    document.body.classList.add('reels-lock')
+    return () => document.body.classList.remove('reels-lock')
   }, [])
 
   // Держим следующую карточку уже сгенерированной ("на готове"), пока показываем текущую
@@ -113,6 +122,11 @@ export default function AntiReels() {
     setSlide({ dir: 'prev', fromIdx: sequence[pos], toIdx: sequence[pos - 1], reset: false, active: false })
   }, [loading, slide, sequence, pos])
 
+  const goNextRef = useRef(goNext)
+  const goPrevRef = useRef(goPrev)
+  goNextRef.current = goNext
+  goPrevRef.current = goPrev
+
   // Колесо мыши (десктоп) с троттлингом
   const lastWheel = useRef(0)
   const onWheel = useCallback((e) => {
@@ -123,18 +137,44 @@ export default function AntiReels() {
     else if (e.deltaY < -10) goPrev()
   }, [goNext, goPrev])
 
-  // Свайп (мобильные)
-  const touchStartY = useRef(null)
-  const onTouchStart = (e) => { touchStartY.current = e.touches[0].clientY }
-  const onTouchEnd = (e) => {
-    if (touchStartY.current == null) return
-    const delta = e.changedTouches[0].clientY - touchStartY.current
-    if (Math.abs(delta) > 45) {
-      if (delta < 0) goNext()  // свайп вверх → следующая
-      else goPrev()            // свайп вниз → предыдущая
+  // Свайп на мобильных — нативные слушатели с passive:false, чтобы полностью
+  // перехватывать жест и не давать браузеру скроллить/оттягивать страницу.
+  useEffect(() => {
+    const box = boxRef.current
+    if (!box) return
+
+    let startY = null
+    let tracking = false
+
+    const onTouchStart = (e) => {
+      startY = e.touches[0].clientY
+      tracking = true
     }
-    touchStartY.current = null
-  }
+    const onTouchMove = (e) => {
+      if (!tracking) return
+      // Полностью гасим нативный скролл/рубберфинг страницы во время свайпа
+      e.preventDefault()
+    }
+    const onTouchEnd = (e) => {
+      if (!tracking || startY == null) { tracking = false; return }
+      const delta = e.changedTouches[0].clientY - startY
+      if (Math.abs(delta) > SWIPE_THRESHOLD) {
+        if (delta < 0) goNextRef.current()
+        else goPrevRef.current()
+      }
+      startY = null
+      tracking = false
+    }
+
+    box.addEventListener('touchstart', onTouchStart, { passive: true })
+    box.addEventListener('touchmove', onTouchMove, { passive: false })
+    box.addEventListener('touchend', onTouchEnd, { passive: true })
+    return () => {
+      box.removeEventListener('touchstart', onTouchStart)
+      box.removeEventListener('touchmove', onTouchMove)
+      box.removeEventListener('touchend', onTouchEnd)
+    }
+  }, [])
 
   // Стрелки клавиатуры
   useEffect(() => {
@@ -152,10 +192,9 @@ export default function AntiReels() {
     <section className="page active reels-page">
       <div className="reels-stage">
         <div
+          ref={boxRef}
           className="reels-box"
           onWheel={mobile ? undefined : onWheel}
-          onTouchStart={mobile ? onTouchStart : undefined}
-          onTouchEnd={mobile ? onTouchEnd : undefined}
         >
           {loading ? (
             <div className="reels-loader">

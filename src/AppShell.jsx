@@ -44,8 +44,10 @@ export default function AppShell({ user, onLogout }) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
   useEffect(() => {
-    document.body.className = 'app-page'
-    return () => { document.body.className = '' }
+    // classList.add/remove (не className=) — чтобы не затирать классы,
+    // которые добавляют дочерние страницы (например reels-lock у AntiReels)
+    document.body.classList.add('app-page')
+    return () => document.body.classList.remove('app-page')
   }, [])
 
   const openTheory    = (day) => navigate(`/library/theory/${day.day}`)
