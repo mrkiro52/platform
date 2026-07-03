@@ -82,6 +82,21 @@ const Label = ({ children }) => (
   <div style={{ color: 'var(--text-tertiary)', fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', margin: '14px 0 8px' }}>{children}</div>
 )
 
+// Блок с альтернативным (студенческим) решением — визуально отделён от основного разбора
+function AltSolution({ children }) {
+  return (
+    <div style={{
+      marginTop: 18, paddingTop: 16, borderTop: '1px dashed var(--border-color)',
+    }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
+        <span style={{ fontSize: 16 }}>🙋</span>
+        <span style={{ color: '#818cf8', fontWeight: 700, fontSize: 13.5 }}>Решение с занятия</span>
+      </div>
+      {children}
+    </div>
+  )
+}
+
 export default function July3LeetcodeTheory() {
   return (
     <div className="theory-container">
@@ -163,6 +178,35 @@ if __name__ == "__main__":
           <p className="theory-text">
             <strong>Сложность:</strong> время O(|J| + |S|), память O(|J|) — под множество уникальных символов J.
           </p>
+
+          <AltSolution>
+            <p className="theory-text">
+              Тоже рабочее решение, но с одним отличием: проверка <code>el in j</code> здесь идёт
+              по <strong>строке</strong> j, а не по множеству. Поиск символа в строке в худшем случае — O(|j|),
+              поэтому итоговая сложность у этого варианта O(|S| × |J|) — медленнее, чем решение с set выше,
+              но при |J|, |S| ≤ 100 (как в условии задачи) разница на практике незаметна.
+            </p>
+            <Code code={`import sys
+
+
+def main():
+    j = input()
+    s = input()
+
+    count = 0
+    for el in s:
+        # Проверяем, входит ли текущий символ строки s в строку j.
+        # "in" для строки — это линейный поиск (сравнение el с каждым символом j),
+        # поэтому одна проверка стоит O(|j|), а не O(1), как было бы с set.
+        if el in j:
+            count += 1  # символ оказался и "драгоценностью", и "камнем" — считаем его
+
+    print(count)
+
+
+if __name__ == '__main__':
+    main()`} />
+          </AltSolution>
         </Problem>
 
         <Problem n={2} title="Анаграммы" href="https://coderun.yandex.ru/selections/yandex-interview/problems/anagrams">
@@ -202,6 +246,37 @@ if __name__ == "__main__":
             <strong>Сложность:</strong> время O(n), память O(1) — алфавит фиксирован (26 строчных латинских
             букв), поэтому размер счётчика ограничен константой.
           </p>
+
+          <AltSolution>
+            <p className="theory-text">
+              Альтернативный, тоже вполне корректный подход: воспользоваться тем, что у анаграмм одинаковый
+              набор символов, и просто <strong>отсортировать</strong> обе строки. Если после сортировки строки
+              совпали посимвольно — значит, изначально в них были одни и те же буквы в одном и том же
+              количестве, просто в разном порядке.
+            </p>
+            <Code code={`import sys
+
+
+def main():
+    s1 = input()
+    s2 = input()
+
+    # sorted() возвращает список символов строки, отсортированный по алфавиту.
+    # У анаграмм после сортировки получаются одинаковые списки символов.
+    s1, s2 = sorted(s1), sorted(s2)
+
+    # Сравниваем отсортированные версии: совпали — анаграммы (1), не совпали — нет (0)
+    print(1) if s1 == s2 else print(0)
+
+
+if __name__ == '__main__':
+    main()`} />
+            <p className="theory-text">
+              <strong>Сложность:</strong> сортировка работает за O(n log n), поэтому этот вариант чуть медленнее
+              решения через <code>Counter</code> (O(n)), но зато очень короткий и наглядный — хороший вариант,
+              если нужно быстро написать рабочий код на собеседовании.
+            </p>
+          </AltSolution>
         </Problem>
 
         <Problem n={3} title="Последовательно идущие единицы" href="https://coderun.yandex.ru/selections/yandex-interview/problems/consecutive-ones">
@@ -244,6 +319,36 @@ if __name__ == "__main__":
             <strong>Сложность:</strong> время O(n) — ровно один проход, память O(1) — храним только два числа
             (best и current), сам массив целиком в памяти не нужен.
           </p>
+
+          <AltSolution>
+            <p className="theory-text">
+              Та же самая идея «счётчика текущей серии», только без отдельной функции чтения — <code>input()</code>
+              вызывается прямо внутри цикла. Логика полностью эквивалентна разобранному выше решению.
+            </p>
+            <Code code={`import sys
+
+
+def main():
+    n = int(input())
+    cur_len = 0   # длина текущей серии подряд идущих единиц
+    max_len = 0   # лучший результат за всё время
+
+    for _ in range(n):
+        if int(input()) == 1:
+            cur_len += 1                    # единица — серия продолжается
+            max_len = max(max_len, cur_len) # сразу же проверяем, не побит ли рекорд
+        else:
+            cur_len = 0                     # встретили ноль — серия обрывается, сбрасываем счётчик
+
+    print(max_len)
+
+if __name__ == '__main__':
+    main()`} />
+            <p className="theory-text">
+              <strong>Сложность:</strong> те же O(n) по времени и O(1) по памяти — вариант отличается только
+              оформлением, а не алгоритмом.
+            </p>
+          </AltSolution>
         </Problem>
 
         <Problem n={4} title="Генерация скобочных последовательностей" href="https://coderun.yandex.ru/selections/yandex-interview/problems/generating-bracket-sequences">
@@ -306,6 +411,48 @@ if __name__ == "__main__":
             <strong>Сложность:</strong> время O(k), где k — количество правильных скобочных последовательностей
             (это число Каталана C(n)); дополнительная память (не считая самого вывода) — O(n) на глубину рекурсии.
           </p>
+
+          <AltSolution>
+            <p className="theory-text">
+              Тот же backtracking, но записанный иначе: вместо буфера-списка с <code>append</code>/<code>pop</code>
+              строка <code>current</code> просто передаётся дальше по рекурсии новой копией (<code>current + '('</code>),
+              а печать готовой последовательности происходит прямо внутри рекурсивной функции, а не после
+              возврата в <code>main</code>.
+            </p>
+            <Code code={`import sys
+
+
+def generate(open_count, close_count, current, n):
+    # База рекурсии: длина последовательности достигла 2n — она готова, печатаем
+    if len(current) == 2 * n:
+        print(current)
+        return
+
+    # Открывающую скобку можно добавить, пока не исчерпан лимит n
+    if open_count < n:
+        generate(open_count + 1, close_count, current + '(', n)
+
+    # Закрывающую скобку можно добавить, только если открывающих скобок
+    # уже поставлено больше, чем закрывающих — иначе последовательность станет некорректной
+    if close_count < open_count:
+        generate(open_count, close_count + 1, current + ')', n)
+
+
+def main():
+    n = int(input())
+    generate(0, 0, '', n)
+
+
+if __name__ == '__main__':
+    main()`} />
+            <p className="theory-text">
+              <strong>Нюанс:</strong> здесь <code>current + '('</code> каждый раз создаёт <strong>новую</strong>
+              строку (строки в Python неизменяемы), в то время как вариант с буфером-списком и
+              <code>append</code>/<code>pop</code> выше переиспользует одну и ту же структуру в памяти. На
+              практике при n ≤ 11 (как в условии) разница в производительности незначительна, но на больших n
+              подход с буфером и «откатом» (pop) экономичнее по памяти и по числу копирований.
+            </p>
+          </AltSolution>
         </Problem>
       </section>
 
