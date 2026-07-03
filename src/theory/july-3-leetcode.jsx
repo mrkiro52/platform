@@ -41,7 +41,7 @@ export default function July3LeetcodeTheory() {
 
       <section className="theory-section">
         <h2 className="theory-heading-2">Что нужно сделать перед занятием</h2>
-        <p className="theory-text">
+        <p className="theory-text" style={{ marginBottom: 20 }}>
           Заведи аккаунты на двух платформах — они понадобятся нам сегодня и в дальнейшем для тренировки
           алгоритмических задач:
         </p>

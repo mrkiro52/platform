@@ -169,7 +169,9 @@ export default function VideoPlayer({ src }) {
           src={src}
           style={{
             width: '100%', display: 'block',
-            ...(isFullscreen ? { width: '100%', height: '100%', objectFit: 'contain' } : { maxHeight: '480px', objectFit: 'contain' }),
+            ...(isFullscreen
+              ? { width: '100%', height: '100%', objectFit: 'contain' }
+              : { aspectRatio: '16 / 9', maxHeight: '480px', objectFit: 'contain' }),
           }}
           preload="metadata"
         />
