@@ -63,3 +63,11 @@ export const PYTHON_BASICS_PARTS = [
   'https://s3.regru.cloud/kirocamp/pybasic3.mov',
   'https://s3.regru.cloud/kirocamp/pybasic4.mov',
 ]
+
+// Части видео «Нарешиваем LeetCode» (4 части)
+export const LEETCODE_ONE_PARTS = [
+  'https://s3.regru.cloud/kirocamp/leetcodeOne1.mov',
+  'https://s3.regru.cloud/kirocamp/leetcodeOne2.mov',
+  'https://s3.regru.cloud/kirocamp/leetcodeOne3.mov',
+  'https://s3.regru.cloud/kirocamp/leetcodeOne4.mov',
+]

@@ -1,3 +1,5 @@
+import MultiPartVideo, { LEETCODE_ONE_PARTS } from '../components/MultiPartVideo'
+
 const LinkCard = ({ href, title, desc, accent }) => (
   <a
     href={href}
@@ -26,6 +28,60 @@ const LinkCard = ({ href, title, desc, accent }) => (
   </a>
 )
 
+// Блок кода Python с подсветкой комментариев (# ...)
+const Code = ({ code }) => {
+  const lines = code.split('\n')
+  return (
+    <div className="theory-code-block">
+      <div className="theory-code-label">python</div>
+      <pre className="theory-code"><code>
+        {lines.map((line, i) => {
+          const idx = line.indexOf('#')
+          if (idx === -1) return <span key={i}>{line}{i < lines.length - 1 ? '\n' : ''}</span>
+          const before = line.slice(0, idx)
+          const sq = (before.match(/'/g) || []).length
+          const dq = (before.match(/"/g) || []).length
+          if (sq % 2 !== 0 || dq % 2 !== 0) return <span key={i}>{line}{i < lines.length - 1 ? '\n' : ''}</span>
+          return (
+            <span key={i}>
+              <span style={{ color: 'var(--text-primary)' }}>{before}</span>
+              <span style={{ color: '#6b7280' }}>{line.slice(idx)}</span>
+              {i < lines.length - 1 ? '\n' : ''}
+            </span>
+          )
+        })}
+      </code></pre>
+    </div>
+  )
+}
+
+// Карточка «задача + решение»
+function Problem({ n, title, href, children }) {
+  return (
+    <div style={{
+      background: 'var(--bg-secondary)', border: '1px solid var(--border-color)', borderRadius: 12,
+      padding: 'clamp(16px, 3vw, 24px)', marginBottom: 24,
+    }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12, flexWrap: 'wrap' }}>
+        <span style={{
+          width: 28, height: 28, borderRadius: '50%', background: 'rgba(200,255,0,0.15)',
+          border: '1px solid var(--accent-lime)', color: 'var(--accent-lime)', fontWeight: 700, fontSize: 14,
+          display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+        }}>{n}</span>
+        <h3 style={{ color: 'var(--text-primary)', fontSize: 'clamp(16px, 2.6vw, 19px)', fontWeight: 700, margin: 0 }}>{title}</h3>
+        <a href={href} target="_blank" rel="noopener noreferrer" style={{
+          marginLeft: 'auto', color: '#60a5fa', fontSize: 13, textDecoration: 'none', flexShrink: 0,
+        }}>Открыть на CodeRun →</a>
+      </div>
+      {children}
+    </div>
+  )
+}
+
+const Label = ({ children }) => (
+  <div style={{ color: 'var(--text-tertiary)', fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', margin: '14px 0 8px' }}>{children}</div>
+)
+
 export default function July3LeetcodeTheory() {
   return (
     <div className="theory-container">
@@ -37,6 +93,11 @@ export default function July3LeetcodeTheory() {
           Сегодня практикуем алгоритмическую секцию технических собеседований — ту самую, которую спрашивают
           в БигТехе. Будем разбирать классические задачи вместе на созвоне в 20:00.
         </p>
+      </section>
+
+      <section className="theory-section">
+        <h2 className="theory-heading-2">🎥 Видео-лекция: разбор задач (4 части)</h2>
+        <MultiPartVideo parts={LEETCODE_ONE_PARTS} />
       </section>
 
       <section className="theory-section">
@@ -59,9 +120,201 @@ export default function July3LeetcodeTheory() {
           desc="Платформа Яндекса для тренировки алгоритмов. Тоже потребуется зарегистрироваться заранее."
           accent="#60a5fa"
         />
+      </section>
 
-        <p className="theory-text" style={{ marginTop: 20 }}>
-          Больше материалов по этому занятию скоро появится здесь.
+      {/* Разбор задач */}
+      <section className="theory-section">
+        <h2 className="theory-heading-2">Разбор задач</h2>
+        <p className="theory-text" style={{ marginBottom: 20 }}>
+          Ниже — 4 задачи, которые разбираем на сегодняшнем занятии, с условием и оптимальным решением на
+          Python. Комментарии в коде объясняют каждый шаг.
+        </p>
+
+        <Problem n={1} title="Камни и украшения" href="https://coderun.yandex.ru/selections/yandex-interview/problems/rocks-and-jewels">
+          <p className="theory-text">
+            Даны две строки строчных латинских символов — J и S. Символы, входящие в строку J — «драгоценности»,
+            входящие в строку S — «камни». Нужно определить, какое количество символов из S одновременно
+            являются «драгоценностями». Проще говоря, нужно проверить, сколько символов из S входит в J.
+          </p>
+          <p className="theory-text"><strong>Формат ввода:</strong> на двух первых строках — строка J и строка S (0 ≤ |J|, |S| ≤ 100).</p>
+          <p className="theory-text"><strong>Формат вывода:</strong> единственное число — количество камней, являющихся драгоценностями.</p>
+
+          <Label>Идея решения</Label>
+          <p className="theory-text">
+            В лоб можно для каждого символа S перебирать всю строку J — это O(|S| × |J|). Но проверку «символ
+            входит в J» можно сделать за O(1), если один раз сложить все символы J в <strong>множество (set)</strong>.
+            Тогда весь алгоритм — O(|J| + |S|): одно линейное построение множества и один линейный проход по S.
+          </p>
+
+          <Label>Решение</Label>
+          <Code code={`def num_jewels_in_stones(J: str, S: str) -> int:
+    # Складываем символы J в set — проверка "x in jewels" работает за O(1)
+    jewels = set(J)
+
+    # Считаем, сколько символов S встречаются в множестве jewels
+    # sum() по генератору True/False: True считается как 1
+    return sum(1 for stone in S if stone in jewels)
+
+
+if __name__ == "__main__":
+    J = input()
+    S = input()
+    print(num_jewels_in_stones(J, S))`} />
+          <p className="theory-text">
+            <strong>Сложность:</strong> время O(|J| + |S|), память O(|J|) — под множество уникальных символов J.
+          </p>
+        </Problem>
+
+        <Problem n={2} title="Анаграммы" href="https://coderun.yandex.ru/selections/yandex-interview/problems/anagrams">
+          <p className="theory-text">
+            Даны две строки, состоящие из строчных латинских букв. Требуется определить, являются ли эти строки
+            анаграммами, то есть отличаются ли они только порядком следования символов.
+          </p>
+          <p className="theory-text"><strong>Формат ввода:</strong> две строки строчных латинских символов, каждая не длиннее 100 000 символов, разделены переводом строки.</p>
+          <p className="theory-text"><strong>Формат вывода:</strong> 1, если строки — анаграммы, иначе 0.</p>
+
+          <Label>Идея решения</Label>
+          <p className="theory-text">
+            Анаграммы — это строки с одинаковым <strong>набором и количеством</strong> каждого символа. Если длины
+            строк разные — сразу «нет». Иначе можно подсчитать частоту каждого символа в обеих строках
+            (через <code>Counter</code>) и сравнить получившиеся счётчики. Альтернатива — отсортировать обе
+            строки и сравнить (O(n log n)), но подсчёт частот работает быстрее — за O(n).
+          </p>
+
+          <Label>Решение</Label>
+          <Code code={`from collections import Counter
+
+def is_anagram(s1: str, s2: str) -> int:
+    # Разной длины строки анаграммами быть не могут — отсекаем сразу
+    if len(s1) != len(s2):
+        return 0
+
+    # Counter считает частоту каждого символа: {'a': 2, 'b': 1, ...}
+    # Строки — анаграммы тогда и только тогда, когда счётчики совпадают
+    return 1 if Counter(s1) == Counter(s2) else 0
+
+
+if __name__ == "__main__":
+    s1 = input()
+    s2 = input()
+    print(is_anagram(s1, s2))`} />
+          <p className="theory-text">
+            <strong>Сложность:</strong> время O(n), память O(1) — алфавит фиксирован (26 строчных латинских
+            букв), поэтому размер счётчика ограничен константой.
+          </p>
+        </Problem>
+
+        <Problem n={3} title="Последовательно идущие единицы" href="https://coderun.yandex.ru/selections/yandex-interview/problems/consecutive-ones">
+          <p className="theory-text">
+            Дана последовательность, состоящая из цифр 0 и 1. Требуется определить длину наибольшей непрерывной
+            подпоследовательности, состоящей только из единиц.
+          </p>
+          <p className="theory-text"><strong>Формат ввода:</strong> в первой строке n — длина последовательности (1 ≤ n ≤ 10000), далее n строк с одним числом на каждой.</p>
+          <p className="theory-text"><strong>Формат вывода:</strong> одно целое число — длина наибольшей непрерывной подпоследовательности единиц.</p>
+          <p className="theory-text"><strong>Требование:</strong> алгоритм O(n), не более одного прохода по последовательности.</p>
+
+          <Label>Идея решения</Label>
+          <p className="theory-text">
+            Классический пример метода <strong>«скользящее окно» / счётчик текущей серии</strong>. Идём по числам
+            один раз: пока встречаем единицы — наращиваем счётчик текущей серии подряд идущих единиц; как только
+            встретили ноль — сравниваем текущую серию с максимумом и обнуляем счётчик. Так за один проход находим
+            ответ, не храня всю последовательность в памяти.
+          </p>
+
+          <Label>Решение</Label>
+          <Code code={`def max_consecutive_ones(n: int, read_next) -> int:
+    best = 0     # лучший результат за всё время
+    current = 0  # длина текущей серии подряд идущих единиц
+
+    for _ in range(n):
+        x = read_next()
+        if x == 1:
+            current += 1           # серия продолжается — увеличиваем счётчик
+            best = max(best, current)  # обновляем максимум "на лету"
+        else:
+            current = 0            # серия оборвалась нулём — сбрасываем счётчик
+
+    return best
+
+
+if __name__ == "__main__":
+    n = int(input())
+    print(max_consecutive_ones(n, lambda: int(input())))`} />
+          <p className="theory-text">
+            <strong>Сложность:</strong> время O(n) — ровно один проход, память O(1) — храним только два числа
+            (best и current), сам массив целиком в памяти не нужен.
+          </p>
+        </Problem>
+
+        <Problem n={4} title="Генерация скобочных последовательностей" href="https://coderun.yandex.ru/selections/yandex-interview/problems/generating-bracket-sequences">
+          <p className="theory-text">
+            Дано целое число n. Требуется вывести все правильные скобочные последовательности длины 2n в
+            лексикографическом порядке. Используются только круглые скобки.
+          </p>
+          <p className="theory-text"><strong>Формат ввода:</strong> целое число n (0 ≤ n ≤ 11).</p>
+          <p className="theory-text"><strong>Формат вывода:</strong> все сгенерированные правильные скобочные последовательности, упорядоченные лексикографически.</p>
+          <p className="theory-text"><strong>Требование:</strong> O(k) по времени (k — число последовательностей в ответе), O(n) дополнительной памяти.</p>
+
+          <Label>Идея решения</Label>
+          <p className="theory-text">
+            Строим последовательность посимвольно через <strong>рекурсивный перебор (backtracking)</strong> и
+            добавляем скобку, только если это не нарушает правильность:
+          </p>
+          <ul className="theory-list">
+            <li>открывающую «(» можно поставить, пока их использовано меньше n;</li>
+            <li>закрывающую «)» можно поставить, только пока открывающих скобок поставлено больше, чем закрывающих (иначе получим «)(» — невалидно).</li>
+          </ul>
+          <p className="theory-text">
+            Такой перебор, если ставить сначала «(», а потом «)», сам по себе генерирует ответы в
+            лексикографическом порядке — сортировать отдельно не нужно. Память O(n) уходит на глубину рекурсии
+            и буфер строящейся строки (длиной 2n), сама выдача результатов в O(k) не учитывается.
+          </p>
+
+          <Label>Решение</Label>
+          <Code code={`def generate_parenthesis(n: int) -> list[str]:
+    result = []
+    buf = []  # буфер текущей строящейся последовательности
+
+    def backtrack(open_count: int, close_count: int):
+        # База рекурсии: длина последовательности достигла 2n — записываем ответ
+        if len(buf) == 2 * n:
+            result.append("".join(buf))
+            return
+
+        # Ставим "(" — если ещё не использовали все n открывающих скобок
+        if open_count < n:
+            buf.append("(")
+            backtrack(open_count + 1, close_count)
+            buf.pop()  # откатываем выбор (backtracking)
+
+        # Ставим ")" — только если открывающих скобок больше, чем закрывающих
+        # (иначе последовательность станет некорректной)
+        if close_count < open_count:
+            buf.append(")")
+            backtrack(open_count, close_count + 1)
+            buf.pop()
+
+    backtrack(0, 0)
+    return result
+
+
+if __name__ == "__main__":
+    n = int(input())
+    for seq in generate_parenthesis(n):
+        print(seq)`} />
+          <p className="theory-text">
+            <strong>Сложность:</strong> время O(k), где k — количество правильных скобочных последовательностей
+            (это число Каталана C(n)); дополнительная память (не считая самого вывода) — O(n) на глубину рекурсии.
+          </p>
+        </Problem>
+      </section>
+
+      {/* Домашнее задание */}
+      <section className="theory-section">
+        <h2 className="theory-heading-2">Домашнее задание</h2>
+        <p className="theory-text">
+          Во вкладке <strong>«Домашние задания»</strong> дня 3 июля лежат ещё 2 задачи с CodeRun — реши их
+          самостоятельно, опираясь на подход из сегодняшнего разбора.
         </p>
       </section>
     </div>
