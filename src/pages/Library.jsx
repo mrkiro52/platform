@@ -24,14 +24,21 @@ const JULY_TRACKS_DAY2 = [
   { name: 'Backend',           id: 108, lesson: 'Архитектура веб-приложения',                      color: { bg:'rgba(59,130,246,0.12)', border:'rgba(59,130,246,0.3)', text:'#60a5fa' } },
 ]
 
+const JULY_TRACKS_DAY3 = [
+  { name: 'Все треки', id: 109, lesson: 'Нарешиваем LeetCode', color: { bg:'rgba(200,255,0,0.12)', border:'rgba(200,255,0,0.3)', text:'#c8ff00' }, showQuestions: false, showHomework: false },
+]
+
 const JULY_DAYS = [
   { day: 1, date: 'ср, 1 июля', tracks: JULY_TRACKS },
   { day: 2, date: 'чт, 2 июля', tracks: JULY_TRACKS_DAY2 },
+  { day: 3, date: 'пт, 3 июля', tracks: JULY_TRACKS_DAY3 },
 ]
 
 function JulyTrackRow({ track, onOpenTheory, onOpenQuestions, onOpenHomework }) {
   const c = track.color
   const target = { day: track.id }
+  const showQuestions = track.showQuestions !== false
+  const showHomework = track.showHomework !== false
   const btn = {
     display: 'inline-flex', alignItems: 'center', gap: 5,
     background: 'var(--bg-tertiary)', border: '1px solid var(--border-color)',
@@ -58,8 +65,12 @@ function JulyTrackRow({ track, onOpenTheory, onOpenQuestions, onOpenHomework }) 
       </div>
       <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
         <button style={btn} onMouseEnter={e => hover(e, true)} onMouseLeave={e => hover(e, false)} onClick={() => onOpenTheory(target)}>📚 Теория</button>
-        <button style={btn} onMouseEnter={e => hover(e, true)} onMouseLeave={e => hover(e, false)} onClick={() => onOpenQuestions(target)}>✅ Онлайн тесты</button>
-        <button style={btn} onMouseEnter={e => hover(e, true)} onMouseLeave={e => hover(e, false)} onClick={() => onOpenHomework(target)}>📝 Домашние задания</button>
+        {showQuestions && (
+          <button style={btn} onMouseEnter={e => hover(e, true)} onMouseLeave={e => hover(e, false)} onClick={() => onOpenQuestions(target)}>✅ Онлайн тесты</button>
+        )}
+        {showHomework && (
+          <button style={btn} onMouseEnter={e => hover(e, true)} onMouseLeave={e => hover(e, false)} onClick={() => onOpenHomework(target)}>📝 Домашние задания</button>
+        )}
       </div>
     </div>
   )

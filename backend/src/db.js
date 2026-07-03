@@ -377,6 +377,21 @@ function migrate() {
       console.error('❌ Migration 6 failed:', err.message)
     }
   }
+
+  // Migration 7: add July 3 session (LeetCode practice, all tracks)
+  if (schemaVersion < 7) {
+    try {
+      const july3Count = db.prepare("SELECT COUNT(*) as c FROM schedule WHERE month='july' AND day_num=3").get().c
+      if (july3Count === 0) {
+        const ins = db.prepare(`INSERT INTO schedule (day_num, date_label, type, title, theory, tasks, hw, month, meeting_time, tracks, description) VALUES (?,?,?,?,?,?,?,?,?,?,?)`)
+        ins.run(3,'пт, 3 июля','lecture','Нарешиваем LeetCode','[]','[]','','july','20:00','["Frontend","Backend","Аналитика","ML","Кибербезопасность"]','Будем решать классические задачи с алгоритмической секции собеседований в БигТех.')
+      }
+      db.pragma('user_version = 7')
+      console.log('✅ Migration 7 completed: added July 3 LeetCode session')
+    } catch (err) {
+      console.error('❌ Migration 7 failed:', err.message)
+    }
+  }
 }
 
 migrate()

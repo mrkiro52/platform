@@ -1,4 +1,5 @@
 import { TheoryTable, TheoryCode, TheoryExample } from './components/TheoryTable'
+import MultiPartVideo, { PYTHON_BASICS_PARTS } from '../components/MultiPartVideo'
 
 export default function Day3LoopsTheory() {
   return (
@@ -7,6 +8,11 @@ export default function Day3LoopsTheory() {
         <h1 className="theory-title">День 3</h1>
         <p className="theory-subtitle">Основы программирования: циклы, функции, коллекции</p>
         <p className="theory-date">3 июня 2026</p>
+      </section>
+
+      <section className="theory-section">
+        <h2 className="theory-heading-2">🎥 Видео-лекция: Основы Python (4 части)</h2>
+        <MultiPartVideo parts={PYTHON_BASICS_PARTS} />
       </section>
 
       <section className="theory-section">

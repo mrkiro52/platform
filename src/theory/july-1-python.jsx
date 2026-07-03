@@ -1,4 +1,5 @@
 import { TheoryTable, TheoryCode, TheoryExample } from './components/TheoryTable'
+import MultiPartVideo, { PYTHON_BASICS_PARTS } from '../components/MultiPartVideo'
 
 export default function July1PythonTheory() {
   return (
@@ -12,6 +13,11 @@ export default function July1PythonTheory() {
           вся современная аналитика и ML. Здесь собрано всё базовое: типы данных, коллекции,
           условия, циклы, функции. В конце — анонс библиотек, с которыми будем работать дальше.
         </p>
+      </section>
+
+      <section className="theory-section">
+        <h2 className="theory-heading-2">🎥 Видео-лекция: Основы Python (4 части)</h2>
+        <MultiPartVideo parts={PYTHON_BASICS_PARTS} />
       </section>
 
       {/* Переменные и типы */}
