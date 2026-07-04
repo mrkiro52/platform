@@ -32,6 +32,11 @@ import July2OsTasks from '../questions/july-2-os'
 import July2CombinatoricsTasks from '../questions/july-2-combinatorics'
 import July2MlIntroTasks from '../questions/july-2-ml-intro'
 import July2BackendArchTasks from '../questions/july-2-backend-arch'
+import July2CssTasks from '../questions/july-2-css'
+import July4NetworksTasks from '../questions/july-4-networks'
+import July4NumpyTasks from '../questions/july-4-numpy'
+import July4SqlOrmTasks from '../questions/july-4-sql-orm'
+import July4PreprocessorsTasks from '../questions/july-4-preprocessors'
 
 const JULY_TRACK_LABELS = {
   101: '1 июля · Frontend — Основы HTML',
@@ -42,6 +47,11 @@ const JULY_TRACK_LABELS = {
   106: '2 июля · Аналитика — Комбинаторика и теория вероятностей',
   107: '2 июля · ML — Введение в машинное обучение',
   108: '2 июля · Backend — Архитектура веб-приложения',
+  110: '2 июля · Frontend — Основы CSS',
+  111: '4 июля · Кибербезопасность — Компьютерные сети: основы',
+  112: '4 июля · Аналитика/ML — Библиотека NumPy',
+  113: '4 июля · Backend — Базы данных: SQL и ORM',
+  114: '4 июля · Frontend — Препроцессоры LESS/SASS/SCSS',
 }
 
 const QUESTIONS_COMPONENTS = {
@@ -78,6 +88,11 @@ const QUESTIONS_COMPONENTS = {
   106: July2CombinatoricsTasks,  // Аналитика, 2 июля
   107: July2MlIntroTasks,        // ML, 2 июля
   108: July2BackendArchTasks,    // Backend, 2 июля
+  110: July2CssTasks,            // Frontend, 2 июля
+  111: July4NetworksTasks,       // Кибербезопасность, 4 июля
+  112: July4NumpyTasks,          // Аналитика/ML, 4 июля
+  113: July4SqlOrmTasks,         // Backend, 4 июля
+  114: July4PreprocessorsTasks,  // Frontend, 4 июля
 }
 
 function QuestionCard({ question, taskIndex, totalTasks, onAnswer, isSolved, savedAnswer }) {

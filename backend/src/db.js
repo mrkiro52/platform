@@ -392,6 +392,23 @@ function migrate() {
       console.error('❌ Migration 7 failed:', err.message)
     }
   }
+
+  // Migration 8: add July 4 sessions
+  if (schemaVersion < 8) {
+    try {
+      const july4Count = db.prepare("SELECT COUNT(*) as c FROM schedule WHERE month='july' AND day_num=4").get().c
+      if (july4Count === 0) {
+        const ins = db.prepare(`INSERT INTO schedule (day_num, date_label, type, title, theory, tasks, hw, month, meeting_time, tracks, description) VALUES (?,?,?,?,?,?,?,?,?,?,?)`)
+        ins.run(4,'сб, 4 июля','lecture','Компьютерные сети: основы','[]','[]','','july','20:00','["Кибербезопасность"]','Как устроена передача данных в сети: модель OSI/TCP-IP, IP-адреса, порты, протоколы TCP/UDP, DNS, HTTP/HTTPS.')
+        ins.run(4,'сб, 4 июля','lecture','Библиотека NumPy','[]','[]','','july','20:30','["Аналитика","ML"]','Основы работы с массивами NumPy: создание, индексация, векторизованные операции, broadcasting.')
+        ins.run(4,'сб, 4 июля','lecture','Базы данных: SQL и ORM','[]','[]','','july','21:30','["Backend"]','Реляционные базы данных, язык SQL и ORM — как абстракция над SQL в коде приложения.')
+      }
+      db.pragma('user_version = 8')
+      console.log('✅ Migration 8 completed: added July 4 sessions')
+    } catch (err) {
+      console.error('❌ Migration 8 failed:', err.message)
+    }
+  }
 }
 
 migrate()

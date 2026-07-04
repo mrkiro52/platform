@@ -70,6 +70,11 @@ import July2CombinatoricsTheory from '../theory/july-2-combinatorics'
 import July2MlIntroTheory from '../theory/july-2-ml-intro'
 import July2BackendArchTheory from '../theory/july-2-backend-arch'
 import July3LeetcodeTheory from '../theory/july-3-leetcode'
+import July2CssTheory from '../theory/july-2-css'
+import July4NetworksTheory from '../theory/july-4-networks'
+import July4NumpyTheory from '../theory/july-4-numpy'
+import July4SqlOrmTheory from '../theory/july-4-sql-orm'
+import July4PreprocessorsTheory from '../theory/july-4-preprocessors'
 
 // Маппинг дней на компоненты с теорией
 const THEORY_COMPONENTS = {
@@ -109,6 +114,11 @@ const THEORY_COMPONENTS = {
   107: July2MlIntroTheory,        // ML, 2 июля
   108: July2BackendArchTheory,    // Backend, 2 июля
   109: July3LeetcodeTheory,       // Все треки, 3 июля
+  110: July2CssTheory,            // Frontend, 2 июля
+  111: July4NetworksTheory,       // Кибербезопасность, 4 июля
+  112: July4NumpyTheory,          // Аналитика/ML, 4 июля
+  113: July4SqlOrmTheory,         // Backend, 4 июля
+  114: July4PreprocessorsTheory,  // Frontend, 4 июля
 }
 
 // Заголовки для июльских треков (синтетические id)
@@ -122,6 +132,11 @@ export const JULY_TRACK_LABELS = {
   107: '2 июля · ML — Введение в машинное обучение',
   108: '2 июля · Backend — Архитектура веб-приложения',
   109: '3 июля · Все треки — Нарешиваем LeetCode',
+  110: '2 июля · Frontend — Основы CSS',
+  111: '4 июля · Кибербезопасность — Компьютерные сети: основы',
+  112: '4 июля · Аналитика/ML — Библиотека NumPy',
+  113: '4 июля · Backend — Базы данных: SQL и ORM',
+  114: '4 июля · Frontend — Препроцессоры LESS/SASS/SCSS',
 }
 
 const THEORY_TITLES = {

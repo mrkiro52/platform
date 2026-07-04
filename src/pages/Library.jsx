@@ -22,16 +22,25 @@ const JULY_TRACKS_DAY2 = [
   { name: 'Аналитика',         id: 106, lesson: 'Комбинаторика и основы теории вероятностей',     color: { bg:'rgba(99,102,241,0.12)', border:'rgba(99,102,241,0.3)', text:'#818cf8' } },
   { name: 'Machine Learning',  id: 107, lesson: 'Введение в машинное обучение',                    color: { bg:'rgba(34,197,94,0.12)',  border:'rgba(34,197,94,0.3)',  text:'#4ade80' } },
   { name: 'Backend',           id: 108, lesson: 'Архитектура веб-приложения',                      color: { bg:'rgba(59,130,246,0.12)', border:'rgba(59,130,246,0.3)', text:'#60a5fa' } },
+  { name: 'Frontend',          id: 110, lesson: 'Основы CSS',                                      color: { bg:'rgba(234,179,8,0.12)',  border:'rgba(234,179,8,0.3)',  text:'#facc15' } },
 ]
 
 const JULY_TRACKS_DAY3 = [
   { name: 'Все треки', id: 109, lesson: 'Нарешиваем LeetCode', color: { bg:'rgba(200,255,0,0.12)', border:'rgba(200,255,0,0.3)', text:'#c8ff00' }, showQuestions: false, showHomework: true },
 ]
 
+const JULY_TRACKS_DAY4 = [
+  { name: 'Кибербезопасность', id: 111, lesson: 'Компьютерные сети: основы',        color: { bg:'rgba(239,68,68,0.12)', border:'rgba(239,68,68,0.3)',  text:'#f87171' } },
+  { name: 'Аналитика / ML',    id: 112, lesson: 'Библиотека NumPy',                 color: { bg:'rgba(34,197,94,0.12)',  border:'rgba(34,197,94,0.3)',  text:'#4ade80' } },
+  { name: 'Backend',           id: 113, lesson: 'Базы данных: SQL и ORM',           color: { bg:'rgba(59,130,246,0.12)', border:'rgba(59,130,246,0.3)', text:'#60a5fa' } },
+  { name: 'Frontend',          id: 114, lesson: 'Препроцессоры LESS/SASS/SCSS',     color: { bg:'rgba(234,179,8,0.12)',  border:'rgba(234,179,8,0.3)',  text:'#facc15' } },
+]
+
 const JULY_DAYS = [
   { day: 1, date: 'ср, 1 июля', tracks: JULY_TRACKS },
   { day: 2, date: 'чт, 2 июля', tracks: JULY_TRACKS_DAY2 },
   { day: 3, date: 'пт, 3 июля', tracks: JULY_TRACKS_DAY3 },
+  { day: 4, date: 'сб, 4 июля', tracks: JULY_TRACKS_DAY4 },
 ]
 
 function JulyTrackRow({ track, onOpenTheory, onOpenQuestions, onOpenHomework }) {
