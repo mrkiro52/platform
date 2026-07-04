@@ -25,6 +25,32 @@ const TRACK_COLORS = {
   'Кибербезопасность':{ bg: 'rgba(239,68,68,0.12)', border: 'rgba(239,68,68,0.3)',  text: '#f87171' },
 }
 
+// Резервное расписание июля на фронтенде — чтобы занятия показывались даже если
+// бэкенд ещё не подтянул миграции. Дубликаты с API схлопываются по day+time+title.
+const JULY_SCHEDULE_FALLBACK = [
+  { day:1, date:'ср, 1 июля', meeting_time:'20:00', title:'Основы Python', tracks:['ML','Аналитика'], description:'Повторяем базовый синтаксис Python: типы данных, циклы, функции. Анонс библиотек для последующей работы: numpy, pandas, matplotlib, seaborn, scikit-learn.' },
+  { day:1, date:'ср, 1 июля', meeting_time:'20:30', title:'Основы HTML', tracks:['Frontend'], description:'Структура HTML-документа, семантические теги, формы и таблицы. Пишем первую страницу с нуля.' },
+  { day:1, date:'ср, 1 июля', meeting_time:'21:00', title:'Обзор Python vs Go', tracks:['Backend'], description:'Сравниваем два популярных бэкенд-языка: синтаксис, типизация, экосистема, производительность.' },
+  { day:1, date:'ср, 1 июля', meeting_time:'21:30', title:'Основы информационной безопасности', tracks:['Кибербезопасность'], description:'CIA-триада, угрозы и атаки, модели нарушителя. Обзор направлений: AppSec, сети, криптография, реагирование на инциденты.' },
+  { day:2, date:'чт, 2 июля', meeting_time:'20:00', title:'Операционные системы', tracks:['Кибербезопасность'], description:'Как устроена ОС: процессы, память, файловая система, права доступа — база для понимания атак и защиты.' },
+  { day:2, date:'чт, 2 июля', meeting_time:'20:30', title:'Комбинаторика и основы теории вероятностей', tracks:['Аналитика'], description:'Считаем количество вариантов: перестановки, сочетания, размещения. Основы вероятности: события, вероятность события, независимость.' },
+  { day:2, date:'чт, 2 июля', meeting_time:'21:00', title:'Введение в ML', tracks:['ML'], description:'Что такое машинное обучение, какие бывают типы задач, чем ML отличается от классического программирования.' },
+  { day:2, date:'чт, 2 июля', meeting_time:'21:30', title:'Архитектура веб-приложения', tracks:['Backend'], description:'Из чего состоит веб-приложение: клиент, сервер, база данных. Как компоненты взаимодействуют друг с другом.' },
+  { day:3, date:'пт, 3 июля', meeting_time:'20:00', title:'Нарешиваем LeetCode', tracks:['Frontend','Backend','Аналитика','ML','Кибербезопасность'], description:'Будем решать классические задачи с алгоритмической секции собеседований в БигТех.' },
+  { day:4, date:'сб, 4 июля', meeting_time:'20:00', title:'Компьютерные сети: основы', tracks:['Кибербезопасность'], description:'Как устроена передача данных в сети: модель OSI/TCP-IP, IP-адреса, порты, протоколы TCP/UDP, DNS, HTTP/HTTPS.' },
+  { day:4, date:'сб, 4 июля', meeting_time:'20:30', title:'Библиотека NumPy', tracks:['Аналитика','ML'], description:'Основы работы с массивами NumPy: создание, индексация, векторизованные операции, broadcasting.' },
+  { day:4, date:'сб, 4 июля', meeting_time:'21:30', title:'Базы данных: SQL и ORM', tracks:['Backend'], description:'Реляционные базы данных, язык SQL и ORM — как абстракция над SQL в коде приложения.' },
+].map((e, i) => ({ id: -1000 - i, month: 'july', type: 'lecture', theory: [], tasks: [], hw: '', meeting_link: '', ...e }))
+
+// Объединяем события июля из API с резервными, убирая дубликаты по day+time+title
+function mergeJuly(apiEvents) {
+  const seen = new Set(
+    apiEvents.filter(e => e.month === 'july').map(e => `${e.day}|${e.meeting_time}|${e.title}`)
+  )
+  const extra = JULY_SCHEDULE_FALLBACK.filter(e => !seen.has(`${e.day}|${e.meeting_time}|${e.title}`))
+  return [...apiEvents, ...extra]
+}
+
 function getDayDate(dayNum, month) {
   if (month === 'july') return new Date(2026, 6, dayNum)
   if (month === 'august') return new Date(2026, 7, dayNum)
@@ -242,14 +268,14 @@ function JulyDayGroup({ dayNum, dateLabel, sessions, defaultOpen }) {
 
 export default function Schedule() {
   const [activeMonth, setActiveMonth] = useState('july')
-  const [events, setEvents]           = useState(SCHEDULE)
+  const [events, setEvents]           = useState(() => mergeJuly(SCHEDULE))
   const [expandedId, setExpandedId]   = useState(() => findTodayId(SCHEDULE))
   const [loading, setLoading]         = useState(true)
 
   useEffect(() => {
     const startTime = Date.now()
     api.schedule().then(data => {
-      setEvents(data)
+      setEvents(mergeJuly(data))
       const id = findTodayId(data)
       if (id !== null) setExpandedId(id)
       const elapsed = Date.now() - startTime
