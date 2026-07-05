@@ -46,13 +46,14 @@ const JULY_SCHEDULE_FALLBACK = [
   { day:5, date:'вс, 5 июля', meeting_time:'22:00', title:'Ассемблер и кое-что до', tracks:['Кибербезопасность'], description:'Знакомство с ассемблером и низкоуровневыми основами.' },
 ].map((e, i) => ({ id: -1000 - i, month: 'july', type: 'lecture', theory: [], tasks: [], hw: '', meeting_link: '', ...e }))
 
-// Объединяем события июля из API с резервными, убирая дубликаты по day+time+title
+// Объединяем события июля из API с резервными. Резервные данные считаются
+// источником истины по day+title (могут содержать более свежее время/описание,
+// чем ещё не задеплоенная БД на бэкенде), поэтому вытесняют совпадающие записи из API.
 function mergeJuly(apiEvents) {
-  const seen = new Set(
-    apiEvents.filter(e => e.month === 'july').map(e => `${e.day}|${e.meeting_time}|${e.title}`)
-  )
-  const extra = JULY_SCHEDULE_FALLBACK.filter(e => !seen.has(`${e.day}|${e.meeting_time}|${e.title}`))
-  return [...apiEvents, ...extra]
+  const fallbackKeys = new Set(JULY_SCHEDULE_FALLBACK.map(e => `${e.day}|${e.title}`))
+  const filteredApi = apiEvents.filter(e => !(e.month === 'july' && fallbackKeys.has(`${e.day}|${e.title}`)))
+  const extra = JULY_SCHEDULE_FALLBACK
+  return [...filteredApi, ...extra]
 }
 
 function getDayDate(dayNum, month) {
