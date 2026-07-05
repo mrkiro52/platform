@@ -49,10 +49,12 @@ export default function July5JavaScriptTheory() {
           самого JS. Такой код называют <strong>синхронным</strong> — каждая следующая строка ждёт, пока
           завершится предыдущая.
         </p>
-        <TheoryCode language="js" code={`console.log('1')
-console.log('2')
-console.log('3')
-// Вывод строго: 1, 2, 3`} />
+        <TheoryCode language="js" code={`console.log('1')   // 1-я команда кладётся на стек, выполняется → печатает "1", снимается со стека
+console.log('2')   // только теперь, когда стек снова пуст, выполняется 2-я команда → печатает "2"
+console.log('3')   // и лишь затем 3-я команда → печатает "3"
+
+// Движок никогда не "перескакивает" вперёд: каждая строка ждёт завершения предыдущей.
+// Поэтому вывод строго по порядку: 1, 2, 3`} />
         <Term name="Call Stack (стек вызовов)">
           структура, куда JS складывает вызовы функций. Вызвали функцию — она легла на стек; она завершилась —
           снялась со стека. Пока функция на стеке не закончилась, движок занят только ей.
@@ -81,16 +83,17 @@ console.log('3')
         <Term name="Callback (коллбэк)">
           функция, которую мы передаём «на потом» — чтобы её вызвали, когда асинхронная операция завершится.
         </Term>
-        <TheoryCode language="js" code={`console.log('старт')
+        <TheoryCode language="js" code={`console.log('старт')          // синхронно, выполняется сразу → печатает "старт"
 
-setTimeout(() => {
-  console.log('таймер сработал')   // выполнится ПОЗЖЕ
-}, 0)
+setTimeout(() => {            // setTimeout НЕ выполняет функцию сейчас — он лишь
+  console.log('таймер сработал')  // отдаёт эту функцию-коллбэк браузеру и говорит:
+}, 0)                          // "вызови её через 0 мс". Браузер поставит её в очередь.
 
-console.log('конец')
+console.log('конец')          // синхронно, выполняется сразу → печатает "конец"
 
-// Вывод: старт, конец, таймер сработал
-// Хотя задержка 0 мс — коллбэк ждёт, пока стек освободится!`} />
+// Порядок вывода: старт, конец, таймер сработал
+// Почему? Даже с задержкой 0 мс коллбэк не может выполниться, пока не завершится
+// весь синхронный код и не освободится стек. Поэтому "таймер сработал" — последним.`} />
       </section>
 
       {/* Event Loop */}
@@ -145,18 +148,22 @@ console.log('конец')
             </defs>
           </svg>
         </Fig>
-        <TheoryCode language="js" code={`console.log('1 — синхронно')
+        <TheoryCode language="js" code={`console.log('1 — синхронно')   // (1) обычный код → выполняется сразу, печатает "1"
 
 setTimeout(() => console.log('2 — макрозадача (таймер)'), 0)
+// ^ коллбэк уходит в очередь МАКРОзадач (низкий приоритет). Не сейчас.
 
 Promise.resolve().then(() => console.log('3 — микрозадача (промис)'))
+// ^ промис уже выполнен (resolve), поэтому .then-коллбэк уходит
+//   в очередь МИКРОзадач (высокий приоритет). Тоже не сейчас.
 
-console.log('4 — синхронно')
+console.log('4 — синхронно')   // (4) обычный код → выполняется сразу, печатает "4"
 
-// Вывод: 1, 4, 3, 2
-// Сначала весь синхронный код (1, 4),
-// потом все микрозадачи (3),
-// и только потом макрозадача (2)`} />
+// Как Event Loop разгребает очереди, когда синхронный код закончился:
+//   1) сначала весь синхронный код по порядку     → печатает 1, затем 4
+//   2) потом ВСЯ очередь микрозадач (промисы)      → печатает 3
+//   3) и только потом ОДНА макрозадача (таймер)    → печатает 2
+// Итоговый вывод: 1, 4, 3, 2`} />
         <TheoryExample title="Почему такой порядок">
           Синхронные <code>console.log</code> (1 и 4) выполняются сразу на стеке. Когда стек опустел, Event Loop
           опустошает микрозадачи — печатает 3. И лишь затем берёт макрозадачу таймера — печатает 2. Понимание
@@ -173,11 +180,12 @@ console.log('4 — синхронно')
           читать и почти невозможно нормально обрабатывать ошибки.
         </p>
         <TheoryCode language="js" code={`// "Ад коллбэков" — так делать НЕ надо
-getUser(1, (user) => {
-  getOrders(user.id, (orders) => {
-    getDetails(orders[0], (details) => {
-      console.log(details)
-      // ...и так вглубь, обработка ошибок на каждом уровне
+getUser(1, (user) => {                    // шаг 1: получили пользователя, передали коллбэк
+  getOrders(user.id, (orders) => {        // шаг 2: внутри коллбэка запросили его заказы
+    getDetails(orders[0], (details) => {  // шаг 3: внутри следующего коллбэка — детали заказа
+      console.log(details)                // и только здесь, на 3-м уровне вложенности, есть результат
+      // с каждым шагом код уходит вправо "лесенкой", а ошибку
+      // пришлось бы ловить отдельно на каждом из трёх уровней
     })
   })
 })`} />
@@ -224,32 +232,36 @@ getUser(1, (user) => {
             </defs>
           </svg>
         </Fig>
-        <TheoryCode language="js" code={`// Создание промиса
+        <TheoryCode language="js" code={`// Создаём промис. В конструктор передаём функцию с двумя параметрами:
+//   resolve — вызови её, когда всё прошло УСПЕШНО (переведёт промис в fulfilled)
+//   reject  — вызови её при ОШИБКЕ (переведёт промис в rejected)
 const promise = new Promise((resolve, reject) => {
-  // асинхронная работа...
-  const ok = true
+  // здесь идёт асинхронная работа (запрос, таймер, чтение файла...)
+  const ok = true                 // представим, что операция прошла успешно
   if (ok) {
-    resolve('данные получены')   // успех → fulfilled
+    resolve('данные получены')    // успех → промис становится fulfilled со значением
   } else {
-    reject(new Error('что-то пошло не так'))  // ошибка → rejected
+    reject(new Error('что-то пошло не так'))  // ошибка → промис становится rejected
   }
 })
 
-// Обработка результата
+// Отдельно "подписываемся" на результат промиса:
 promise
-  .then(value => console.log('Успех:', value))   // сработает при resolve
-  .catch(error => console.log('Ошибка:', error)) // сработает при reject
-  .finally(() => console.log('Готово в любом случае'))`} />
+  .then(value => console.log('Успех:', value))    // .then сработает, если был resolve; value = 'данные получены'
+  .catch(error => console.log('Ошибка:', error))  // .catch сработает, если был reject
+  .finally(() => console.log('Готово в любом случае')) // .finally — всегда, и при успехе, и при ошибке`} />
         <p>
           Главное преимущество — промисы можно <strong>соединять в цепочку</strong> (chaining). Каждый{' '}
           <code>.then</code> возвращает новый промис, поэтому «лесенка» коллбэков превращается в плоский,
           читаемый список шагов, а <strong>один</strong> <code>.catch</code> в конце ловит ошибку с любого шага.
         </p>
-        <TheoryCode language="js" code={`getUser(1)
-  .then(user => getOrders(user.id))
-  .then(orders => getDetails(orders[0]))
-  .then(details => console.log(details))
-  .catch(error => console.log('Ошибка на любом шаге:', error))`} />
+        <TheoryCode language="js" code={`getUser(1)                                     // возвращает промис с пользователем
+  .then(user => getOrders(user.id))            // когда пользователь готов → запрашиваем его заказы (тоже промис)
+  .then(orders => getDetails(orders[0]))       // когда заказы готовы → запрашиваем детали первого заказа
+  .then(details => console.log(details))       // когда детали готовы → выводим их
+  .catch(error => console.log('Ошибка на любом шаге:', error))
+  // ^ один .catch в конце ловит ошибку, случившуюся на ЛЮБОМ из шагов выше.
+  //   Сравни с "лесенкой" коллбэков — здесь плоский, читаемый список шагов.`} />
       </section>
 
       {/* Fetch + Promise.all */}
@@ -259,10 +271,10 @@ promise
           Самый частый источник промисов на практике — <code>fetch</code>, встроенная функция для сетевых
           запросов. Она возвращает промис с ответом сервера.
         </p>
-        <TheoryCode language="js" code={`fetch('https://api.example.com/users/1')
-  .then(response => response.json())   // .json() тоже возвращает промис
-  .then(user => console.log(user.name))
-  .catch(error => console.log('Сеть недоступна:', error))`} />
+        <TheoryCode language="js" code={`fetch('https://api.example.com/users/1')   // отправляем запрос → возвращается промис с ответом сервера
+  .then(response => response.json())        // ответ пришёл; .json() читает тело и парсит JSON (тоже промис!)
+  .then(user => console.log(user.name))     // распарсенные данные готовы → берём поле name и выводим
+  .catch(error => console.log('Сеть недоступна:', error))  // любая ошибка (нет сети, плохой JSON) попадёт сюда`} />
         <p>Когда нужно запустить несколько запросов <strong>одновременно</strong>, есть комбинаторы:</p>
         <TheoryTable
           headers={['Метод', 'Что делает']}
@@ -273,13 +285,16 @@ promise
             ['Promise.any([...])', 'возвращает первый УСПЕШНЫЙ промис'],
           ]}
         />
-        <TheoryCode language="js" code={`// Три запроса одновременно вместо последовательного ожидания
+        <TheoryCode language="js" code={`// Все три запроса стартуют СРАЗУ (одновременно), а не ждут друг друга по очереди
 Promise.all([
-  fetch('/api/user').then(r => r.json()),
-  fetch('/api/posts').then(r => r.json()),
-  fetch('/api/comments').then(r => r.json()),
+  fetch('/api/user').then(r => r.json()),      // промис 1
+  fetch('/api/posts').then(r => r.json()),     // промис 2
+  fetch('/api/comments').then(r => r.json()),  // промис 3
 ]).then(([user, posts, comments]) => {
-  console.log(user, posts, comments)  // все три готовы
+  // .then сработает, только когда ВСЕ три промиса завершатся успешно.
+  // Результаты приходят массивом в ТОМ ЖЕ порядке, что и запросы —
+  // мы сразу разбираем его на три переменные через [деструктуризацию].
+  console.log(user, posts, comments)
 })`} />
       </section>
 
@@ -300,18 +315,18 @@ Promise.all([
           <strong>только этой функции</strong>, не блокируя основной поток (под капотом это микрозадача).
         </Term>
         <TheoryCode language="js" code={`// То же самое, что цепочка .then из раздела 5, но читается как обычный код
-async function loadData() {
-  try {
-    const user = await getUser(1)
-    const orders = await getOrders(user.id)
-    const details = await getDetails(orders[0])
-    console.log(details)
+async function loadData() {            // async делает функцию асинхронной (внутри можно использовать await)
+  try {                               // в try — "успешный сценарий", любую ошибку внутри поймает catch
+    const user = await getUser(1)             // await ждёт промис и кладёт в user уже готовое значение
+    const orders = await getOrders(user.id)   // следующая строка не начнётся, пока не готов user
+    const details = await getDetails(orders[0])  // и так далее — код читается как синхронный, сверху вниз
+    console.log(details)                       // здесь все три шага уже выполнены
   } catch (error) {
-    console.log('Ошибка:', error)   // ловит ошибку с любого await
+    console.log('Ошибка:', error)   // если ЛЮБОЙ из await выше "упал" (reject) — управление прыгает сюда
   }
 }
 
-loadData()`} />
+loadData()   // вызываем функцию; сама она сразу вернёт промис, а работа пойдёт асинхронно`} />
         <TheoryExample title="Ключевая связка">
           Обрабатывать ошибки в async/await принято обычным <code>try / catch</code> — тем же, что и для
           синхронного кода. Отклонённый промис (<code>reject</code>) внутри <code>await</code> «выбрасывает»
@@ -319,19 +334,19 @@ loadData()`} />
         </TheoryExample>
         <TheoryCode language="js" code={`// Настоящий пример с fetch
 async function getUserName(id) {
-  const response = await fetch(\`/api/users/\${id}\`)
-  if (!response.ok) throw new Error('Пользователь не найден')
-  const user = await response.json()
-  return user.name
+  const response = await fetch(\`/api/users/\${id}\`)   // ждём ответ сервера (обратные кавычки — подстановка id в URL)
+  if (!response.ok) throw new Error('Пользователь не найден')  // response.ok === false при статусе 404/500 → бросаем ошибку
+  const user = await response.json()                 // ждём, пока тело ответа распарсится из JSON в объект
+  return user.name                                   // возвращаем имя; т.к. функция async — наружу уйдёт промис с этим значением
 }
 
 // Параллельно и внутри async — комбинируем с Promise.all
 async function loadAll() {
-  const [user, posts] = await Promise.all([
-    fetch('/api/user').then(r => r.json()),
-    fetch('/api/posts').then(r => r.json()),
+  const [user, posts] = await Promise.all([          // ждём сразу оба запроса; результат-массив разбираем на две переменные
+    fetch('/api/user').then(r => r.json()),          // запрос 1 стартует...
+    fetch('/api/posts').then(r => r.json()),         // ...одновременно с запросом 2
   ])
-  return { user, posts }
+  return { user, posts }                             // оба готовы — возвращаем объект с данными
 }`} />
       </section>
 
