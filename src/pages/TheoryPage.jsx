@@ -75,6 +75,10 @@ import July4NetworksTheory from '../theory/july-4-networks'
 import July4NumpyTheory from '../theory/july-4-numpy'
 import July4SqlOrmTheory from '../theory/july-4-sql-orm'
 import July4PreprocessorsTheory from '../theory/july-4-preprocessors'
+import July5JavaScriptTheory from '../theory/july-5-javascript'
+import July5DjangoTheory from '../theory/july-5-django'
+import July5PandasTheory from '../theory/july-5-pandas'
+import July5AssemblyTheory from '../theory/july-5-assembly'
 
 // Маппинг дней на компоненты с теорией
 const THEORY_COMPONENTS = {
@@ -119,7 +123,10 @@ const THEORY_COMPONENTS = {
   112: July4NumpyTheory,          // Аналитика/ML, 4 июля
   113: July4SqlOrmTheory,         // Backend, 4 июля
   114: July4PreprocessorsTheory,  // Frontend, 4 июля
-  // 115-118: 5 июля — материалы ещё готовятся
+  115: July5JavaScriptTheory,     // Frontend, 5 июля
+  116: July5DjangoTheory,         // Backend, 5 июля
+  117: July5PandasTheory,         // Аналитика/ML, 5 июля
+  118: July5AssemblyTheory,       // Кибербезопасность, 5 июля
 }
 
 // Заголовки для июльских треков (синтетические id)

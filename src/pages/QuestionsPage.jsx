@@ -37,6 +37,10 @@ import July4NetworksTasks from '../questions/july-4-networks'
 import July4NumpyTasks from '../questions/july-4-numpy'
 import July4SqlOrmTasks from '../questions/july-4-sql-orm'
 import July4PreprocessorsTasks from '../questions/july-4-preprocessors'
+import July5JavaScriptTasks from '../questions/july-5-javascript'
+import July5DjangoTasks from '../questions/july-5-django'
+import July5PandasTasks from '../questions/july-5-pandas'
+import July5AssemblyTasks from '../questions/july-5-assembly'
 
 const JULY_TRACK_LABELS = {
   101: '1 июля · Frontend — Основы HTML',
@@ -97,6 +101,10 @@ const QUESTIONS_COMPONENTS = {
   112: July4NumpyTasks,          // Аналитика/ML, 4 июля
   113: July4SqlOrmTasks,         // Backend, 4 июля
   114: July4PreprocessorsTasks,  // Frontend, 4 июля
+  115: July5JavaScriptTasks,     // Frontend, 5 июля
+  116: July5DjangoTasks,         // Backend, 5 июля
+  117: July5PandasTasks,         // Аналитика/ML, 5 июля
+  118: July5AssemblyTasks,       // Кибербезопасность, 5 июля
 }
 
 function QuestionCard({ question, taskIndex, totalTasks, onAnswer, isSolved, savedAnswer }) {
