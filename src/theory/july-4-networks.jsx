@@ -1,4 +1,5 @@
 import { TheoryTable, TheoryCode, TheoryExample } from './components/TheoryTable'
+import VideoPlayer from '../components/VideoPlayer'
 
 const C = { text: 'var(--text-primary)', sub: 'var(--text-secondary)', lime: '#c8ff00', border: '#2a2a3a' }
 
@@ -38,6 +39,11 @@ export default function July4NetworksTheory() {
           на понимании того, как этот трафик устроен. Разберём весь путь данных — от бита в проводе до
           зашифрованного HTTPS-запроса.
         </p>
+      </section>
+
+      <section className="theory-section">
+        <h2 className="theory-heading-2">🎥 Видео-лекция: Компьютерные сети</h2>
+        <VideoPlayer src="https://s3.regru.cloud/kirocamp/day4cybersec.mov" />
       </section>
 
       {/* Базовые понятия */}

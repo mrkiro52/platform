@@ -1,4 +1,5 @@
 import { TheoryTable, TheoryCode, TheoryExample, DbTable } from './components/TheoryTable'
+import VideoPlayer from '../components/VideoPlayer'
 
 const C = { text: 'var(--text-primary)', sub: 'var(--text-secondary)', lime: '#c8ff00', border: '#2a2a3a' }
 
@@ -36,6 +37,11 @@ export default function July4SqlOrmTheory() {
           хранения, поиска и изменения структурированных данных. Разберём реляционную модель, язык SQL от
           простых запросов до JOIN и транзакций, а затем — ORM, слой, через который бэкенд обычно и работает с БД.
         </p>
+      </section>
+
+      <section className="theory-section">
+        <h2 className="theory-heading-2">🎥 Видео-лекция: SQL и ORM</h2>
+        <VideoPlayer src="https://s3.regru.cloud/kirocamp/day4backend.mov" />
       </section>
 
       {/* Что такое БД и СУБД */}

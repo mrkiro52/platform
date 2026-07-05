@@ -1,4 +1,5 @@
 import { TheoryTable, TheoryCode, TheoryExample } from './components/TheoryTable'
+import VideoPlayer from '../components/VideoPlayer'
 
 const C = { text: 'var(--text-primary)', sub: 'var(--text-secondary)', lime: '#c8ff00', green: '#4ade80', border: '#2a2a3a' }
 
@@ -37,6 +38,11 @@ export default function July4NumpyTheory() {
           (N-мерный массив) и <strong>векторизованные</strong> операции над ним, которые работают в десятки и
           сотни раз быстрее обычных циклов Python. Сегодня разберём NumPy от «зачем он нужен» до линейной алгебры.
         </p>
+      </section>
+
+      <section className="theory-section">
+        <h2 className="theory-heading-2">🎥 Видео-лекция: NumPy</h2>
+        <VideoPlayer src="https://s3.regru.cloud/kirocamp/day4numpy.mov" />
       </section>
 
       {/* Установка и импорт */}
