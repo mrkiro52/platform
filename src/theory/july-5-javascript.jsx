@@ -1,4 +1,5 @@
 import { TheoryTable, TheoryCode, TheoryExample } from './components/TheoryTable'
+import MultiPartVideo, { JULY5_FRONTEND_PARTS } from '../components/MultiPartVideo'
 
 const C = { text: 'var(--text-primary)', sub: 'var(--text-secondary)', lime: '#c8ff00', border: '#2a2a3a' }
 
@@ -38,6 +39,11 @@ export default function July5JavaScriptTheory() {
           <strong>Promises</strong> (промисы) и синтаксис <strong>async/await</strong>. Это самая частая тема на
           собеседованиях фронтендера — и главная причина «магии» асинхронного кода.
         </p>
+      </section>
+
+      <section className="theory-section">
+        <h2 className="theory-heading-2">🎥 Видео-лекция: Продвинутый JavaScript</h2>
+        <MultiPartVideo parts={JULY5_FRONTEND_PARTS} />
       </section>
 
       {/* Синхронность */}

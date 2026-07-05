@@ -1,4 +1,5 @@
 import { TheoryTable, TheoryCode, TheoryExample, DbTable } from './components/TheoryTable'
+import MultiPartVideo, { JULY5_ML_ANALYTICS_PARTS } from '../components/MultiPartVideo'
 
 const C = { text: 'var(--text-primary)', sub: 'var(--text-secondary)', lime: '#c8ff00', green: '#4ade80', border: '#2a2a3a' }
 
@@ -38,6 +39,11 @@ export default function July5PandasTheory() {
           <strong>реальные табличные данные</strong> с колонками, названиями и пропусками, как в Excel, только
           программно и в тысячи раз мощнее.
         </p>
+      </section>
+
+      <section className="theory-section">
+        <h2 className="theory-heading-2">🎥 Видео-лекция: NumPy p.2 и Pandas</h2>
+        <MultiPartVideo parts={JULY5_ML_ANALYTICS_PARTS} />
       </section>
 
       {/* ===== ЧАСТЬ 1: NumPy продолжение ===== */}

@@ -3,7 +3,7 @@ import VideoPlayer from './VideoPlayer'
 
 /**
  * Видео из нескольких частей. Под плеером — ряд кнопок (по числу частей),
- * контейнер шириной с видео, каждая кнопка — 25% ширины (при 4 частях).
+ * контейнер шириной с видео, каждая кнопка занимает 1/N ширины.
  * Выбранная кнопка — сплошной зелёный фон, остальные — полупрозрачный зелёный.
  */
 export default function MultiPartVideo({ parts = [] }) {
@@ -33,7 +33,7 @@ export default function MultiPartVideo({ parts = [] }) {
               key={i}
               onClick={() => setActive(i)}
               style={{
-                width: '25%',
+                width: `${100 / parts.length}%`,
                 padding: '11px 0',
                 border: 'none',
                 borderRight: i < parts.length - 1 ? '1px solid rgba(0,0,0,0.25)' : 'none',
@@ -70,4 +70,19 @@ export const LEETCODE_ONE_PARTS = [
   'https://s3.regru.cloud/kirocamp/leetcodeOne2.mov',
   'https://s3.regru.cloud/kirocamp/leetcodeOne3.mov',
   'https://s3.regru.cloud/kirocamp/leetcodeOne4.mov',
+]
+
+// Части видео «NumPy p.2 и Pandas», 5 июля (5 частей)
+export const JULY5_ML_ANALYTICS_PARTS = [
+  'https://s3.regru.cloud/kirocamp/day5MLAp1.mov',
+  'https://s3.regru.cloud/kirocamp/day5MLAp2.mov',
+  'https://s3.regru.cloud/kirocamp/day5MLAp3.mov',
+  'https://s3.regru.cloud/kirocamp/day5MLAp4.mov',
+  'https://s3.regru.cloud/kirocamp/day5MLAp5.mov',
+]
+
+// Части видео «Продвинутый JavaScript», 5 июля (2 части)
+export const JULY5_FRONTEND_PARTS = [
+  'https://s3.regru.cloud/kirocamp/frpt1.mov',
+  'https://s3.regru.cloud/kirocamp/frpt2.mov',
 ]
