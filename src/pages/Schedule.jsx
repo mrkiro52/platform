@@ -232,12 +232,10 @@ function JulySessionCard({ session }) {
 }
 
 // Группировка занятий июля по дням
-function JulyDayGroup({ dayNum, dateLabel, sessions, defaultOpen }) {
-  const [open, setOpen] = useState(defaultOpen)
-
+function JulyDayGroup({ dayNum, dateLabel, sessions, open, onToggle }) {
   return (
     <div className={`sched-day${open ? ' sched-day--open' : ''}`} style={{ marginBottom: 8 }}>
-      <div className="sched-day-header" onClick={() => setOpen(o => !o)} style={{ cursor: 'pointer' }}>
+      <div className="sched-day-header" onClick={onToggle} style={{ cursor: 'pointer' }}>
         <div className="sched-day-stripe" style={{ background: '#a07aff' }} />
         <div className="sched-day-meta">
           <span className="sched-day-num">День {dayNum}</span>
@@ -275,6 +273,7 @@ export default function Schedule() {
   const [activeMonth, setActiveMonth] = useState('july')
   const [events, setEvents]           = useState(() => mergeJuly(SCHEDULE))
   const [expandedId, setExpandedId]   = useState(() => findTodayId(SCHEDULE))
+  const [openJulyDay, setOpenJulyDay] = useState(() => getTodayJulyDay())
   const [loading, setLoading]         = useState(true)
 
   useEffect(() => {
@@ -302,7 +301,6 @@ export default function Schedule() {
     julyByDay[e.day].push(e)
   })
   const julyDays = Object.keys(julyByDay).map(Number).sort((a, b) => a - b)
-  const todayJulyDay = getTodayJulyDay()
 
   return (
     <section className="page active">
@@ -395,7 +393,8 @@ export default function Schedule() {
                 dayNum={dayNum}
                 dateLabel={julyByDay[dayNum][0]?.date || `${dayNum} июля`}
                 sessions={julyByDay[dayNum]}
-                defaultOpen={dayNum === todayJulyDay}
+                open={openJulyDay === dayNum}
+                onToggle={() => setOpenJulyDay(prev => prev === dayNum ? null : dayNum)}
               />
             ))}
           </div>

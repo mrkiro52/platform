@@ -100,11 +100,10 @@ function getTodayJulyDay() {
   return today.getDate()
 }
 
-function JulyDayCard({ day, defaultOpen, onOpenTheory, onOpenQuestions, onOpenHomework }) {
-  const [open, setOpen] = useState(defaultOpen)
+function JulyDayCard({ day, open, onToggle, onOpenTheory, onOpenQuestions, onOpenHomework }) {
   return (
     <div className={`sched-day${open ? ' sched-day--open' : ''}`} style={{ marginBottom: 8 }}>
-      <div className="sched-day-header" onClick={() => setOpen(o => !o)} style={{ cursor: 'pointer' }}>
+      <div className="sched-day-header" onClick={onToggle} style={{ cursor: 'pointer' }}>
         <div className="sched-day-stripe" style={{ background: '#a07aff' }} />
         <div className="sched-day-meta">
           <span className="sched-day-num">День {day.day}</span>
@@ -279,7 +278,7 @@ export default function Library({ onOpenDay, onOpenTheory, onOpenQuestions, onOp
   }, [])
 
   const juneDays = buildJuneDays(schedule, library)
-  const todayJulyDay = getTodayJulyDay()
+  const [openJulyDay, setOpenJulyDay] = useState(() => getTodayJulyDay())
 
   return (
     <section className="page active">
@@ -333,7 +332,8 @@ export default function Library({ onOpenDay, onOpenTheory, onOpenQuestions, onOp
             <div key={day.day} className="fade-in">
               <JulyDayCard
                 day={day}
-                defaultOpen={day.day === todayJulyDay}
+                open={openJulyDay === day.day}
+                onToggle={() => setOpenJulyDay(prev => prev === day.day ? null : day.day)}
                 onOpenTheory={onOpenTheory}
                 onOpenQuestions={onOpenQuestions}
                 onOpenHomework={onOpenHomework}
