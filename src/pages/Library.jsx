@@ -36,11 +36,19 @@ const JULY_TRACKS_DAY4 = [
   { name: 'Frontend',          id: 114, lesson: 'Препроцессоры LESS/SASS/SCSS',     color: { bg:'rgba(234,179,8,0.12)',  border:'rgba(234,179,8,0.3)',  text:'#facc15' } },
 ]
 
+const JULY_TRACKS_DAY5 = [
+  { name: 'Frontend',           id: 115, lesson: 'Продвинутый JavaScript',       color: { bg:'rgba(234,179,8,0.12)',  border:'rgba(234,179,8,0.3)',  text:'#facc15' } },
+  { name: 'Backend',            id: 116, lesson: 'REST API: создание на Python', color: { bg:'rgba(59,130,246,0.12)', border:'rgba(59,130,246,0.3)', text:'#60a5fa' } },
+  { name: 'Аналитика / ML',     id: 117, lesson: 'NumPy p.2 и Pandas',          color: { bg:'rgba(34,197,94,0.12)',  border:'rgba(34,197,94,0.3)',  text:'#4ade80' } },
+  { name: 'Кибербезопасность',  id: 118, lesson: 'Ассемблер и кое-что до',      color: { bg:'rgba(239,68,68,0.12)', border:'rgba(239,68,68,0.3)',  text:'#f87171' } },
+]
+
 const JULY_DAYS = [
   { day: 1, date: 'ср, 1 июля', tracks: JULY_TRACKS },
   { day: 2, date: 'чт, 2 июля', tracks: JULY_TRACKS_DAY2 },
   { day: 3, date: 'пт, 3 июля', tracks: JULY_TRACKS_DAY3 },
   { day: 4, date: 'сб, 4 июля', tracks: JULY_TRACKS_DAY4 },
+  { day: 5, date: 'вс, 5 июля', tracks: JULY_TRACKS_DAY5 },
 ]
 
 function JulyTrackRow({ track, onOpenTheory, onOpenQuestions, onOpenHomework }) {

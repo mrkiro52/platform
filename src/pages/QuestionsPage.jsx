@@ -52,6 +52,10 @@ const JULY_TRACK_LABELS = {
   112: '4 июля · Аналитика/ML — Библиотека NumPy',
   113: '4 июля · Backend — Базы данных: SQL и ORM',
   114: '4 июля · Frontend — Препроцессоры LESS/SASS/SCSS',
+  115: '5 июля · Frontend — Продвинутый JavaScript',
+  116: '5 июля · Backend — REST API: создание на Python',
+  117: '5 июля · Аналитика/ML — NumPy p.2 и Pandas',
+  118: '5 июля · Кибербезопасность — Ассемблер и кое-что до',
 }
 
 const QUESTIONS_COMPONENTS = {

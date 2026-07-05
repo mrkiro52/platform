@@ -40,6 +40,10 @@ const JULY_SCHEDULE_FALLBACK = [
   { day:4, date:'сб, 4 июля', meeting_time:'21:30', title:'Компьютерные сети: основы', tracks:['Кибербезопасность'], description:'Как устроена передача данных в сети: модель OSI/TCP-IP, IP-адреса, порты, протоколы TCP/UDP, DNS, HTTP/HTTPS.' },
   { day:4, date:'сб, 4 июля', meeting_time:'22:00', title:'Библиотека NumPy', tracks:['Аналитика','ML'], description:'Основы работы с массивами NumPy: создание, индексация, векторизованные операции, broadcasting.' },
   { day:4, date:'сб, 4 июля', meeting_time:'22:30', title:'Базы данных: SQL и ORM', tracks:['Backend'], description:'Реляционные базы данных, язык SQL и ORM — как абстракция над SQL в коде приложения.' },
+  { day:5, date:'вс, 5 июля', meeting_time:'20:00', title:'Продвинутый JavaScript', tracks:['Frontend'], description:'Углублённые темы JavaScript для фронтенд-разработки.' },
+  { day:5, date:'вс, 5 июля', meeting_time:'20:30', title:'REST API: создание на Python', tracks:['Backend'], description:'Создаём REST API на Python.' },
+  { day:5, date:'вс, 5 июля', meeting_time:'21:00', title:'NumPy p.2 и Pandas', tracks:['Аналитика','ML'], description:'Продолжаем NumPy и знакомимся с библиотекой Pandas.' },
+  { day:5, date:'вс, 5 июля', meeting_time:'22:00', title:'Ассемблер и кое-что до', tracks:['Кибербезопасность'], description:'Знакомство с ассемблером и низкоуровневыми основами.' },
 ].map((e, i) => ({ id: -1000 - i, month: 'july', type: 'lecture', theory: [], tasks: [], hw: '', meeting_link: '', ...e }))
 
 // Объединяем события июля из API с резервными, убирая дубликаты по day+time+title
