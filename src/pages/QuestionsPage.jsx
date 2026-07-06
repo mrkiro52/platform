@@ -41,6 +41,11 @@ import July5JavaScriptTasks from '../questions/july-5-javascript'
 import July5DjangoTasks from '../questions/july-5-django'
 import July5PandasTasks from '../questions/july-5-pandas'
 import July5AssemblyTasks from '../questions/july-5-assembly'
+import July6DomTasks from '../questions/july-6-dom'
+import July6AuthTasks from '../questions/july-6-auth'
+import July6StatisticsTasks from '../questions/july-6-statistics'
+import July6LinRegTasks from '../questions/july-6-linreg'
+import July6WinApiTasks from '../questions/july-6-winapi'
 
 const JULY_TRACK_LABELS = {
   101: '1 июля · Frontend — Основы HTML',
@@ -60,6 +65,11 @@ const JULY_TRACK_LABELS = {
   116: '5 июля · Backend — REST API: создание на Python',
   117: '5 июля · Аналитика/ML — NumPy p.2 и Pandas',
   118: '5 июля · Кибербезопасность — Ассемблер и кое-что до',
+  119: '6 июля · Frontend — JavaScript: Взаимодействие с DOM',
+  120: '6 июля · Backend — Аутентификация и авторизация',
+  121: '6 июля · Аналитика — Математическая статистика',
+  122: '6 июля · ML — Линейная регрессия + практика',
+  123: '6 июля · Кибербезопасность — Основы WinAPI и C++',
 }
 
 const QUESTIONS_COMPONENTS = {
@@ -105,6 +115,11 @@ const QUESTIONS_COMPONENTS = {
   116: July5DjangoTasks,         // Backend, 5 июля
   117: July5PandasTasks,         // Аналитика/ML, 5 июля
   118: July5AssemblyTasks,       // Кибербезопасность, 5 июля
+  119: July6DomTasks,            // Frontend, 6 июля
+  120: July6AuthTasks,           // Backend, 6 июля
+  121: July6StatisticsTasks,     // Аналитика, 6 июля
+  122: July6LinRegTasks,         // ML, 6 июля
+  123: July6WinApiTasks,         // Кибербезопасность, 6 июля
 }
 
 function QuestionCard({ question, taskIndex, totalTasks, onAnswer, isSolved, savedAnswer }) {

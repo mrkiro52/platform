@@ -44,6 +44,11 @@ const JULY_SCHEDULE_FALLBACK = [
   { day:5, date:'вс, 5 июля', meeting_time:'20:30', title:'REST API: создание на Python', tracks:['Backend'], description:'Создаём REST API на Python.' },
   { day:5, date:'вс, 5 июля', meeting_time:'21:00', title:'NumPy p.2 и Pandas', tracks:['Аналитика','ML'], description:'Продолжаем NumPy и знакомимся с библиотекой Pandas.' },
   { day:5, date:'вс, 5 июля', meeting_time:'22:00', title:'Ассемблер и кое-что до', tracks:['Кибербезопасность'], description:'Знакомство с ассемблером и низкоуровневыми основами.' },
+  { day:6, date:'пн, 6 июля', meeting_time:'20:00', title:'JavaScript: Взаимодействие с DOM деревом', tracks:['Frontend'], description:'Основные способы взаимодействия с DOM через JavaScript: поиск элементов, изменение содержимого, события.' },
+  { day:6, date:'пн, 6 июля', meeting_time:'20:30', title:'Аутентификация и авторизация', tracks:['Backend'], description:'Процессы аутентификации и авторизации на бэкенде, примеры реализации на Django.' },
+  { day:6, date:'пн, 6 июля', meeting_time:'21:00', title:'Математическая статистика: основные понятия', tracks:['Аналитика'], description:'База математической статистики: выборка, описательные статистики, распределения, доверительные интервалы, проверка гипотез.' },
+  { day:6, date:'пн, 6 июля', meeting_time:'21:30', title:'Линейная регрессия + практика', tracks:['ML'], description:'Обучение с учителем, линейная регрессия, функция потерь, аналитическое решение и градиентный спуск.' },
+  { day:6, date:'пн, 6 июля', meeting_time:'22:00', title:'Основы WinAPI и C++', tracks:['Кибербезопасность'], description:'Что такое WinAPI, его задачи и инструменты, примеры реализации на WinAPI и C++.' },
 ].map((e, i) => ({ id: -1000 - i, month: 'july', type: 'lecture', theory: [], tasks: [], hw: '', meeting_link: '', ...e }))
 
 // Объединяем события июля из API с резервными. Резервные данные считаются

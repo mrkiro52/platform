@@ -79,6 +79,11 @@ import July5JavaScriptTheory from '../theory/july-5-javascript'
 import July5DjangoTheory from '../theory/july-5-django'
 import July5PandasTheory from '../theory/july-5-pandas'
 import July5AssemblyTheory from '../theory/july-5-assembly'
+import July6DomTheory from '../theory/july-6-dom'
+import July6AuthTheory from '../theory/july-6-auth'
+import July6StatisticsTheory from '../theory/july-6-statistics'
+import July6LinRegTheory from '../theory/july-6-linreg'
+import July6WinApiTheory from '../theory/july-6-winapi'
 
 // Маппинг дней на компоненты с теорией
 const THEORY_COMPONENTS = {
@@ -127,6 +132,11 @@ const THEORY_COMPONENTS = {
   116: July5DjangoTheory,         // Backend, 5 июля
   117: July5PandasTheory,         // Аналитика/ML, 5 июля
   118: July5AssemblyTheory,       // Кибербезопасность, 5 июля
+  119: July6DomTheory,            // Frontend, 6 июля
+  120: July6AuthTheory,           // Backend, 6 июля
+  121: July6StatisticsTheory,     // Аналитика, 6 июля
+  122: July6LinRegTheory,         // ML, 6 июля
+  123: July6WinApiTheory,         // Кибербезопасность, 6 июля
 }
 
 // Заголовки для июльских треков (синтетические id)
@@ -149,6 +159,11 @@ export const JULY_TRACK_LABELS = {
   116: '5 июля · Backend — REST API: создание на Python',
   117: '5 июля · Аналитика/ML — NumPy p.2 и Pandas',
   118: '5 июля · Кибербезопасность — Ассемблер и кое-что до',
+  119: '6 июля · Frontend — JavaScript: Взаимодействие с DOM',
+  120: '6 июля · Backend — Аутентификация и авторизация',
+  121: '6 июля · Аналитика — Математическая статистика',
+  122: '6 июля · ML — Линейная регрессия + практика',
+  123: '6 июля · Кибербезопасность — Основы WinAPI и C++',
 }
 
 const THEORY_TITLES = {
