@@ -84,6 +84,7 @@ import July6AuthTheory from '../theory/july-6-auth'
 import July6StatisticsTheory from '../theory/july-6-statistics'
 import July6LinRegTheory from '../theory/july-6-linreg'
 import July6WinApiTheory from '../theory/july-6-winapi'
+import July7AlgorithmsTheory from '../theory/july-7-algorithms'
 
 // Маппинг дней на компоненты с теорией
 const THEORY_COMPONENTS = {
@@ -137,6 +138,7 @@ const THEORY_COMPONENTS = {
   121: July6StatisticsTheory,     // Аналитика, 6 июля
   122: July6LinRegTheory,         // ML, 6 июля
   123: July6WinApiTheory,         // Кибербезопасность, 6 июля
+  124: July7AlgorithmsTheory,     // Все треки, 7 июля
 }
 
 // Заголовки для июльских треков (синтетические id)
@@ -164,6 +166,7 @@ export const JULY_TRACK_LABELS = {
   121: '6 июля · Аналитика — Математическая статистика',
   122: '6 июля · ML — Линейная регрессия + практика',
   123: '6 июля · Кибербезопасность — Основы WinAPI и C++',
+  124: '7 июля · Все треки — Вспоминаем структуры данных и алгоритмы',
 }
 
 const THEORY_TITLES = {

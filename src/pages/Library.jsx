@@ -51,6 +51,10 @@ const JULY_TRACKS_DAY6 = [
   { name: 'Кибербезопасность',  id: 123, lesson: 'Основы WinAPI и C++',                     color: { bg:'rgba(239,68,68,0.12)', border:'rgba(239,68,68,0.3)',  text:'#f87171' } },
 ]
 
+const JULY_TRACKS_DAY7 = [
+  { name: 'Все треки', id: 124, lesson: 'Вспоминаем структуры данных и алгоритмы', color: { bg:'rgba(200,255,0,0.12)', border:'rgba(200,255,0,0.3)', text:'#c8ff00' }, showQuestions: false, showHomework: false },
+]
+
 const JULY_DAYS = [
   { day: 1, date: 'ср, 1 июля', tracks: JULY_TRACKS },
   { day: 2, date: 'чт, 2 июля', tracks: JULY_TRACKS_DAY2 },
@@ -58,6 +62,7 @@ const JULY_DAYS = [
   { day: 4, date: 'сб, 4 июля', tracks: JULY_TRACKS_DAY4 },
   { day: 5, date: 'вс, 5 июля', tracks: JULY_TRACKS_DAY5 },
   { day: 6, date: 'пн, 6 июля', tracks: JULY_TRACKS_DAY6 },
+  { day: 7, date: 'вт, 7 июля', tracks: JULY_TRACKS_DAY7 },
 ]
 
 function JulyTrackRow({ track, onOpenTheory, onOpenQuestions, onOpenHomework }) {

@@ -86,3 +86,14 @@ export const JULY5_FRONTEND_PARTS = [
   'https://s3.regru.cloud/kirocamp/frpt1.mov',
   'https://s3.regru.cloud/kirocamp/frpt2.mov',
 ]
+
+// Части видео «Вспоминаем структуры данных и алгоритмы», 7 июля, все треки (7 частей)
+export const JULY7_ALGORITHMS_PARTS = [
+  'https://s3.regru.cloud/kirocamp/allAlgo1.mov',
+  'https://s3.regru.cloud/kirocamp/allAlgo2.mov',
+  'https://s3.regru.cloud/kirocamp/allAlgo3.mov',
+  'https://s3.regru.cloud/kirocamp/allAlgo4.mov',
+  'https://s3.regru.cloud/kirocamp/allAlgo5.mov',
+  'https://s3.regru.cloud/kirocamp/allAlgo6.mov',
+  'https://s3.regru.cloud/kirocamp/allAlgo7.mov',
+]
