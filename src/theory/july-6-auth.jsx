@@ -1,4 +1,5 @@
 import { TheoryTable, TheoryCode, TheoryExample } from './components/TheoryTable'
+import VideoPlayer from '../components/VideoPlayer'
 
 const C = { text: 'var(--text-primary)', sub: 'var(--text-secondary)', lime: '#c8ff00', blue: '#60a5fa', green: '#4ade80', red: '#f87171', border: '#2a2a3a' }
 
@@ -36,6 +37,11 @@ export default function July6AuthTheory() {
           хотя решают они разные задачи. Сегодня разберём, что это такое в общем, как устроена проверка пароля,
           зачем нужны сессии и токены, и как всё это делается на практике в <strong>Django</strong>.
         </p>
+      </section>
+
+      <section className="theory-section">
+        <h2 className="theory-heading-2">🎥 Видео-лекция: Аутентификация и авторизация</h2>
+        <VideoPlayer src="https://s3.regru.cloud/kirocamp/backendDay7.mov" />
       </section>
 
       {/* Два понятия */}

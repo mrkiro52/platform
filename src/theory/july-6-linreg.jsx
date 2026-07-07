@@ -1,4 +1,5 @@
 import { TheoryTable, TheoryCode, TheoryExample } from './components/TheoryTable'
+import VideoPlayer from '../components/VideoPlayer'
 
 const C = { text: 'var(--text-primary)', sub: 'var(--text-secondary)', lime: '#c8ff00', green: '#4ade80', blue: '#60a5fa', red: '#f87171', border: '#2a2a3a' }
 
@@ -55,6 +56,11 @@ export default function July6LinRegTheory() {
           от того, что такое обучение с учителем, до двух способов найти веса модели — точной формулой и
           градиентным спуском — и сравним, когда какой выгоднее.
         </p>
+      </section>
+
+      <section className="theory-section">
+        <h2 className="theory-heading-2">🎥 Видео-лекция: Линейная регрессия</h2>
+        <VideoPlayer src="https://s3.regru.cloud/kirocamp/MLDay7.mov" />
       </section>
 
       {/* Обучение с учителем и без */}

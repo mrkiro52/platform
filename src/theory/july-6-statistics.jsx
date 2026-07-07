@@ -1,4 +1,5 @@
 import { TheoryTable, TheoryCode, TheoryExample } from './components/TheoryTable'
+import VideoPlayer from '../components/VideoPlayer'
 
 const C = { text: 'var(--text-primary)', sub: 'var(--text-secondary)', lime: '#c8ff00', green: '#4ade80', blue: '#60a5fa', red: '#f87171', border: '#2a2a3a' }
 
@@ -60,6 +61,11 @@ export default function July6StatisticsTheory() {
           доверительных интервалов и проверки гипотез — минимум, без которого не построить ни одного честного
           вывода из данных.
         </p>
+      </section>
+
+      <section className="theory-section">
+        <h2 className="theory-heading-2">🎥 Видео-лекция: Математическая статистика</h2>
+        <VideoPlayer src="https://s3.regru.cloud/kirocamp/analyticsDay7.mov" />
       </section>
 
       {/* Совокупность и выборка */}

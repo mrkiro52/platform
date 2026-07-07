@@ -1,4 +1,5 @@
 import { TheoryTable, TheoryCode, TheoryExample } from './components/TheoryTable'
+import VideoPlayer from '../components/VideoPlayer'
 
 const C = { text: 'var(--text-primary)', sub: 'var(--text-secondary)', lime: '#c8ff00', yellow: '#facc15', blue: '#60a5fa', border: '#2a2a3a' }
 
@@ -36,6 +37,11 @@ export default function July6DomTheory() {
           что делает фронтендер каждый день: как найти нужный элемент, изменить его содержимое, стили и атрибуты,
           создать и удалить узлы, и как повесить обработчики событий.
         </p>
+      </section>
+
+      <section className="theory-section">
+        <h2 className="theory-heading-2">🎥 Видео-лекция: Взаимодействие с DOM деревом</h2>
+        <VideoPlayer src="https://s3.regru.cloud/kirocamp/javascriptDay7.mov" />
       </section>
 
       {/* Что такое DOM */}
