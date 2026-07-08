@@ -85,6 +85,11 @@ import July6StatisticsTheory from '../theory/july-6-statistics'
 import July6LinRegTheory from '../theory/july-6-linreg'
 import July6WinApiTheory from '../theory/july-6-winapi'
 import July7AlgorithmsTheory from '../theory/july-7-algorithms'
+import July8TypeScriptTheory from '../theory/july-8-typescript'
+import July8DjangoValidationTheory from '../theory/july-8-django-validation'
+import July8MetricsTheory from '../theory/july-8-metrics'
+import July8GradientDescentTheory from '../theory/july-8-gradient-descent'
+import July8CryptoTheory from '../theory/july-8-crypto'
 
 // Маппинг дней на компоненты с теорией
 const THEORY_COMPONENTS = {
@@ -139,6 +144,11 @@ const THEORY_COMPONENTS = {
   122: July6LinRegTheory,         // ML, 6 июля
   123: July6WinApiTheory,         // Кибербезопасность, 6 июля
   124: July7AlgorithmsTheory,     // Все треки, 7 июля
+  125: July8TypeScriptTheory,       // Frontend, 8 июля
+  126: July8DjangoValidationTheory, // Backend, 8 июля
+  127: July8MetricsTheory,          // Аналитика, 8 июля
+  128: July8GradientDescentTheory,  // ML, 8 июля
+  129: July8CryptoTheory,           // Кибербезопасность, 8 июля
 }
 
 // Заголовки для июльских треков (синтетические id)
@@ -167,6 +177,11 @@ export const JULY_TRACK_LABELS = {
   122: '6 июля · ML — Линейная регрессия + практика',
   123: '6 июля · Кибербезопасность — Основы WinAPI и C++',
   124: '7 июля · Все треки — Вспоминаем структуры данных и алгоритмы',
+  125: '8 июля · Frontend — TypeScript',
+  126: '8 июля · Backend — Валидация и обработка ошибок',
+  127: '8 июля · Аналитика — Продуктовые метрики',
+  128: '8 июля · ML — Градиентный спуск',
+  129: '8 июля · Кибербезопасность — Криптография',
 }
 
 const THEORY_TITLES = {

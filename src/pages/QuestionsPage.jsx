@@ -41,6 +41,11 @@ import July5JavaScriptTasks from '../questions/july-5-javascript'
 import July5DjangoTasks from '../questions/july-5-django'
 import July5PandasTasks from '../questions/july-5-pandas'
 import July5AssemblyTasks from '../questions/july-5-assembly'
+import July8TypeScriptTasks from '../questions/july-8-typescript'
+import July8DjangoValidationTasks from '../questions/july-8-django-validation'
+import July8MetricsTasks from '../questions/july-8-metrics'
+import July8GradientDescentTasks from '../questions/july-8-gradient-descent'
+import July8CryptoTasks from '../questions/july-8-crypto'
 import July6DomTasks from '../questions/july-6-dom'
 import July6AuthTasks from '../questions/july-6-auth'
 import July6StatisticsTasks from '../questions/july-6-statistics'
@@ -70,6 +75,11 @@ const JULY_TRACK_LABELS = {
   121: '6 июля · Аналитика — Математическая статистика',
   122: '6 июля · ML — Линейная регрессия + практика',
   123: '6 июля · Кибербезопасность — Основы WinAPI и C++',
+  125: '8 июля · Frontend — TypeScript',
+  126: '8 июля · Backend — Валидация и обработка ошибок',
+  127: '8 июля · Аналитика — Продуктовые метрики',
+  128: '8 июля · ML — Градиентный спуск',
+  129: '8 июля · Кибербезопасность — Криптография',
 }
 
 const QUESTIONS_COMPONENTS = {
@@ -120,6 +130,11 @@ const QUESTIONS_COMPONENTS = {
   121: July6StatisticsTasks,     // Аналитика, 6 июля
   122: July6LinRegTasks,         // ML, 6 июля
   123: July6WinApiTasks,         // Кибербезопасность, 6 июля
+  125: July8TypeScriptTasks,        // Frontend, 8 июля
+  126: July8DjangoValidationTasks,  // Backend, 8 июля
+  127: July8MetricsTasks,           // Аналитика, 8 июля
+  128: July8GradientDescentTasks,   // ML, 8 июля
+  129: July8CryptoTasks,            // Кибербезопасность, 8 июля
 }
 
 function QuestionCard({ question, taskIndex, totalTasks, onAnswer, isSolved, savedAnswer }) {
