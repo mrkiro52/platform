@@ -37,6 +37,33 @@ function P({ n, children }) {
   )
 }
 
+function Step({ n, title, children }) {
+  return (
+    <div style={{ margin: '16px 0 16px 14px', paddingLeft: 16, borderLeft: '2px dashed var(--border-color)' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+        <span style={{
+          background: 'rgba(200,255,0,0.12)', color: 'var(--accent-lime)', fontSize: 11, fontWeight: 700,
+          padding: '3px 10px', borderRadius: 999, flexShrink: 0,
+        }}>Шаг {n}</span>
+        <span style={{ color: 'var(--text-primary)', fontWeight: 600, fontSize: 14 }}>{title}</span>
+      </div>
+      {children}
+    </div>
+  )
+}
+
+function FinalLabel({ children }) {
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', gap: 8, margin: '18px 0 8px' }}>
+      <span style={{
+        background: 'rgba(96,165,250,0.14)', color: 'var(--accent-lime)', fontSize: 11, fontWeight: 700,
+        padding: '3px 10px', borderRadius: 999,
+      }}>✓ Собираем вместе</span>
+      <span style={{ color: 'var(--text-primary)', fontWeight: 600, fontSize: 14 }}>{children}</span>
+    </div>
+  )
+}
+
 export default function July8TypeScriptTheory() {
   return (
     <div className="theory-container">
@@ -214,23 +241,44 @@ type Person = Named & Aged     // объект должен иметь ОБА п
           именно сейчас. Это называют <strong>сужением типа</strong>: внутри проверки (<code>if</code>)
           TypeScript сам «сужает» union до конкретного типа.
         </P>
-        <TheoryCode language="ts" code={`function printId(id: string | number) {
+        <Step n={1} title="Простое сужение через typeof">
+          <p>
+            Внутри ветки <code>if (typeof id === 'string')</code> TypeScript «запоминает», что дальше в этом
+            блоке <code>id</code> точно строка, и разрешает методы строк. В блоке <code>else</code> он понимает,
+            что раз это не строка — значит, число.
+          </p>
+          <TheoryCode language="ts" code={`function printId(id: string | number) {
   if (typeof id === 'string') {
     console.log(id.toUpperCase())   // здесь TS знает: id — string
   } else {
     console.log(id.toFixed(2))      // а здесь: id — number
   }
-}
+}`} />
+        </Step>
 
-// Дискриминированный union — общее поле-метка для различения вариантов
-type Circle = { kind: 'circle'; radius: number }
+        <Step n={2} title="Более сложный случай — объекты разной формы">
+          <p>
+            Когда union состоит не из примитивов, а из объектов, <code>typeof</code> уже не поможет (для обоих{' '}
+            <code>typeof</code> вернёт <code>"object"</code>). Заведём у каждого варианта общее поле-метку —
+            например, <code>kind</code> — со своим уникальным значением.
+          </p>
+          <TheoryCode language="ts" code={`type Circle = { kind: 'circle'; radius: number }
 type Square = { kind: 'square'; side: number }
-type Shape = Circle | Square
+type Shape = Circle | Square   // Shape — либо круг, либо квадрат`} />
+        </Step>
 
-function area(shape: Shape): number {
-  if (shape.kind === 'circle') return Math.PI * shape.radius ** 2
+        <Step n={3} title="Сужаем по полю-метке kind">
+          <p>
+            Такую конструкцию называют <strong>дискриминированным union</strong>. Проверка{' '}
+            <code>shape.kind === 'circle'</code> сужает тип внутри своей ветки до <code>Circle</code> — TS
+            позволит обратиться к <code>shape.radius</code>. В ветке после — автоматически до{' '}
+            <code>Square</code>, и станет доступно поле <code>shape.side</code>.
+          </p>
+          <TheoryCode language="ts" code={`function area(shape: Shape): number {
+  if (shape.kind === 'circle') return Math.PI * shape.radius ** 2   // shape: Circle
   return shape.side ** 2   // TS знает, что здесь shape — Square
 }`} />
+        </Step>
       </section>
 
       <section className="theory-section">
@@ -240,20 +288,50 @@ function area(shape: Shape): number {
           при её использовании, а не жёстко зашивают заранее. Это позволяет писать один код, переиспользуемый для
           разных типов, но с сохранением проверки типов.
         </P>
-        <TheoryCode language="ts" code={`// Без дженерика пришлось бы дублировать функцию под каждый тип
-function identity<T>(value: T): T {
-  return value
-}
-identity<number>(5)       // T = number
-identity<string>('привет') // T = string
-identity(true)             // TS сам выведет T = boolean
+        <Step n={1} title="Проблема без дженерика">
+          <p>
+            Допустим, нужна функция, которая просто возвращает переданное значение. Без дженериков пришлось бы
+            писать отдельную функцию под каждый тип — или использовать <code>any</code>, что отключает всю
+            пользу типизации.
+          </p>
+          <TheoryCode language="ts" code={`function identityNumber(value: number): number { return value }
+function identityString(value: string): string { return value }
+// ...и так под каждый новый тип — дублирование кода`} />
+        </Step>
 
-// Дженерик-интерфейс: контейнер для любого типа данных
-interface ApiResponse<T> {
+        <Step n={2} title="Вводим тип-параметр T">
+          <p>
+            <code>&lt;T&gt;</code> после имени функции объявляет «тип-переменную» — конкретный тип подставится
+            при вызове. Теперь одна функция работает с любым типом, но связь между входом и выходом сохраняется:
+            что дали на вход — то же самое вернётся, и TypeScript это проверит.
+          </p>
+          <TheoryCode language="ts" code={`function identity<T>(value: T): T {
+  return value
+}`} />
+        </Step>
+
+        <Step n={3} title="Используем — TS сам выводит T">
+          <p>
+            <code>T</code> можно указать явно в угловых скобках, а можно позволить TypeScript вывести его
+            самостоятельно по переданному аргументу — как с обычным выводом типов.
+          </p>
+          <TheoryCode language="ts" code={`identity<number>(5)        // T = number, явно указали
+identity<string>('привет')  // T = string, явно указали
+identity(true)              // T = boolean — TS вывел сам по аргументу`} />
+        </Step>
+
+        <Step n={4} title="Дженерик у интерфейса — не только у функций">
+          <p>
+            Та же идея применима к интерфейсам: опишем «универсальный ответ API», который может содержать данные
+            любого типа, но при использовании мы явно скажем, какого именно.
+          </p>
+          <TheoryCode language="ts" code={`interface ApiResponse<T> {
   data: T
   status: number
 }
-const res: ApiResponse<string[]> = { data: ['a', 'b'], status: 200 }`} />
+const res: ApiResponse<string[]> = { data: ['a', 'b'], status: 200 }
+// TS проверит, что res.data — именно массив строк`} />
+        </Step>
         <TheoryExample title="Где встречается на практике">
           Дженерики повсюду во встроенных типах: <code>Array&lt;T&gt;</code>, <code>Promise&lt;T&gt;</code>. Когда
           пишешь <code>fetch(...).then((data: User[]) =&gt; ...)</code>, ты фактически используешь дженерик{' '}
@@ -287,6 +365,60 @@ checkAccess(Role.Admin)`} />
           отовсюду), <code>private</code> (только внутри класса), <code>protected</code> (внутри класса и
           наследников). Класс может реализовывать интерфейс через <code>implements</code>.
         </P>
+        <Step n={1} title="Опишем контракт через интерфейс">
+          <p>
+            Сначала договоримся, <strong>что</strong> должен уметь делать класс — какие методы у него обязаны
+            быть. Это и есть интерфейс: контракт без реализации.
+          </p>
+          <TheoryCode language="ts" code={`interface Movable {
+  move(dx: number, dy: number): void
+}`} />
+        </Step>
+
+        <Step n={2} title="Заводим приватное состояние">
+          <p>
+            Координаты робота — его внутренние данные, снаружи их менять напрямую не должны. Помечаем поля{' '}
+            <code>private</code> — доступ к ним есть только у методов самого класса.
+          </p>
+          <TheoryCode language="ts" code={`class Robot {
+  private x: number = 0
+  private y: number = 0
+}`} />
+        </Step>
+
+        <Step n={3} title="Добавляем публичное поле и конструктор">
+          <p>
+            Имя робота, наоборот, должно быть видно снаружи — значит, <code>public</code> (это модификатор по
+            умолчанию, но полезно писать его явно для ясности). Конструктор задаёт значение при создании объекта.
+          </p>
+          <TheoryCode language="ts" code={`class Robot {
+  private x: number = 0
+  private y: number = 0
+  public name: string
+
+  constructor(name: string) {
+    this.name = name
+  }
+}`} />
+        </Step>
+
+        <Step n={4} title="Реализуем контракт Movable">
+          <p>
+            Дописываем <code>implements Movable</code> к объявлению класса и реализуем метод{' '}
+            <code>move</code>, обещанный интерфейсом. Если забыть его реализовать — TypeScript укажет на ошибку
+            ещё до запуска.
+          </p>
+          <TheoryCode language="ts" code={`class Robot implements Movable {
+  // ...поля и конструктор как выше...
+
+  move(dx: number, dy: number) {
+    this.x += dx
+    this.y += dy
+  }
+}`} />
+        </Step>
+
+        <FinalLabel>Класс Robot целиком</FinalLabel>
         <TheoryCode language="ts" code={`interface Movable {
   move(dx: number, dy: number): void
 }
@@ -332,19 +464,38 @@ class Robot implements Movable {
           Файлы с JSX-разметкой на TypeScript получают расширение <code>.tsx</code>. Типизируют пропсы компонента
           через интерфейс и указывают тип состояния в дженерике <code>useState&lt;T&gt;</code>.
         </P>
-        <TheoryCode language="tsx" code={`interface ButtonProps {
+        <Step n={1} title="Описываем пропсы компонента">
+          <p>
+            Прежде чем писать сам компонент, описываем, какие пропсы он принимает и какого они типа —
+            интерфейсом, как для обычного объекта. <code>disabled?</code> — необязательный проп.
+          </p>
+          <TheoryCode language="ts" code={`interface ButtonProps {
   label: string
-  onClick: () => void
+  onClick: () => void   // функция без аргументов, ничего не возвращающая
   disabled?: boolean
-}
+}`} />
+        </Step>
 
-function Button({ label, onClick, disabled }: ButtonProps) {
+        <Step n={2} title="Используем интерфейс в самом компоненте">
+          <p>
+            Указываем тип у деструктурированных пропсов функции-компонента — теперь при использовании{' '}
+            <code>&lt;Button /&gt;</code> в другом месте TypeScript проверит, что переданы все обязательные пропсы
+            нужных типов.
+          </p>
+          <TheoryCode language="tsx" code={`function Button({ label, onClick, disabled }: ButtonProps) {
   return <button onClick={onClick} disabled={disabled}>{label}</button>
-}
+}`} />
+        </Step>
 
-// Типизация состояния
-const [count, setCount] = useState<number>(0)
-const [user, setUser] = useState<User | null>(null)  // изначально null, потом User`} />
+        <Step n={3} title="Типизируем состояние — useState<T>">
+          <p>
+            У <code>useState</code> тип значения обычно выводится из начального значения сам, но если начальное
+            значение <code>null</code>, а храниться позже будет что-то другое — тип указываем явно через
+            дженерик.
+          </p>
+          <TheoryCode language="tsx" code={`const [count, setCount] = useState<number>(0)               // тип очевиден и так
+const [user, setUser] = useState<User | null>(null)  // изначально null, потом станет User`} />
+        </Step>
       </section>
 
       <section className="theory-section">

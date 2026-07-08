@@ -36,6 +36,21 @@ function P({ n, children }) {
   )
 }
 
+function Step({ n, title, children }) {
+  return (
+    <div style={{ margin: '16px 0 16px 14px', paddingLeft: 16, borderLeft: '2px dashed var(--border-color)' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+        <span style={{
+          background: 'rgba(200,255,0,0.12)', color: 'var(--accent-lime)', fontSize: 11, fontWeight: 700,
+          padding: '3px 10px', borderRadius: 999, flexShrink: 0,
+        }}>Шаг {n}</span>
+        <span style={{ color: 'var(--text-primary)', fontWeight: 600, fontSize: 14 }}>{title}</span>
+      </div>
+      {children}
+    </div>
+  )
+}
+
 export default function July8CryptoTheory() {
   return (
     <div className="theory-container">
@@ -285,15 +300,34 @@ export default function July8CryptoTheory() {
           но не менее надёжно благодаря стойкости к коллизиям); основа блокчейна — каждый блок ссылается на хэш
           предыдущего, что делает цепочку неизменяемой без пересчёта всех последующих хэшей.
         </P>
-        <TheoryCode language="python" code={`import hashlib
+        <Step n={1} title="Считаем хэш одной строки">
+          <p>
+            Python умеет считать стандартные хэш-функции без установки сторонних библиотек — модуль{' '}
+            <code>hashlib</code> уже встроен. Строку сначала переводим в байты (префикс <code>b</code>), затем
+            вызываем нужный алгоритм и просим шестнадцатеричное представление результата.
+          </p>
+          <TheoryCode language="python" code={`import hashlib
 
-# Хэш файла или строки — типовая проверка целостности
 data = b"Privet, mir"
 digest = hashlib.sha256(data).hexdigest()
-print(digest)   # a591a6d40bf420404a011733cfb7b190d62c65bf0bcda32b57b277d9ad9f146
+print(digest)
+# a591a6d40bf420404a011733cfb7b190d62c65bf0bcda32b57b277d9ad9f146`} />
+        </Step>
 
-# Лавинный эффект: меняем один символ — хэш полностью другой
-digest2 = hashlib.sha256(b"Privet, mir!").hexdigest()`} />
+        <Step n={2} title="Проверяем лавинный эффект">
+          <p>
+            Теперь возьмём почти ту же строку, изменив всего один символ (добавим восклицательный знак), и
+            посчитаем хэш заново.
+          </p>
+          <TheoryCode language="python" code={`digest2 = hashlib.sha256(b"Privet, mir!").hexdigest()
+print(digest2)
+# результат совершенно другой — ничего общего с первым хэшем не разглядеть`} />
+          <p>
+            Убеждаемся своими глазами в свойстве, о котором говорили выше: минимальное изменение входа полностью
+            меняет отпечаток — это и есть лавинный эффект.
+          </p>
+        </Step>
+
         <TheoryExample title="Хэш ≠ шифрование">
           У шифрования есть обратная операция (расшифровка ключом), у хэш-функции — <strong>нет</strong>. Хэш
           всегда «в одну сторону»: из данных получаем отпечаток, но не наоборот. Это и делает хэш-функции

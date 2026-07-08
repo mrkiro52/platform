@@ -49,6 +49,33 @@ function P({ n, children }) {
   )
 }
 
+function Step({ n, title, children }) {
+  return (
+    <div style={{ margin: '16px 0 16px 14px', paddingLeft: 16, borderLeft: '2px dashed var(--border-color)' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+        <span style={{
+          background: 'rgba(200,255,0,0.12)', color: 'var(--accent-lime)', fontSize: 11, fontWeight: 700,
+          padding: '3px 10px', borderRadius: 999, flexShrink: 0,
+        }}>Шаг {n}</span>
+        <span style={{ color: 'var(--text-primary)', fontWeight: 600, fontSize: 14 }}>{title}</span>
+      </div>
+      {children}
+    </div>
+  )
+}
+
+function FinalLabel({ children }) {
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', gap: 8, margin: '18px 0 8px' }}>
+      <span style={{
+        background: 'rgba(96,165,250,0.14)', color: 'var(--accent-lime)', fontSize: 11, fontWeight: 700,
+        padding: '3px 10px', borderRadius: 999,
+      }}>✓ Собираем вместе</span>
+      <span style={{ color: 'var(--text-primary)', fontWeight: 600, fontSize: 14 }}>{children}</span>
+    </div>
+  )
+}
+
 const It = ({ children }) => <span style={{ fontStyle: 'italic' }}>{children}</span>
 const Sub = ({ children }) => <sub style={{ fontSize: '0.7em' }}>{children}</sub>
 const Sup = ({ children }) => <sup style={{ fontSize: '0.7em' }}>{children}</sup>
@@ -168,18 +195,57 @@ export default function July8GradientDescentTheory() {
         <h2 className="theory-heading-2">6. Алгоритм градиентного спуска</h2>
         <P n={8}>
           Сам алгоритм — простое итеративное правило: посчитать градиент в текущей точке, сделать маленький шаг в
-          сторону антиградиента, повторить.
+          сторону антиградиента, повторить. Разберём его сначала «руками» на простом примере, а затем оформим
+          кодом.
         </P>
         <Formula note="η (эта) — темп обучения; повторяем, пока веса почти не перестанут меняться">
           <It>w</It><Sup>(t+1)</Sup> = <It>w</It><Sup>(t)</Sup> − <It>η</It> · ∇<It>Q</It>(<It>w</It><Sup>(t)</Sup>)
         </Formula>
-        <TheoryCode language="python" code={`w = np.zeros(d)          # начальные веса (например, нули)
+
+        <Step n={1} title="Возьмём простую функцию и её производную">
+          <p>
+            Пусть <It>f</It>(<It>x</It>) = (<It>x</It> − 3)² — у неё минимум в точке <It>x</It> = 3 (это легко
+            проверить и без спуска, но так удобно следить за прогрессом). Производная:{' '}
+            <It>f</It>′(<It>x</It>) = 2(<It>x</It> − 3).
+          </p>
+        </Step>
+
+        <Step n={2} title="Стартуем из произвольной точки и делаем первый шаг">
+          <p>
+            Начнём с <It>x</It><Sup>(0)</Sup> = 10 и возьмём темп обучения <It>η</It> = 0.1. Считаем градиент в
+            этой точке и делаем шаг по формуле выше.
+          </p>
+          <TheoryCode language="text" code={`f'(10) = 2 * (10 - 3) = 14
+x(1) = x(0) − η · f'(x(0)) = 10 − 0.1 · 14 = 10 − 1.4 = 8.6`} />
+        </Step>
+
+        <Step n={3} title="Повторяем ещё пару шагов">
+          <p>Точка стала ближе к минимуму (3). Продолжаем ровно ту же процедуру от новой точки.</p>
+          <TheoryCode language="text" code={`f'(8.6) = 2 * (8.6 - 3) = 11.2
+x(2) = 8.6 − 0.1 · 11.2 = 7.48
+
+f'(7.48) = 2 * (7.48 - 3) = 8.96
+x(3) = 7.48 − 0.1 · 8.96 = 6.584`} />
+          <p>
+            Видно, что с каждым шагом <It>x</It> подходит к 3 всё ближе, а сам шаг (изменение <It>x</It>)
+            становится всё меньше — потому что чем ближе к минимуму, тем меньше производная (это и есть замедление
+            вблизи дна параболы).
+          </p>
+        </Step>
+
+        <Step n={4} title="Автоматизируем то же самое в цикле">
+          <p>
+            То, что мы только что делали вручную — это ровно то, что делает алгоритм на каждой итерации. Осталось
+            обернуть это в цикл на нужное число шагов.
+          </p>
+          <TheoryCode language="python" code={`w = np.zeros(d)          # начальные веса (например, нули)
 
 for step in range(n_steps):
     grad = compute_gradient(w, X, y)   # градиент функции потерь в точке w
-    w = w - lr * grad                  # шаг против градиента
+    w = w - lr * grad                  # шаг против градиента — та же формула, что считали руками
 
 # w — итоговые (обученные) веса`} />
+        </Step>
       </section>
 
       <section className="theory-section">

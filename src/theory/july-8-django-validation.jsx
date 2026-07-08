@@ -36,6 +36,35 @@ function P({ n, children }) {
   )
 }
 
+// Один шаг внутри пошагового разбора примера — маленький кусок кода + объяснение
+function Step({ n, title, children }) {
+  return (
+    <div style={{ margin: '16px 0 16px 14px', paddingLeft: 16, borderLeft: '2px dashed var(--border-color)' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+        <span style={{
+          background: 'rgba(200,255,0,0.12)', color: 'var(--accent-lime)', fontSize: 11, fontWeight: 700,
+          padding: '3px 10px', borderRadius: 999, flexShrink: 0,
+        }}>Шаг {n}</span>
+        <span style={{ color: 'var(--text-primary)', fontWeight: 600, fontSize: 14 }}>{title}</span>
+      </div>
+      {children}
+    </div>
+  )
+}
+
+// Заголовок финальной, полностью собранной версии примера
+function FinalLabel({ children }) {
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', gap: 8, margin: '18px 0 8px' }}>
+      <span style={{
+        background: 'rgba(96,165,250,0.14)', color: 'var(--accent-lime)', fontSize: 11, fontWeight: 700,
+        padding: '3px 10px', borderRadius: 999,
+      }}>✓ Собираем вместе</span>
+      <span style={{ color: 'var(--text-primary)', fontWeight: 600, fontSize: 14 }}>{children}</span>
+    </div>
+  )
+}
+
 export default function July8DjangoValidationTheory() {
   return (
     <div className="theory-container">
@@ -89,8 +118,84 @@ export default function July8DjangoValidationTheory() {
         <h2 className="theory-heading-2">2. Валидация в Django Forms</h2>
         <P n={3}>
           В классических Django Forms валидацию одного поля описывают методом <code>clean_&lt;имя_поля&gt;</code>,
-          а проверку, зависящую сразу от нескольких полей — методом <code>clean()</code> всей формы.
+          а проверку, зависящую сразу от нескольких полей — методом <code>clean()</code> всей формы. Разберём
+          форму регистрации по шагам — от простого списка полей до готовой проверки.
         </P>
+
+        <Step n={1} title="Опишем поля формы — без всякой валидации">
+          <p>
+            Сначала просто перечисляем, какие данные форма ожидает получить, и их базовый тип. Django Form —
+            обычный Python-класс, а поля — его атрибуты.
+          </p>
+          <TheoryCode language="python" code={`from django import forms
+
+class SignupForm(forms.Form):
+    username = forms.CharField(max_length=50)
+    password = forms.CharField(widget=forms.PasswordInput)
+    password_confirm = forms.CharField(widget=forms.PasswordInput)`} />
+          <p>
+            На этом этапе форма уже умеет проверять базовые вещи «из коробки»: что поля не пустые и что{' '}
+            <code>username</code> не длиннее 50 символов. Но своей бизнес-логики (например, «имя уже занято») в
+            ней пока нет.
+          </p>
+        </Step>
+
+        <Step n={2} title="Добавим проверку ОДНОГО поля — clean_username">
+          <p>
+            Чтобы проверить конкретное поле, добавляем метод с именем <code>clean_</code> + имя поля. Django
+            вызовет его автоматически. Внутри мы читаем уже частично проверенное значение из{' '}
+            <code>self.cleaned_data</code>, проверяем своё условие и, если что-то не так,{' '}
+            <strong>бросаем</strong> <code>ValidationError</code>.
+          </p>
+          <TheoryCode language="python" code={`class SignupForm(forms.Form):
+    username = forms.CharField(max_length=50)
+    password = forms.CharField(widget=forms.PasswordInput)
+    password_confirm = forms.CharField(widget=forms.PasswordInput)
+
+    def clean_username(self):
+        username = self.cleaned_data['username']          # берём уже прочитанное значение поля
+        if User.objects.filter(username=username).exists():
+            raise forms.ValidationError('Это имя уже занято')
+        return username   # ВАЖНО: метод обязательно должен вернуть значение обратно`} />
+          <TheoryExample title="Почему нужно return в конце">
+            Если забыть <code>return username</code>, поле после валидации станет <code>None</code> — Django
+            ожидает, что <code>clean_&lt;field&gt;</code> вернёт итоговое (возможно, изменённое, например
+            обрезанное от пробелов) значение поля.
+          </TheoryExample>
+        </Step>
+
+        <Step n={3} title="Добавим проверку НЕСКОЛЬКИХ полей — clean()">
+          <p>
+            Сравнение пароля и его подтверждения затрагивает сразу два поля — такое место не метод одного поля, а
+            метод <code>clean()</code> всей формы. Он вызывается уже после того, как отработали все отдельные{' '}
+            <code>clean_&lt;field&gt;</code>.
+          </p>
+          <TheoryCode language="python" code={`    def clean(self):
+        cleaned = super().clean()   # сначала выполняем стандартную проверку родителя
+        if cleaned.get('password') != cleaned.get('password_confirm'):
+            raise forms.ValidationError('Пароли не совпадают')
+        return cleaned   # и здесь тоже обязательно возвращаем данные`} />
+          <p>
+            Обрати внимание: используем <code>cleaned.get(...)</code>, а не <code>cleaned['...']</code> —
+            если одно из полей не прошло свою собственную проверку раньше, его может не быть в{' '}
+            <code>cleaned</code>, и обращение по квадратным скобкам вызвало бы дополнительную ошибку{' '}
+            <code>KeyError</code>.
+          </p>
+        </Step>
+
+        <Step n={4} title="Используем готовую форму во view">
+          <p>
+            Форма готова — осталось передать в неё данные запроса и спросить, прошла ли она валидацию.
+          </p>
+          <TheoryCode language="python" code={`form = SignupForm(request.POST)
+if form.is_valid():          # запускает ВСЕ clean_* и clean() методы
+    # form.cleaned_data — словарь с уже проверенными и очищенными данными
+    ...
+else:
+    print(form.errors)       # словарь ошибок: {'username': [...], '__all__': [...]}`} />
+        </Step>
+
+        <FinalLabel>Полная форма регистрации целиком</FinalLabel>
         <TheoryCode language="python" code={`from django import forms
 
 class SignupForm(forms.Form):
@@ -142,10 +247,61 @@ class Profile(models.Model):
       <section className="theory-section">
         <h2 className="theory-heading-2">4. Валидация в DRF-сериализаторах</h2>
         <P n={5}>
-          В Django REST Framework (для API) валидация устроена похоже, но в сериализаторе: проверка одного поля —
-          метод <code>validate_&lt;имя_поля&gt;</code>, проверка нескольких полей вместе — метод{' '}
-          <code>validate(self, attrs)</code>.
+          В Django REST Framework (для API) валидация устроена похоже на формы, но в сериализаторе: проверка
+          одного поля — метод <code>validate_&lt;имя_поля&gt;</code>, проверка нескольких полей вместе — метод{' '}
+          <code>validate(self, attrs)</code>. Соберём сериализатор регистрации так же — от простого к сложному.
         </P>
+
+        <Step n={1} title="Опишем поля сериализатора">
+          <p>
+            Как и с формой, начинаем с перечисления полей и их типов. <code>write_only=True</code> у пароля
+            значит: поле принимается на вход, но никогда не попадёт в исходящий JSON-ответ.
+          </p>
+          <TheoryCode language="python" code={`from rest_framework import serializers
+
+class SignupSerializer(serializers.Serializer):
+    username = serializers.CharField(max_length=50)
+    password = serializers.CharField(write_only=True)
+    age = serializers.IntegerField()`} />
+        </Step>
+
+        <Step n={2} title="Проверка одного поля — validate_username">
+          <p>
+            Метод называется <code>validate_</code> + имя поля. В отличие от Django Forms, здесь параметр
+            приходит сразу аргументом <code>value</code>, а не через <code>self.cleaned_data</code> — читать
+            ничего дополнительно не нужно.
+          </p>
+          <TheoryCode language="python" code={`    def validate_username(self, value):
+        if User.objects.filter(username=value).exists():
+            raise serializers.ValidationError('Это имя уже занято')
+        return value   # тоже обязательно возвращаем значение обратно`} />
+        </Step>
+
+        <Step n={3} title="Ещё одна проверка одного поля — validate_age">
+          <p>
+            Полей с собственной проверкой может быть сколько угодно — каждое просто получает свой метод{' '}
+            <code>validate_&lt;field&gt;</code>.
+          </p>
+          <TheoryCode language="python" code={`    def validate_age(self, value):
+        if value < 0 or value > 120:
+            raise serializers.ValidationError('Некорректный возраст')
+        return value`} />
+        </Step>
+
+        <Step n={4} title="Проверка нескольких полей сразу — validate()">
+          <p>
+            Когда правило затрагивает не одно поле, а их сочетание, используем общий метод{' '}
+            <code>validate(self, attrs)</code>. Он получает словарь <code>attrs</code> уже со всеми
+            прошедшими индивидуальную проверку полями и вызывается после всех{' '}
+            <code>validate_&lt;field&gt;</code>.
+          </p>
+          <TheoryCode language="python" code={`    def validate(self, attrs):
+        if attrs['username'] == attrs['password']:
+            raise serializers.ValidationError('Пароль не должен совпадать с логином')
+        return attrs   # и здесь возвращаем данные — обычно без изменений`} />
+        </Step>
+
+        <FinalLabel>Полный сериализатор регистрации целиком</FinalLabel>
         <TheoryCode language="python" code={`from rest_framework import serializers
 
 class SignupSerializer(serializers.Serializer):
@@ -204,9 +360,39 @@ class CommentSerializer(serializers.Serializer):
         <h2 className="theory-heading-2">7. Обработка ошибок во view</h2>
         <P n={8}>
           Кроме валидации входных данных, во вью нужно обрабатывать и другие сбои: объект не найден, нарушение
-          прав, ошибка базы данных. Стандартный подход — <code>try/except</code> вокруг рискованного кода плюс
-          готовые short-cut функции Django.
+          прав, ошибка базы данных. Разберём на двух типовых вью — «получить объект» и «создать объект».
         </P>
+
+        <Step n={1} title="Объект не найден — get_object_or_404">
+          <p>
+            Вместо того чтобы вручную писать <code>try: Article.objects.get(pk=pk) except Article.DoesNotExist:
+            ...</code>, используем готовый шорткат Django: он сам бросит <code>Http404</code>, если записи нет, а
+            Django/DRF автоматически поймает её и вернёт клиенту статус 404.
+          </p>
+          <TheoryCode language="python" code={`from django.shortcuts import get_object_or_404
+from rest_framework.response import Response
+
+def get_article(request, pk):
+    article = get_object_or_404(Article, pk=pk)   # если записи нет — сразу 404, дальше код не пойдёт
+    return Response(ArticleSerializer(article).data)`} />
+        </Step>
+
+        <Step n={2} title="Создание объекта — сначала валидация, потом сохранение">
+          <p>
+            Здесь мы применяем ровно то, что разобрали в предыдущих разделах: сериализатор проверяет данные{' '}
+            <code>is_valid()</code>, и только если проверка прошла — сохраняем.
+          </p>
+          <TheoryCode language="python" code={`from rest_framework import status
+
+def create_article(request):
+    serializer = ArticleSerializer(data=request.data)
+    if not serializer.is_valid():
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)   # прервались с 400
+    serializer.save()
+    return Response(serializer.data, status=status.HTTP_201_CREATED)             # успех — 201`} />
+        </Step>
+
+        <FinalLabel>Оба вью вместе</FinalLabel>
         <TheoryCode language="python" code={`from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 from rest_framework import status
@@ -230,24 +416,40 @@ def create_article(request):
         <P n={9}>
           Чтобы не дублировать <code>try/except</code> в каждом вью, DRF позволяет задать{' '}
           <strong>единый обработчик исключений</strong> на весь проект: он перехватывает любое непойманное
-          исключение и превращает его в аккуратный JSON-ответ с нужным статус-кодом.
+          исключение и превращает его в аккуратный JSON-ответ с нужным статус-кодом. Настройка состоит из двух
+          файлов.
         </P>
-        <TheoryCode language="python" code={`# exceptions.py
+
+        <Step n={1} title="Пишем свою функцию-обработчик">
+          <p>
+            Функция принимает исключение и контекст запроса, сначала отдаёт их <strong>стандартному</strong>{' '}
+            обработчику DRF (он уже умеет превращать большинство исключений в ответ с нужным статусом), а затем
+            лишь немного «переупаковывает» готовый ответ в наш собственный формат.
+          </p>
+          <TheoryCode language="python" code={`# exceptions.py
 from rest_framework.views import exception_handler
 
 def custom_exception_handler(exc, context):
-    response = exception_handler(exc, context)   # стандартная обработка DRF
-    if response is not None:
-        response.data = {
+    response = exception_handler(exc, context)   # сначала — стандартная обработка DRF
+    if response is not None:                      # если DRF смог сформировать ответ...
+        response.data = {                          # ...оборачиваем его в свой формат
             'error': True,
             'details': response.data,
         }
-    return response
+    return response`} />
+        </Step>
 
-# settings.py
+        <Step n={2} title="Подключаем обработчик в настройках проекта">
+          <p>
+            Одной функции недостаточно — нужно указать Django REST Framework, что использовать нужно именно её,
+            а не обработчик по умолчанию.
+          </p>
+          <TheoryCode language="python" code={`# settings.py
 REST_FRAMEWORK = {
     'EXCEPTION_HANDLER': 'myapp.exceptions.custom_exception_handler',
 }`} />
+          <p>После этого <strong>любое</strong> непойманное исключение в любом вью пройдёт через нашу функцию.</p>
+        </Step>
       </section>
 
       <section className="theory-section">

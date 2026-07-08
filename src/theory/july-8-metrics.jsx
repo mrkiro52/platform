@@ -49,6 +49,21 @@ function P({ n, children }) {
   )
 }
 
+function Step({ n, title, children }) {
+  return (
+    <div style={{ margin: '16px 0 16px 14px', paddingLeft: 16, borderLeft: '2px dashed var(--border-color)' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+        <span style={{
+          background: 'rgba(200,255,0,0.12)', color: 'var(--accent-lime)', fontSize: 11, fontWeight: 700,
+          padding: '3px 10px', borderRadius: 999, flexShrink: 0,
+        }}>Шаг {n}</span>
+        <span style={{ color: 'var(--text-primary)', fontWeight: 600, fontSize: 14 }}>{title}</span>
+      </div>
+      {children}
+    </div>
+  )
+}
+
 export default function July8MetricsTheory() {
   return (
     <div className="theory-container">
@@ -179,6 +194,20 @@ export default function July8MetricsTheory() {
         <Formula note="Stickiness = 0.5 значит: типичный месячный пользователь заходит примерно 15 дней из 30">
           Stickiness = DAU / MAU
         </Formula>
+
+        <Step n={1} title="Возьмём реальные цифры">
+          <p>Пусть в приложении DAU = 1200 (заходят ежедневно), а MAU = 4000 (пользовались хотя бы раз за месяц).</p>
+        </Step>
+        <Step n={2} title="Подставим в формулу">
+          <TheoryCode language="text" code={`Stickiness = DAU / MAU = 1200 / 4000 = 0.3`} />
+        </Step>
+        <Step n={3} title="Переведём число в понятный вывод">
+          <p>
+            0.3 значит, что типичный пользователь за месяц заходит примерно в 30% дней, то есть около 9 дней из
+            30. Много это или мало — зависит от типа продукта: для мессенджера это низкий показатель, а для
+            сервиса «раз в неделю» (например, заказ продуктов) — вполне нормальный.
+          </p>
+        </Step>
       </section>
 
       <section className="theory-section">
@@ -238,8 +267,29 @@ export default function July8MetricsTheory() {
         <P n={13}>
           Соотношение <strong>LTV/CAC</strong> — ключевой показатель здоровья бизнес-модели: если пользователь
           приносит меньше денег, чем стоит его привлечение (LTV/CAC &lt; 1), продукт нежизнеспособен в текущем
-          виде. Обычно ориентируются на соотношение 3:1 и выше.
+          виде. Обычно ориентируются на соотношение 3:1 и выше. Посчитаем на примере.
         </P>
+
+        <Step n={1} title="Считаем LTV">
+          <p>
+            Пусть пользователь в среднем платит 500 руб. в месяц и остаётся с продуктом в среднем 6 месяцев
+            (это можно оценить через Retention/Churn, разобранные выше).
+          </p>
+          <TheoryCode language="text" code={`LTV = средний платёж в месяц × среднее число месяцев с продуктом
+LTV = 500 × 6 = 3000 руб.`} />
+        </Step>
+        <Step n={2} title="Считаем CAC">
+          <p>За месяц на рекламу потратили 90 000 руб. и привлекли 100 новых платящих пользователей.</p>
+          <TheoryCode language="text" code={`CAC = расходы на привлечение / число привлечённых пользователей
+CAC = 90 000 / 100 = 900 руб.`} />
+        </Step>
+        <Step n={3} title="Считаем соотношение и делаем вывод">
+          <TheoryCode language="text" code={`LTV / CAC = 3000 / 900 ≈ 3.3`} />
+          <p>
+            Соотношение выше ориентира 3:1 — на каждый рубль, потраченный на привлечение, продукт в среднем
+            зарабатывает около 3.3 рублей за жизненный цикл пользователя. Модель выглядит здоровой.
+          </p>
+        </Step>
       </section>
 
       <section className="theory-section">
