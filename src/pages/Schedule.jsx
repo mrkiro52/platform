@@ -55,6 +55,9 @@ const JULY_SCHEDULE_FALLBACK = [
   { day:8, date:'ср, 8 июля', meeting_time:'21:00', title:'Криптография', tracks:['Кибербезопасность'], description:'Цели криптографической защиты, криптосистемы, протоколы, хэш-функции.' },
   { day:8, date:'ср, 8 июля', meeting_time:'21:30', title:'Валидация и обработка ошибок', tracks:['Backend'], description:'Валидация и обработка ошибок на бэкенде Django.' },
   { day:8, date:'ср, 8 июля', meeting_time:'22:00', title:'TypeScript', tracks:['Frontend'], description:'Всё необходимое для старта: типы, интерфейсы, дженерики.' },
+  { day:9, date:'чт, 9 июля', meeting_time:'21:00', title:'Визуализация данных: Matplotlib', tracks:['Аналитика','ML'], description:'Библиотека Matplotlib: анатомия фигуры, основные типы графиков, оформление, seaborn.' },
+  { day:9, date:'чт, 9 июля', meeting_time:'21:30', title:'WebSocket и real-time', tracks:['Backend','Frontend'], description:'Real-time соединения через WebSocket: отличие от HTTP, handshake, клиент на JS и сервер на Python.' },
+  { day:9, date:'чт, 9 июля', meeting_time:'22:00', title:'OWASP Top 10', tracks:['Кибербезопасность'], description:'Полный разбор десяти самых критичных категорий уязвимостей веб-приложений.' },
 ].map((e, i) => ({ id: -1000 - i, month: 'july', type: 'lecture', theory: [], tasks: [], hw: '', meeting_link: '', ...e }))
 
 // Объединяем события июля из API с резервными. Резервные данные считаются

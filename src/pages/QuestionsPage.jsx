@@ -46,6 +46,9 @@ import July8DjangoValidationTasks from '../questions/july-8-django-validation'
 import July8MetricsTasks from '../questions/july-8-metrics'
 import July8GradientDescentTasks from '../questions/july-8-gradient-descent'
 import July8CryptoTasks from '../questions/july-8-crypto'
+import July9MatplotlibTasks from '../questions/july-9-matplotlib'
+import July9WebSocketTasks from '../questions/july-9-websocket'
+import July9OwaspTasks from '../questions/july-9-owasp'
 import July6DomTasks from '../questions/july-6-dom'
 import July6AuthTasks from '../questions/july-6-auth'
 import July6StatisticsTasks from '../questions/july-6-statistics'
@@ -80,6 +83,9 @@ const JULY_TRACK_LABELS = {
   127: '8 июля · Аналитика — Продуктовые метрики',
   128: '8 июля · ML — Градиентный спуск',
   129: '8 июля · Кибербезопасность — Криптография',
+  130: '9 июля · Аналитика/ML — Визуализация данных: Matplotlib',
+  131: '9 июля · Backend/Frontend — WebSocket и real-time',
+  132: '9 июля · Кибербезопасность — OWASP Top 10',
 }
 
 const QUESTIONS_COMPONENTS = {
@@ -135,6 +141,9 @@ const QUESTIONS_COMPONENTS = {
   127: July8MetricsTasks,           // Аналитика, 8 июля
   128: July8GradientDescentTasks,   // ML, 8 июля
   129: July8CryptoTasks,            // Кибербезопасность, 8 июля
+  130: July9MatplotlibTasks,         // Аналитика/ML, 9 июля
+  131: July9WebSocketTasks,          // Backend/Frontend, 9 июля
+  132: July9OwaspTasks,              // Кибербезопасность, 9 июля
 }
 
 function QuestionCard({ question, taskIndex, totalTasks, onAnswer, isSolved, savedAnswer }) {

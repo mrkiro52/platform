@@ -63,6 +63,12 @@ const JULY_TRACKS_DAY8 = [
   { name: 'Кибербезопасность',  id: 129, lesson: 'Криптография',                      color: { bg:'rgba(239,68,68,0.12)', border:'rgba(239,68,68,0.3)',  text:'#f87171' } },
 ]
 
+const JULY_TRACKS_DAY9 = [
+  { name: 'Аналитика / ML',     id: 130, lesson: 'Визуализация данных: Matplotlib', color: { bg:'rgba(34,197,94,0.12)',  border:'rgba(34,197,94,0.3)',  text:'#4ade80' }, showHomework: false },
+  { name: 'Backend / Frontend', id: 131, lesson: 'WebSocket и real-time',           color: { bg:'rgba(59,130,246,0.12)', border:'rgba(59,130,246,0.3)', text:'#60a5fa' }, showHomework: false },
+  { name: 'Кибербезопасность',  id: 132, lesson: 'OWASP Top 10',                     color: { bg:'rgba(239,68,68,0.12)', border:'rgba(239,68,68,0.3)',  text:'#f87171' }, showHomework: false },
+]
+
 const JULY_DAYS = [
   { day: 1, date: 'ср, 1 июля', tracks: JULY_TRACKS },
   { day: 2, date: 'чт, 2 июля', tracks: JULY_TRACKS_DAY2 },
@@ -72,6 +78,7 @@ const JULY_DAYS = [
   { day: 6, date: 'пн, 6 июля', tracks: JULY_TRACKS_DAY6 },
   { day: 7, date: 'вт, 7 июля', tracks: JULY_TRACKS_DAY7 },
   { day: 8, date: 'ср, 8 июля', tracks: JULY_TRACKS_DAY8 },
+  { day: 9, date: 'чт, 9 июля', tracks: JULY_TRACKS_DAY9 },
 ]
 
 function JulyTrackRow({ track, onOpenTheory, onOpenQuestions, onOpenHomework }) {
