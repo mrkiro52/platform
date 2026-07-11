@@ -58,6 +58,9 @@ const JULY_SCHEDULE_FALLBACK = [
   { day:9, date:'чт, 9 июля', meeting_time:'21:00', title:'Визуализация данных: Matplotlib', tracks:['Аналитика','ML'], description:'Библиотека Matplotlib: анатомия фигуры, основные типы графиков, оформление, seaborn.' },
   { day:9, date:'чт, 9 июля', meeting_time:'21:30', title:'WebSocket и real-time', tracks:['Backend','Frontend'], description:'Real-time соединения через WebSocket: отличие от HTTP, handshake, клиент на JS и сервер на Python.' },
   { day:9, date:'чт, 9 июля', meeting_time:'22:00', title:'OWASP Top 10', tracks:['Кибербезопасность'], description:'Полный разбор десяти самых критичных категорий уязвимостей веб-приложений.' },
+  { day:10, date:'пт, 10 июля', meeting_time:'20:00', title:'Нарешиваем LeetCode', tracks:['Frontend','Backend','Аналитика','ML','Кибербезопасность'], description:'Практика алгоритмических задач для всех треков.' },
+  { day:11, date:'сб, 11 июля', meeting_time:'20:00', title:'Делаем пет-проект', tracks:['Frontend','Backend','Аналитика','ML','Кибербезопасность'], description:'Самостоятельная работа над пет-проектом для портфолио.' },
+  { day:12, date:'вс, 12 июля', meeting_time:'20:00', title:'Делаем пет-проект', tracks:['Frontend','Backend','Аналитика','ML','Кибербезопасность'], description:'Самостоятельная работа над пет-проектом для портфолио.' },
 ].map((e, i) => ({ id: -1000 - i, month: 'july', type: 'lecture', theory: [], tasks: [], hw: '', meeting_link: '', ...e }))
 
 // Объединяем события июля из API с резервными. Резервные данные считаются
