@@ -61,10 +61,10 @@ const JULY_SCHEDULE_FALLBACK = [
   { day:10, date:'пт, 10 июля', meeting_time:'20:00', title:'Нарешиваем LeetCode', tracks:['Frontend','Backend','Аналитика','ML','Кибербезопасность'], description:'Практика алгоритмических задач для всех треков.' },
   { day:11, date:'сб, 11 июля', meeting_time:'20:00', title:'Делаем пет-проект', tracks:['Frontend','Backend','Аналитика','ML','Кибербезопасность'], description:'Самостоятельная работа над пет-проектом для портфолио.' },
   { day:12, date:'вс, 12 июля', meeting_time:'20:00', title:'Делаем пет-проект', tracks:['Frontend','Backend','Аналитика','ML','Кибербезопасность'], description:'Самостоятельная работа над пет-проектом для портфолио.' },
-  { day:13, date:'пн, 13 июля', meeting_time:'20:00', title:'ООП: основы', tracks:['Frontend','Backend'], description:'Основы объектно-ориентированного программирования на JavaScript и Python.' },
+  { day:13, date:'пн, 13 июля', meeting_time:'20:00', title:'Метрики классификации и регрессии', tracks:['ML'], description:'Accuracy, Precision, Recall, AUC-ROC, MSE, RMSE, R2 и другие метрики качества моделей.' },
   { day:13, date:'пн, 13 июля', meeting_time:'20:30', title:'A/B-тестирование', tracks:['Аналитика'], description:'A/B-тестирование для аналитика: от гипотезы до интерпретации результата.' },
-  { day:13, date:'пн, 13 июля', meeting_time:'21:00', title:'Метрики классификации и регрессии', tracks:['ML'], description:'Accuracy, Precision, Recall, AUC-ROC, MSE, RMSE, R2 и другие метрики качества моделей.' },
-  { day:13, date:'пн, 13 июля', meeting_time:'21:30', title:'Технологии видеонаблюдения', tracks:['Кибербезопасность'], description:'Типы камер, углы обзора, дальность, настройка и расстановка систем видеонаблюдения.' },
+  { day:13, date:'пн, 13 июля', meeting_time:'21:00', title:'Технологии видеонаблюдения', tracks:['Кибербезопасность'], description:'Типы камер, углы обзора, дальность, настройка и расстановка систем видеонаблюдения.' },
+  { day:13, date:'пн, 13 июля', meeting_time:'21:30', title:'ООП: основы', tracks:['Frontend','Backend'], description:'Основы объектно-ориентированного программирования на JavaScript и Python.' },
 ].map((e, i) => ({ id: -1000 - i, month: 'july', type: 'lecture', theory: [], tasks: [], hw: '', meeting_link: '', ...e }))
 
 // Объединяем события июля из API с резервными. Резервные данные считаются
