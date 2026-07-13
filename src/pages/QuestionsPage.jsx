@@ -49,6 +49,10 @@ import July8CryptoTasks from '../questions/july-8-crypto'
 import July9MatplotlibTasks from '../questions/july-9-matplotlib'
 import July9WebSocketTasks from '../questions/july-9-websocket'
 import July9OwaspTasks from '../questions/july-9-owasp'
+import July13OopTasks from '../questions/july-13-oop'
+import July13AbTestingTasks from '../questions/july-13-ab-testing'
+import July13MetricsTasks from '../questions/july-13-metrics'
+import July13CctvTasks from '../questions/july-13-cctv'
 import July6DomTasks from '../questions/july-6-dom'
 import July6AuthTasks from '../questions/july-6-auth'
 import July6StatisticsTasks from '../questions/july-6-statistics'
@@ -86,6 +90,10 @@ const JULY_TRACK_LABELS = {
   130: '9 июля · Аналитика/ML — Визуализация данных: Matplotlib',
   131: '9 июля · Backend/Frontend — WebSocket и real-time',
   132: '9 июля · Кибербезопасность — OWASP Top 10',
+  136: '13 июля · Frontend/Backend — ООП: основы',
+  137: '13 июля · Аналитика — A/B-тестирование',
+  138: '13 июля · ML — Метрики классификации и регрессии',
+  139: '13 июля · Кибербезопасность — Технологии видеонаблюдения',
 }
 
 const QUESTIONS_COMPONENTS = {
@@ -144,6 +152,10 @@ const QUESTIONS_COMPONENTS = {
   130: July9MatplotlibTasks,         // Аналитика/ML, 9 июля
   131: July9WebSocketTasks,          // Backend/Frontend, 9 июля
   132: July9OwaspTasks,              // Кибербезопасность, 9 июля
+  136: July13OopTasks,               // Frontend/Backend, 13 июля
+  137: July13AbTestingTasks,         // Аналитика, 13 июля
+  138: July13MetricsTasks,           // ML, 13 июля
+  139: July13CctvTasks,              // Кибербезопасность, 13 июля
 }
 
 function QuestionCard({ question, taskIndex, totalTasks, onAnswer, isSolved, savedAnswer }) {

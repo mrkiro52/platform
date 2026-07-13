@@ -94,6 +94,10 @@ import July9MatplotlibTheory from '../theory/july-9-matplotlib'
 import July9WebSocketTheory from '../theory/july-9-websocket'
 import July9OwaspTheory from '../theory/july-9-owasp'
 import July1112PetProjectTheory from '../theory/july-11-12-petproject'
+import July13OopTheory from '../theory/july-13-oop'
+import July13AbTestingTheory from '../theory/july-13-ab-testing'
+import July13MetricsTheory from '../theory/july-13-metrics'
+import July13CctvTheory from '../theory/july-13-cctv'
 
 // Маппинг дней на компоненты с теорией
 const THEORY_COMPONENTS = {
@@ -159,6 +163,10 @@ const THEORY_COMPONENTS = {
   // 133: 10 июля (LeetCode) — материалы не добавляются намеренно
   134: July1112PetProjectTheory,      // Все треки, 11 июля
   135: July1112PetProjectTheory,      // Все треки, 12 июля
+  136: July13OopTheory,               // Frontend/Backend, 13 июля
+  137: July13AbTestingTheory,         // Аналитика, 13 июля
+  138: July13MetricsTheory,           // ML, 13 июля
+  139: July13CctvTheory,              // Кибербезопасность, 13 июля
 }
 
 // Заголовки для июльских треков (синтетические id)
@@ -198,6 +206,10 @@ export const JULY_TRACK_LABELS = {
   133: '10 июля · Все треки — Нарешиваем LeetCode',
   134: '11 июля · Все треки — Делаем пет-проект',
   135: '12 июля · Все треки — Делаем пет-проект',
+  136: '13 июля · Frontend/Backend — ООП: основы',
+  137: '13 июля · Аналитика — A/B-тестирование',
+  138: '13 июля · ML — Метрики классификации и регрессии',
+  139: '13 июля · Кибербезопасность — Технологии видеонаблюдения',
 }
 
 const THEORY_TITLES = {
