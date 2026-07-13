@@ -89,28 +89,6 @@ export default function July13AbTestingTheory() {
           изменением, а составом группы. Обычно разбиение делают по хешу user_id, чтобы один и тот же пользователь
           стабильно попадал в одну и ту же группу при повторных заходах.
         </P>
-        <Fig caption="Пользователи случайно делятся на две группы: контроль видит старую версию, эксперимент — новую. Сравнивают метрику между группами за один и тот же период">
-          <svg viewBox="0 0 480 170" width="100%" style={{ maxWidth: 480 }} xmlns="http://www.w3.org/2000/svg">
-            <rect x="20" y="20" width="120" height="34" rx="6" fill="var(--bg-tertiary)" stroke={C.border} />
-            <text x="80" y="42" fill={C.text} fontSize="11" textAnchor="middle">Все пользователи</text>
-            <line x1="140" y1="45" x2="200" y2="45" stroke={C.sub} strokeWidth="1.5" markerEnd="url(#ab1)" />
-            <text x="170" y="38" fill={C.sub} fontSize="9" textAnchor="middle">рандомизация</text>
-            <rect x="200" y="70" width="130" height="40" rx="6" fill="rgba(96,165,250,0.10)" stroke={C.blue} />
-            <text x="265" y="95" fill={C.blue} fontSize="11" fontWeight="700" textAnchor="middle">A — контроль (50%)</text>
-            <rect x="200" y="120" width="130" height="40" rx="6" fill="rgba(200,255,0,0.10)" stroke={C.lime} />
-            <text x="265" y="145" fill={C.lime} fontSize="11" fontWeight="700" textAnchor="middle">B — эксперимент (50%)</text>
-            <line x1="140" y1="45" x2="200" y2="90" stroke={C.sub} strokeWidth="1" strokeDasharray="3 2" />
-            <line x1="140" y1="45" x2="200" y2="140" stroke={C.sub} strokeWidth="1" strokeDasharray="3 2" />
-            <line x1="330" y1="90" x2="400" y2="90" stroke={C.blue} strokeWidth="1.4" markerEnd="url(#ab2)" />
-            <line x1="330" y1="140" x2="400" y2="140" stroke={C.lime} strokeWidth="1.4" markerEnd="url(#ab3)" />
-            <text x="440" y="118" fill={C.sub} fontSize="10" textAnchor="middle">сравнить</text>
-            <defs>
-              <marker id="ab1" markerWidth="7" markerHeight="7" refX="5" refY="2.5" orient="auto"><path d="M0,0 L5,2.5 L0,5 Z" fill={C.sub} /></marker>
-              <marker id="ab2" markerWidth="7" markerHeight="7" refX="5" refY="2.5" orient="auto"><path d="M0,0 L5,2.5 L0,5 Z" fill={C.blue} /></marker>
-              <marker id="ab3" markerWidth="7" markerHeight="7" refX="5" refY="2.5" orient="auto"><path d="M0,0 L5,2.5 L0,5 Z" fill={C.lime} /></marker>
-            </defs>
-          </svg>
-        </Fig>
       </section>
 
       <section className="theory-section">

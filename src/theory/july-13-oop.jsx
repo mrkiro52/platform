@@ -39,12 +39,12 @@ function P({ n, children }) {
 // Блок с кодом на двух языках рядом
 function DualCode({ jsCode, pyCode }) {
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, margin: '14px 0' }}>
-      <div>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 14, margin: '14px 0', width: '100%' }}>
+      <div style={{ width: '100%' }}>
         <div style={{ color: 'var(--accent-lime)', fontSize: 12, fontWeight: 700, marginBottom: 4 }}>JavaScript</div>
         <TheoryCode language="js" code={jsCode} />
       </div>
-      <div>
+      <div style={{ width: '100%' }}>
         <div style={{ color: 'var(--accent-lime)', fontSize: 12, fontWeight: 700, marginBottom: 4 }}>Python</div>
         <TheoryCode language="python" code={pyCode} />
       </div>
