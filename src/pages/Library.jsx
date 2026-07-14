@@ -88,6 +88,14 @@ const JULY_TRACKS_DAY13 = [
   { name: 'Кибербезопасность',  id: 139, lesson: 'Технологии видеонаблюдения',              color: { bg:'rgba(239,68,68,0.12)', border:'rgba(239,68,68,0.3)',  text:'#f87171' } },
 ]
 
+const JULY_TRACKS_DAY14 = [
+  { name: 'Machine Learning',   id: 140, lesson: 'Обобщающая способность: отложенная выборка и кросс-валидация', color: { bg:'rgba(34,197,94,0.12)',  border:'rgba(34,197,94,0.3)',  text:'#4ade80' }, showQuestions: false, showHomework: false },
+  { name: 'Аналитика',          id: 141, lesson: 'Линейная алгебра: векторы',                                     color: { bg:'rgba(99,102,241,0.12)', border:'rgba(99,102,241,0.3)', text:'#818cf8' }, showQuestions: false, showHomework: false },
+  { name: 'Frontend',           id: 142, lesson: 'SSG и SSR: серверный рендеринг и Next.js',                      color: { bg:'rgba(234,179,8,0.12)',  border:'rgba(234,179,8,0.3)',  text:'#facc15' }, showQuestions: false, showHomework: false },
+  { name: 'Backend',            id: 143, lesson: 'Микросервисы: основы',                                          color: { bg:'rgba(59,130,246,0.12)', border:'rgba(59,130,246,0.3)', text:'#60a5fa' }, showQuestions: false, showHomework: false },
+  { name: 'Кибербезопасность',  id: 144, lesson: 'Социальная инженерия и фишинг',                                color: { bg:'rgba(239,68,68,0.12)', border:'rgba(239,68,68,0.3)',  text:'#f87171' }, showQuestions: false, showHomework: false },
+]
+
 const JULY_DAYS = [
   { day: 1, date: 'ср, 1 июля', tracks: JULY_TRACKS },
   { day: 2, date: 'чт, 2 июля', tracks: JULY_TRACKS_DAY2 },
@@ -102,6 +110,7 @@ const JULY_DAYS = [
   { day: 11, date: 'сб, 11 июля', tracks: JULY_TRACKS_DAY11 },
   { day: 12, date: 'вс, 12 июля', tracks: JULY_TRACKS_DAY12 },
   { day: 13, date: 'пн, 13 июля', tracks: JULY_TRACKS_DAY13 },
+  { day: 14, date: 'вт, 14 июля', tracks: JULY_TRACKS_DAY14 },
 ]
 
 function JulyTrackRow({ track, onOpenTheory, onOpenQuestions, onOpenHomework }) {

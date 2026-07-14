@@ -98,6 +98,11 @@ import July13OopTheory from '../theory/july-13-oop'
 import July13AbTestingTheory from '../theory/july-13-ab-testing'
 import July13MetricsTheory from '../theory/july-13-metrics'
 import July13CctvTheory from '../theory/july-13-cctv'
+import July14GeneralizationTheory from '../theory/july-14-generalization'
+import July14VectorsTheory from '../theory/july-14-vectors'
+import July14SsrSsgTheory from '../theory/july-14-ssr-ssg'
+import July14MicroservicesTheory from '../theory/july-14-microservices'
+import July14PhishingTheory from '../theory/july-14-phishing'
 
 // Маппинг дней на компоненты с теорией
 const THEORY_COMPONENTS = {
@@ -167,6 +172,11 @@ const THEORY_COMPONENTS = {
   137: July13AbTestingTheory,         // Аналитика, 13 июля
   138: July13MetricsTheory,           // ML, 13 июля
   139: July13CctvTheory,              // Кибербезопасность, 13 июля
+  140: July14GeneralizationTheory,     // ML, 14 июля
+  141: July14VectorsTheory,            // Аналитика, 14 июля
+  142: July14SsrSsgTheory,             // Frontend, 14 июля
+  143: July14MicroservicesTheory,      // Backend, 14 июля
+  144: July14PhishingTheory,           // Кибербезопасность, 14 июля
 }
 
 // Заголовки для июльских треков (синтетические id)
@@ -210,6 +220,11 @@ export const JULY_TRACK_LABELS = {
   137: '13 июля · Аналитика — A/B-тестирование',
   138: '13 июля · ML — Метрики классификации и регрессии',
   139: '13 июля · Кибербезопасность — Технологии видеонаблюдения',
+  140: '14 июля · ML — Обобщающая способность: отложенная выборка и кросс-валидация',
+  141: '14 июля · Аналитика — Линейная алгебра: векторы',
+  142: '14 июля · Frontend — SSG и SSR: серверный рендеринг и Next.js',
+  143: '14 июля · Backend — Микросервисы: основы',
+  144: '14 июля · Кибербезопасность — Социальная инженерия и фишинг',
 }
 
 const THEORY_TITLES = {
