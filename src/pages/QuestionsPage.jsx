@@ -53,6 +53,11 @@ import July13OopTasks from '../questions/july-13-oop'
 import July13AbTestingTasks from '../questions/july-13-ab-testing'
 import July13MetricsTasks from '../questions/july-13-metrics'
 import July13CctvTasks from '../questions/july-13-cctv'
+import July14GeneralizationTasks from '../questions/july-14-generalization'
+import July14VectorsTasks from '../questions/july-14-vectors'
+import July14SsrSsgTasks from '../questions/july-14-ssr-ssg'
+import July14MicroservicesTasks from '../questions/july-14-microservices'
+import July14PhishingTasks from '../questions/july-14-phishing'
 import July6DomTasks from '../questions/july-6-dom'
 import July6AuthTasks from '../questions/july-6-auth'
 import July6StatisticsTasks from '../questions/july-6-statistics'
@@ -94,6 +99,11 @@ const JULY_TRACK_LABELS = {
   137: '13 июля · Аналитика — A/B-тестирование',
   138: '13 июля · ML — Метрики классификации и регрессии',
   139: '13 июля · Кибербезопасность — Технологии видеонаблюдения',
+  140: '14 июля · ML — Обобщающая способность: отложенная выборка и кросс-валидация',
+  141: '14 июля · Аналитика — Линейная алгебра: векторы',
+  142: '14 июля · Frontend — SSG и SSR: серверный рендеринг и Next.js',
+  143: '14 июля · Backend — Микросервисы: основы',
+  144: '14 июля · Кибербезопасность — Социальная инженерия и фишинг',
 }
 
 const QUESTIONS_COMPONENTS = {
@@ -156,6 +166,11 @@ const QUESTIONS_COMPONENTS = {
   137: July13AbTestingTasks,         // Аналитика, 13 июля
   138: July13MetricsTasks,           // ML, 13 июля
   139: July13CctvTasks,              // Кибербезопасность, 13 июля
+  140: July14GeneralizationTasks,     // ML, 14 июля
+  141: July14VectorsTasks,            // Аналитика, 14 июля
+  142: July14SsrSsgTasks,             // Frontend, 14 июля
+  143: July14MicroservicesTasks,      // Backend, 14 июля
+  144: July14PhishingTasks,           // Кибербезопасность, 14 июля
 }
 
 function QuestionCard({ question, taskIndex, totalTasks, onAnswer, isSolved, savedAnswer }) {
