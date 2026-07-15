@@ -97,7 +97,9 @@ const JULY_TRACKS_DAY14 = [
 ]
 
 const JULY_TRACKS_DAY15 = [
-  { name: 'Аналитика',          id: 141, lesson: 'Линейная алгебра: векторы',                                     color: { bg:'rgba(99,102,241,0.12)', border:'rgba(99,102,241,0.3)', text:'#818cf8' } },
+  { name: 'Frontend / Backend', id: 146, lesson: 'Docker: основы',                                                color: { bg:'rgba(234,179,8,0.12)',  border:'rgba(234,179,8,0.3)',  text:'#facc15' } },
+  { name: 'Аналитика / ML',     id: 141, lesson: 'Линейная алгебра: векторы',                                     color: { bg:'rgba(99,102,241,0.12)', border:'rgba(99,102,241,0.3)', text:'#818cf8' } },
+  { name: 'Кибербезопасность',  id: 147, lesson: 'Электронный документооборот и нормативная база',                color: { bg:'rgba(239,68,68,0.12)', border:'rgba(239,68,68,0.3)',  text:'#f87171' } },
 ]
 
 const JULY_DAYS = [

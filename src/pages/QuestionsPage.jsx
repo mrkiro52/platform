@@ -59,6 +59,8 @@ import July14SsrSsgTasks from '../questions/july-14-ssr-ssg'
 import July14MicroservicesTasks from '../questions/july-14-microservices'
 import July14PhishingTasks from '../questions/july-14-phishing'
 import July14DataCleaningTasks from '../questions/july-14-data-cleaning'
+import July15DockerTasks from '../questions/july-15-docker'
+import July15DocumentsTasks from '../questions/july-15-documents'
 import July6DomTasks from '../questions/july-6-dom'
 import July6AuthTasks from '../questions/july-6-auth'
 import July6StatisticsTasks from '../questions/july-6-statistics'
@@ -101,11 +103,13 @@ const JULY_TRACK_LABELS = {
   138: '13 июля · ML — Метрики классификации и регрессии',
   139: '13 июля · Кибербезопасность — Технологии видеонаблюдения',
   140: '14 июля · ML — Обобщающая способность: отложенная выборка и кросс-валидация',
-  141: '15 июля · Аналитика — Линейная алгебра: векторы',
+  141: '15 июля · Аналитика/ML — Линейная алгебра: векторы',
   142: '14 июля · Frontend — SSG и SSR: серверный рендеринг и Next.js',
   143: '14 июля · Backend — Микросервисы: основы',
   144: '14 июля · Кибербезопасность — Социальная инженерия и фишинг',
   145: '14 июля · Аналитика — Очистка данных',
+  146: '15 июля · Frontend/Backend — Docker: основы',
+  147: '15 июля · Кибербезопасность — Электронный документооборот и нормативная база РФ',
 }
 
 const QUESTIONS_COMPONENTS = {
@@ -174,6 +178,8 @@ const QUESTIONS_COMPONENTS = {
   143: July14MicroservicesTasks,      // Backend, 14 июля
   144: July14PhishingTasks,           // Кибербезопасность, 14 июля
   145: July14DataCleaningTasks,       // Аналитика, 14 июля — очистка данных
+  146: July15DockerTasks,             // Frontend/Backend, 15 июля — Docker
+  147: July15DocumentsTasks,          // Кибербезопасность, 15 июля — ЭДО и нормативка
 }
 
 function QuestionCard({ question, taskIndex, totalTasks, onAnswer, isSolved, savedAnswer }) {
