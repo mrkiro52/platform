@@ -12,6 +12,17 @@ function Fig({ children, caption }) {
   )
 }
 
+function Photo({ src, alt, caption }) {
+  return (
+    <figure style={{ margin: '18px 0', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
+      <img src={src} alt={alt} style={{
+        width: '100%', maxWidth: 640, borderRadius: 10, border: '1px solid var(--border-color)', display: 'block',
+      }} />
+      {caption && <figcaption style={{ color: 'var(--text-tertiary)', fontSize: 12.5, textAlign: 'center', maxWidth: 640 }}>{caption}</figcaption>}
+    </figure>
+  )
+}
+
 function Term({ name, children }) {
   return (
     <div style={{ margin: '12px 0', paddingLeft: 14, borderLeft: '2px solid var(--accent-lime)' }}>
@@ -62,21 +73,6 @@ export default function July16SecurityDevicesTheory() {
           люки, инфракрасный датчик движения — внутреннее пространство помещения. Ни один датчик не может
           заменить остальные — они дополняют друг друга, создавая несколько «рубежей» защиты объекта.
         </P>
-        <Fig caption="Рубежи охраны: датчик открытия и разбития стекла — периметр (1-й рубеж), ИК-датчик — внутреннее пространство (2-й рубеж).">
-          <svg viewBox="0 0 480 190" width="480" height="190" xmlns="http://www.w3.org/2000/svg">
-            <rect x="30" y="30" width="420" height="140" fill="none" stroke="#60a5fa" strokeWidth="2.5" />
-            <text x="240" y="20" fill="#60a5fa" fontSize="11" textAnchor="middle">1-й рубеж — периметр (окна, двери)</text>
-            <rect x="30" y="30" width="60" height="10" fill="#c8ff00" />
-            <text x="60" y="55" fill="#94a3b8" fontSize="9" textAnchor="middle">окно</text>
-            <rect x="200" y="160" width="50" height="10" fill="#f87171" />
-            <text x="225" y="150" fill="#94a3b8" fontSize="9" textAnchor="middle">дверь</text>
-            <circle cx="240" cy="100" r="6" fill="#4ade80" />
-            <path d="M 240 100 L 180 60 L 300 60 Z" fill="rgba(74,222,128,0.15)" stroke="#4ade80" strokeDasharray="3" />
-            <path d="M 240 100 L 180 140 L 300 140 Z" fill="rgba(74,222,128,0.15)" stroke="#4ade80" strokeDasharray="3" />
-            <text x="240" y="105" fill="#4ade80" fontSize="9" textAnchor="middle">ИК-датчик</text>
-            <text x="240" y="185" fill="#4ade80" fontSize="11" textAnchor="middle">2-й рубеж — объём помещения</text>
-          </svg>
-        </Fig>
       </section>
 
       <section className="theory-section">
@@ -93,23 +89,7 @@ export default function July16SecurityDevicesTheory() {
           (вибрационный)</strong> датчик крепится прямо на стекло и реагирует на характерные вибрации именно
           разбивающегося стекла, передающиеся через раму.
         </P>
-        <Fig caption="Акустический датчик анализирует звук в комнате; ударно-контактный крепится прямо на стекло и ловит вибрацию.">
-          <svg viewBox="0 0 460 150" width="460" height="150" xmlns="http://www.w3.org/2000/svg">
-            <rect x="30" y="20" width="90" height="110" fill="rgba(96,165,250,0.1)" stroke="#60a5fa" />
-            <text x="75" y="15" fill="#94a3b8" fontSize="10" textAnchor="middle">окно</text>
-            <circle cx="210" cy="50" r="10" fill="rgba(200,255,0,0.25)" stroke="#c8ff00" strokeWidth="2" />
-            <text x="210" y="80" fill="#c8ff00" fontSize="10" textAnchor="middle">акустический</text>
-            <text x="210" y="93" fill="#94a3b8" fontSize="9" textAnchor="middle">(на потолке/стене,</text>
-            <text x="210" y="105" fill="#94a3b8" fontSize="9" textAnchor="middle">слушает комнату)</text>
-            <path d="M 195 50 C 180 40, 180 60, 165 50" fill="none" stroke="#c8ff00" strokeDasharray="2" />
-            <path d="M 190 50 C 178 44, 178 56, 168 50" fill="none" stroke="#c8ff00" strokeDasharray="2" />
-
-            <rect x="330" y="55" width="16" height="16" fill="#f87171" />
-            <text x="338" y="95" fill="#f87171" fontSize="10" textAnchor="middle">ударно-контактный</text>
-            <text x="338" y="108" fill="#94a3b8" fontSize="9" textAnchor="middle">(крепится на стекло)</text>
-            <line x1="338" y1="71" x2="338" y2="90" stroke="#f87171" />
-          </svg>
-        </Fig>
+        <Photo src="https://rusmarta.ru/upload/iblock/f78/f78b6b05163ab556d767479725783744.jpg" alt="Датчик разбития стекла" caption="Датчик разбития стекла — устанавливается на стене или потолке напротив окна." />
         <TheoryTable
           headers={['Настройка / установка', 'Как правильно']}
           rows={[
@@ -153,6 +133,7 @@ export default function July16SecurityDevicesTheory() {
             <text x="220" y="115" fill="#f87171" fontSize="10" textAnchor="middle">человек пересекает лучи</text>
           </svg>
         </Fig>
+        <Photo src="https://www.tinko.ru/upload/iblock/192/d3ar83uyh3rtqrfw4sq1wzdpv25m3dg2.jpeg" alt="Пассивный инфракрасный датчик (PIR)" caption="Пассивный инфракрасный датчик движения — устанавливается в углу помещения." />
         <TheoryTable
           headers={['Параметр', 'Типичное значение / правило']}
           rows={[
@@ -208,6 +189,7 @@ export default function July16SecurityDevicesTheory() {
             <text x="350" y="130" fill="#f87171" fontSize="9" textAnchor="middle">цепь разомкнута — тревога</text>
           </svg>
         </Fig>
+        <Photo src="https://avatars.mds.yandex.net/get-mpic/1886039/img_id8202582524632175006.jpeg/orig" alt="Датчик открытия двери" caption="Магнитоконтактный датчик открытия двери — геркон и магнит крепятся друг напротив друга." />
         <TheoryTable
           headers={['Настройка / установка', 'Как правильно']}
           rows={[
