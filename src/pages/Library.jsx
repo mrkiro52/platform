@@ -104,6 +104,8 @@ const JULY_TRACKS_DAY15 = [
 
 const JULY_TRACKS_DAY16 = [
   { name: 'Аналитика / ML',     id: 148, lesson: 'Качаем статистику: распределения',                              color: { bg:'rgba(99,102,241,0.12)', border:'rgba(99,102,241,0.3)', text:'#818cf8' } },
+  { name: 'Frontend / Backend', id: 149, lesson: 'Все виды баз данных: сходства и отличия',                      color: { bg:'rgba(234,179,8,0.12)',  border:'rgba(234,179,8,0.3)',  text:'#facc15' }, showHomework: false },
+  { name: 'Кибербезопасность',  id: 150, lesson: 'Технические средства охраны',                                  color: { bg:'rgba(239,68,68,0.12)', border:'rgba(239,68,68,0.3)',  text:'#f87171' }, showHomework: false },
 ]
 
 const JULY_DAYS = [

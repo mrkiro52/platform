@@ -62,6 +62,8 @@ import July14DataCleaningTasks from '../questions/july-14-data-cleaning'
 import July15DockerTasks from '../questions/july-15-docker'
 import July15DocumentsTasks from '../questions/july-15-documents'
 import July16DistributionsTasks from '../questions/july-16-distributions'
+import July16DatabasesTasks from '../questions/july-16-databases'
+import July16SecurityDevicesTasks from '../questions/july-16-security-devices'
 import July6DomTasks from '../questions/july-6-dom'
 import July6AuthTasks from '../questions/july-6-auth'
 import July6StatisticsTasks from '../questions/july-6-statistics'
@@ -112,6 +114,8 @@ const JULY_TRACK_LABELS = {
   146: '15 июля · Frontend/Backend — Docker: основы',
   147: '15 июля · Кибербезопасность — Электронный документооборот и нормативная база РФ',
   148: '16 июля · Аналитика/ML — Качаем статистику: распределения',
+  149: '16 июля · Frontend/Backend — Все виды баз данных: сходства и отличия',
+  150: '16 июля · Кибербезопасность — Технические средства охраны',
 }
 
 const QUESTIONS_COMPONENTS = {
@@ -183,6 +187,8 @@ const QUESTIONS_COMPONENTS = {
   146: July15DockerTasks,             // Frontend/Backend, 15 июля — Docker
   147: July15DocumentsTasks,          // Кибербезопасность, 15 июля — ЭДО и нормативка
   148: July16DistributionsTasks,      // Аналитика/ML, 16 июля — распределения
+  149: July16DatabasesTasks,          // Frontend/Backend, 16 июля — виды баз данных
+  150: July16SecurityDevicesTasks,    // Кибербезопасность, 16 июля — технические средства охраны
 }
 
 function QuestionCard({ question, taskIndex, totalTasks, onAnswer, isSolved, savedAnswer }) {
