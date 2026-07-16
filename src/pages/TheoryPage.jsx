@@ -106,6 +106,7 @@ import July14PhishingTheory from '../theory/july-14-phishing'
 import July14DataCleaningTheory from '../theory/july-14-data-cleaning'
 import July15DockerTheory from '../theory/july-15-docker'
 import July15DocumentsTheory from '../theory/july-15-documents'
+import July16DistributionsTheory from '../theory/july-16-distributions'
 
 // Маппинг дней на компоненты с теорией
 const THEORY_COMPONENTS = {
@@ -183,6 +184,7 @@ const THEORY_COMPONENTS = {
   145: July14DataCleaningTheory,       // Аналитика, 14 июля — очистка данных
   146: July15DockerTheory,             // Frontend/Backend, 15 июля — Docker
   147: July15DocumentsTheory,          // Кибербезопасность, 15 июля — ЭДО и нормативка
+  148: July16DistributionsTheory,      // Аналитика/ML, 16 июля — распределения
 }
 
 // Заголовки для июльских треков (синтетические id)
@@ -234,6 +236,7 @@ export const JULY_TRACK_LABELS = {
   145: '14 июля · Аналитика — Очистка данных',
   146: '15 июля · Frontend/Backend — Docker: основы',
   147: '15 июля · Кибербезопасность — Электронный документооборот и нормативная база РФ',
+  148: '16 июля · Аналитика/ML — Качаем статистику: распределения',
 }
 
 const THEORY_TITLES = {

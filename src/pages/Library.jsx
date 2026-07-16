@@ -102,6 +102,10 @@ const JULY_TRACKS_DAY15 = [
   { name: 'Кибербезопасность',  id: 147, lesson: 'Электронный документооборот и нормативная база',                color: { bg:'rgba(239,68,68,0.12)', border:'rgba(239,68,68,0.3)',  text:'#f87171' } },
 ]
 
+const JULY_TRACKS_DAY16 = [
+  { name: 'Аналитика / ML',     id: 148, lesson: 'Качаем статистику: распределения',                              color: { bg:'rgba(99,102,241,0.12)', border:'rgba(99,102,241,0.3)', text:'#818cf8' } },
+]
+
 const JULY_DAYS = [
   { day: 1, date: 'ср, 1 июля', tracks: JULY_TRACKS },
   { day: 2, date: 'чт, 2 июля', tracks: JULY_TRACKS_DAY2 },
@@ -118,6 +122,7 @@ const JULY_DAYS = [
   { day: 13, date: 'пн, 13 июля', tracks: JULY_TRACKS_DAY13 },
   { day: 14, date: 'вт, 14 июля', tracks: JULY_TRACKS_DAY14 },
   { day: 15, date: 'ср, 15 июля', tracks: JULY_TRACKS_DAY15 },
+  { day: 16, date: 'чт, 16 июля', tracks: JULY_TRACKS_DAY16 },
 ]
 
 function JulyTrackRow({ track, onOpenTheory, onOpenQuestions, onOpenHomework }) {
