@@ -112,6 +112,7 @@ import July15DocumentsTheory from '../theory/july-15-documents'
 import July16DistributionsTheory from '../theory/july-16-distributions'
 import July16DatabasesTheory from '../theory/july-16-databases'
 import July16SecurityDevicesTheory from '../theory/july-16-security-devices'
+import July17LeetcodeTheory from '../theory/july-17-leetcode'
 
 // Маппинг дней на компоненты с теорией
 const THEORY_COMPONENTS = {
@@ -192,7 +193,7 @@ const THEORY_COMPONENTS = {
   148: July16DistributionsTheory,      // Аналитика/ML, 16 июля — распределения
   149: July16DatabasesTheory,          // Frontend/Backend, 16 июля — виды баз данных
   150: July16SecurityDevicesTheory,    // Кибербезопасность, 16 июля — технические средства охраны
-  // 151: 17 июля (LeetCode) — материалы не добавляются намеренно
+  151: July17LeetcodeTheory,          // Все треки, 17 июля — разбор LeetCode
 }
 
 // Заголовки для июльских треков (синтетические id)
