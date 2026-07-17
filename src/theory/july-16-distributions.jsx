@@ -1,4 +1,5 @@
 import { TheoryTable, TheoryCode, TheoryExample } from './components/TheoryTable'
+import VideoPlayer from '../components/VideoPlayer'
 
 function Fig({ children, caption }) {
   return (
@@ -43,7 +44,7 @@ function bellPath(cx, w, h, base) {
           C ${cx + w * 0.5} ${base - h * 0.15}, ${cx + w * 0.6} ${base}, ${cx + w} ${base}`
 }
 
-export default function July16DistributionsTheory() {
+export default function July16DistributionsTheory({ videoUrl }) {
   return (
     <div className="theory-container">
       <section className="theory-section">
@@ -58,6 +59,8 @@ export default function July16DistributionsTheory() {
           перцентили и квартили. Всё — с иллюстрациями и кодом на Python.
         </p>
       </section>
+
+      {videoUrl && <VideoPlayer src={videoUrl} />}
 
       <section className="theory-section">
         <h2 className="theory-heading-2">1. Вариационный ряд</h2>

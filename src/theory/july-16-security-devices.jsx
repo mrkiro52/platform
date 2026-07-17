@@ -1,4 +1,5 @@
 import { TheoryTable, TheoryExample } from './components/TheoryTable'
+import VideoPlayer from '../components/VideoPlayer'
 
 function Fig({ children, caption }) {
   return (
@@ -45,7 +46,7 @@ function P({ n, children }) {
   )
 }
 
-export default function July16SecurityDevicesTheory() {
+export default function July16SecurityDevicesTheory({ videoUrl }) {
   return (
     <div className="theory-container">
       <section className="theory-section">
@@ -60,6 +61,8 @@ export default function July16SecurityDevicesTheory() {
           настройку, правильную и неправильную установку, требования и то, как объединить их в единую систему.
         </p>
       </section>
+
+      {videoUrl && <VideoPlayer src={videoUrl} />}
 
       <section className="theory-section">
         <h2 className="theory-heading-2">1. Что такое охранная сигнализация и зачем нужны датчики</h2>

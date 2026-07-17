@@ -34,6 +34,9 @@ const VIDEO_URLS = {
   28: '',
   29: '',
   30: '',
+  148: 'https://s3.regru.cloud/kirocamp/day16ml.mov',
+  149: 'https://s3.regru.cloud/kirocamp/day16full.mov',
+  150: 'https://s3.regru.cloud/kirocamp/day16sec.mov',
 }
 import Day1IntroTheory from '../theory/day-1-intro'
 import Day2BasicsTheory from '../theory/day-2-basics'
