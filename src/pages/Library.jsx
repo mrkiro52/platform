@@ -112,6 +112,10 @@ const JULY_TRACKS_DAY17 = [
   { name: 'Все треки', id: 151, lesson: 'Нарешиваем LeetCode', color: { bg:'rgba(200,255,0,0.12)', border:'rgba(200,255,0,0.3)', text:'#c8ff00' }, showQuestions: false, showHomework: false },
 ]
 
+const JULY_TRACKS_DAY18 = [
+  { name: 'Аналитика / ML', id: 152, lesson: 'Алгоритм k-Nearest Neighbors (kNN)', color: { bg:'rgba(99,102,241,0.12)', border:'rgba(99,102,241,0.3)', text:'#818cf8' } },
+]
+
 const JULY_DAYS = [
   { day: 1, date: 'ср, 1 июля', tracks: JULY_TRACKS },
   { day: 2, date: 'чт, 2 июля', tracks: JULY_TRACKS_DAY2 },
@@ -130,6 +134,7 @@ const JULY_DAYS = [
   { day: 15, date: 'ср, 15 июля', tracks: JULY_TRACKS_DAY15 },
   { day: 16, date: 'чт, 16 июля', tracks: JULY_TRACKS_DAY16 },
   { day: 17, date: 'пт, 17 июля', tracks: JULY_TRACKS_DAY17 },
+  { day: 18, date: 'сб, 18 июля', tracks: JULY_TRACKS_DAY18 },
 ]
 
 function JulyTrackRow({ track, onOpenTheory, onOpenQuestions, onOpenHomework }) {
