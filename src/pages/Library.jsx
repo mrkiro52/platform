@@ -115,6 +115,7 @@ const JULY_TRACKS_DAY17 = [
 const JULY_TRACKS_DAY18 = [
   { name: 'Аналитика / ML', id: 152, lesson: 'Алгоритм k-Nearest Neighbors (kNN)', color: { bg:'rgba(99,102,241,0.12)', border:'rgba(99,102,241,0.3)', text:'#818cf8' } },
   { name: 'Frontend / Backend', id: 153, lesson: 'Оптимизация фронтенда и бэкенда', color: { bg:'rgba(234,179,8,0.12)', border:'rgba(234,179,8,0.3)', text:'#facc15' } },
+  { name: 'Кибербезопасность', id: 154, lesson: 'CTF: основные принципы', color: { bg:'rgba(239,68,68,0.12)', border:'rgba(239,68,68,0.3)', text:'#f87171' }, showQuestions: false, showHomework: false },
 ]
 
 const JULY_DAYS = [
