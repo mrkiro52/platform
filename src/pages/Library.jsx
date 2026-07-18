@@ -114,6 +114,7 @@ const JULY_TRACKS_DAY17 = [
 
 const JULY_TRACKS_DAY18 = [
   { name: 'Аналитика / ML', id: 152, lesson: 'Алгоритм k-Nearest Neighbors (kNN)', color: { bg:'rgba(99,102,241,0.12)', border:'rgba(99,102,241,0.3)', text:'#818cf8' } },
+  { name: 'Frontend / Backend', id: 153, lesson: 'Оптимизация фронтенда и бэкенда', color: { bg:'rgba(234,179,8,0.12)', border:'rgba(234,179,8,0.3)', text:'#facc15' } },
 ]
 
 const JULY_DAYS = [

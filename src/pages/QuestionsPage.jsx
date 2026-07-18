@@ -65,6 +65,7 @@ import July16DistributionsTasks from '../questions/july-16-distributions'
 import July16DatabasesTasks from '../questions/july-16-databases'
 import July16SecurityDevicesTasks from '../questions/july-16-security-devices'
 import July18KnnTasks from '../questions/july-18-knn'
+import July18OptimizationTasks from '../questions/july-18-optimization'
 import July6DomTasks from '../questions/july-6-dom'
 import July6AuthTasks from '../questions/july-6-auth'
 import July6StatisticsTasks from '../questions/july-6-statistics'
@@ -118,6 +119,7 @@ const JULY_TRACK_LABELS = {
   149: '16 июля · Frontend/Backend — Все виды баз данных: сходства и отличия',
   150: '16 июля · Кибербезопасность — Технические средства охраны',
   152: '18 июля · Аналитика/ML — Алгоритм k-Nearest Neighbors (kNN)',
+  153: '18 июля · Frontend/Backend — Оптимизация фронтенда и бэкенда',
 }
 
 const QUESTIONS_COMPONENTS = {
@@ -192,6 +194,7 @@ const QUESTIONS_COMPONENTS = {
   149: July16DatabasesTasks,          // Frontend/Backend, 16 июля — виды баз данных
   150: July16SecurityDevicesTasks,    // Кибербезопасность, 16 июля — технические средства охраны
   152: July18KnnTasks,                // Аналитика/ML, 18 июля — kNN
+  153: July18OptimizationTasks,       // Frontend/Backend, 18 июля — оптимизация
 }
 
 function QuestionCard({ question, taskIndex, totalTasks, onAnswer, isSolved, savedAnswer }) {

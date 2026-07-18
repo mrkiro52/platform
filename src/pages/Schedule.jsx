@@ -78,6 +78,7 @@ const JULY_SCHEDULE_FALLBACK = [
   { day:16, date:'чт, 16 июля', meeting_time:'22:00', title:'Технические средства охраны', tracks:['Кибербезопасность'], description:'Датчик разбития стекла, PIR-датчик движения, датчик открытия двери: принципы работы, установка и комбинирование.' },
   { day:17, date:'пт, 17 июля', meeting_time:'20:00', title:'Нарешиваем LeetCode', tracks:['Frontend','Backend','Аналитика','ML','Кибербезопасность'], description:'Практика алгоритмических задач для всех треков.' },
   { day:18, date:'сб, 18 июля', meeting_time:'20:00', title:'Алгоритм k-Nearest Neighbors (kNN)', tracks:['Аналитика','ML'], description:'Метод ближайших соседей: регрессия и классификация, метрики расстояния, перевзвешивание, масштабирование признаков.' },
+  { day:18, date:'сб, 18 июля', meeting_time:'20:30', title:'Оптимизация фронтенда и бэкенда', tracks:['Frontend','Backend'], description:'Оптимизация React/JS на фронтенде, Node.js/Python/Go на бэкенде, инструменты замера (PageSpeed, Core Web Vitals).' },
 ].map((e, i) => ({ id: -1000 - i, month: 'july', type: 'lecture', theory: [], tasks: [], hw: '', meeting_link: '', ...e }))
 
 // Объединяем события июля из API с резервными. Резервные данные считаются

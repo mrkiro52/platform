@@ -114,6 +114,7 @@ import July16DatabasesTheory from '../theory/july-16-databases'
 import July16SecurityDevicesTheory from '../theory/july-16-security-devices'
 import July17LeetcodeTheory from '../theory/july-17-leetcode'
 import July18KnnTheory from '../theory/july-18-knn'
+import July18OptimizationTheory from '../theory/july-18-optimization'
 
 // Маппинг дней на компоненты с теорией
 const THEORY_COMPONENTS = {
@@ -196,6 +197,7 @@ const THEORY_COMPONENTS = {
   150: July16SecurityDevicesTheory,    // Кибербезопасность, 16 июля — технические средства охраны
   151: July17LeetcodeTheory,          // Все треки, 17 июля — разбор LeetCode
   152: July18KnnTheory,                // Аналитика/ML, 18 июля — kNN
+  153: July18OptimizationTheory,       // Frontend/Backend, 18 июля — оптимизация
 }
 
 // Заголовки для июльских треков (синтетические id)
@@ -252,6 +254,7 @@ export const JULY_TRACK_LABELS = {
   150: '16 июля · Кибербезопасность — Технические средства охраны',
   151: '17 июля · Все треки — Нарешиваем LeetCode',
   152: '18 июля · Аналитика/ML — Алгоритм k-Nearest Neighbors (kNN)',
+  153: '18 июля · Frontend/Backend — Оптимизация фронтенда и бэкенда',
 }
 
 const THEORY_TITLES = {
