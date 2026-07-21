@@ -118,6 +118,10 @@ const JULY_TRACKS_DAY18 = [
   { name: 'Кибербезопасность', id: 154, lesson: 'CTF: основные принципы', color: { bg:'rgba(239,68,68,0.12)', border:'rgba(239,68,68,0.3)', text:'#f87171' }, showQuestions: false, showHomework: false },
 ]
 
+const JULY_TRACKS_DAY20 = [
+  { name: 'Machine Learning', id: 155, lesson: 'Вопросы с собеседования: Python и основы', color: { bg:'rgba(34,197,94,0.12)', border:'rgba(34,197,94,0.3)', text:'#4ade80' }, showQuestions: false, showHomework: false },
+]
+
 const JULY_DAYS = [
   { day: 1, date: 'ср, 1 июля', tracks: JULY_TRACKS },
   { day: 2, date: 'чт, 2 июля', tracks: JULY_TRACKS_DAY2 },
@@ -137,6 +141,7 @@ const JULY_DAYS = [
   { day: 16, date: 'чт, 16 июля', tracks: JULY_TRACKS_DAY16 },
   { day: 17, date: 'пт, 17 июля', tracks: JULY_TRACKS_DAY17 },
   { day: 18, date: 'сб, 18 июля', tracks: JULY_TRACKS_DAY18 },
+  { day: 20, date: 'пн, 20 июля', tracks: JULY_TRACKS_DAY20 },
 ]
 
 function JulyTrackRow({ track, onOpenTheory, onOpenQuestions, onOpenHomework }) {
