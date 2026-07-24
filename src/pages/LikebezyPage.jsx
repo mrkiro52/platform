@@ -4,6 +4,7 @@ import PandasLikbez from './likebezy/PandasLikbez'
 import SqlLikbez from './likebezy/SqlLikbez'
 import MlLikbez from './likebezy/MlLikbez'
 import PythonLikbez from './likebezy/PythonLikbez'
+import PythonOopLikbez from './likebezy/PythonOopLikbez'
 
 const LIKEBEZY = [
   {
@@ -17,6 +18,18 @@ const LIKEBEZY = [
     questions: 27,
     topics: ['Типы данных', 'Строки', 'Условия и циклы', 'Коллекции', 'Функции', 'ООП основы'],
     component: PythonLikbez,
+  },
+  {
+    id: 'python-oop',
+    title: 'ООП в Python',
+    subtitle: 'От классов до метаклассов, SOLID и паттернов проектирования',
+    tag: 'Python',
+    level: 'С нуля → Senior-собеседование',
+    time: '~90 мин',
+    chapters: 22,
+    questions: 20,
+    topics: ['Классы и объекты', 'Наследование', 'Инкапсуляция', 'Dunder-методы', 'SOLID', 'Паттерны проектирования'],
+    component: PythonOopLikbez,
   },
   {
     id: 'pandas',
