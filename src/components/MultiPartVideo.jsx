@@ -97,3 +97,12 @@ export const JULY7_ALGORITHMS_PARTS = [
   'https://s3.regru.cloud/kirocamp/allAlgo6.mov',
   'https://s3.regru.cloud/kirocamp/allAlgo7.mov',
 ]
+
+// Части записи встречи Insider Show 3, 24 июля, все треки (5 частей)
+export const JULY24_INSIDER_SHOW_3_PARTS = [
+  'https://s3.regru.cloud/kirocamp/is1.mov',
+  'https://s3.regru.cloud/kirocamp/is2.mov',
+  'https://s3.regru.cloud/kirocamp/is3.mov',
+  'https://s3.regru.cloud/kirocamp/is4.mov',
+  'https://s3.regru.cloud/kirocamp/is5.mov',
+]

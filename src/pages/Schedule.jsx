@@ -81,6 +81,10 @@ const JULY_SCHEDULE_FALLBACK = [
   { day:18, date:'сб, 18 июля', meeting_time:'20:30', title:'Оптимизация фронтенда и бэкенда', tracks:['Frontend','Backend'], description:'Оптимизация React/JS на фронтенде, Node.js/Python/Go на бэкенде, инструменты замера (PageSpeed, Core Web Vitals).' },
   { day:18, date:'сб, 18 июля', meeting_time:'21:00', title:'CTF: основные принципы', tracks:['Кибербезопасность'], description:'Где искать флаги в веб-приложениях: код, трафик, скрытые файлы, база данных, уязвимости логики доступа.' },
   { day:20, date:'пн, 20 июля', meeting_time:'20:00', title:'Вопросы с собеседования ML: Python и основы', tracks:['ML'], description:'Разбор реальных вопросов с собеседования и 20 классических вопросов по Python с ответами.' },
+  { day:21, date:'вт, 21 июля', meeting_time:'20:00', title:'Вопросы с собеседования: Аналитика', tracks:['Аналитика'], description:'Метрики, A/B-тесты, статистика и SQL — самые популярные вопросы собеседований аналитика с ответами.' },
+  { day:22, date:'ср, 22 июля', meeting_time:'20:00', title:'Вопросы с собеседования: Фуллстак разработка', tracks:['Frontend','Backend'], description:'HTTP, API, базы данных, архитектура, React и JavaScript — вопросы собеседований фуллстак-разработчика с ответами.' },
+  { day:23, date:'чт, 23 июля', meeting_time:'20:00', title:'Вопросы с собеседования: Кибербезопасность', tracks:['Кибербезопасность'], description:'Виды атак, шифрование, защита и пентест — популярные вопросы собеседований по ИБ с ответами.' },
+  { day:24, date:'пт, 24 июля', meeting_time:'20:00', title:'Insider Show 3', tracks:['Frontend','Backend','Аналитика','ML','Кибербезопасность'], description:'Запись встречи Insider Show 3 с Марком.' },
 ].map((e, i) => ({ id: -1000 - i, month: 'july', type: 'lecture', theory: [], tasks: [], hw: '', meeting_link: '', ...e }))
 
 // Объединяем события июля из API с резервными. Резервные данные считаются

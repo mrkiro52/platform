@@ -117,6 +117,10 @@ import July18KnnTheory from '../theory/july-18-knn'
 import July18OptimizationTheory from '../theory/july-18-optimization'
 import July18CtfTheory from '../theory/july-18-ctf'
 import July20MlInterviewTheory from '../theory/july-20-ml-interview'
+import July21AnalyticsInterviewTheory from '../theory/july-21-analytics-interview'
+import July22FullstackInterviewTheory from '../theory/july-22-fullstack-interview'
+import July23SecurityInterviewTheory from '../theory/july-23-security-interview'
+import July24InsiderShow3Theory from '../theory/july-24-insider-show-3'
 
 // Маппинг дней на компоненты с теорией
 const THEORY_COMPONENTS = {
@@ -202,6 +206,10 @@ const THEORY_COMPONENTS = {
   153: July18OptimizationTheory,       // Frontend/Backend, 18 июля — оптимизация
   154: July18CtfTheory,                // Кибербезопасность, 18 июля — CTF основные принципы
   155: July20MlInterviewTheory,        // ML, 20 июля — вопросы с собеседования
+  156: July21AnalyticsInterviewTheory, // Аналитика, 21 июля — вопросы с собеседования
+  157: July22FullstackInterviewTheory, // Frontend/Backend, 22 июля — вопросы с собеседования
+  158: July23SecurityInterviewTheory,  // Кибербезопасность, 23 июля — вопросы с собеседования
+  159: July24InsiderShow3Theory,       // Все треки, 24 июля — Insider Show 3
 }
 
 // Заголовки для июльских треков (синтетические id)
@@ -261,6 +269,10 @@ export const JULY_TRACK_LABELS = {
   153: '18 июля · Frontend/Backend — Оптимизация фронтенда и бэкенда',
   154: '18 июля · Кибербезопасность — CTF: основные принципы',
   155: '20 июля · ML — Вопросы с собеседования: Python и основы',
+  156: '21 июля · Аналитика — Вопросы с собеседования',
+  157: '22 июля · Frontend/Backend — Вопросы с собеседования: Фуллстак разработка',
+  158: '23 июля · Кибербезопасность — Вопросы с собеседования',
+  159: '24 июля · Все треки — Insider Show 3',
 }
 
 const THEORY_TITLES = {

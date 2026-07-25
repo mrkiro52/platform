@@ -122,6 +122,22 @@ const JULY_TRACKS_DAY20 = [
   { name: 'Machine Learning', id: 155, lesson: 'Вопросы с собеседования: Python и основы', color: { bg:'rgba(34,197,94,0.12)', border:'rgba(34,197,94,0.3)', text:'#4ade80' }, showQuestions: false, showHomework: false },
 ]
 
+const JULY_TRACKS_DAY21 = [
+  { name: 'Аналитика', id: 156, lesson: 'Вопросы с собеседования', color: { bg:'rgba(99,102,241,0.12)', border:'rgba(99,102,241,0.3)', text:'#818cf8' }, showQuestions: false, showHomework: false },
+]
+
+const JULY_TRACKS_DAY22 = [
+  { name: 'Frontend / Backend', id: 157, lesson: 'Вопросы с собеседования: Фуллстак разработка', color: { bg:'rgba(234,179,8,0.12)', border:'rgba(234,179,8,0.3)', text:'#facc15' }, showQuestions: false, showHomework: false },
+]
+
+const JULY_TRACKS_DAY23 = [
+  { name: 'Кибербезопасность', id: 158, lesson: 'Вопросы с собеседования', color: { bg:'rgba(239,68,68,0.12)', border:'rgba(239,68,68,0.3)', text:'#f87171' }, showQuestions: false, showHomework: false },
+]
+
+const JULY_TRACKS_DAY24 = [
+  { name: 'Все треки', id: 159, lesson: 'Insider Show 3', color: { bg:'rgba(200,255,0,0.12)', border:'rgba(200,255,0,0.3)', text:'#c8ff00' }, showQuestions: false, showHomework: false },
+]
+
 const JULY_DAYS = [
   { day: 1, date: 'ср, 1 июля', tracks: JULY_TRACKS },
   { day: 2, date: 'чт, 2 июля', tracks: JULY_TRACKS_DAY2 },
@@ -142,6 +158,10 @@ const JULY_DAYS = [
   { day: 17, date: 'пт, 17 июля', tracks: JULY_TRACKS_DAY17 },
   { day: 18, date: 'сб, 18 июля', tracks: JULY_TRACKS_DAY18 },
   { day: 20, date: 'пн, 20 июля', tracks: JULY_TRACKS_DAY20 },
+  { day: 21, date: 'вт, 21 июля', tracks: JULY_TRACKS_DAY21 },
+  { day: 22, date: 'ср, 22 июля', tracks: JULY_TRACKS_DAY22 },
+  { day: 23, date: 'чт, 23 июля', tracks: JULY_TRACKS_DAY23 },
+  { day: 24, date: 'пт, 24 июля', tracks: JULY_TRACKS_DAY24 },
 ]
 
 function JulyTrackRow({ track, onOpenTheory, onOpenQuestions, onOpenHomework }) {
