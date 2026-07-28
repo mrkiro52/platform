@@ -121,6 +121,7 @@ import July21AnalyticsInterviewTheory from '../theory/july-21-analytics-intervie
 import July22FullstackInterviewTheory from '../theory/july-22-fullstack-interview'
 import July23SecurityInterviewTheory from '../theory/july-23-security-interview'
 import July24InsiderShow3Theory from '../theory/july-24-insider-show-3'
+import July28MicroservicesSystemDesignTheory from '../theory/july-28-microservices-system-design'
 
 // Маппинг дней на компоненты с теорией
 const THEORY_COMPONENTS = {
@@ -210,6 +211,8 @@ const THEORY_COMPONENTS = {
   157: July22FullstackInterviewTheory, // Frontend/Backend, 22 июля — вопросы с собеседования
   158: July23SecurityInterviewTheory,  // Кибербезопасность, 23 июля — вопросы с собеседования
   159: July24InsiderShow3Theory,       // Все треки, 24 июля — Insider Show 3
+  // 160, 161: 26-27 июля (пет-проекты и портфолио) — материалы не добавляются намеренно
+  162: July28MicroservicesSystemDesignTheory, // Frontend/Backend, 28 июля — микросервисная архитектура и system design
 }
 
 // Заголовки для июльских треков (синтетические id)
@@ -273,6 +276,9 @@ export const JULY_TRACK_LABELS = {
   157: '22 июля · Frontend/Backend — Вопросы с собеседования: Фуллстак разработка',
   158: '23 июля · Кибербезопасность — Вопросы с собеседования',
   159: '24 июля · Все треки — Insider Show 3',
+  160: '26 июля · Все треки — Пет-проект и портфолио',
+  161: '27 июля · Все треки — Пет-проект и портфолио',
+  162: '28 июля · Frontend/Backend — Микросервисная архитектура и проектирование систем',
 }
 
 const THEORY_TITLES = {

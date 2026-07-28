@@ -138,6 +138,18 @@ const JULY_TRACKS_DAY24 = [
   { name: 'Все треки', id: 159, lesson: 'Insider Show 3', color: { bg:'rgba(200,255,0,0.12)', border:'rgba(200,255,0,0.3)', text:'#c8ff00' }, showQuestions: false, showHomework: false },
 ]
 
+const JULY_TRACKS_DAY26 = [
+  { name: 'Все треки', id: 160, lesson: 'Пет-проект и портфолио', color: { bg:'rgba(200,255,0,0.12)', border:'rgba(200,255,0,0.3)', text:'#c8ff00' }, showQuestions: false, showHomework: false },
+]
+
+const JULY_TRACKS_DAY27 = [
+  { name: 'Все треки', id: 161, lesson: 'Пет-проект и портфолио', color: { bg:'rgba(200,255,0,0.12)', border:'rgba(200,255,0,0.3)', text:'#c8ff00' }, showQuestions: false, showHomework: false },
+]
+
+const JULY_TRACKS_DAY28 = [
+  { name: 'Frontend / Backend', id: 162, lesson: 'Микросервисная архитектура и проектирование систем', color: { bg:'rgba(234,179,8,0.12)', border:'rgba(234,179,8,0.3)', text:'#facc15' }, showQuestions: false, showHomework: false },
+]
+
 const JULY_DAYS = [
   { day: 1, date: 'ср, 1 июля', tracks: JULY_TRACKS },
   { day: 2, date: 'чт, 2 июля', tracks: JULY_TRACKS_DAY2 },
@@ -162,6 +174,9 @@ const JULY_DAYS = [
   { day: 22, date: 'ср, 22 июля', tracks: JULY_TRACKS_DAY22 },
   { day: 23, date: 'чт, 23 июля', tracks: JULY_TRACKS_DAY23 },
   { day: 24, date: 'пт, 24 июля', tracks: JULY_TRACKS_DAY24 },
+  { day: 26, date: 'вс, 26 июля', tracks: JULY_TRACKS_DAY26 },
+  { day: 27, date: 'пн, 27 июля', tracks: JULY_TRACKS_DAY27 },
+  { day: 28, date: 'вт, 28 июля', tracks: JULY_TRACKS_DAY28 },
 ]
 
 function JulyTrackRow({ track, onOpenTheory, onOpenQuestions, onOpenHomework }) {

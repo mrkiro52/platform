@@ -85,6 +85,9 @@ const JULY_SCHEDULE_FALLBACK = [
   { day:22, date:'ср, 22 июля', meeting_time:'20:00', title:'Вопросы с собеседования: Фуллстак разработка', tracks:['Frontend','Backend'], description:'HTTP, API, базы данных, архитектура, React и JavaScript — вопросы собеседований фуллстак-разработчика с ответами.' },
   { day:23, date:'чт, 23 июля', meeting_time:'20:00', title:'Вопросы с собеседования: Кибербезопасность', tracks:['Кибербезопасность'], description:'Виды атак, шифрование, защита и пентест — популярные вопросы собеседований по ИБ с ответами.' },
   { day:24, date:'пт, 24 июля', meeting_time:'20:00', title:'Insider Show 3', tracks:['Frontend','Backend','Аналитика','ML','Кибербезопасность'], description:'Запись встречи Insider Show 3 с Марком.' },
+  { day:26, date:'вс, 26 июля', meeting_time:'20:00', title:'Пет-проект и портфолио', tracks:['Frontend','Backend','Аналитика','ML','Кибербезопасность'], description:'Самостоятельная работа над пет-проектом и портфолио.' },
+  { day:27, date:'пн, 27 июля', meeting_time:'20:00', title:'Пет-проект и портфолио', tracks:['Frontend','Backend','Аналитика','ML','Кибербезопасность'], description:'Самостоятельная работа над пет-проектом и портфолио.' },
+  { day:28, date:'вт, 28 июля', meeting_time:'20:00', title:'Микросервисная архитектура и проектирование систем', tracks:['Frontend','Backend'], description:'Базы данных, брокеры сообщений, репликация, балансировка нагрузки и API Gateway — system design.' },
 ].map((e, i) => ({ id: -1000 - i, month: 'july', type: 'lecture', theory: [], tasks: [], hw: '', meeting_link: '', ...e }))
 
 // Объединяем события июля из API с резервными. Резервные данные считаются
