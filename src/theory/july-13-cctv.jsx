@@ -1,12 +1,12 @@
 import { TheoryTable, TheoryExample } from './components/TheoryTable'
 
-const C = { text: 'var(--text-primary)', sub: 'var(--text-secondary)', lime: '#c8ff00', green: '#4ade80', blue: '#60a5fa', red: '#f87171', yellow: '#facc15', border: '#2a2a3a' }
+const C = { text: 'var(--text-primary)', sub: 'var(--text-secondary)', lime: '#20beff', green: '#4ade80', blue: '#60a5fa', red: '#f87171', yellow: '#facc15', border: '#2a2a3a' }
 
 function Fig({ children, caption }) {
   return (
     <figure style={{ margin: '18px 0', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
       <div style={{
-        width: '100%', maxWidth: 640, background: 'var(--bg-secondary)', border: '1px solid var(--border-color)',
+        width: '100%', maxWidth: 640, background: '#12121e', border: '1px solid #2a2a3a',
         borderRadius: 10, padding: '16px', display: 'flex', justifyContent: 'center', overflowX: 'auto',
       }}>{children}</div>
       {caption && <figcaption style={{ color: 'var(--text-tertiary)', fontSize: 12.5, textAlign: 'center', maxWidth: 640 }}>{caption}</figcaption>}
@@ -142,7 +142,7 @@ export default function July13CctvTheory() {
         <Fig caption="Короткое фокусное расстояние даёт широкий угол обзора, но объекты вдали мелкие. Длинное фокусное расстояние сужает угол обзора, но приближает и детализирует дальние объекты">
           <svg viewBox="0 0 500 170" width="100%" style={{ maxWidth: 500 }} xmlns="http://www.w3.org/2000/svg">
             <circle cx="60" cy="90" r="6" fill={C.lime} />
-            <path d="M60 90 L220 20 L220 160 Z" fill="rgba(200,255,0,0.08)" stroke={C.lime} />
+            <path d="M60 90 L220 20 L220 160 Z" fill="rgba(32,190,255,0.08)" stroke={C.lime} />
             <text x="140" y="10" fill={C.lime} fontSize="10" textAnchor="middle">широкий FOV (2.8мм)</text>
             <circle cx="320" cy="90" r="6" fill={C.blue} />
             <path d="M320 90 L440 65 L440 115 Z" fill="rgba(96,165,250,0.08)" stroke={C.blue} />

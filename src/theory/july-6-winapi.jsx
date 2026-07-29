@@ -1,12 +1,12 @@
 import { TheoryTable, TheoryCode, TheoryExample } from './components/TheoryTable'
 
-const C = { text: 'var(--text-primary)', sub: 'var(--text-secondary)', lime: '#c8ff00', red: '#f87171', blue: '#60a5fa', border: '#2a2a3a' }
+const C = { text: 'var(--text-primary)', sub: 'var(--text-secondary)', lime: '#20beff', red: '#f87171', blue: '#60a5fa', border: '#2a2a3a' }
 
 function Fig({ children, caption }) {
   return (
     <figure style={{ margin: '18px 0', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
       <div style={{
-        width: '100%', maxWidth: 640, background: 'var(--bg-secondary)', border: '1px solid var(--border-color)',
+        width: '100%', maxWidth: 640, background: '#12121e', border: '1px solid #2a2a3a',
         borderRadius: 10, padding: '16px', display: 'flex', justifyContent: 'center', overflowX: 'auto',
       }}>{children}</div>
       {caption && <figcaption style={{ color: 'var(--text-tertiary)', fontSize: 12.5, textAlign: 'center', maxWidth: 640 }}>{caption}</figcaption>}
@@ -55,7 +55,7 @@ export default function July6WinApiTheory() {
           <svg viewBox="0 0 500 170" width="100%" style={{ maxWidth: 500 }} xmlns="http://www.w3.org/2000/svg">
             <rect x="150" y="15" width="200" height="34" rx="8" fill="rgba(96,165,250,0.10)" stroke={C.blue} />
             <text x="250" y="37" fill={C.text} fontSize="12" fontWeight="700" textAnchor="middle">Программа (ваш .exe)</text>
-            <rect x="150" y="68" width="200" height="34" rx="8" fill="rgba(200,255,0,0.08)" stroke={C.lime} />
+            <rect x="150" y="68" width="200" height="34" rx="8" fill="rgba(32,190,255,0.08)" stroke={C.lime} />
             <text x="250" y="90" fill={C.lime} fontSize="12" fontWeight="700" textAnchor="middle">WinAPI (kernel32, user32...)</text>
             <rect x="150" y="121" width="200" height="34" rx="8" fill="var(--bg-tertiary)" stroke={C.border} />
             <text x="250" y="143" fill={C.sub} fontSize="12" fontWeight="700" textAnchor="middle">Ядро Windows → железо</text>

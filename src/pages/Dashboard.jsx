@@ -40,7 +40,7 @@ function JuneChecklist({ user }) {
   const download = () => {
     const nickname = user?.nickname || user?.name || 'Участник'
     const doneCount = JUNE_CHECKLIST.filter((_, i) => checked[i]).length
-    const GREEN = '#c6f135'
+    const GREEN = '#20beff'
     const BG = '#111111'
     const CARD = '#1a1a1a'
     const WHITE = '#ffffff'
@@ -145,9 +145,9 @@ function JuneChecklist({ user }) {
   const cbStyle = (isChecked) => ({
     width: 18,
     height: 18,
-    borderRadius: 4,
-    border: '2px solid #fff',
-    background: isChecked ? '#c6f135' : 'transparent',
+    borderRadius: 5,
+    border: isChecked ? '2px solid #20beff' : '2px solid var(--border-color)',
+    background: isChecked ? '#20beff' : 'transparent',
     flexShrink: 0,
     marginTop: 1,
     display: 'flex',
@@ -172,7 +172,7 @@ function JuneChecklist({ user }) {
             <div style={{ ...cbStyle(!!checked[i]), marginTop: 3 }}>
               {checked[i] && (
                 <svg width="11" height="8" viewBox="0 0 11 8" fill="none">
-                  <path d="M1 3.5L4 6.5L10 1" stroke="#111" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M1 3.5L4 6.5L10 1" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
               )}
             </div>
@@ -185,7 +185,7 @@ function JuneChecklist({ user }) {
       </div>
       <button
         onClick={download}
-        style={{ fontSize: 13, padding: '8px 18px', borderRadius: 8, border: 'none', background: '#c6f135', color: '#111', cursor: 'pointer', fontWeight: 700 }}
+        style={{ fontSize: 13, padding: '8px 20px', borderRadius: 999, border: 'none', background: 'var(--accent-ink)', color: '#fff', cursor: 'pointer', fontWeight: 700 }}
       >
         Скачать чек-лист
       </button>

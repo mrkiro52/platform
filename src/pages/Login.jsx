@@ -50,7 +50,7 @@ export default function LoginPage({ onLogin }) {
       particles.forEach(p => {
         ctx.beginPath()
         ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2)
-        ctx.fillStyle = `rgba(200,255,0,${p.o})`
+        ctx.fillStyle = `rgba(32,190,255,${p.o})`
         ctx.fill()
         p.x += p.vx; p.y += p.vy
         if (p.x < -5) p.x = canvas.width + 5

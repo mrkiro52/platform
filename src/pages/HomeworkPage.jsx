@@ -3497,9 +3497,9 @@ export default function HomeworkPage({ selectedDay, onBack }) {
                 key={idx}
                 style={{
                   padding: '16px',
-                  backgroundColor: 'rgba(255,255,255,0.02)',
-                  border: '1px solid rgba(255,255,255,0.08)',
-                  borderRadius: '8px'
+                  backgroundColor: 'var(--bg-tertiary)',
+                  border: '1px solid var(--border-color)',
+                  borderRadius: '12px'
                 }}
               >
                 <h3 style={{ margin: '0 0 8px 0', fontSize: '16px' }}>

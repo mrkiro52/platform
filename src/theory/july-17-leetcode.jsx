@@ -4,7 +4,7 @@ function Fig({ children, caption }) {
   return (
     <figure style={{ margin: '18px 0', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
       <div style={{
-        width: '100%', maxWidth: 640, background: 'var(--bg-secondary)', border: '1px solid var(--border-color)',
+        width: '100%', maxWidth: 640, background: '#12121e', border: '1px solid #2a2a3a',
         borderRadius: 10, padding: '16px', display: 'flex', justifyContent: 'center', overflowX: 'auto',
       }}>{children}</div>
       {caption && <figcaption style={{ color: 'var(--text-tertiary)', fontSize: 12.5, textAlign: 'center', maxWidth: 640 }}>{caption}</figcaption>}
@@ -66,7 +66,7 @@ function ArrayCells({ values, highlight = [], labels = {} }) {
             <div style={{
               width: 42, height: 42, display: 'flex', alignItems: 'center', justifyContent: 'center',
               borderRadius: 8, fontWeight: 700, fontSize: 15,
-              background: isHi ? 'rgba(200,255,0,0.18)' : 'var(--bg-tertiary)',
+              background: isHi ? 'rgba(32,190,255,0.18)' : 'var(--bg-tertiary)',
               border: `1.5px solid ${isHi ? 'var(--accent-lime)' : 'var(--border-color)'}`,
               color: isHi ? 'var(--accent-lime)' : 'var(--text-primary)',
             }}>{v}</div>

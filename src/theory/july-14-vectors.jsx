@@ -4,7 +4,7 @@ function Fig({ children, caption }) {
   return (
     <figure style={{ margin: '18px 0', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
       <div style={{
-        width: '100%', maxWidth: 640, background: 'var(--bg-secondary)', border: '1px solid var(--border-color)',
+        width: '100%', maxWidth: 640, background: '#12121e', border: '1px solid #2a2a3a',
         borderRadius: 10, padding: '16px', display: 'flex', justifyContent: 'center', overflowX: 'auto',
       }}>{children}</div>
       {caption && <figcaption style={{ color: 'var(--text-tertiary)', fontSize: 12.5, textAlign: 'center', maxWidth: 640 }}>{caption}</figcaption>}
@@ -75,15 +75,15 @@ export default function July14VectorsTheory() {
           <svg viewBox="0 0 300 200" width="300" height="200" xmlns="http://www.w3.org/2000/svg">
             <line x1="30" y1="170" x2="280" y2="170" stroke="#2a2a3a" />
             <line x1="30" y1="170" x2="30" y2="20" stroke="#2a2a3a" />
-            <line x1="30" y1="170" x2="210" y2="70" stroke="#c8ff00" strokeWidth="2.5" markerEnd="url(#arrow)" />
+            <line x1="30" y1="170" x2="210" y2="70" stroke="#20beff" strokeWidth="2.5" markerEnd="url(#arrow)" />
             <line x1="30" y1="170" x2="210" y2="170" stroke="#60a5fa" strokeWidth="1.5" strokeDasharray="4" />
             <line x1="210" y1="170" x2="210" y2="70" stroke="#60a5fa" strokeWidth="1.5" strokeDasharray="4" />
-            <text x="115" y="115" fill="#c8ff00" fontSize="13">a = (3, 2)</text>
+            <text x="115" y="115" fill="#20beff" fontSize="13">a = (3, 2)</text>
             <text x="120" y="188" fill="#60a5fa" fontSize="12">x = 3</text>
             <text x="215" y="125" fill="#60a5fa" fontSize="12">y = 2</text>
             <defs>
               <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
-                <path d="M0,0 L8,3 L0,6 Z" fill="#c8ff00" />
+                <path d="M0,0 L8,3 L0,6 Z" fill="#20beff" />
               </marker>
             </defs>
           </svg>
@@ -120,14 +120,14 @@ export default function July14VectorsTheory() {
           <svg viewBox="0 0 320 200" width="320" height="200" xmlns="http://www.w3.org/2000/svg">
             <line x1="20" y1="180" x2="140" y2="120" stroke="#60a5fa" strokeWidth="2.5" markerEnd="url(#ar2)" />
             <line x1="140" y1="120" x2="200" y2="40" stroke="#4ade80" strokeWidth="2.5" markerEnd="url(#ar3)" />
-            <line x1="20" y1="180" x2="200" y2="40" stroke="#c8ff00" strokeWidth="2.5" markerEnd="url(#ar4)" />
+            <line x1="20" y1="180" x2="200" y2="40" stroke="#20beff" strokeWidth="2.5" markerEnd="url(#ar4)" />
             <text x="65" y="140" fill="#60a5fa" fontSize="13">a</text>
             <text x="175" y="90" fill="#4ade80" fontSize="13">b</text>
-            <text x="90" y="95" fill="#c8ff00" fontSize="13">a + b</text>
+            <text x="90" y="95" fill="#20beff" fontSize="13">a + b</text>
             <defs>
               <marker id="ar2" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#60a5fa" /></marker>
               <marker id="ar3" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#4ade80" /></marker>
-              <marker id="ar4" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#c8ff00" /></marker>
+              <marker id="ar4" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#20beff" /></marker>
             </defs>
           </svg>
         </Fig>

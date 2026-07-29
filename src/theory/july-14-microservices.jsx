@@ -4,7 +4,7 @@ function Fig({ children, caption }) {
   return (
     <figure style={{ margin: '18px 0', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
       <div style={{
-        width: '100%', maxWidth: 640, background: 'var(--bg-secondary)', border: '1px solid var(--border-color)',
+        width: '100%', maxWidth: 640, background: '#12121e', border: '1px solid #2a2a3a',
         borderRadius: 10, padding: '16px', display: 'flex', justifyContent: 'center', overflowX: 'auto',
       }}>{children}</div>
       {caption && <figcaption style={{ color: 'var(--text-tertiary)', fontSize: 12.5, textAlign: 'center', maxWidth: 640 }}>{caption}</figcaption>}
@@ -84,10 +84,10 @@ export default function July14MicroservicesTheory() {
             <text x="75" y="128" fill="#f5f5fa" fontSize="11" textAnchor="middle">Orders</text>
             <text x="75" y="146" fill="#f5f5fa" fontSize="11" textAnchor="middle">Payments</text>
             {/* стрелка */}
-            <text x="180" y="120" fill="#c8ff00" fontSize="22">→</text>
+            <text x="180" y="120" fill="#20beff" fontSize="22">→</text>
             {/* шлюз */}
-            <rect x="230" y="20" width="300" height="26" rx="6" fill="rgba(200,255,0,0.12)" stroke="#c8ff00" />
-            <text x="380" y="38" fill="#c8ff00" fontSize="12" textAnchor="middle">API Gateway</text>
+            <rect x="230" y="20" width="300" height="26" rx="6" fill="rgba(32,190,255,0.12)" stroke="#20beff" />
+            <text x="380" y="38" fill="#20beff" fontSize="12" textAnchor="middle">API Gateway</text>
             {['Users', 'Orders', 'Payments'].map((s, i) => (
               <g key={s}>
                 <line x1="380" y1="46" x2={280 + i * 100} y2="80" stroke="#2a2a3a" />

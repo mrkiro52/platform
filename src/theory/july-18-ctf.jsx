@@ -4,7 +4,7 @@ function Fig({ children, caption }) {
   return (
     <figure style={{ margin: '18px 0', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
       <div style={{
-        width: '100%', maxWidth: 640, background: 'var(--bg-secondary)', border: '1px solid var(--border-color)',
+        width: '100%', maxWidth: 640, background: '#12121e', border: '1px solid #2a2a3a',
         borderRadius: 10, padding: '16px', display: 'flex', justifyContent: 'center', overflowX: 'auto',
       }}>{children}</div>
       {caption && <figcaption style={{ color: 'var(--text-tertiary)', fontSize: 12.5, textAlign: 'center', maxWidth: 640 }}>{caption}</figcaption>}
@@ -125,8 +125,8 @@ export default function July18CtfTheory() {
             <text x="130" y="163" fill="#a78bfa" fontSize="11" textAnchor="middle" fontWeight="bold">API-ответы</text>
             <text x="130" y="179" fill="#94a3b8" fontSize="9" textAnchor="middle">поля JSON, не отрисованные на странице</text>
 
-            <rect x="320" y="145" width="220" height="45" rx="6" fill="rgba(200,255,0,0.12)" stroke="#c8ff00" />
-            <text x="430" y="163" fill="#c8ff00" fontSize="11" textAnchor="middle" fontWeight="bold">Переменные окружения / конфиги</text>
+            <rect x="320" y="145" width="220" height="45" rx="6" fill="rgba(32,190,255,0.12)" stroke="#20beff" />
+            <text x="430" y="163" fill="#20beff" fontSize="11" textAnchor="middle" fontWeight="bold">Переменные окружения / конфиги</text>
             <text x="430" y="179" fill="#94a3b8" fontSize="9" textAnchor="middle">через LFI, SSRF, утечку .env</text>
           </svg>
         </Fig>

@@ -64,7 +64,7 @@ function Problem({ n, title, href, children }) {
     }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12, flexWrap: 'wrap' }}>
         <span style={{
-          width: 28, height: 28, borderRadius: '50%', background: 'rgba(200,255,0,0.15)',
+          width: 28, height: 28, borderRadius: '50%', background: 'rgba(32,190,255,0.15)',
           border: '1px solid var(--accent-lime)', color: 'var(--accent-lime)', fontWeight: 700, fontSize: 14,
           display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
         }}>{n}</span>

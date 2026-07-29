@@ -1,12 +1,12 @@
 import { TheoryTable, TheoryCode, TheoryExample } from './components/TheoryTable'
 
-const C = { text: 'var(--text-primary)', sub: 'var(--text-secondary)', lime: '#c8ff00', green: '#4ade80', blue: '#60a5fa', red: '#f87171', indigo: '#818cf8', border: '#2a2a3a' }
+const C = { text: 'var(--text-primary)', sub: 'var(--text-secondary)', lime: '#20beff', green: '#4ade80', blue: '#60a5fa', red: '#f87171', indigo: '#818cf8', border: '#2a2a3a' }
 
 function Fig({ children, caption }) {
   return (
     <figure style={{ margin: '18px 0', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
       <div style={{
-        width: '100%', maxWidth: 640, background: 'var(--bg-secondary)', border: '1px solid var(--border-color)',
+        width: '100%', maxWidth: 640, background: '#12121e', border: '1px solid #2a2a3a',
         borderRadius: 10, padding: '16px', display: 'flex', justifyContent: 'center', overflowX: 'auto',
       }}>{children}</div>
       {caption && <figcaption style={{ color: 'var(--text-tertiary)', fontSize: 12.5, textAlign: 'center', maxWidth: 640 }}>{caption}</figcaption>}
@@ -41,7 +41,7 @@ function Step({ n, title, children }) {
     <div style={{ margin: '16px 0 16px 14px', paddingLeft: 16, borderLeft: '2px dashed var(--border-color)' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
         <span style={{
-          background: 'rgba(200,255,0,0.12)', color: 'var(--accent-lime)', fontSize: 11, fontWeight: 700,
+          background: 'rgba(32,190,255,0.12)', color: 'var(--accent-lime)', fontSize: 11, fontWeight: 700,
           padding: '3px 10px', borderRadius: 999, flexShrink: 0,
         }}>Шаг {n}</span>
         <span style={{ color: 'var(--text-primary)', fontWeight: 600, fontSize: 14 }}>{title}</span>
@@ -264,7 +264,7 @@ plt.show()`} />
           ]}
         />
         <TheoryCode language="python" code={`fig, ax = plt.subplots(figsize=(8, 5))
-ax.plot(x, y, color='#c8ff00', linewidth=2, marker='o')
+ax.plot(x, y, color='#20beff', linewidth=2, marker='o')
 ax.set_title('Зависимость Y от X')
 ax.set_xlabel('X')
 ax.set_ylabel('Y')

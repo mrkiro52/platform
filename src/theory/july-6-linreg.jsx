@@ -1,13 +1,13 @@
 import { TheoryTable, TheoryCode, TheoryExample } from './components/TheoryTable'
 import VideoPlayer from '../components/VideoPlayer'
 
-const C = { text: 'var(--text-primary)', sub: 'var(--text-secondary)', lime: '#c8ff00', green: '#4ade80', blue: '#60a5fa', red: '#f87171', border: '#2a2a3a' }
+const C = { text: 'var(--text-primary)', sub: 'var(--text-secondary)', lime: '#20beff', green: '#4ade80', blue: '#60a5fa', red: '#f87171', border: '#2a2a3a' }
 
 function Fig({ children, caption }) {
   return (
     <figure style={{ margin: '18px 0', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
       <div style={{
-        width: '100%', maxWidth: 640, background: 'var(--bg-secondary)', border: '1px solid var(--border-color)',
+        width: '100%', maxWidth: 640, background: '#12121e', border: '1px solid #2a2a3a',
         borderRadius: 10, padding: '16px', display: 'flex', justifyContent: 'center', overflowX: 'auto',
       }}>{children}</div>
       {caption && <figcaption style={{ color: 'var(--text-tertiary)', fontSize: 12.5, textAlign: 'center', maxWidth: 640 }}>{caption}</figcaption>}

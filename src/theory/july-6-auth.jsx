@@ -1,13 +1,13 @@
 import { TheoryTable, TheoryCode, TheoryExample } from './components/TheoryTable'
 import VideoPlayer from '../components/VideoPlayer'
 
-const C = { text: 'var(--text-primary)', sub: 'var(--text-secondary)', lime: '#c8ff00', blue: '#60a5fa', green: '#4ade80', red: '#f87171', border: '#2a2a3a' }
+const C = { text: 'var(--text-primary)', sub: 'var(--text-secondary)', lime: '#20beff', blue: '#60a5fa', green: '#4ade80', red: '#f87171', border: '#2a2a3a' }
 
 function Fig({ children, caption }) {
   return (
     <figure style={{ margin: '18px 0', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
       <div style={{
-        width: '100%', maxWidth: 640, background: 'var(--bg-secondary)', border: '1px solid var(--border-color)',
+        width: '100%', maxWidth: 640, background: '#12121e', border: '1px solid #2a2a3a',
         borderRadius: 10, padding: '16px', display: 'flex', justifyContent: 'center', overflowX: 'auto',
       }}>{children}</div>
       {caption && <figcaption style={{ color: 'var(--text-tertiary)', fontSize: 12.5, textAlign: 'center', maxWidth: 640 }}>{caption}</figcaption>}
@@ -65,7 +65,7 @@ export default function July6AuthTheory() {
             <text x="305" y="80" fill={C.green} fontSize="13" fontWeight="700" textAnchor="middle">Авторизация</text>
             <text x="305" y="99" fill={C.sub} fontSize="10" textAnchor="middle">что тебе можно?</text>
             <line x1="380" y1="85" x2="440" y2="85" stroke={C.sub} strokeWidth="2" markerEnd="url(#au)" />
-            <rect x="440" y="55" width="90" height="60" rx="10" fill="rgba(200,255,0,0.06)" stroke={C.lime} />
+            <rect x="440" y="55" width="90" height="60" rx="10" fill="rgba(32,190,255,0.06)" stroke={C.lime} />
             <text x="485" y="82" fill={C.lime} fontSize="12" fontWeight="700" textAnchor="middle">доступ</text>
             <text x="485" y="99" fill={C.sub} fontSize="10" textAnchor="middle">к ресурсу</text>
             <defs>
@@ -133,7 +133,7 @@ export default function July6AuthTheory() {
             <rect x="30" y="30" width="120" height="46" rx="8" fill="rgba(96,165,250,0.10)" stroke={C.blue} />
             <text x="90" y="52" fill={C.text} fontSize="12" textAnchor="middle">Браузер</text>
             <text x="90" y="68" fill={C.sub} fontSize="10" textAnchor="middle">хранит cookie/токен</text>
-            <rect x="390" y="30" width="120" height="46" rx="8" fill="rgba(200,255,0,0.06)" stroke={C.lime} />
+            <rect x="390" y="30" width="120" height="46" rx="8" fill="rgba(32,190,255,0.06)" stroke={C.lime} />
             <text x="450" y="52" fill={C.lime} fontSize="12" textAnchor="middle">Сервер</text>
             <line x1="150" y1="45" x2="390" y2="45" stroke={C.green} strokeWidth="2" markerEnd="url(#se)" />
             <text x="270" y="38" fill={C.green} fontSize="10" textAnchor="middle">1) логин + пароль</text>

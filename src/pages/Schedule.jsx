@@ -256,7 +256,7 @@ function JulySessionCard({ session }) {
         </span>
         <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
           {tracks.map(t => {
-            const c = TRACK_COLORS[t] || { bg: 'rgba(255,255,255,0.07)', border: 'rgba(255,255,255,0.15)', text: 'var(--text-secondary)' }
+            const c = TRACK_COLORS[t] || { bg: 'var(--bg-tertiary)', border: 'var(--border-color)', text: 'var(--text-secondary)' }
             return (
               <span key={t} style={{
                 background: c.bg, border: `1px solid ${c.border}`, color: c.text,
@@ -366,10 +366,10 @@ export default function Schedule() {
               padding: '8px 20px',
               borderRadius: 8,
               border: activeMonth === tab.value
-                ? '1px solid rgba(200,255,0,0.4)'
+                ? '1px solid rgba(32,190,255,0.4)'
                 : '1px solid var(--border-color)',
               background: activeMonth === tab.value
-                ? 'rgba(200,255,0,0.08)'
+                ? 'rgba(32,190,255,0.08)'
                 : 'var(--bg-secondary)',
               color: tab.locked
                 ? 'var(--text-tertiary)'

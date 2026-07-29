@@ -17,7 +17,7 @@ const Ul = ({ items }) => (
 )
 
 const Note = ({ children }) => (
-  <div style={{ background: 'rgba(200,255,0,0.05)', border: '1px solid rgba(200,255,0,0.18)', borderRadius: 8, padding: '12px 16px', margin: '14px 0', color: 'var(--text-secondary)', fontSize: 13.5, lineHeight: 1.7 }}>
+  <div style={{ background: 'rgba(32,190,255,0.05)', border: '1px solid rgba(32,190,255,0.18)', borderRadius: 8, padding: '12px 16px', margin: '14px 0', color: 'var(--text-secondary)', fontSize: 13.5, lineHeight: 1.7 }}>
     <span style={{ color: 'var(--accent-lime)', fontWeight: 700, marginRight: 6 }}>💡</span>{children}
   </div>
 )

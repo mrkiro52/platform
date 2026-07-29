@@ -233,7 +233,7 @@ export default function SortVisualizer() {
             key={key}
             onClick={() => setAlgo(key)}
             style={btn(algo === key ? {
-              background: 'rgba(200,255,0,0.12)', borderColor: 'var(--accent-lime)', color: 'var(--accent-lime)',
+              background: 'rgba(32,190,255,0.12)', borderColor: 'var(--accent-lime)', color: 'var(--accent-lime)',
             } : {})}
           >{a.label}</button>
         ))}
@@ -278,7 +278,7 @@ export default function SortVisualizer() {
         <div style={{ display: 'flex', gap: 4, marginLeft: 'auto' }}>
           {SPEEDS.map((s, i) => (
             <button key={s.label} onClick={() => setSpeedIdx(i)}
-              style={btn(speedIdx === i ? { background: 'rgba(200,255,0,0.12)', borderColor: 'var(--accent-lime)', color: 'var(--accent-lime)', padding: '7px 10px' } : { padding: '7px 10px' })}
+              style={btn(speedIdx === i ? { background: 'rgba(32,190,255,0.12)', borderColor: 'var(--accent-lime)', color: 'var(--accent-lime)', padding: '7px 10px' } : { padding: '7px 10px' })}
             >{s.label}</button>
           ))}
         </div>

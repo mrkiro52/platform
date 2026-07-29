@@ -4,7 +4,7 @@ function Fig({ children, caption }) {
   return (
     <figure style={{ margin: '18px 0', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
       <div style={{
-        width: '100%', maxWidth: 680, background: 'var(--bg-secondary)', border: '1px solid var(--border-color)',
+        width: '100%', maxWidth: 680, background: '#12121e', border: '1px solid #2a2a3a',
         borderRadius: 10, padding: '16px', display: 'flex', justifyContent: 'center', overflowX: 'auto',
       }}>{children}</div>
       {caption && <figcaption style={{ color: 'var(--text-tertiary)', fontSize: 12.5, textAlign: 'center', maxWidth: 680 }}>{caption}</figcaption>}
@@ -35,7 +35,7 @@ function P({ n, children }) {
 }
 
 // Прямоугольный узел схемы
-function Box({ x, y, w, h, label, sub, fill = 'rgba(200,255,0,0.1)', stroke = '#c8ff00' }) {
+function Box({ x, y, w, h, label, sub, fill = 'rgba(32,190,255,0.1)', stroke = '#20beff' }) {
   return (
     <g>
       <rect x={x} y={y} width={w} height={h} rx="5" fill={fill} stroke={stroke} strokeWidth="1.3" />
@@ -87,8 +87,8 @@ export default function July28MicroservicesSystemDesignTheory() {
             <text x="150" y="99" fill="#f5f5fa" fontSize="10" textAnchor="middle">Платежи</text>
             <rect x="60" y="108" width="180" height="26" fill="rgba(96,165,250,0.12)" stroke="#60a5fa" />
             <text x="150" y="125" fill="#f5f5fa" fontSize="10" textAnchor="middle">Уведомления</text>
-            <rect x="60" y="140" width="180" height="24" fill="rgba(200,255,0,0.15)" stroke="#c8ff00" />
-            <text x="150" y="156" fill="#c8ff00" fontSize="10" textAnchor="middle">1 база данных</text>
+            <rect x="60" y="140" width="180" height="24" fill="rgba(32,190,255,0.15)" stroke="#20beff" />
+            <text x="150" y="156" fill="#20beff" fontSize="10" textAnchor="middle">1 база данных</text>
 
             <line x1="300" y1="20" x2="300" y2="220" stroke="#2a2a3a" strokeDasharray="4" />
 
@@ -144,7 +144,7 @@ export default function July28MicroservicesSystemDesignTheory() {
             <text x="150" y="16" fill="#f5f5fa" fontSize="11" textAnchor="middle" fontWeight="700">Синхронно (REST/gRPC)</text>
             <Box x={60} y={60} w={100} h={40} label="Сервис A" />
             <Box x={220} y={60} w={100} h={40} label="Сервис B" />
-            <line x1="160" y1="72" x2="220" y2="72" stroke="#c8ff00" markerEnd="url(#a1)" />
+            <line x1="160" y1="72" x2="220" y2="72" stroke="#20beff" markerEnd="url(#a1)" />
             <text x="190" y="66" fill="#94a3b8" fontSize="8" textAnchor="middle">запрос</text>
             <line x1="220" y1="88" x2="160" y2="88" stroke="#94a3b8" strokeDasharray="3" markerEnd="url(#a2)" />
             <text x="190" y="100" fill="#94a3b8" fontSize="8" textAnchor="middle">ответ (ждём)</text>
@@ -153,15 +153,15 @@ export default function July28MicroservicesSystemDesignTheory() {
             <Box x={380} y={95} w={90} h={34} label="Сервис A" />
             <Box x={550} y={20} w={60} h={30} label="Сервис C" />
             <Box x={470} y={60} w={100} h={40} label="Брокер" sub="(Kafka)" fill="rgba(96,165,250,0.12)" stroke="#60a5fa" />
-            <line x1="470" y1="112" x2="425" y2="112" stroke="#c8ff00" markerEnd="url(#a3)" />
+            <line x1="470" y1="112" x2="425" y2="112" stroke="#20beff" markerEnd="url(#a3)" />
             <text x="447" y="126" fill="#94a3b8" fontSize="7" textAnchor="middle">публикует</text>
             <line x1="550" y1="45" x2="520" y2="65" stroke="#94a3b8" strokeDasharray="3" markerEnd="url(#a5)" />
             <text x="555" y="55" fill="#94a3b8" fontSize="7">читает, когда готов</text>
             <defs>
-              <marker id="a1" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#c8ff00" /></marker>
+              <marker id="a1" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#20beff" /></marker>
               <marker id="a2" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#94a3b8" /></marker>
-              <marker id="a3" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#c8ff00" /></marker>
-              <marker id="a4" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#c8ff00" /></marker>
+              <marker id="a3" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#20beff" /></marker>
+              <marker id="a4" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#20beff" /></marker>
               <marker id="a5" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#94a3b8" /></marker>
             </defs>
           </svg>
@@ -190,8 +190,8 @@ export default function July28MicroservicesSystemDesignTheory() {
         <Fig caption="Клиент видит только Gateway. Внутренние сервисы и их адреса от него скрыты.">
           <svg viewBox="0 0 560 140" width="560" height="140" xmlns="http://www.w3.org/2000/svg">
             <Box x={20} y={50} w={110} h={40} label="Клиент" sub="(веб/моб.)" />
-            <Box x={220} y={40} w={130} h={60} label="API Gateway" sub="аутентификация, rate limiting, маршрутизация" fill="rgba(200,255,0,0.15)" />
-            <line x1="130" y1="70" x2="220" y2="70" stroke="#c8ff00" markerEnd="url(#g1)" />
+            <Box x={220} y={40} w={130} h={60} label="API Gateway" sub="аутентификация, rate limiting, маршрутизация" fill="rgba(32,190,255,0.15)" />
+            <line x1="130" y1="70" x2="220" y2="70" stroke="#20beff" markerEnd="url(#g1)" />
             <Box x={430} y={10} w={110} h={30} label="Сервис «Пользователи»" fill="rgba(96,165,250,0.12)" stroke="#60a5fa" />
             <Box x={430} y={55} w={110} h={30} label="Сервис «Заказы»" fill="rgba(96,165,250,0.12)" stroke="#60a5fa" />
             <Box x={430} y={100} w={110} h={30} label="Сервис «Платежи»" fill="rgba(96,165,250,0.12)" stroke="#60a5fa" />
@@ -340,7 +340,7 @@ async def create_order(order: OrderIn):
         <Fig caption="Четыре разных модели данных — под четыре разных класса задач.">
           <svg viewBox="0 0 560 130" width="560" height="130" xmlns="http://www.w3.org/2000/svg">
             <text x="60" y="14" fill="#f5f5fa" fontSize="10" textAnchor="middle" fontWeight="700">Документная</text>
-            <rect x="15" y="24" width="90" height="70" fill="rgba(200,255,0,0.08)" stroke="#c8ff00" />
+            <rect x="15" y="24" width="90" height="70" fill="rgba(32,190,255,0.08)" stroke="#20beff" />
             <text x="60" y="42" fill="#94a3b8" fontSize="7" textAnchor="middle">{'{ "id": 1,'}</text>
             <text x="60" y="52" fill="#94a3b8" fontSize="7" textAnchor="middle">{'"name": "A" }'}</text>
             <line x1="20" y1="60" x2="100" y2="60" stroke="#2a2a3a" />
@@ -458,13 +458,13 @@ async def create_order(order: OrderIn):
             <Box x={20} y={65} w={80} h={26} label="Producer B" fill="rgba(96,165,250,0.1)" stroke="#60a5fa" />
             <Box x={20} y={100} w={80} h={26} label="Producer C" fill="rgba(96,165,250,0.1)" stroke="#60a5fa" />
 
-            <rect x={150} y={20} width={220} height={130} fill="rgba(200,255,0,0.05)" stroke="#c8ff00" strokeDasharray="3" />
-            <text x={260} y={16} fill="#c8ff00" fontSize="9" textAnchor="middle">Topic: order.created</text>
-            <rect x={160} y={35} width={200} height={26} fill="rgba(200,255,0,0.1)" stroke="#c8ff00" />
+            <rect x={150} y={20} width={220} height={130} fill="rgba(32,190,255,0.05)" stroke="#20beff" strokeDasharray="3" />
+            <text x={260} y={16} fill="#20beff" fontSize="9" textAnchor="middle">Topic: order.created</text>
+            <rect x={160} y={35} width={200} height={26} fill="rgba(32,190,255,0.1)" stroke="#20beff" />
             <text x={260} y={52} fill="#f5f5fa" fontSize="8" textAnchor="middle">Partition 0</text>
-            <rect x={160} y={72} width={200} height={26} fill="rgba(200,255,0,0.1)" stroke="#c8ff00" />
+            <rect x={160} y={72} width={200} height={26} fill="rgba(32,190,255,0.1)" stroke="#20beff" />
             <text x={260} y={89} fill="#f5f5fa" fontSize="8" textAnchor="middle">Partition 1</text>
-            <rect x={160} y={109} width={200} height={26} fill="rgba(200,255,0,0.1)" stroke="#c8ff00" />
+            <rect x={160} y={109} width={200} height={26} fill="rgba(32,190,255,0.1)" stroke="#20beff" />
             <text x={260} y={126} fill="#f5f5fa" fontSize="8" textAnchor="middle">Partition 2</text>
 
             <line x1="100" y1="43" x2="150" y2="48" stroke="#94a3b8" markerEnd="url(#k1)" />
@@ -548,10 +548,10 @@ async def create_order(order: OrderIn):
           <svg viewBox="0 0 340 90" width="340" height="90" xmlns="http://www.w3.org/2000/svg">
             <Box x={20} y={25} w={110} h={40} label="MASTER A" sub="запись и чтение" fill="rgba(248,113,113,0.12)" stroke="#f87171" />
             <Box x={210} y={25} w={110} h={40} label="MASTER B" sub="запись и чтение" fill="rgba(248,113,113,0.12)" stroke="#f87171" />
-            <line x1="130" y1="38" x2="210" y2="38" stroke="#c8ff00" markerEnd="url(#mm1)" />
-            <line x1="210" y1="52" x2="130" y2="52" stroke="#c8ff00" markerEnd="url(#mm1)" />
+            <line x1="130" y1="38" x2="210" y2="38" stroke="#20beff" markerEnd="url(#mm1)" />
+            <line x1="210" y1="52" x2="130" y2="52" stroke="#20beff" markerEnd="url(#mm1)" />
             <text x="170" y="20" fill="#94a3b8" fontSize="7" textAnchor="middle">реплицирует изменения →</text>
-            <defs><marker id="mm1" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#c8ff00" /></marker></defs>
+            <defs><marker id="mm1" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#20beff" /></marker></defs>
           </svg>
         </Fig>
         <TheoryTable
@@ -582,7 +582,7 @@ async def create_order(order: OrderIn):
         <Fig caption="Один вход, распределение по нескольким одинаковым инстансам сервиса.">
           <svg viewBox="0 0 400 110" width="400" height="110" xmlns="http://www.w3.org/2000/svg">
             <Box x={10} y={40} w={80} h={30} label="Клиенты" />
-            <Box x={150} y={35} w={100} h={40} label="Load Balancer" fill="rgba(200,255,0,0.15)" />
+            <Box x={150} y={35} w={100} h={40} label="Load Balancer" fill="rgba(32,190,255,0.15)" />
             <Box x={310} y={5} w={80} h={26} label="Инстанс 1" fill="rgba(96,165,250,0.1)" stroke="#60a5fa" />
             <Box x={310} y={42} w={80} h={26} label="Инстанс 2" fill="rgba(96,165,250,0.1)" stroke="#60a5fa" />
             <Box x={310} y={79} w={80} h={26} label="Инстанс 3" fill="rgba(96,165,250,0.1)" stroke="#60a5fa" />
@@ -618,8 +618,8 @@ async def create_order(order: OrderIn):
         </P>
         <Fig caption="Round Robin: запросы 1, 2, 3 раздаются серверам по кругу.">
           <svg viewBox="0 0 300 100" width="300" height="100" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="30" cy="50" r="20" fill="rgba(200,255,0,0.15)" stroke="#c8ff00" />
-            <text x="30" y="54" fill="#c8ff00" fontSize="10" textAnchor="middle" fontWeight="700">LB</text>
+            <circle cx="30" cy="50" r="20" fill="rgba(32,190,255,0.15)" stroke="#20beff" />
+            <text x="30" y="54" fill="#20beff" fontSize="10" textAnchor="middle" fontWeight="700">LB</text>
             <Box x={110} y={15} w={80} h={26} label="Server 1" />
             <Box x={110} y={60} w={80} h={26} label="Server 2" />
             <Box x={230} y={38} w={60} h={26} label="Server 3" />
@@ -647,8 +647,8 @@ async def create_order(order: OrderIn):
           <svg viewBox="0 0 320 100" width="320" height="100" xmlns="http://www.w3.org/2000/svg">
             <text x="30" y="20" fill="#94a3b8" fontSize="9">Клиент 10.0.0.5</text>
             <text x="30" y="80" fill="#94a3b8" fontSize="9">Клиент 10.0.0.9</text>
-            <circle cx="150" cy="50" r="20" fill="rgba(200,255,0,0.15)" stroke="#c8ff00" />
-            <text x="150" y="54" fill="#c8ff00" fontSize="9" textAnchor="middle" fontWeight="700">Hash</text>
+            <circle cx="150" cy="50" r="20" fill="rgba(32,190,255,0.15)" stroke="#20beff" />
+            <text x="150" y="54" fill="#20beff" fontSize="9" textAnchor="middle" fontWeight="700">Hash</text>
             <Box x={230} y={15} w={80} h={26} label="Server 1" />
             <Box x={230} y={60} w={80} h={26} label="Server 2" />
             <line x1="60" y1="18" x2="130" y2="45" stroke="#94a3b8" markerEnd="url(#ih1)" />
@@ -688,8 +688,8 @@ async def create_order(order: OrderIn):
         <Fig caption="Клиент → Load Balancer → API Gateway → микросервисы (FastAPI) со своими базами PostgreSQL (master + replica) и общим Redis-кэшем. Асинхронные события летят через Kafka в сервис уведомлений и в ClickHouse для аналитики.">
           <svg viewBox="0 0 760 340" width="760" height="340" xmlns="http://www.w3.org/2000/svg">
             <Box x={10} y={150} w={80} h={36} label="Клиент" />
-            <Box x={120} y={150} w={90} h={36} label="Load Balancer" fill="rgba(200,255,0,0.12)" />
-            <Box x={240} y={140} w={90} h={56} label="API Gateway" sub="auth · rate limit" fill="rgba(200,255,0,0.12)" />
+            <Box x={120} y={150} w={90} h={36} label="Load Balancer" fill="rgba(32,190,255,0.12)" />
+            <Box x={240} y={140} w={90} h={56} label="API Gateway" sub="auth · rate limit" fill="rgba(32,190,255,0.12)" />
 
             <Box x={370} y={40} w={110} h={40} label="Сервис «Users»" sub="FastAPI" fill="rgba(96,165,250,0.1)" stroke="#60a5fa" />
             <Box x={370} y={160} w={110} h={40} label="Сервис «Orders»" sub="FastAPI" fill="rgba(96,165,250,0.1)" stroke="#60a5fa" />
@@ -704,7 +704,7 @@ async def create_order(order: OrderIn):
             <Box x={540} y={260} w={100} h={26} label="PostgreSQL master" fill="rgba(74,222,128,0.1)" stroke="#4ade80" />
             <Box x={540} y={290} w={100} h={26} label="replica (чтение)" fill="rgba(74,222,128,0.06)" stroke="#4ade80" />
 
-            <Box x={330} y={210} w={200} h={26} label="Kafka: topic order.created" sub="партиции распределены по брокерам" fill="rgba(200,255,0,0.08)" />
+            <Box x={330} y={210} w={200} h={26} label="Kafka: topic order.created" sub="партиции распределены по брокерам" fill="rgba(32,190,255,0.08)" />
             <Box x={220} y={205} w={80} h={30} label="Consumer:" sub="уведомления" fill="rgba(167,139,250,0.1)" stroke="#a78bfa" />
             <Box x={620} y={205} w={90} h={30} label="Consumer →" sub="ClickHouse" fill="rgba(167,139,250,0.1)" stroke="#a78bfa" />
             <Box x={630} y={245} w={100} h={26} label="Дашборды / отчёты" fill="rgba(96,165,250,0.08)" stroke="#60a5fa" />

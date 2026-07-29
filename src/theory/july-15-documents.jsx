@@ -4,7 +4,7 @@ function Fig({ children, caption }) {
   return (
     <figure style={{ margin: '18px 0', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
       <div style={{
-        width: '100%', maxWidth: 640, background: 'var(--bg-secondary)', border: '1px solid var(--border-color)',
+        width: '100%', maxWidth: 640, background: '#12121e', border: '1px solid #2a2a3a',
         borderRadius: 10, padding: '16px', display: 'flex', justifyContent: 'center', overflowX: 'auto',
       }}>{children}</div>
       {caption && <figcaption style={{ color: 'var(--text-tertiary)', fontSize: 12.5, textAlign: 'center', maxWidth: 640 }}>{caption}</figcaption>}
@@ -117,7 +117,7 @@ export default function July15DocumentsTheory() {
             <text x="95" y="121" fill="#f5f5fa" fontSize="12" textAnchor="middle">ПЭП</text>
             <rect x="185" y="70" width="150" height="64" fill="rgba(96,165,250,0.15)" stroke="#60a5fa" />
             <text x="260" y="106" fill="#f5f5fa" fontSize="12" textAnchor="middle">НЭП</text>
-            <rect x="350" y="34" width="150" height="100" fill="rgba(200,255,0,0.14)" stroke="#c8ff00" />
+            <rect x="350" y="34" width="150" height="100" fill="rgba(32,190,255,0.14)" stroke="#20beff" />
             <text x="425" y="88" fill="#f5f5fa" fontSize="12" textAnchor="middle">КЭП</text>
             <text x="260" y="24" fill="#94a3b8" fontSize="11" textAnchor="middle">↑ юридическая сила и надёжность</text>
           </svg>
@@ -160,11 +160,11 @@ export default function July15DocumentsTheory() {
             <rect x="10" y="45" width="120" height="40" rx="6" fill="rgba(96,165,250,0.15)" stroke="#60a5fa" />
             <text x="70" y="62" fill="#f5f5fa" fontSize="11" textAnchor="middle">Сотрудник</text>
             <text x="70" y="77" fill="#94a3b8" fontSize="10" textAnchor="middle">личная КЭП</text>
-            <text x="150" y="70" fill="#c8ff00" fontSize="14" textAnchor="middle">+</text>
-            <rect x="175" y="45" width="120" height="40" rx="6" fill="rgba(200,255,0,0.12)" stroke="#c8ff00" />
+            <text x="150" y="70" fill="#20beff" fontSize="14" textAnchor="middle">+</text>
+            <rect x="175" y="45" width="120" height="40" rx="6" fill="rgba(32,190,255,0.12)" stroke="#20beff" />
             <text x="235" y="62" fill="#f5f5fa" fontSize="11" textAnchor="middle">МЧД</text>
             <text x="235" y="77" fill="#94a3b8" fontSize="10" textAnchor="middle">полномочия</text>
-            <text x="315" y="70" fill="#c8ff00" fontSize="16" textAnchor="middle">→</text>
+            <text x="315" y="70" fill="#20beff" fontSize="16" textAnchor="middle">→</text>
             <rect x="345" y="45" width="185" height="40" rx="6" fill="rgba(74,222,128,0.15)" stroke="#4ade80" />
             <text x="437" y="62" fill="#f5f5fa" fontSize="11" textAnchor="middle">Документ подписан</text>
             <text x="437" y="77" fill="#94a3b8" fontSize="10" textAnchor="middle">от имени организации</text>

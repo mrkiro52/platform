@@ -182,7 +182,7 @@ export default function VideoPlayer({ src }) {
           }}>
             <div style={{
               width: 64, height: 64, borderRadius: '50%',
-              background: 'rgba(200,255,0,0.15)',
+              background: 'rgba(32,190,255,0.15)',
               backdropFilter: 'blur(8px)',
               border: '2px solid var(--accent-lime)',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -200,7 +200,7 @@ export default function VideoPlayer({ src }) {
         ref={progressRef}
         onMouseDown={handleProgressMouseDown}
         style={{
-          height: dragging ? 6 : 4, background: 'var(--bg-tertiary)',
+          height: dragging ? 6 : 4, background: '#1c1c2a',
           cursor: 'pointer', position: 'relative',
           transition: 'height 0.1s',
           userSelect: 'none',
@@ -220,7 +220,7 @@ export default function VideoPlayer({ src }) {
           width: dragging ? 16 : 12, height: dragging ? 16 : 12,
           borderRadius: '50%',
           background: 'var(--accent-lime)',
-          boxShadow: dragging ? '0 0 10px rgba(200,255,0,0.8)' : '0 0 6px rgba(200,255,0,0.6)',
+          boxShadow: dragging ? '0 0 10px rgba(32,190,255,0.8)' : '0 0 6px rgba(32,190,255,0.6)',
           transition: 'width 0.1s, height 0.1s, box-shadow 0.1s',
         }} />
       </div>
@@ -229,7 +229,7 @@ export default function VideoPlayer({ src }) {
       <div style={{
         display: 'flex', alignItems: 'center', gap: 12,
         padding: '10px 16px',
-        background: 'var(--bg-secondary)',
+        background: '#12121e',
       }}>
         {/* Play/Pause */}
         <button
@@ -252,7 +252,7 @@ export default function VideoPlayer({ src }) {
 
         {/* Время */}
         <span style={{
-          color: 'var(--text-secondary)', fontSize: 13,
+          color: '#a8a8b8', fontSize: 13,
           fontVariantNumeric: 'tabular-nums', flexShrink: 0,
         }}>
           {fmt(currentTime)} / {fmt(duration)}
@@ -280,9 +280,9 @@ export default function VideoPlayer({ src }) {
             style={{
               ...iconBtnStyle,
               padding: '4px 10px', borderRadius: 6,
-              background: showSpeedMenu ? 'var(--bg-tertiary)' : 'transparent',
+              background: showSpeedMenu ? '#1c1c2a' : 'transparent',
               fontSize: 13, fontWeight: 600, color: 'var(--accent-lime)',
-              minWidth: 44, border: '1px solid var(--border-color)',
+              minWidth: 44, border: '1px solid #2a2a3a',
             }}
           >
             {speed}×
@@ -290,8 +290,8 @@ export default function VideoPlayer({ src }) {
           {showSpeedMenu && (
             <div style={{
               position: 'absolute', bottom: '110%', right: 0,
-              background: 'var(--bg-tertiary)',
-              border: '1px solid var(--border-color)',
+              background: '#1c1c2a',
+              border: '1px solid #2a2a3a',
               borderRadius: 8, overflow: 'hidden',
               boxShadow: '0 4px 20px rgba(0,0,0,0.4)',
               zIndex: 10,
@@ -302,8 +302,8 @@ export default function VideoPlayer({ src }) {
                   onClick={(e) => { e.stopPropagation(); setPlaybackSpeed(s) }}
                   style={{
                     display: 'block', width: '100%', padding: '8px 20px',
-                    background: s === speed ? 'rgba(200,255,0,0.1)' : 'transparent',
-                    color: s === speed ? 'var(--accent-lime)' : 'var(--text-primary)',
+                    background: s === speed ? 'rgba(32,190,255,0.1)' : 'transparent',
+                    color: s === speed ? 'var(--accent-lime)' : '#f5f5fa',
                     border: 'none', cursor: 'pointer', fontSize: 13, fontWeight: 500,
                     textAlign: 'center', transition: 'background 0.15s',
                   }}
@@ -331,7 +331,7 @@ export default function VideoPlayer({ src }) {
 
 const iconBtnStyle = {
   background: 'transparent', border: 'none',
-  color: 'var(--text-secondary)', cursor: 'pointer',
+  color: '#a8a8b8', cursor: 'pointer',
   padding: '4px', borderRadius: 4, display: 'flex',
   alignItems: 'center', justifyContent: 'center',
   transition: 'color 0.15s',

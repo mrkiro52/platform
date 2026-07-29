@@ -5,7 +5,7 @@ function Fig({ children, caption }) {
   return (
     <figure style={{ margin: '18px 0', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
       <div style={{
-        width: '100%', maxWidth: 640, background: 'var(--bg-secondary)', border: '1px solid var(--border-color)',
+        width: '100%', maxWidth: 640, background: '#12121e', border: '1px solid #2a2a3a',
         borderRadius: 10, padding: '16px', display: 'flex', justifyContent: 'center', overflowX: 'auto',
       }}>{children}</div>
       {caption && <figcaption style={{ color: 'var(--text-tertiary)', fontSize: 12.5, textAlign: 'center', maxWidth: 640 }}>{caption}</figcaption>}
@@ -125,12 +125,12 @@ export default function July16SecurityDevicesTheory({ videoUrl }) {
         </P>
         <Fig caption="Линза Френеля разбивает зону обзора PIR-датчика на несколько лучей; движение через несколько зон подряд вызывает срабатывание.">
           <svg viewBox="0 0 420 170" width="420" height="170" xmlns="http://www.w3.org/2000/svg">
-            <rect x="10" y="10" width="20" height="30" fill="#c8ff00" />
-            <text x="20" y="55" fill="#c8ff00" fontSize="9" textAnchor="middle">PIR</text>
+            <rect x="10" y="10" width="20" height="30" fill="#20beff" />
+            <text x="20" y="55" fill="#20beff" fontSize="9" textAnchor="middle">PIR</text>
             {[0, 1, 2, 3, 4].map((i) => (
               <path key={i}
                 d={`M 30 25 L ${380} ${30 + i * 30} L ${380} ${55 + i * 30} Z`}
-                fill="rgba(200,255,0,0.08)" stroke="#c8ff00" strokeWidth="1" />
+                fill="rgba(32,190,255,0.08)" stroke="#20beff" strokeWidth="1" />
             ))}
             <circle cx="220" cy="90" r="8" fill="#f87171" />
             <text x="220" y="115" fill="#f87171" fontSize="10" textAnchor="middle">человек пересекает лучи</text>
@@ -240,8 +240,8 @@ export default function July16SecurityDevicesTheory({ videoUrl }) {
         </P>
         <Fig caption="Датчики разных типов подключены к ПКП как отдельные зоны — при тревоге сразу видно, где сработало.">
           <svg viewBox="0 0 480 160" width="480" height="160" xmlns="http://www.w3.org/2000/svg">
-            <rect x="200" y="60" width="90" height="40" rx="6" fill="rgba(200,255,0,0.15)" stroke="#c8ff00" strokeWidth="2" />
-            <text x="245" y="84" fill="#c8ff00" fontSize="11" textAnchor="middle">ПКП</text>
+            <rect x="200" y="60" width="90" height="40" rx="6" fill="rgba(32,190,255,0.15)" stroke="#20beff" strokeWidth="2" />
+            <text x="245" y="84" fill="#20beff" fontSize="11" textAnchor="middle">ПКП</text>
 
             <rect x="20" y="10" width="120" height="26" rx="4" fill="rgba(96,165,250,0.15)" stroke="#60a5fa" />
             <text x="80" y="27" fill="#f5f5fa" fontSize="9" textAnchor="middle">зона 1: разбитие стекла</text>

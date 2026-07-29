@@ -4,7 +4,7 @@ function Fig({ children, caption }) {
   return (
     <figure style={{ margin: '18px 0', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
       <div style={{
-        width: '100%', maxWidth: 640, background: 'var(--bg-secondary)', border: '1px solid var(--border-color)',
+        width: '100%', maxWidth: 640, background: '#12121e', border: '1px solid #2a2a3a',
         borderRadius: 10, padding: '16px', display: 'flex', justifyContent: 'center', overflowX: 'auto',
       }}>{children}</div>
       {caption && <figcaption style={{ color: 'var(--text-tertiary)', fontSize: 12.5, textAlign: 'center', maxWidth: 640 }}>{caption}</figcaption>}
@@ -82,7 +82,7 @@ export default function July14GeneralizationTheory() {
                     <circle key={i} cx={ox + p[0]} cy={p[1]} r="3.5" fill="#60a5fa" />
                   ))}
                   {/* линия модели */}
-                  {k === 0 && <line x1={ox + 25} y1="115" x2={ox + 145} y2="75" stroke="#c8ff00" strokeWidth="2" />}
+                  {k === 0 && <line x1={ox + 25} y1="115" x2={ox + 145} y2="75" stroke="#20beff" strokeWidth="2" />}
                   {k === 1 && <path d={`M ${ox + 25} 118 Q ${ox + 85} 70 ${ox + 145} 62`} fill="none" stroke="#4ade80" strokeWidth="2" />}
                   {k === 2 && <path d={`M ${ox + 25} 122 L ${ox + 55} 100 L ${ox + 75} 95 L ${ox + 95} 100 L ${ox + 115} 65 L ${ox + 145} 60`} fill="none" stroke="#f87171" strokeWidth="2" />}
                 </g>

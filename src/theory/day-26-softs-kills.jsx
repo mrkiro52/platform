@@ -43,7 +43,7 @@ const Warn = ({ children }) => (
 const Quote = ({ text, author }) => (
   <div style={{
     borderLeft: '3px solid var(--accent-lime)', padding: '10px 16px', margin: '14px 0',
-    background: 'rgba(200,255,0,0.04)', borderRadius: '0 8px 8px 0',
+    background: 'rgba(32,190,255,0.04)', borderRadius: '0 8px 8px 0',
   }}>
     <div style={{ fontSize: 14, color: 'var(--text-primary)', fontStyle: 'italic', lineHeight: 1.6 }}>«{text}»</div>
     {author && <div style={{ fontSize: 11, color: 'var(--text-tertiary)', marginTop: 6 }}>— {author}</div>}
@@ -377,19 +377,19 @@ function SpeechViz() {
           <button key={i} onClick={() => setActive(i)} style={{
             padding: '5px 10px', fontSize: 12, cursor: 'pointer', borderRadius: 7,
             border: `1.5px solid ${i === active ? 'var(--accent-lime)' : 'var(--border-color)'}`,
-            background: i === active ? 'rgba(200,255,0,0.12)' : 'var(--bg-tertiary)',
+            background: i === active ? 'rgba(32,190,255,0.12)' : 'var(--bg-tertiary)',
             color: i === active ? 'var(--accent-lime)' : 'var(--text-tertiary)',
             fontWeight: i === active ? 700 : 400,
           }}>{pt.emoji} {pt.n}</button>
         ))}
       </div>
-      <div style={{ border: '1.5px solid var(--accent-lime)', borderRadius: 10, padding: '14px 16px', background: 'rgba(200,255,0,0.04)' }}>
+      <div style={{ border: '1.5px solid var(--accent-lime)', borderRadius: 10, padding: '14px 16px', background: 'rgba(32,190,255,0.04)' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
           <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--accent-lime)' }}>{p.emoji} {p.n}. {p.name}</span>
           <span style={{ fontSize: 11, color: 'var(--text-tertiary)', background: 'var(--bg-tertiary)', padding: '2px 8px', borderRadius: 5 }}>{p.time}</span>
         </div>
         <p style={{ fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.65, marginBottom: 10 }}>{p.desc}</p>
-        <div style={{ borderTop: '1px dashed rgba(200,255,0,0.2)', paddingTop: 10, fontSize: 12, color: 'var(--text-tertiary)', fontStyle: 'italic' }}>
+        <div style={{ borderTop: '1px dashed rgba(32,190,255,0.2)', paddingTop: 10, fontSize: 12, color: 'var(--text-tertiary)', fontStyle: 'italic' }}>
           Пример: {p.ex}
         </div>
       </div>

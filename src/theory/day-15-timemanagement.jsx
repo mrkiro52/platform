@@ -80,7 +80,7 @@ export default function Day15TimeManagementTheory() {
               <div key={i} style={{
                 flex: b.w === 'работа' ? '1 1 70px' : '0 1 50px',
                 minWidth: b.w === 'работа' ? '70px' : '44px',
-                background: b.w === 'работа' ? 'rgba(200,255,0,0.15)' : (b.w === 'длинный отдых' ? 'rgba(110,181,255,0.18)' : 'var(--bg-secondary)'),
+                background: b.w === 'работа' ? 'rgba(32,190,255,0.15)' : (b.w === 'длинный отдых' ? 'rgba(110,181,255,0.18)' : 'var(--bg-secondary)'),
                 border: '1px solid var(--border-color)',
                 borderRadius: '6px', padding: '8px 6px', textAlign: 'center'
               }}>

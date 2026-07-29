@@ -1,12 +1,12 @@
 import { TheoryTable, TheoryCode, TheoryExample } from './components/TheoryTable'
 
-const C = { text: 'var(--text-primary)', sub: 'var(--text-secondary)', lime: '#c8ff00', yellow: '#facc15', blue: '#60a5fa', border: '#2a2a3a' }
+const C = { text: 'var(--text-primary)', sub: 'var(--text-secondary)', lime: '#20beff', yellow: '#facc15', blue: '#60a5fa', border: '#2a2a3a' }
 
 function Fig({ children, caption }) {
   return (
     <figure style={{ margin: '18px 0', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
       <div style={{
-        width: '100%', maxWidth: 640, background: 'var(--bg-secondary)', border: '1px solid var(--border-color)',
+        width: '100%', maxWidth: 640, background: '#12121e', border: '1px solid #2a2a3a',
         borderRadius: 10, padding: '16px', display: 'flex', justifyContent: 'center', overflowX: 'auto',
       }}>{children}</div>
       {caption && <figcaption style={{ color: 'var(--text-tertiary)', fontSize: 12.5, textAlign: 'center', maxWidth: 640 }}>{caption}</figcaption>}
@@ -42,7 +42,7 @@ function Step({ n, title, children }) {
     <div style={{ margin: '16px 0 16px 14px', paddingLeft: 16, borderLeft: '2px dashed var(--border-color)' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
         <span style={{
-          background: 'rgba(200,255,0,0.12)', color: 'var(--accent-lime)', fontSize: 11, fontWeight: 700,
+          background: 'rgba(32,190,255,0.12)', color: 'var(--accent-lime)', fontSize: 11, fontWeight: 700,
           padding: '3px 10px', borderRadius: 999, flexShrink: 0,
         }}>Шаг {n}</span>
         <span style={{ color: 'var(--text-primary)', fontWeight: 600, fontSize: 14 }}>{title}</span>
@@ -99,7 +99,7 @@ export default function July8TypeScriptTheory() {
             <rect x="290" y="35" width="200" height="34" rx="6" fill="var(--bg-tertiary)" stroke={C.border} />
             <text x="390" y="57" fill={C.sub} fontSize="11" textAnchor="middle">пишешь код</text>
             <line x1="390" y1="69" x2="390" y2="90" stroke={C.sub} markerEnd="url(#tsA)" />
-            <rect x="290" y="92" width="200" height="34" rx="6" fill="rgba(200,255,0,0.10)" stroke={C.lime} />
+            <rect x="290" y="92" width="200" height="34" rx="6" fill="rgba(32,190,255,0.10)" stroke={C.lime} />
             <text x="390" y="114" fill={C.lime} fontSize="11" textAnchor="middle">ошибка найдена сразу ✓</text>
             <defs>
               <marker id="tsA" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill={C.sub} /></marker>

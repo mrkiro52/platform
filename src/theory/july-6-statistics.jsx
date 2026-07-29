@@ -1,13 +1,13 @@
 import { TheoryTable, TheoryCode, TheoryExample } from './components/TheoryTable'
 import VideoPlayer from '../components/VideoPlayer'
 
-const C = { text: 'var(--text-primary)', sub: 'var(--text-secondary)', lime: '#c8ff00', green: '#4ade80', blue: '#60a5fa', red: '#f87171', border: '#2a2a3a' }
+const C = { text: 'var(--text-primary)', sub: 'var(--text-secondary)', lime: '#20beff', green: '#4ade80', blue: '#60a5fa', red: '#f87171', border: '#2a2a3a' }
 
 function Fig({ children, caption }) {
   return (
     <figure style={{ margin: '18px 0', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
       <div style={{
-        width: '100%', maxWidth: 640, background: 'var(--bg-secondary)', border: '1px solid var(--border-color)',
+        width: '100%', maxWidth: 640, background: '#12121e', border: '1px solid #2a2a3a',
         borderRadius: 10, padding: '16px', display: 'flex', justifyContent: 'center', overflowX: 'auto',
       }}>{children}</div>
       {caption && <figcaption style={{ color: 'var(--text-tertiary)', fontSize: 12.5, textAlign: 'center', maxWidth: 640 }}>{caption}</figcaption>}
@@ -91,7 +91,7 @@ export default function July6StatisticsTheory() {
             })}
             <line x1="222" y1="95" x2="300" y2="95" stroke={C.sub} strokeWidth="2" markerEnd="url(#sa)" />
             <text x="261" y="86" fill={C.sub} fontSize="10" textAnchor="middle">берём</text>
-            <rect x="310" y="55" width="180" height="80" rx="8" fill="rgba(200,255,0,0.06)" stroke={C.lime} />
+            <rect x="310" y="55" width="180" height="80" rx="8" fill="rgba(32,190,255,0.06)" stroke={C.lime} />
             <text x="400" y="45" fill={C.lime} fontSize="12" fontWeight="700" textAnchor="middle">Выборка</text>
             {[0,1,2,3,4,5].map(i=>(<circle key={i} cx={335+ (i%3)*55} cy={80+Math.floor(i/3)*35} r="4" fill={C.lime} />))}
             <defs>
@@ -173,7 +173,7 @@ export default function July6StatisticsTheory() {
         <Fig caption="Нормальное распределение: колокол вокруг среднего μ. В ±1σ лежит 68% данных, в ±2σ — 95%">
           <svg viewBox="0 0 480 200" width="100%" style={{ maxWidth: 480 }} xmlns="http://www.w3.org/2000/svg">
             <line x1="30" y1="165" x2="450" y2="165" stroke={C.border} />
-            <path d="M40 165 C150 165 175 40 240 40 C305 40 330 165 440 165" fill="rgba(200,255,0,0.08)" stroke={C.lime} strokeWidth="2.5" />
+            <path d="M40 165 C150 165 175 40 240 40 C305 40 330 165 440 165" fill="rgba(32,190,255,0.08)" stroke={C.lime} strokeWidth="2.5" />
             {[[190,'−1σ'],[290,'+1σ'],[140,'−2σ'],[340,'+2σ']].map(([x,l],i)=>(
               <g key={i}><line x1={x} y1="60" x2={x} y2="165" stroke={C.sub} strokeDasharray="3 3" /><text x={x} y="180" fill={C.sub} fontSize="10" textAnchor="middle">{l}</text></g>
             ))}

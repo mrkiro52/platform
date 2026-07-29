@@ -4,7 +4,7 @@ function Fig({ children, caption }) {
   return (
     <figure style={{ margin: '18px 0', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
       <div style={{
-        width: '100%', maxWidth: 640, background: 'var(--bg-secondary)', border: '1px solid var(--border-color)',
+        width: '100%', maxWidth: 640, background: '#12121e', border: '1px solid #2a2a3a',
         borderRadius: 10, padding: '16px', display: 'flex', justifyContent: 'center', overflowX: 'auto',
       }}>{children}</div>
       {caption && <figcaption style={{ color: 'var(--text-tertiary)', fontSize: 12.5, textAlign: 'center', maxWidth: 640 }}>{caption}</figcaption>}
@@ -109,12 +109,12 @@ export default function July18KnnTheory() {
             <Dot x={230} y={90} r={7} fill="rgba(74,222,128,0.7)" label="55" />
             <Dot x={195} y={85} r={7} fill="rgba(74,222,128,0.7)" label="60" />
             {/* линии к соседям */}
-            <line x1="220" y1="100" x2="210" y2="110" stroke="#c8ff00" strokeDasharray="3" />
-            <line x1="220" y1="100" x2="230" y2="90" stroke="#c8ff00" strokeDasharray="3" />
-            <line x1="220" y1="100" x2="195" y2="85" stroke="#c8ff00" strokeDasharray="3" />
+            <line x1="220" y1="100" x2="210" y2="110" stroke="#20beff" strokeDasharray="3" />
+            <line x1="220" y1="100" x2="230" y2="90" stroke="#20beff" strokeDasharray="3" />
+            <line x1="220" y1="100" x2="195" y2="85" stroke="#20beff" strokeDasharray="3" />
             {/* новый объект */}
-            <path d="M 220 92 l 3 6 l 7 1 l -5 5 l 1 7 l -6 -3 l -6 3 l 1 -7 l -5 -5 l 7 -1 z" fill="#c8ff00" />
-            <text x="220" y="78" fill="#c8ff00" fontSize="11" textAnchor="middle" fontWeight="bold">новый объект</text>
+            <path d="M 220 92 l 3 6 l 7 1 l -5 5 l 1 7 l -6 -3 l -6 3 l 1 -7 l -5 -5 l 7 -1 z" fill="#20beff" />
+            <text x="220" y="78" fill="#20beff" fontSize="11" textAnchor="middle" fontWeight="bold">новый объект</text>
           </svg>
         </Fig>
         <Formula>предсказание = (50 + 55 + 60) / 3 = 165 / 3 = 55</Formula>
@@ -144,11 +144,11 @@ export default function July18KnnTheory() {
             <circle cx="215" cy="120" r="8" fill="#60a5fa" stroke="#60a5fa" />
             <polygon points="170,90 179,107 161,107" fill="#f87171" />
             {/* новый объект в центре */}
-            <path d="M 195 105 l 3 6 l 7 1 l -5 5 l 1 7 l -6 -3 l -6 3 l 1 -7 l -5 -5 l 7 -1 z" fill="#c8ff00" />
-            <line x1="196" y1="108" x2="190" y2="100" stroke="#c8ff00" strokeDasharray="2" />
-            <line x1="196" y1="108" x2="215" y2="120" stroke="#c8ff00" strokeDasharray="2" />
-            <line x1="196" y1="108" x2="170" y2="90" stroke="#c8ff00" strokeDasharray="2" />
-            <text x="196" y="70" fill="#c8ff00" fontSize="11" textAnchor="middle" fontWeight="bold">новый объект</text>
+            <path d="M 195 105 l 3 6 l 7 1 l -5 5 l 1 7 l -6 -3 l -6 3 l 1 -7 l -5 -5 l 7 -1 z" fill="#20beff" />
+            <line x1="196" y1="108" x2="190" y2="100" stroke="#20beff" strokeDasharray="2" />
+            <line x1="196" y1="108" x2="215" y2="120" stroke="#20beff" strokeDasharray="2" />
+            <line x1="196" y1="108" x2="170" y2="90" stroke="#20beff" strokeDasharray="2" />
+            <text x="196" y="70" fill="#20beff" fontSize="11" textAnchor="middle" fontWeight="bold">новый объект</text>
             <text x="196" y="160" fill="#60a5fa" fontSize="11" textAnchor="middle">2 «круга» vs 1 «треугольник» → класс «круг»</text>
           </svg>
         </Fig>
@@ -243,13 +243,13 @@ knn_cv = cross_validate(
         </P>
         <Fig caption="Евклидово расстояние — кратчайший путь по прямой; манхэттенское — сумма шагов по осям, «городские кварталы».">
           <svg viewBox="0 0 380 150" width="380" height="150" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="40" cy="110" r="5" fill="#c8ff00" />
-            <circle cx="150" cy="30" r="5" fill="#c8ff00" />
+            <circle cx="40" cy="110" r="5" fill="#20beff" />
+            <circle cx="150" cy="30" r="5" fill="#20beff" />
             <line x1="40" y1="110" x2="150" y2="30" stroke="#60a5fa" strokeWidth="2" />
             <text x="95" y="65" fill="#60a5fa" fontSize="10" textAnchor="middle">евклидово (p=2)</text>
 
-            <circle cx="230" cy="110" r="5" fill="#c8ff00" />
-            <circle cx="340" cy="30" r="5" fill="#c8ff00" />
+            <circle cx="230" cy="110" r="5" fill="#20beff" />
+            <circle cx="340" cy="30" r="5" fill="#20beff" />
             <path d="M 230 110 L 230 30 L 340 30" fill="none" stroke="#f87171" strokeWidth="2" />
             <text x="285" y="145" fill="#f87171" fontSize="10" textAnchor="middle">манхэттенское (p=1)</text>
           </svg>

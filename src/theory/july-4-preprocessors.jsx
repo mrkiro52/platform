@@ -1,12 +1,12 @@
 import { TheoryTable, TheoryCode, TheoryExample } from './components/TheoryTable'
 
-const C = { text: 'var(--text-primary)', sub: 'var(--text-secondary)', lime: '#c8ff00', border: '#2a2a3a' }
+const C = { text: 'var(--text-primary)', sub: 'var(--text-secondary)', lime: '#20beff', border: '#2a2a3a' }
 
 function Fig({ children, caption }) {
   return (
     <figure style={{ margin: '18px 0', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
       <div style={{
-        width: '100%', maxWidth: 640, background: 'var(--bg-secondary)', border: '1px solid var(--border-color)',
+        width: '100%', maxWidth: 640, background: '#12121e', border: '1px solid #2a2a3a',
         borderRadius: 10, padding: '16px', display: 'flex', justifyContent: 'center', overflowX: 'auto',
       }}>{children}</div>
       {caption && <figcaption style={{ color: 'var(--text-tertiary)', fontSize: 12.5, textAlign: 'center', maxWidth: 640 }}>{caption}</figcaption>}
@@ -49,7 +49,7 @@ export default function July4PreprocessorsTheory() {
         </Term>
         <Fig caption="Пайплайн: исходный .scss компилируется в обычный .css, который уже подключается к странице">
           <svg viewBox="0 0 560 110" width="100%" style={{ maxWidth: 560 }} xmlns="http://www.w3.org/2000/svg">
-            <rect x="30" y="35" width="130" height="44" rx="8" fill="rgba(200,255,0,0.1)" stroke={C.lime} />
+            <rect x="30" y="35" width="130" height="44" rx="8" fill="rgba(32,190,255,0.1)" stroke={C.lime} />
             <text x="95" y="55" fill={C.text} fontSize="12" fontWeight="700" textAnchor="middle">styles.scss</text>
             <text x="95" y="71" fill={C.sub} fontSize="10" textAnchor="middle">переменные, вложенность</text>
 
@@ -88,7 +88,7 @@ export default function July4PreprocessorsTheory() {
         <h2 className="theory-heading-2">2. Переменные</h2>
         <p>Задаём значение один раз — переиспользуем везде. Поменять тему сайта — поправить одну строку.</p>
         <TheoryCode language="scss" code={`// SCSS — переменная начинается с $
-$primary: #c8ff00;
+$primary: #20beff;
 $text-color: #222;
 $space: 16px;
 $radius: 8px;
@@ -100,7 +100,7 @@ $radius: 8px;
   border-radius: $radius;
 }`} />
         <TheoryCode language="less" code={`// LESS — переменная начинается с @
-@primary: #c8ff00;
+@primary: #20beff;
 @space: 16px;
 
 .button {
@@ -108,7 +108,7 @@ $radius: 8px;
   padding: @space;
 }`} />
         <TheoryExample title="Переменные препроцессора vs CSS-переменные (--var)">
-          В современном CSS тоже есть переменные: <code>--primary: #c8ff00;</code> и
+          В современном CSS тоже есть переменные: <code>--primary: #20beff;</code> и
           <code> color: var(--primary);</code>. Разница принципиальная: CSS-переменные живут <strong>в
           браузере</strong> и могут меняться динамически (через JS, media query, :hover). Переменные
           препроцессора существуют <strong>только при компиляции</strong> — в готовом CSS их уже нет, они
@@ -129,7 +129,7 @@ $radius: 8px;
   }
 
   &:hover {         // & = сам .card → .card:hover
-    border-color: #c8ff00;
+    border-color: #20beff;
   }
 
   &.active {        // → .card.active
@@ -143,7 +143,7 @@ $radius: 8px;
         <p>Скомпилируется в плоский CSS:</p>
         <TheoryCode language="css" code={`.card { padding: 16px; border: 1px solid #ccc; }
 .card .title { font-weight: 700; }
-.card:hover { border-color: #c8ff00; }
+.card:hover { border-color: #20beff; }
 .card.active { background: #f5f5f5; }
 .card__footer { margin-top: 12px; }`} />
         <Term name="Символ &">
@@ -252,7 +252,7 @@ $radius: 8px;
           отдельный CSS, а предназначен для импорта в другие файлы.
         </Term>
         <TheoryCode language="scss" code={`// _variables.scss (партиал)
-$primary: #c8ff00;
+$primary: #20beff;
 
 // styles.scss
 @use 'variables';     // подключаем модуль
@@ -271,7 +271,7 @@ $primary: #c8ff00;
       {/* Полный пример */}
       <section className="theory-section">
         <h2 className="theory-heading-2">8. Всё вместе: пример карточки</h2>
-        <TheoryCode language="scss" code={`$primary: #c8ff00;
+        <TheoryCode language="scss" code={`$primary: #20beff;
 $radius: 10px;
 
 @mixin card-shadow {

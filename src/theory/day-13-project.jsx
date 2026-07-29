@@ -11,7 +11,7 @@ export default function Day13ProjectTheory() {
 
       <section className="theory-section">
         <h2 className="theory-heading-2">📋 Дедлайны и правила</h2>
-        <div style={{ backgroundColor: 'rgba(200,255,0,0.05)', padding: '16px', borderRadius: '8px', marginBottom: '24px' }}>
+        <div style={{ backgroundColor: 'rgba(32,190,255,0.05)', padding: '16px', borderRadius: '8px', marginBottom: '24px' }}>
           <p style={{ margin: '0 0 12px 0', fontWeight: 600 }}>⏰ Когда можешь сдать:</p>
           <ul style={{ margin: '0 0 12px 0', paddingLeft: '20px' }}>
             <li>✅ Суббота, 13 июня в 21:00</li>
@@ -37,7 +37,7 @@ export default function Day13ProjectTheory() {
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           {/* Вариант 1 */}
-          <div style={{ padding: '16px', backgroundColor: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '8px' }}>
+          <div style={{ padding: '16px', backgroundColor: 'var(--bg-tertiary)', border: '1px solid var(--border-color)', borderRadius: '8px' }}>
             <h3 style={{ margin: '0 0 12px 0', fontSize: '16px' }}>Вариант 1: Поиск середины списка (slow/fast pointers)</h3>
             <ul style={{ margin: '0', paddingLeft: '20px', fontSize: '13px', color: 'var(--text-secondary)', lineHeight: '1.6' }}>
               <li>Реализовать алгоритм поиска середины односвязного списка с помощью указателей slow и fast</li>
@@ -48,7 +48,7 @@ export default function Day13ProjectTheory() {
           </div>
 
           {/* Вариант 2 */}
-          <div style={{ padding: '16px', backgroundColor: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '8px' }}>
+          <div style={{ padding: '16px', backgroundColor: 'var(--bg-tertiary)', border: '1px solid var(--border-color)', borderRadius: '8px' }}>
             <h3 style={{ margin: '0 0 12px 0', fontSize: '16px' }}>Вариант 2: Проверка скобочной последовательности</h3>
             <ul style={{ margin: '0', paddingLeft: '20px', fontSize: '13px', color: 'var(--text-secondary)', lineHeight: '1.6' }}>
               <li>Реализовать алгоритм проверки правильности скобочной последовательности с использованием стека</li>
@@ -59,7 +59,7 @@ export default function Day13ProjectTheory() {
           </div>
 
           {/* Вариант 3 */}
-          <div style={{ padding: '16px', backgroundColor: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '8px' }}>
+          <div style={{ padding: '16px', backgroundColor: 'var(--bg-tertiary)', border: '1px solid var(--border-color)', borderRadius: '8px' }}>
             <h3 style={{ margin: '0 0 12px 0', fontSize: '16px' }}>Вариант 3: Обход графа в ширину (BFS)</h3>
             <ul style={{ margin: '0', paddingLeft: '20px', fontSize: '13px', color: 'var(--text-secondary)', lineHeight: '1.6' }}>
               <li>Реализовать алгоритм обхода графа в ширину (BFS) с использованием очереди</li>
@@ -70,7 +70,7 @@ export default function Day13ProjectTheory() {
           </div>
 
           {/* Вариант 4 */}
-          <div style={{ padding: '16px', backgroundColor: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '8px' }}>
+          <div style={{ padding: '16px', backgroundColor: 'var(--bg-tertiary)', border: '1px solid var(--border-color)', borderRadius: '8px' }}>
             <h3 style={{ margin: '0 0 12px 0', fontSize: '16px' }}>Вариант 4: Обход графа в глубину (DFS)</h3>
             <ul style={{ margin: '0', paddingLeft: '20px', fontSize: '13px', color: 'var(--text-secondary)', lineHeight: '1.6' }}>
               <li>Реализовать алгоритм обхода графа в глубину (DFS) со стеком или рекурсией</li>
@@ -81,7 +81,7 @@ export default function Day13ProjectTheory() {
           </div>
 
           {/* Вариант 5 */}
-          <div style={{ padding: '16px', backgroundColor: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '8px' }}>
+          <div style={{ padding: '16px', backgroundColor: 'var(--bg-tertiary)', border: '1px solid var(--border-color)', borderRadius: '8px' }}>
             <h3 style={{ margin: '0 0 12px 0', fontSize: '16px' }}>Вариант 5: Двусвязный список</h3>
             <ul style={{ margin: '0', paddingLeft: '20px', fontSize: '13px', color: 'var(--text-secondary)', lineHeight: '1.6' }}>
               <li>Реализовать двусвязный список с операциями вставки и удаления элементов</li>
@@ -92,7 +92,7 @@ export default function Day13ProjectTheory() {
           </div>
 
           {/* Вариант 6 */}
-          <div style={{ padding: '16px', backgroundColor: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '8px' }}>
+          <div style={{ padding: '16px', backgroundColor: 'var(--bg-tertiary)', border: '1px solid var(--border-color)', borderRadius: '8px' }}>
             <h3 style={{ margin: '0 0 12px 0', fontSize: '16px' }}>Вариант 6: Удаление дубликатов из списка</h3>
             <ul style={{ margin: '0', paddingLeft: '20px', fontSize: '13px', color: 'var(--text-secondary)', lineHeight: '1.6' }}>
               <li>Реализовать алгоритм удаления дубликатов из односвязного списка</li>
@@ -104,7 +104,7 @@ export default function Day13ProjectTheory() {
           </div>
 
           {/* Вариант 7 */}
-          <div style={{ padding: '16px', backgroundColor: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '8px' }}>
+          <div style={{ padding: '16px', backgroundColor: 'var(--bg-tertiary)', border: '1px solid var(--border-color)', borderRadius: '8px' }}>
             <h3 style={{ margin: '0 0 12px 0', fontSize: '16px' }}>Вариант 7: Хэш-таблица с разрешением коллизий</h3>
             <ul style={{ margin: '0', paddingLeft: '20px', fontSize: '13px', color: 'var(--text-secondary)', lineHeight: '1.6' }}>
               <li>Реализовать хэш-таблицу с разрешением коллизий методом цепочек или линейного пробирования</li>
@@ -115,7 +115,7 @@ export default function Day13ProjectTheory() {
           </div>
 
           {/* Вариант 8 */}
-          <div style={{ padding: '16px', backgroundColor: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '8px' }}>
+          <div style={{ padding: '16px', backgroundColor: 'var(--bg-tertiary)', border: '1px solid var(--border-color)', borderRadius: '8px' }}>
             <h3 style={{ margin: '0 0 12px 0', fontSize: '16px' }}>Вариант 8: Бинарное дерево поиска (BST)</h3>
             <ul style={{ margin: '0', paddingLeft: '20px', fontSize: '13px', color: 'var(--text-secondary)', lineHeight: '1.6' }}>
               <li>Реализовать бинарное дерево поиска (BST) с операциями вставки и поиска элементов</li>
@@ -126,7 +126,7 @@ export default function Day13ProjectTheory() {
           </div>
 
           {/* Вариант 9 */}
-          <div style={{ padding: '16px', backgroundColor: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '8px' }}>
+          <div style={{ padding: '16px', backgroundColor: 'var(--bg-tertiary)', border: '1px solid var(--border-color)', borderRadius: '8px' }}>
             <h3 style={{ margin: '0 0 12px 0', fontSize: '16px' }}>Вариант 9: Разворот односвязного списка</h3>
             <ul style={{ margin: '0', paddingLeft: '20px', fontSize: '13px', color: 'var(--text-secondary)', lineHeight: '1.6' }}>
               <li>Реализовать алгоритм разворота односвязного списка</li>
@@ -137,7 +137,7 @@ export default function Day13ProjectTheory() {
           </div>
 
           {/* Вариант 10 */}
-          <div style={{ padding: '16px', backgroundColor: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '8px' }}>
+          <div style={{ padding: '16px', backgroundColor: 'var(--bg-tertiary)', border: '1px solid var(--border-color)', borderRadius: '8px' }}>
             <h3 style={{ margin: '0 0 12px 0', fontSize: '16px' }}>Вариант 10: Алгоритм Дейкстры (кратчайший путь)</h3>
             <ul style={{ margin: '0', paddingLeft: '20px', fontSize: '13px', color: 'var(--text-secondary)', lineHeight: '1.6' }}>
               <li>Реализовать алгоритм поиска кратчайшего пути в графе (алгоритм Дейкстры)</li>

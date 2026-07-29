@@ -1,12 +1,12 @@
 import { TheoryTable, TheoryCode, TheoryExample } from './components/TheoryTable'
 
-const C = { text: 'var(--text-primary)', sub: 'var(--text-secondary)', lime: '#c8ff00', blue: '#60a5fa', green: '#4ade80', red: '#f87171', yellow: '#facc15', border: '#2a2a3a' }
+const C = { text: 'var(--text-primary)', sub: 'var(--text-secondary)', lime: '#20beff', blue: '#60a5fa', green: '#4ade80', red: '#f87171', yellow: '#facc15', border: '#2a2a3a' }
 
 function Fig({ children, caption }) {
   return (
     <figure style={{ margin: '18px 0', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
       <div style={{
-        width: '100%', maxWidth: 640, background: 'var(--bg-secondary)', border: '1px solid var(--border-color)',
+        width: '100%', maxWidth: 640, background: '#12121e', border: '1px solid #2a2a3a',
         borderRadius: 10, padding: '16px', display: 'flex', justifyContent: 'center', overflowX: 'auto',
       }}>{children}</div>
       {caption && <figcaption style={{ color: 'var(--text-tertiary)', fontSize: 12.5, textAlign: 'center', maxWidth: 640 }}>{caption}</figcaption>}
@@ -41,7 +41,7 @@ function Step({ n, title, children }) {
     <div style={{ margin: '16px 0 16px 14px', paddingLeft: 16, borderLeft: '2px dashed var(--border-color)' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
         <span style={{
-          background: 'rgba(200,255,0,0.12)', color: 'var(--accent-lime)', fontSize: 11, fontWeight: 700,
+          background: 'rgba(32,190,255,0.12)', color: 'var(--accent-lime)', fontSize: 11, fontWeight: 700,
           padding: '3px 10px', borderRadius: 999, flexShrink: 0,
         }}>Шаг {n}</span>
         <span style={{ color: 'var(--text-primary)', fontWeight: 600, fontSize: 14 }}>{title}</span>
@@ -257,7 +257,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         </P>
         <Fig caption="Broadcast: сообщение от одного клиента сервер рассылает всем участникам комнаты через группу соединений">
           <svg viewBox="0 0 480 170" width="100%" style={{ maxWidth: 480 }} xmlns="http://www.w3.org/2000/svg">
-            <rect x="200" y="65" width="80" height="40" rx="8" fill="rgba(200,255,0,0.08)" stroke={C.lime} />
+            <rect x="200" y="65" width="80" height="40" rx="8" fill="rgba(32,190,255,0.08)" stroke={C.lime} />
             <text x="240" y="90" fill={C.lime} fontSize="11" fontWeight="700" textAnchor="middle">Сервер</text>
             <rect x="30" y="20" width="90" height="34" rx="6" fill="var(--bg-tertiary)" stroke={C.green} />
             <text x="75" y="42" fill={C.green} fontSize="10" textAnchor="middle">Аня (шлёт)</text>

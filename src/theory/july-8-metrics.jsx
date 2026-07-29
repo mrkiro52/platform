@@ -1,12 +1,12 @@
 import { TheoryTable, TheoryCode, TheoryExample } from './components/TheoryTable'
 
-const C = { text: 'var(--text-primary)', sub: 'var(--text-secondary)', lime: '#c8ff00', blue: '#60a5fa', green: '#4ade80', red: '#f87171', indigo: '#818cf8', border: '#2a2a3a' }
+const C = { text: 'var(--text-primary)', sub: 'var(--text-secondary)', lime: '#20beff', blue: '#60a5fa', green: '#4ade80', red: '#f87171', indigo: '#818cf8', border: '#2a2a3a' }
 
 function Fig({ children, caption }) {
   return (
     <figure style={{ margin: '18px 0', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
       <div style={{
-        width: '100%', maxWidth: 640, background: 'var(--bg-secondary)', border: '1px solid var(--border-color)',
+        width: '100%', maxWidth: 640, background: '#12121e', border: '1px solid #2a2a3a',
         borderRadius: 10, padding: '16px', display: 'flex', justifyContent: 'center', overflowX: 'auto',
       }}>{children}</div>
       {caption && <figcaption style={{ color: 'var(--text-tertiary)', fontSize: 12.5, textAlign: 'center', maxWidth: 640 }}>{caption}</figcaption>}
@@ -54,7 +54,7 @@ function Step({ n, title, children }) {
     <div style={{ margin: '16px 0 16px 14px', paddingLeft: 16, borderLeft: '2px dashed var(--border-color)' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
         <span style={{
-          background: 'rgba(200,255,0,0.12)', color: 'var(--accent-lime)', fontSize: 11, fontWeight: 700,
+          background: 'rgba(32,190,255,0.12)', color: 'var(--accent-lime)', fontSize: 11, fontWeight: 700,
           padding: '3px 10px', borderRadius: 999, flexShrink: 0,
         }}>Шаг {n}</span>
         <span style={{ color: 'var(--text-primary)', fontWeight: 600, fontSize: 14 }}>{title}</span>
@@ -108,7 +108,7 @@ export default function July8MetricsTheory() {
         </P>
         <Fig caption="Событие содержит имя действия и набор параметров — по ним потом строятся все метрики и воронки">
           <svg viewBox="0 0 480 130" width="100%" style={{ maxWidth: 480 }} xmlns="http://www.w3.org/2000/svg">
-            <rect x="30" y="20" width="200" height="90" rx="8" fill="rgba(200,255,0,0.06)" stroke={C.lime} />
+            <rect x="30" y="20" width="200" height="90" rx="8" fill="rgba(32,190,255,0.06)" stroke={C.lime} />
             <text x="130" y="14" fill={C.lime} fontSize="11" fontWeight="700" textAnchor="middle">событие</text>
             <text x="50" y="45" fill={C.text} fontSize="11" fontFamily="monospace">name: "add_to_cart"</text>
             <text x="50" y="65" fill={C.sub} fontSize="11" fontFamily="monospace">product_id: 42</text>
@@ -142,7 +142,7 @@ export default function July8MetricsTheory() {
               {w:130,l:'Оплатили',v:'1 050',y:135},
             ].map((s,i)=>(
               <g key={i}>
-                <rect x={(480-s.w)/2} y={s.y} width={s.w} height="30" rx="4" fill={i===1?'rgba(248,113,113,0.15)':'rgba(200,255,0,0.10)'} stroke={i===1?C.red:C.lime} />
+                <rect x={(480-s.w)/2} y={s.y} width={s.w} height="30" rx="4" fill={i===1?'rgba(248,113,113,0.15)':'rgba(32,190,255,0.10)'} stroke={i===1?C.red:C.lime} />
                 <text x="240" y={s.y+20} fill={C.text} fontSize="11" textAnchor="middle">{s.l} — {s.v}</text>
               </g>
             ))}

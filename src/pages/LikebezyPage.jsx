@@ -138,7 +138,7 @@ export default function LikebezyPage() {
                   transition: 'border-color 0.2s, transform 0.15s',
                 }}
                 onMouseEnter={e => {
-                  e.currentTarget.style.borderColor = 'rgba(200,255,0,0.4)'
+                  e.currentTarget.style.borderColor = 'rgba(32,190,255,0.4)'
                   e.currentTarget.style.transform = 'translateY(-2px)'
                 }}
                 onMouseLeave={e => {
@@ -182,7 +182,7 @@ export default function LikebezyPage() {
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <span style={{ fontSize: 12, color: 'var(--text-tertiary)' }}>{item.time}</span>
                   <span style={{
-                    background: 'rgba(200,255,0,0.1)', border: '1px solid rgba(200,255,0,0.25)',
+                    background: 'rgba(32,190,255,0.1)', border: '1px solid rgba(32,190,255,0.25)',
                     color: 'var(--accent-lime)', borderRadius: 6, padding: '5px 14px',
                     fontSize: 12, fontWeight: 600,
                   }}>Читать →</span>

@@ -32,7 +32,7 @@ const Code = ({ code, lang = 'sql' }) => {
 }
 
 const Note = ({ children }) => (
-  <div style={{ background: 'rgba(200,255,0,0.05)', border: '1px solid rgba(200,255,0,0.18)', borderRadius: 8, padding: '12px 16px', margin: '14px 0', color: 'var(--text-secondary)', fontSize: 13, lineHeight: 1.7 }}>
+  <div style={{ background: 'rgba(32,190,255,0.05)', border: '1px solid rgba(32,190,255,0.18)', borderRadius: 8, padding: '12px 16px', margin: '14px 0', color: 'var(--text-secondary)', fontSize: 13, lineHeight: 1.7 }}>
     <span style={{ color: 'var(--accent-lime)', fontWeight: 700, marginRight: 6 }}>💡</span>{children}
   </div>
 )
@@ -72,13 +72,13 @@ const T = ({ name, cols, rows, hRows = [], hCols = [], caption }) => (
         <thead>
           <tr>
             {cols.map((c, j) => (
-              <th key={j} style={{ padding: '8px 14px', textAlign: 'left', whiteSpace: 'nowrap', background: hCols.includes(j) ? 'rgba(200,255,0,0.18)' : 'var(--bg-secondary)', color: hCols.includes(j) ? 'var(--accent-lime)' : 'var(--text-secondary)', borderBottom: '2px solid var(--border-color)', fontFamily: 'monospace', fontWeight: 700 }}>{c}</th>
+              <th key={j} style={{ padding: '8px 14px', textAlign: 'left', whiteSpace: 'nowrap', background: hCols.includes(j) ? 'rgba(32,190,255,0.18)' : 'var(--bg-secondary)', color: hCols.includes(j) ? 'var(--accent-lime)' : 'var(--text-secondary)', borderBottom: '2px solid var(--border-color)', fontFamily: 'monospace', fontWeight: 700 }}>{c}</th>
             ))}
           </tr>
         </thead>
         <tbody>
           {rows.map((row, i) => (
-            <tr key={i} style={{ background: hRows.includes(i) ? 'rgba(200,255,0,0.09)' : 'transparent' }}>
+            <tr key={i} style={{ background: hRows.includes(i) ? 'rgba(32,190,255,0.09)' : 'transparent' }}>
               {row.map((cell, j) => (
                 <td key={j} style={{ padding: '7px 14px', borderBottom: '1px solid var(--border-color)', color: (hCols.includes(j) || hRows.includes(i)) ? 'var(--text-primary)' : 'var(--text-secondary)', whiteSpace: 'nowrap', fontFamily: typeof cell === 'number' ? 'monospace' : 'inherit' }}>{cell}</td>
               ))}
@@ -596,7 +596,7 @@ DELETE FROM users WHERE age > 40;`} />
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 10, margin: '16px 0' }}>
         {[
           { type: 'INNER JOIN', color: 'rgba(100,200,255,0.12)', border: 'rgba(100,200,255,0.25)', desc: 'Только строки с совпадением в обеих таблицах' },
-          { type: 'LEFT JOIN',  color: 'rgba(200,255,0,0.08)',   border: 'rgba(200,255,0,0.2)',   desc: 'Все строки слева + совпадения справа (NULL если нет)' },
+          { type: 'LEFT JOIN',  color: 'rgba(32,190,255,0.08)',   border: 'rgba(32,190,255,0.2)',   desc: 'Все строки слева + совпадения справа (NULL если нет)' },
           { type: 'RIGHT JOIN', color: 'rgba(255,170,0,0.08)',   border: 'rgba(255,170,0,0.2)',   desc: 'Все строки справа + совпадения слева (NULL если нет)' },
           { type: 'FULL OUTER', color: 'rgba(200,100,255,0.08)', border: 'rgba(200,100,255,0.2)', desc: 'Все строки из обеих таблиц (NULL где нет пары)' },
         ].map(j => (
@@ -862,7 +862,7 @@ LIMIT    3;                       -- 8. ограничение`} />
             ['7', 'ORDER BY'], ['8', 'LIMIT'],
           ].map(([num, cmd]) => (
             <div key={cmd} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-              <span style={{ background: 'rgba(200,255,0,0.15)', color: 'var(--accent-lime)', borderRadius: 4, padding: '2px 7px', fontSize: 11, fontWeight: 700 }}>{num}</span>
+              <span style={{ background: 'rgba(32,190,255,0.15)', color: 'var(--accent-lime)', borderRadius: 4, padding: '2px 7px', fontSize: 11, fontWeight: 700 }}>{num}</span>
               <span style={{ fontFamily: 'monospace', color: 'var(--text-primary)', fontSize: 13 }}>{cmd}</span>
               {num !== '8' && <span style={{ color: 'var(--text-tertiary)' }}>→</span>}
             </div>

@@ -1,6 +1,6 @@
 import { TheoryTable, TheoryExample } from './components/TheoryTable'
 
-const C = { text: 'var(--text-primary)', sub: 'var(--text-secondary)', lime: '#c8ff00', border: '#2a2a3a' }
+const C = { text: 'var(--text-primary)', sub: 'var(--text-secondary)', lime: '#20beff', border: '#2a2a3a' }
 
 function Formula({ children }) {
   return (
@@ -17,7 +17,7 @@ function Fig({ children, caption }) {
   return (
     <figure style={{ margin: '18px 0', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
       <div style={{
-        width: '100%', maxWidth: 620, background: 'var(--bg-secondary)', border: '1px solid var(--border-color)',
+        width: '100%', maxWidth: 620, background: '#12121e', border: '1px solid #2a2a3a',
         borderRadius: 10, padding: '16px', display: 'flex', justifyContent: 'center', overflowX: 'auto',
       }}>{children}</div>
       {caption && <figcaption style={{ color: 'var(--text-tertiary)', fontSize: 12.5, textAlign: 'center' }}>{caption}</figcaption>}
@@ -86,7 +86,7 @@ export default function July2CombinatoricsTheory() {
             ))}
             {['1','2'].map((t,i)=>(
               <g key={i}>
-                <circle cx="440" cy={70+i*60} r="18" fill="rgba(200,255,0,0.15)" stroke={C.lime} />
+                <circle cx="440" cy={70+i*60} r="18" fill="rgba(32,190,255,0.15)" stroke={C.lime} />
                 <text x="440" y={75+i*60} fill={C.text} fontSize="13" textAnchor="middle">{t}</text>
               </g>
             ))}
@@ -231,7 +231,7 @@ export default function July2CombinatoricsTheory() {
           <svg viewBox="0 0 400 90" width="100%" style={{ maxWidth: 400 }} xmlns="http://www.w3.org/2000/svg">
             {['AB','AC','BC'].map((w,i)=>(
               <g key={i}>
-                <rect x={20+i*125} y="25" width="100" height="40" rx="6" fill="rgba(200,255,0,0.12)" stroke={C.lime} />
+                <rect x={20+i*125} y="25" width="100" height="40" rx="6" fill="rgba(32,190,255,0.12)" stroke={C.lime} />
                 <text x={70+i*125} y="50" fill={C.text} fontSize="15" fontWeight="700" textAnchor="middle" letterSpacing="2">{w}</text>
               </g>
             ))}
@@ -326,8 +326,8 @@ export default function July2CombinatoricsTheory() {
           <svg viewBox="0 0 540 150" width="100%" style={{ maxWidth: 540 }} xmlns="http://www.w3.org/2000/svg">
             {/* A ∪ B */}
             <text x="90" y="18" fill={C.text} fontSize="12" fontWeight="700" textAnchor="middle">A ∪ B</text>
-            <circle cx="75" cy="80" r="38" fill="rgba(200,255,0,0.18)" stroke={C.lime} />
-            <circle cx="115" cy="80" r="38" fill="rgba(200,255,0,0.18)" stroke={C.lime} />
+            <circle cx="75" cy="80" r="38" fill="rgba(32,190,255,0.18)" stroke={C.lime} />
+            <circle cx="115" cy="80" r="38" fill="rgba(32,190,255,0.18)" stroke={C.lime} />
             <text x="60" y="85" fill={C.text} fontSize="13">A</text>
             <text x="128" y="85" fill={C.text} fontSize="13">B</text>
             {/* A ∩ B */}

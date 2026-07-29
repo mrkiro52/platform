@@ -1,13 +1,13 @@
 import { TheoryTable, TheoryCode, TheoryExample, DbTable } from './components/TheoryTable'
 import MultiPartVideo, { JULY5_ML_ANALYTICS_PARTS } from '../components/MultiPartVideo'
 
-const C = { text: 'var(--text-primary)', sub: 'var(--text-secondary)', lime: '#c8ff00', green: '#4ade80', border: '#2a2a3a' }
+const C = { text: 'var(--text-primary)', sub: 'var(--text-secondary)', lime: '#20beff', green: '#4ade80', border: '#2a2a3a' }
 
 function Fig({ children, caption }) {
   return (
     <figure style={{ margin: '18px 0', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
       <div style={{
-        width: '100%', maxWidth: 640, background: 'var(--bg-secondary)', border: '1px solid var(--border-color)',
+        width: '100%', maxWidth: 640, background: '#12121e', border: '1px solid #2a2a3a',
         borderRadius: 10, padding: '16px', display: 'flex', justifyContent: 'center', overflowX: 'auto',
       }}>{children}</div>
       {caption && <figcaption style={{ color: 'var(--text-tertiary)', fontSize: 12.5, textAlign: 'center', maxWidth: 640 }}>{caption}</figcaption>}
@@ -296,7 +296,7 @@ df.sort_values(['city', 'age'])             # сначала по городу, 
             <text x="80" y="24" fill={C.text} fontSize="12" fontWeight="700" textAnchor="middle">исходная таблица</text>
             {['Москва','Казань','Москва','Сочи'].map((c,i)=>(
               <rect key={i} x="30" y={36+i*30} width="110" height="24" rx="4"
-                fill={c==='Москва'?'rgba(200,255,0,0.12)':c==='Казань'?'rgba(96,165,250,0.12)':'rgba(248,113,113,0.12)'} stroke={C.border} />
+                fill={c==='Москва'?'rgba(32,190,255,0.12)':c==='Казань'?'rgba(96,165,250,0.12)':'rgba(248,113,113,0.12)'} stroke={C.border} />
             ))}
             {['Москва','Казань','Москва','Сочи'].map((c,i)=>(
               <text key={i} x="85" y={52+i*30} fill={C.sub} fontSize="11" textAnchor="middle">{c}</text>
@@ -304,7 +304,7 @@ df.sort_values(['city', 'age'])             # сначала по городу, 
             <line x1="150" y1="95" x2="210" y2="95" stroke={C.sub} strokeWidth="2" markerEnd="url(#pg)" />
             <text x="180" y="86" fill={C.sub} fontSize="9" textAnchor="middle">group</text>
             {/* groups */}
-            <rect x="225" y="30" width="130" height="46" rx="6" fill="rgba(200,255,0,0.10)" stroke={C.lime} />
+            <rect x="225" y="30" width="130" height="46" rx="6" fill="rgba(32,190,255,0.10)" stroke={C.lime} />
             <text x="290" y="49" fill={C.lime} fontSize="11" textAnchor="middle">Москва</text>
             <text x="290" y="66" fill={C.sub} fontSize="10" textAnchor="middle">2 строки</text>
             <rect x="225" y="84" width="130" height="34" rx="6" fill="rgba(96,165,250,0.10)" stroke="#60a5fa" />

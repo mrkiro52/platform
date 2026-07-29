@@ -1,13 +1,13 @@
 import { TheoryTable, TheoryCode, TheoryExample, DbTable } from './components/TheoryTable'
 import VideoPlayer from '../components/VideoPlayer'
 
-const C = { text: 'var(--text-primary)', sub: 'var(--text-secondary)', lime: '#c8ff00', border: '#2a2a3a' }
+const C = { text: 'var(--text-primary)', sub: 'var(--text-secondary)', lime: '#20beff', border: '#2a2a3a' }
 
 function Fig({ children, caption }) {
   return (
     <figure style={{ margin: '18px 0', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
       <div style={{
-        width: '100%', maxWidth: 640, background: 'var(--bg-secondary)', border: '1px solid var(--border-color)',
+        width: '100%', maxWidth: 640, background: '#12121e', border: '1px solid #2a2a3a',
         borderRadius: 10, padding: '16px', display: 'flex', justifyContent: 'center', overflowX: 'auto',
       }}>{children}</div>
       {caption && <figcaption style={{ color: 'var(--text-tertiary)', fontSize: 12.5, textAlign: 'center', maxWidth: 640 }}>{caption}</figcaption>}
@@ -95,7 +95,7 @@ export default function July4SqlOrmTheory() {
             <text x="45" y="85" fill={C.text} fontSize="11">id (PK)</text>
             <text x="45" y="105" fill={C.sub} fontSize="11">name, city</text>
 
-            <rect x="350" y="30" width="190" height="110" rx="8" fill="rgba(200,255,0,0.08)" stroke={C.lime} />
+            <rect x="350" y="30" width="190" height="110" rx="8" fill="rgba(32,190,255,0.08)" stroke={C.lime} />
             <text x="445" y="50" fill={C.lime} fontSize="12" fontWeight="700" textAnchor="middle">orders</text>
             <text x="365" y="75" fill={C.text} fontSize="11">id (PK)</text>
             <text x="365" y="95" fill={C.text} fontSize="11">user_id (FK)</text>
@@ -184,9 +184,9 @@ JOIN orders ON orders.user_id = users.id;`} />
               <g key={i}>
                 <text x={j.x} y="20" fill={C.text} fontSize="12" fontWeight="700" textAnchor="middle">{j.label}</text>
                 <clipPath id={`cl${i}`}><circle cx={j.x-18} cy="70" r="34" /></clipPath>
-                <circle cx={j.x-18} cy="70" r="34" fill={j.left ? 'rgba(200,255,0,0.25)' : 'none'} stroke={C.lime} />
+                <circle cx={j.x-18} cy="70" r="34" fill={j.left ? 'rgba(32,190,255,0.25)' : 'none'} stroke={C.lime} />
                 <circle cx={j.x+18} cy="70" r="34" fill={j.right ? 'rgba(129,140,248,0.3)' : 'none'} stroke="#818cf8" />
-                {j.both && <circle cx={j.x+18} cy="70" r="34" fill="rgba(200,255,0,0.3)" stroke="none" clipPath={`url(#cl${i})`} />}
+                {j.both && <circle cx={j.x+18} cy="70" r="34" fill="rgba(32,190,255,0.3)" stroke="none" clipPath={`url(#cl${i})`} />}
                 <text x={j.x-30} y="120" fill={C.sub} fontSize="10" textAnchor="middle">A</text>
                 <text x={j.x+30} y="120" fill={C.sub} fontSize="10" textAnchor="middle">B</text>
               </g>
@@ -256,7 +256,7 @@ COMMIT;   -- зафиксировать. Если между строк ошиб
             <line x1="230" y1="70" x2="330" y2="70" stroke={C.lime} strokeWidth="2" markerEnd="url(#o1)" />
             <text x="280" y="60" fill={C.lime} fontSize="10" textAnchor="middle">ORM</text>
 
-            <rect x="330" y="30" width="200" height="80" rx="8" fill="rgba(200,255,0,0.08)" stroke={C.lime} />
+            <rect x="330" y="30" width="200" height="80" rx="8" fill="rgba(32,190,255,0.08)" stroke={C.lime} />
             <text x="430" y="50" fill={C.lime} fontSize="12" fontWeight="700" textAnchor="middle">Объекты User</text>
             <text x="345" y="72" fill={C.sub} fontSize="11">user.name = "Аня"</text>
             <text x="345" y="92" fill={C.sub} fontSize="11">user.city = "Москва"</text>

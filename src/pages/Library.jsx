@@ -26,7 +26,7 @@ const JULY_TRACKS_DAY2 = [
 ]
 
 const JULY_TRACKS_DAY3 = [
-  { name: 'Все треки', id: 109, lesson: 'Нарешиваем LeetCode', color: { bg:'rgba(200,255,0,0.12)', border:'rgba(200,255,0,0.3)', text:'#c8ff00' }, showQuestions: false, showHomework: true },
+  { name: 'Все треки', id: 109, lesson: 'Нарешиваем LeetCode', color: { bg:'rgba(32,190,255,0.12)', border:'rgba(32,190,255,0.3)', text:'#20beff' }, showQuestions: false, showHomework: true },
 ]
 
 const JULY_TRACKS_DAY4 = [
@@ -52,7 +52,7 @@ const JULY_TRACKS_DAY6 = [
 ]
 
 const JULY_TRACKS_DAY7 = [
-  { name: 'Все треки', id: 124, lesson: 'Вспоминаем структуры данных и алгоритмы', color: { bg:'rgba(200,255,0,0.12)', border:'rgba(200,255,0,0.3)', text:'#c8ff00' }, showQuestions: false, showHomework: false },
+  { name: 'Все треки', id: 124, lesson: 'Вспоминаем структуры данных и алгоритмы', color: { bg:'rgba(32,190,255,0.12)', border:'rgba(32,190,255,0.3)', text:'#20beff' }, showQuestions: false, showHomework: false },
 ]
 
 const JULY_TRACKS_DAY8 = [
@@ -70,15 +70,15 @@ const JULY_TRACKS_DAY9 = [
 ]
 
 const JULY_TRACKS_DAY10 = [
-  { name: 'Все треки', id: 133, lesson: 'Нарешиваем LeetCode', color: { bg:'rgba(200,255,0,0.12)', border:'rgba(200,255,0,0.3)', text:'#c8ff00' }, showQuestions: false, showHomework: false },
+  { name: 'Все треки', id: 133, lesson: 'Нарешиваем LeetCode', color: { bg:'rgba(32,190,255,0.12)', border:'rgba(32,190,255,0.3)', text:'#20beff' }, showQuestions: false, showHomework: false },
 ]
 
 const JULY_TRACKS_DAY11 = [
-  { name: 'Все треки', id: 134, lesson: 'Делаем пет-проект', color: { bg:'rgba(200,255,0,0.12)', border:'rgba(200,255,0,0.3)', text:'#c8ff00' }, showQuestions: false, showHomework: false },
+  { name: 'Все треки', id: 134, lesson: 'Делаем пет-проект', color: { bg:'rgba(32,190,255,0.12)', border:'rgba(32,190,255,0.3)', text:'#20beff' }, showQuestions: false, showHomework: false },
 ]
 
 const JULY_TRACKS_DAY12 = [
-  { name: 'Все треки', id: 135, lesson: 'Делаем пет-проект', color: { bg:'rgba(200,255,0,0.12)', border:'rgba(200,255,0,0.3)', text:'#c8ff00' }, showQuestions: false, showHomework: false },
+  { name: 'Все треки', id: 135, lesson: 'Делаем пет-проект', color: { bg:'rgba(32,190,255,0.12)', border:'rgba(32,190,255,0.3)', text:'#20beff' }, showQuestions: false, showHomework: false },
 ]
 
 const JULY_TRACKS_DAY13 = [
@@ -109,7 +109,7 @@ const JULY_TRACKS_DAY16 = [
 ]
 
 const JULY_TRACKS_DAY17 = [
-  { name: 'Все треки', id: 151, lesson: 'Нарешиваем LeetCode', color: { bg:'rgba(200,255,0,0.12)', border:'rgba(200,255,0,0.3)', text:'#c8ff00' }, showQuestions: false, showHomework: false },
+  { name: 'Все треки', id: 151, lesson: 'Нарешиваем LeetCode', color: { bg:'rgba(32,190,255,0.12)', border:'rgba(32,190,255,0.3)', text:'#20beff' }, showQuestions: false, showHomework: false },
 ]
 
 const JULY_TRACKS_DAY18 = [
@@ -135,15 +135,15 @@ const JULY_TRACKS_DAY23 = [
 ]
 
 const JULY_TRACKS_DAY24 = [
-  { name: 'Все треки', id: 159, lesson: 'Insider Show 3', color: { bg:'rgba(200,255,0,0.12)', border:'rgba(200,255,0,0.3)', text:'#c8ff00' }, showQuestions: false, showHomework: false },
+  { name: 'Все треки', id: 159, lesson: 'Insider Show 3', color: { bg:'rgba(32,190,255,0.12)', border:'rgba(32,190,255,0.3)', text:'#20beff' }, showQuestions: false, showHomework: false },
 ]
 
 const JULY_TRACKS_DAY26 = [
-  { name: 'Все треки', id: 160, lesson: 'Пет-проект и портфолио', color: { bg:'rgba(200,255,0,0.12)', border:'rgba(200,255,0,0.3)', text:'#c8ff00' }, showQuestions: false, showHomework: false },
+  { name: 'Все треки', id: 160, lesson: 'Пет-проект и портфолио', color: { bg:'rgba(32,190,255,0.12)', border:'rgba(32,190,255,0.3)', text:'#20beff' }, showQuestions: false, showHomework: false },
 ]
 
 const JULY_TRACKS_DAY27 = [
-  { name: 'Все треки', id: 161, lesson: 'Пет-проект и портфолио', color: { bg:'rgba(200,255,0,0.12)', border:'rgba(200,255,0,0.3)', text:'#c8ff00' }, showQuestions: false, showHomework: false },
+  { name: 'Все треки', id: 161, lesson: 'Пет-проект и портфолио', color: { bg:'rgba(32,190,255,0.12)', border:'rgba(32,190,255,0.3)', text:'#20beff' }, showQuestions: false, showHomework: false },
 ]
 
 const JULY_TRACKS_DAY28 = [
@@ -192,7 +192,7 @@ function JulyTrackRow({ track, onOpenTheory, onOpenQuestions, onOpenHomework }) 
     transition: 'border-color 0.15s, color 0.15s',
   }
   const hover = (e, on) => {
-    e.currentTarget.style.borderColor = on ? 'rgba(200,255,0,0.4)' : 'var(--border-color)'
+    e.currentTarget.style.borderColor = on ? 'rgba(32,190,255,0.4)' : 'var(--border-color)'
     e.currentTarget.style.color = on ? 'var(--accent-lime)' : 'var(--text-secondary)'
   }
   return (
@@ -330,7 +330,7 @@ const libBtnStyle = {
   transition: 'border-color 0.15s, color 0.15s',
 }
 const libBtnHover = (e, on) => {
-  e.currentTarget.style.borderColor = on ? 'rgba(200,255,0,0.4)' : 'var(--border-color)'
+  e.currentTarget.style.borderColor = on ? 'rgba(32,190,255,0.4)' : 'var(--border-color)'
   e.currentTarget.style.color = on ? 'var(--accent-lime)' : 'var(--text-secondary)'
 }
 
@@ -350,7 +350,7 @@ function LibButton({ emoji, text, onClick }) {
 function DayCard({ day, onOpen, onOpenTheory, onOpenQuestions, onOpenHomework }) {
   const locked = !isAvailable(day.day)
   const showButtons = shouldShowButtons(day.day)
-  const color  = locked ? 'rgba(255,255,255,0.08)' : '#c8ff00'
+  const color  = locked ? 'var(--border-color)' : '#20beff'
   const hasMats = day.mats?.length > 0
 
   return (

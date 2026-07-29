@@ -5,7 +5,7 @@ function Fig({ children, caption }) {
   return (
     <figure style={{ margin: '18px 0', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
       <div style={{
-        width: '100%', maxWidth: 620, background: 'var(--bg-secondary)', border: '1px solid var(--border-color)',
+        width: '100%', maxWidth: 620, background: '#12121e', border: '1px solid #2a2a3a',
         borderRadius: 10, padding: '16px', display: 'flex', justifyContent: 'center', overflowX: 'auto',
       }}>{children}</div>
       {caption && <figcaption style={{ color: 'var(--text-tertiary)', fontSize: 12.5, textAlign: 'center' }}>{caption}</figcaption>}
@@ -23,7 +23,7 @@ function Term({ name, children }) {
   )
 }
 
-const C = { text: 'var(--text-primary)', sub: 'var(--text-secondary)', lime: '#c8ff00', box: '#1a1a24', border: '#2a2a3a' }
+const C = { text: 'var(--text-primary)', sub: 'var(--text-secondary)', lime: '#20beff', box: '#1a1a24', border: '#2a2a3a' }
 
 export default function July2OsTheory() {
   return (
@@ -58,7 +58,7 @@ export default function July2OsTheory() {
             {[
               { y: 10,  label: 'Пользователь', sub: 'человек, клики, команды', fill: '#23202e' },
               { y: 58,  label: 'Приложения', sub: 'браузер, редактор, игры', fill: '#242b3a' },
-              { y: 106, label: 'Операционная система (ядро + службы)', sub: 'управление ресурсами, безопасность', fill: 'rgba(200,255,0,0.12)', stroke: C.lime },
+              { y: 106, label: 'Операционная система (ядро + службы)', sub: 'управление ресурсами, безопасность', fill: 'rgba(32,190,255,0.12)', stroke: C.lime },
               { y: 154, label: 'Драйверы', sub: 'посредники между ОС и устройствами', fill: '#242b3a' },
               { y: 202, label: 'Аппаратное обеспечение (железо)', sub: 'CPU, RAM, диск, сеть', fill: '#23202e' },
             ].map((r, i) => (
@@ -139,7 +139,7 @@ export default function July2OsTheory() {
             <text x="200" y="88" fill={C.text} fontSize="12" textAnchor="middle">Редактор</text>
             <text x="145" y="150" fill={C.sub} fontSize="11" textAnchor="middle">ограниченный доступ</text>
 
-            <rect x="330" y="20" width="210" height="180" rx="8" fill="rgba(200,255,0,0.1)" stroke={C.lime} />
+            <rect x="330" y="20" width="210" height="180" rx="8" fill="rgba(32,190,255,0.1)" stroke={C.lime} />
             <text x="435" y="42" fill={C.lime} fontSize="12" fontWeight="700" textAnchor="middle">KERNEL MODE</text>
             <rect x="355" y="60" width="160" height="46" rx="6" fill="#1a1a24" stroke={C.lime} />
             <text x="435" y="88" fill={C.text} fontSize="12" textAnchor="middle">Ядро ОС</text>
@@ -178,13 +178,13 @@ export default function July2OsTheory() {
           <svg viewBox="0 0 560 180" width="100%" style={{ maxWidth: 560 }} xmlns="http://www.w3.org/2000/svg">
             {/* monolithic */}
             <text x="93" y="20" fill={C.text} fontSize="12" fontWeight="700" textAnchor="middle">Монолитное</text>
-            <rect x="20" y="30" width="146" height="130" rx="8" fill="rgba(200,255,0,0.08)" stroke={C.lime} />
+            <rect x="20" y="30" width="146" height="130" rx="8" fill="rgba(32,190,255,0.08)" stroke={C.lime} />
             {['Планировщик','Память','Драйверы','Файл. система','Сеть'].map((t,i)=>(
               <text key={i} x="93" y={55+i*22} fill={C.sub} fontSize="11" textAnchor="middle">{t}</text>
             ))}
             {/* microkernel */}
             <text x="280" y="20" fill={C.text} fontSize="12" fontWeight="700" textAnchor="middle">Микроядро</text>
-            <rect x="230" y="90" width="100" height="70" rx="8" fill="rgba(200,255,0,0.08)" stroke={C.lime} />
+            <rect x="230" y="90" width="100" height="70" rx="8" fill="rgba(32,190,255,0.08)" stroke={C.lime} />
             <text x="280" y="120" fill={C.sub} fontSize="10" textAnchor="middle">Память</text>
             <text x="280" y="135" fill={C.sub} fontSize="10" textAnchor="middle">Процессы</text>
             {['Драйверы','Файлы','Сеть'].map((t,i)=>(
@@ -195,7 +195,7 @@ export default function July2OsTheory() {
             ))}
             {/* hybrid */}
             <text x="470" y="20" fill={C.text} fontSize="12" fontWeight="700" textAnchor="middle">Гибридное</text>
-            <rect x="410" y="60" width="120" height="100" rx="8" fill="rgba(200,255,0,0.08)" stroke={C.lime} />
+            <rect x="410" y="60" width="120" height="100" rx="8" fill="rgba(32,190,255,0.08)" stroke={C.lime} />
             <text x="470" y="95" fill={C.sub} fontSize="10" textAnchor="middle">Ядро + часть</text>
             <text x="470" y="110" fill={C.sub} fontSize="10" textAnchor="middle">служб внутри</text>
             {['Часть','служб'].map((t,i)=>(
@@ -308,7 +308,7 @@ export default function July2OsTheory() {
                 {g.bits.map((b, i) => (
                   <g key={i}>
                     <rect x={g.x + i*35} y="40" width="30" height="30" rx="5"
-                      fill={g.on[i] ? 'rgba(200,255,0,0.18)' : '#242b3a'} stroke={g.on[i] ? C.lime : C.border} />
+                      fill={g.on[i] ? 'rgba(32,190,255,0.18)' : '#242b3a'} stroke={g.on[i] ? C.lime : C.border} />
                     <text x={g.x + i*35 + 15} y="60" fill={g.on[i] ? C.lime : C.sub} fontSize="14" fontWeight="700" textAnchor="middle">{g.on[i] ? b : '-'}</text>
                   </g>
                 ))}

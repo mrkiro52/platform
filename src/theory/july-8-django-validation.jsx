@@ -1,12 +1,12 @@
 import { TheoryTable, TheoryCode, TheoryExample } from './components/TheoryTable'
 
-const C = { text: 'var(--text-primary)', sub: 'var(--text-secondary)', lime: '#c8ff00', blue: '#60a5fa', red: '#f87171', green: '#4ade80', border: '#2a2a3a' }
+const C = { text: 'var(--text-primary)', sub: 'var(--text-secondary)', lime: '#20beff', blue: '#60a5fa', red: '#f87171', green: '#4ade80', border: '#2a2a3a' }
 
 function Fig({ children, caption }) {
   return (
     <figure style={{ margin: '18px 0', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
       <div style={{
-        width: '100%', maxWidth: 640, background: 'var(--bg-secondary)', border: '1px solid var(--border-color)',
+        width: '100%', maxWidth: 640, background: '#12121e', border: '1px solid #2a2a3a',
         borderRadius: 10, padding: '16px', display: 'flex', justifyContent: 'center', overflowX: 'auto',
       }}>{children}</div>
       {caption && <figcaption style={{ color: 'var(--text-tertiary)', fontSize: 12.5, textAlign: 'center', maxWidth: 640 }}>{caption}</figcaption>}
@@ -42,7 +42,7 @@ function Step({ n, title, children }) {
     <div style={{ margin: '16px 0 16px 14px', paddingLeft: 16, borderLeft: '2px dashed var(--border-color)' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
         <span style={{
-          background: 'rgba(200,255,0,0.12)', color: 'var(--accent-lime)', fontSize: 11, fontWeight: 700,
+          background: 'rgba(32,190,255,0.12)', color: 'var(--accent-lime)', fontSize: 11, fontWeight: 700,
           padding: '3px 10px', borderRadius: 999, flexShrink: 0,
         }}>Шаг {n}</span>
         <span style={{ color: 'var(--text-primary)', fontWeight: 600, fontSize: 14 }}>{title}</span>
@@ -104,7 +104,7 @@ export default function July8DjangoValidationTheory() {
             <text x="290" y="58" fill={C.text} fontSize="12" fontWeight="700" textAnchor="middle">Сеть</text>
             <text x="290" y="75" fill={C.sub} fontSize="10" textAnchor="middle">curl / Postman в обход</text>
             <line x1="360" y1="62" x2="420" y2="62" stroke={C.sub} strokeWidth="2" markerEnd="url(#dv)" />
-            <rect x="420" y="35" width="110" height="55" rx="8" fill="rgba(200,255,0,0.08)" stroke={C.lime} />
+            <rect x="420" y="35" width="110" height="55" rx="8" fill="rgba(32,190,255,0.08)" stroke={C.lime} />
             <text x="475" y="58" fill={C.lime} fontSize="12" fontWeight="700" textAnchor="middle">Сервер</text>
             <text x="475" y="75" fill={C.sub} fontSize="10" textAnchor="middle">обязательный барьер</text>
             <defs>
