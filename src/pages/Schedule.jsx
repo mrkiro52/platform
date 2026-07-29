@@ -88,6 +88,9 @@ const JULY_SCHEDULE_FALLBACK = [
   { day:26, date:'вс, 26 июля', meeting_time:'20:00', title:'Пет-проект и портфолио', tracks:['Frontend','Backend','Аналитика','ML','Кибербезопасность'], description:'Самостоятельная работа над пет-проектом и портфолио.' },
   { day:27, date:'пн, 27 июля', meeting_time:'20:00', title:'Пет-проект и портфолио', tracks:['Frontend','Backend','Аналитика','ML','Кибербезопасность'], description:'Самостоятельная работа над пет-проектом и портфолио.' },
   { day:28, date:'вт, 28 июля', meeting_time:'20:00', title:'Микросервисная архитектура и проектирование систем', tracks:['Frontend','Backend'], description:'Базы данных, брокеры сообщений, репликация, балансировка нагрузки и API Gateway — system design.' },
+  { day:29, date:'ср, 29 июля', meeting_time:'20:00', title:'Решающие деревья', tracks:['Аналитика','ML'], description:'Определение решающего дерева, жадный алгоритм построения, критерии Джини/энтропия, регуляризация (pre/post-pruning).' },
+  { day:29, date:'ср, 29 июля', meeting_time:'20:30', title:'FastAPI: основы', tracks:['Backend'], description:'Основы FastAPI за час: эндпоинты, валидация через Pydantic, подключение встроенной базы данных SQLite, CRUD.' },
+  { day:29, date:'ср, 29 июля', meeting_time:'21:00', title:'Основы сетевой безопасности', tracks:['Кибербезопасность'], description:'Сетевые угрозы, firewall и сегментация, инструменты диагностики (ping, traceroute, nmap, tcpdump/Wireshark) и команды.' },
 ].map((e, i) => ({ id: -1000 - i, month: 'july', type: 'lecture', theory: [], tasks: [], hw: '', meeting_link: '', ...e }))
 
 // Объединяем события июля из API с резервными. Резервные данные считаются

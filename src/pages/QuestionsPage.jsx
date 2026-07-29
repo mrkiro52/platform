@@ -66,6 +66,9 @@ import July16DatabasesTasks from '../questions/july-16-databases'
 import July16SecurityDevicesTasks from '../questions/july-16-security-devices'
 import July18KnnTasks from '../questions/july-18-knn'
 import July18OptimizationTasks from '../questions/july-18-optimization'
+import July29DecisionTreesTasks from '../questions/july-29-decision-trees'
+import July29FastApiBasicsTasks from '../questions/july-29-fastapi-basics'
+import July29NetworkSecurityTasks from '../questions/july-29-network-security'
 import July6DomTasks from '../questions/july-6-dom'
 import July6AuthTasks from '../questions/july-6-auth'
 import July6StatisticsTasks from '../questions/july-6-statistics'
@@ -120,6 +123,9 @@ const JULY_TRACK_LABELS = {
   150: '16 июля · Кибербезопасность — Технические средства охраны',
   152: '18 июля · Аналитика/ML — Алгоритм k-Nearest Neighbors (kNN)',
   153: '18 июля · Frontend/Backend — Оптимизация фронтенда и бэкенда',
+  163: '29 июля · Аналитика/ML — Решающие деревья',
+  164: '29 июля · Backend — FastAPI: основы',
+  165: '29 июля · Кибербезопасность — Основы сетевой безопасности',
 }
 
 const QUESTIONS_COMPONENTS = {
@@ -195,6 +201,9 @@ const QUESTIONS_COMPONENTS = {
   150: July16SecurityDevicesTasks,    // Кибербезопасность, 16 июля — технические средства охраны
   152: July18KnnTasks,                // Аналитика/ML, 18 июля — kNN
   153: July18OptimizationTasks,       // Frontend/Backend, 18 июля — оптимизация
+  163: July29DecisionTreesTasks,       // Аналитика/ML, 29 июля — решающие деревья
+  164: July29FastApiBasicsTasks,       // Backend, 29 июля — FastAPI основы
+  165: July29NetworkSecurityTasks,     // Кибербезопасность, 29 июля — сетевая безопасность
 }
 
 function QuestionCard({ question, taskIndex, totalTasks, onAnswer, isSolved, savedAnswer }) {

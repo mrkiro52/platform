@@ -122,6 +122,9 @@ import July22FullstackInterviewTheory from '../theory/july-22-fullstack-intervie
 import July23SecurityInterviewTheory from '../theory/july-23-security-interview'
 import July24InsiderShow3Theory from '../theory/july-24-insider-show-3'
 import July28MicroservicesSystemDesignTheory from '../theory/july-28-microservices-system-design'
+import July29DecisionTreesTheory from '../theory/july-29-decision-trees'
+import July29FastApiBasicsTheory from '../theory/july-29-fastapi-basics'
+import July29NetworkSecurityTheory from '../theory/july-29-network-security'
 
 // Маппинг дней на компоненты с теорией
 const THEORY_COMPONENTS = {
@@ -213,6 +216,9 @@ const THEORY_COMPONENTS = {
   159: July24InsiderShow3Theory,       // Все треки, 24 июля — Insider Show 3
   // 160, 161: 26-27 июля (пет-проекты и портфолио) — материалы не добавляются намеренно
   162: July28MicroservicesSystemDesignTheory, // Frontend/Backend, 28 июля — микросервисная архитектура и system design
+  163: July29DecisionTreesTheory,       // Аналитика/ML, 29 июля — решающие деревья
+  164: July29FastApiBasicsTheory,       // Backend, 29 июля — FastAPI основы
+  165: July29NetworkSecurityTheory,     // Кибербезопасность, 29 июля — сетевая безопасность
 }
 
 // Заголовки для июльских треков (синтетические id)
@@ -279,6 +285,9 @@ export const JULY_TRACK_LABELS = {
   160: '26 июля · Все треки — Пет-проект и портфолио',
   161: '27 июля · Все треки — Пет-проект и портфолио',
   162: '28 июля · Frontend/Backend — Микросервисная архитектура и проектирование систем',
+  163: '29 июля · Аналитика/ML — Решающие деревья',
+  164: '29 июля · Backend — FastAPI: основы',
+  165: '29 июля · Кибербезопасность — Основы сетевой безопасности',
 }
 
 const THEORY_TITLES = {
