@@ -205,14 +205,10 @@ function JulyTrackRow({ track, onOpenTheory, onOpenQuestions, onOpenHomework }) 
   return (
     <div style={{
       display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap',
-      padding: '14px 16px', borderTop: '1px solid var(--border-color)',
+      padding: '14px 16px',
     }}>
       <div style={{ minWidth: 190, flex: '1 1 190px' }}>
-        <span style={{
-          display: 'inline-block', background: c.bg, border: `1px solid ${c.border}`,
-          color: c.text, borderRadius: 999, padding: '3px 12px', fontSize: 12, fontWeight: 700,
-          marginBottom: 4,
-        }}>{track.name}</span>
+        <div style={{ color: 'var(--text-secondary)', fontSize: 12, fontWeight: 500, marginBottom: 4 }}>{track.name}</div>
         <div style={{ color: 'var(--text-primary)', fontSize: 13.5, fontWeight: 500 }}>{track.lesson}</div>
       </div>
       <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
@@ -239,20 +235,13 @@ function JulyDayCard({ day, open, onToggle, onOpenTheory, onOpenQuestions, onOpe
   return (
     <div className={`sched-day${open ? ' sched-day--open' : ''}`} style={{ marginBottom: 8 }}>
       <div className="sched-day-header" onClick={onToggle} style={{ cursor: 'pointer' }}>
-        <div className="sched-day-stripe" style={{ background: '#a07aff' }} />
         <div className="sched-day-meta">
           <span className="sched-day-num">День {day.day}</span>
           <span className="sched-day-sep">·</span>
           <span className="sched-day-date">{day.date}</span>
         </div>
-        <div className="sched-day-title" style={{ flex: 1 }}>Специализация по трекам</div>
-        <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap', marginRight: 8 }}>
-          {day.tracks.map(t => (
-            <span key={t.id} style={{
-              background: t.color.bg, border: `1px solid ${t.color.border}`, color: t.color.text,
-              borderRadius: 999, padding: '3px 10px', fontSize: 10, fontWeight: 700,
-            }}>{t.name}</span>
-          ))}
+        <div className="sched-day-title" style={{ flex: 1 }}>
+          {day.tracks.map(t => t.name).join(' / ')}
         </div>
         <span className="sched-chevron">{open ? '▴' : '▾'}</span>
       </div>

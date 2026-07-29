@@ -35,8 +35,7 @@ export default function Sidebar({ user, onLogout, onClose }) {
     <>
       <div className="sidebar-header">
         <a className="sidebar-logo" href="#">
-          <span className="sidebar-logo-kiro">KIRO</span>
-          <span className="sidebar-logo-platform">CAMP</span>
+          <span className="sidebar-logo-platform" style={{color: '#20beff', fontWeight: 600, fontSize: 15}}>kiro platform</span>
         </a>
         <button className="sidebar-close-btn" onClick={onClose}>&times;</button>
       </div>

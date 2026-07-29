@@ -179,7 +179,6 @@ function JuneDayCard({ day, expanded, onToggle }) {
   return (
     <div className={`sched-day${expanded ? ' sched-day--open' : ''}`}>
       <div className="sched-day-header" onClick={onToggle}>
-        <div className="sched-day-stripe" style={{ background: color }} />
         <div className="sched-day-meta">
           <span className="sched-day-num">День {day.day}</span>
           <span className="sched-day-sep">·</span>
@@ -239,13 +238,10 @@ function JuneDayCard({ day, expanded, onToggle }) {
 // Карточка занятия для июля (трек + время + описание)
 function JulySessionCard({ session }) {
   const tracks = session.tracks || []
+  const tracksStr = tracks.join(' / ')
 
   return (
     <div style={{
-      background: 'var(--bg-secondary)',
-      border: '1px solid var(--border-color)',
-      borderRadius: 10,
-      padding: '14px 16px',
       display: 'flex',
       flexDirection: 'column',
       gap: 8,
@@ -257,17 +253,9 @@ function JulySessionCard({ session }) {
         <span style={{ fontWeight: 600, fontSize: 14, color: 'var(--text-primary)', flex: 1 }}>
           {session.title}
         </span>
-        <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-          {tracks.map(t => {
-            const c = TRACK_COLORS[t] || { bg: 'var(--bg-tertiary)', border: 'var(--border-color)', text: 'var(--text-secondary)' }
-            return (
-              <span key={t} style={{
-                background: c.bg, border: `1px solid ${c.border}`, color: c.text,
-                borderRadius: 999, padding: '3px 12px', fontSize: 11, fontWeight: 600,
-              }}>{t}</span>
-            )
-          })}
-        </div>
+        <span style={{ fontSize: 12, color: 'var(--text-secondary)' }}>
+          {tracksStr}
+        </span>
       </div>
       {session.description && (
         <p style={{ color: 'var(--text-secondary)', fontSize: 13, lineHeight: 1.6, margin: 0 }}>
@@ -280,28 +268,17 @@ function JulySessionCard({ session }) {
 
 // Группировка занятий июля по дням
 function JulyDayGroup({ dayNum, dateLabel, sessions, open, onToggle }) {
+  const tracksList = [...new Set(sessions.flatMap(s => s.tracks || []))].join(' / ')
   return (
     <div className={`sched-day${open ? ' sched-day--open' : ''}`} style={{ marginBottom: 8 }}>
       <div className="sched-day-header" onClick={onToggle} style={{ cursor: 'pointer' }}>
-        <div className="sched-day-stripe" style={{ background: '#a07aff' }} />
         <div className="sched-day-meta">
           <span className="sched-day-num">День {dayNum}</span>
           <span className="sched-day-sep">·</span>
           <span className="sched-day-date">{dateLabel}</span>
         </div>
         <div className="sched-day-title" style={{ flex: 1 }}>
-          {sessions.length} {sessions.length === 1 ? 'занятие' : sessions.length < 5 ? 'занятия' : 'занятий'}
-        </div>
-        <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap', marginRight: 8 }}>
-          {[...new Set(sessions.flatMap(s => s.tracks || []))].map(t => {
-            const c = TRACK_COLORS[t] || {}
-            return (
-              <span key={t} style={{
-                background: c.bg, border: `1px solid ${c.border}`, color: c.text,
-                borderRadius: 999, padding: '3px 10px', fontSize: 10, fontWeight: 700,
-              }}>{t}</span>
-            )
-          })}
+          {tracksList}
         </div>
         <span className="sched-chevron">{open ? '▴' : '▾'}</span>
       </div>
