@@ -12,7 +12,7 @@ router.post('/login', (req, res) => {
   const { email, password } = req.body
   if (!email || !password) return res.status(400).json({ message: 'Email и пароль обязательны' })
 
-  const user = db.prepare('SELECT * FROM users WHERE email = ? OR name = ?').get(email, email)
+  const user = db.prepare('SELECT * FROM users WHERE email = ? OR name = ? OR nickname = ?').get(email, email, email)
   if (!user || !bcrypt.compareSync(password, user.password_hash)) {
     return res.status(401).json({ message: 'Неверный email или пароль' })
   }

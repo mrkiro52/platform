@@ -97,7 +97,7 @@ export default function LikebezyPage() {
   const openLikbez = (itemId) => navigate(`/likebezy/${itemId}`)
 
   return (
-    <div style={{ maxWidth: 1000, margin: '0 auto', padding: 'clamp(16px, 4vw, 32px) clamp(12px, 3vw, 24px)' }}>
+    <div>
 
       {/* Hero */}
       <div style={{ marginBottom: 36 }}>

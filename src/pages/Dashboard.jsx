@@ -145,7 +145,7 @@ function JuneChecklist({ user }) {
   const cbStyle = (isChecked) => ({
     width: 18,
     height: 18,
-    borderRadius: 5,
+    borderRadius: 0,
     border: isChecked ? '2px solid #20beff' : '2px solid var(--border-color)',
     background: isChecked ? '#20beff' : 'transparent',
     flexShrink: 0,
@@ -185,7 +185,7 @@ function JuneChecklist({ user }) {
       </div>
       <button
         onClick={download}
-        style={{ fontSize: 13, padding: '8px 20px', borderRadius: 999, border: 'none', background: 'var(--accent-ink)', color: '#fff', cursor: 'pointer', fontWeight: 700 }}
+        style={{ fontSize: 13, padding: '8px 20px', borderRadius: 0, border: 'none', background: 'var(--accent-ink)', color: '#fff', cursor: 'pointer', fontWeight: 700 }}
       >
         Скачать чек-лист
       </button>

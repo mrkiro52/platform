@@ -10,11 +10,24 @@ router.get('/me', verifyToken, (req, res) => {
   res.json(user)
 })
 
-// PUT /api/users/me — update own profile (bio, position, birthday only)
+// PUT /api/users/me — update own profile (name, email, login, password, bio, position, birthday)
 router.put('/me', verifyToken, (req, res) => {
-  const { bio, position, birthday } = req.body
-  db.prepare('UPDATE users SET bio=?, position=?, birthday=? WHERE id=?')
-    .run(bio ?? '', position ?? '', birthday ?? '', req.user.id)
+  const { name, email, nickname, password, bio, position, birthday } = req.body
+  if (!name || !email || !nickname) {
+    return res.status(400).json({ message: 'Имя, почта и логин обязательны' })
+  }
+
+  try {
+    if (password) {
+      db.prepare('UPDATE users SET password_hash=? WHERE id=?').run(bcrypt.hashSync(password, 10), req.user.id)
+    }
+    db.prepare('UPDATE users SET name=?, email=?, nickname=?, bio=?, position=?, birthday=? WHERE id=?')
+      .run(name, email, nickname, bio ?? '', position ?? '', birthday ?? '', req.user.id)
+  } catch (e) {
+    if (e.message.includes('UNIQUE')) return res.status(409).json({ message: 'Такая почта уже используется другим пользователем' })
+    throw e
+  }
+
   const user = db.prepare('SELECT id, name, nickname, email, track, plan, bio, position, birthday FROM users WHERE id = ?').get(req.user.id)
   res.json(user)
 })

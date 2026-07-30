@@ -17,12 +17,8 @@ const fieldStyle = {
   outline: 'none',
 }
 
-const selectStyle = { ...fieldStyle, cursor: 'pointer' }
-
-const MONTHS = [
-  'Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь',
-  'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь',
-]
+const smallFieldStyle = { ...fieldStyle, width: 56, textAlign: 'center' }
+const yearFieldStyle = { ...fieldStyle, width: 76, textAlign: 'center' }
 
 function parseBirthday(str) {
   const m = /^(\d{1,2})\.(\d{1,2})\.(\d{4})$/.exec(str || '')
@@ -35,7 +31,15 @@ function formatBirthday(day, month, year) {
   return `${String(day).padStart(2, '0')}.${String(month).padStart(2, '0')}.${year}`
 }
 
-export default function Profile({ user }) {
+function digitsOnly(value, maxLen) {
+  return value.replace(/\D/g, '').slice(0, maxLen)
+}
+
+export default function Profile({ user, onUpdateUser }) {
+  const [name, setName] = useState('')
+  const [email, setEmail] = useState('')
+  const [nickname, setNickname] = useState('')
+  const [password, setPassword] = useState('')
   const [bio, setBio] = useState('')
   const [position, setPosition] = useState('')
   const [birthDay, setBirthDay] = useState('')
@@ -44,9 +48,14 @@ export default function Profile({ user }) {
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
+  const [error, setError] = useState('')
+  const [confirmOpen, setConfirmOpen] = useState(false)
 
   useEffect(() => {
     api.profile().then(p => {
+      setName(p.name || '')
+      setEmail(p.email || '')
+      setNickname(p.nickname || '')
       setBio(p.bio || '')
       setPosition(p.position || '')
       const parsed = parseBirthday(p.birthday)
@@ -58,26 +67,32 @@ export default function Profile({ user }) {
   }, [])
 
   if (!user) return null
-  const initials = getInitials(user.name || '')
+  const initials = getInitials(name || user.name || '')
 
-  const handleSave = async () => {
+  const requestSave = () => {
+    setError('')
+    setConfirmOpen(true)
+  }
+
+  const handleConfirmSave = async () => {
+    setConfirmOpen(false)
     setSaving(true)
     setSaved(false)
+    setError('')
     try {
       const birthday = formatBirthday(birthDay, birthMonth, birthYear)
-      await api.updateProfile({ bio, position, birthday })
+      const payload = { name, email, nickname, bio, position, birthday }
+      if (password) payload.password = password
+      await api.updateProfile(payload)
+      setPassword('')
       setSaved(true)
       setTimeout(() => setSaved(false), 2000)
-    } catch {
-      // no-op
+    } catch (e) {
+      setError(e.message || 'Не удалось сохранить изменения')
     } finally {
       setSaving(false)
     }
   }
-
-  const days = Array.from({ length: 31 }, (_, i) => i + 1)
-  const currentYear = new Date().getFullYear()
-  const years = Array.from({ length: 80 }, (_, i) => currentYear - i)
 
   return (
     <section className="page active">
@@ -89,39 +104,40 @@ export default function Profile({ user }) {
       <div className="profile-layout">
         <div className="profile-card">
           <div className="profile-avatar">{initials}</div>
-          <div className="profile-name">{user.name}</div>
-          <div className="profile-email">{user.email}</div>
+          <div className="profile-name">{name || user.name}</div>
+          <div className="profile-email">{email || user.email}</div>
           {position && <div style={{ fontSize: 13, color: 'var(--text-tertiary)', marginTop: 2 }}>{position}</div>}
         </div>
 
         <div className="profile-details">
-          <div className="profile-section-h">Информация об аккаунте</div>
-          <div className="profile-field">
-            <span className="pf-label">Имя</span>
-            <span className="pf-value">{user.name}</span>
-          </div>
-          <div className="profile-field">
-            <span className="pf-label">Email</span>
-            <span className="pf-value">{user.email}</span>
-          </div>
-          <div className="profile-field">
-            <span className="pf-label">Трек</span>
-            <span className="pf-value">{user.track}</span>
-          </div>
-          <div className="profile-field">
-            <span className="pf-label">Старт лагеря</span>
-            <span className="pf-value">1 июня 2026</span>
-          </div>
-          <div className="profile-field">
-            <span className="pf-label">Финал</span>
-            <span className="pf-value">31 августа 2026 · Демо-день</span>
-          </div>
-
-          <div className="profile-section-h" style={{ marginTop: 20 }}>Личная информация</div>
+          <div className="profile-section-h">Личная информация</div>
           {loading ? (
             <p style={{ color: 'var(--text-secondary)', fontSize: 13 }}>Загрузка...</p>
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+              <div>
+                <span className="pf-label" style={{ display: 'block', marginBottom: 6 }}>Имя</span>
+                <input style={fieldStyle} value={name} onChange={e => setName(e.target.value)} placeholder="Имя" />
+              </div>
+              <div>
+                <span className="pf-label" style={{ display: 'block', marginBottom: 6 }}>Почта</span>
+                <input style={fieldStyle} value={email} onChange={e => setEmail(e.target.value)} placeholder="email@example.com" type="email" />
+              </div>
+              <div>
+                <span className="pf-label" style={{ display: 'block', marginBottom: 6 }}>Логин (для входа)</span>
+                <input style={fieldStyle} value={nickname} onChange={e => setNickname(e.target.value)} placeholder="Логин" />
+              </div>
+              <div>
+                <span className="pf-label" style={{ display: 'block', marginBottom: 6 }}>Новый пароль</span>
+                <input
+                  style={fieldStyle}
+                  value={password}
+                  onChange={e => setPassword(e.target.value)}
+                  placeholder="Оставь пустым, чтобы не менять"
+                  type="password"
+                  autoComplete="new-password"
+                />
+              </div>
               <div>
                 <span className="pf-label" style={{ display: 'block', marginBottom: 6 }}>Должность</span>
                 <input
@@ -142,35 +158,78 @@ export default function Profile({ user }) {
               </div>
               <div>
                 <span className="pf-label" style={{ display: 'block', marginBottom: 6 }}>Дата рождения</span>
-                <div style={{ display: 'flex', gap: 8 }}>
-                  <select style={selectStyle} value={birthDay} onChange={e => setBirthDay(e.target.value)}>
-                    <option value="">День</option>
-                    {days.map(d => <option key={d} value={d}>{d}</option>)}
-                  </select>
-                  <select style={{ ...selectStyle, flex: 1.5 }} value={birthMonth} onChange={e => setBirthMonth(e.target.value)}>
-                    <option value="">Месяц</option>
-                    {MONTHS.map((m, i) => <option key={m} value={i + 1}>{m}</option>)}
-                  </select>
-                  <select style={selectStyle} value={birthYear} onChange={e => setBirthYear(e.target.value)}>
-                    <option value="">Год</option>
-                    {years.map(y => <option key={y} value={y}>{y}</option>)}
-                  </select>
+                <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                  <input
+                    style={smallFieldStyle}
+                    value={birthDay}
+                    onChange={e => setBirthDay(digitsOnly(e.target.value, 2))}
+                    placeholder="ДД"
+                    inputMode="numeric"
+                  />
+                  <span style={{ color: 'var(--text-tertiary)' }}>.</span>
+                  <input
+                    style={smallFieldStyle}
+                    value={birthMonth}
+                    onChange={e => setBirthMonth(digitsOnly(e.target.value, 2))}
+                    placeholder="ММ"
+                    inputMode="numeric"
+                  />
+                  <span style={{ color: 'var(--text-tertiary)' }}>.</span>
+                  <input
+                    style={yearFieldStyle}
+                    value={birthYear}
+                    onChange={e => setBirthYear(digitsOnly(e.target.value, 4))}
+                    placeholder="ГГГГ"
+                    inputMode="numeric"
+                  />
                 </div>
               </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                <button
-                  onClick={handleSave}
-                  disabled={saving}
-                  style={{
-                    background: 'var(--accent-lime)', color: '#fff', border: 'none', borderRadius: 0,
-                    padding: '10px 24px', fontSize: 14, fontWeight: 600, cursor: saving ? 'not-allowed' : 'pointer',
-                    opacity: saving ? 0.6 : 1,
-                  }}
-                >
-                  {saving ? 'Сохранение...' : 'Сохранить'}
-                </button>
-                {saved && <span style={{ color: 'var(--accent-lime)', fontSize: 13, fontWeight: 600 }}>Сохранено</span>}
-              </div>
+
+              {error && <div style={{ color: '#ff3333', fontSize: 13 }}>{error}</div>}
+
+              {confirmOpen ? (
+                <div style={{
+                  border: '1px solid var(--border-color)', background: 'var(--bg-tertiary)',
+                  padding: '12px 14px', display: 'flex', flexDirection: 'column', gap: 10,
+                }}>
+                  <span style={{ fontSize: 13, color: 'var(--text-primary)' }}>Подтвердить изменение данных профиля?</span>
+                  <div style={{ display: 'flex', gap: 10 }}>
+                    <button
+                      onClick={handleConfirmSave}
+                      style={{
+                        background: 'var(--accent-lime)', color: '#fff', border: 'none', borderRadius: 0,
+                        padding: '8px 20px', fontSize: 13, fontWeight: 600, cursor: 'pointer',
+                      }}
+                    >
+                      Подтвердить
+                    </button>
+                    <button
+                      onClick={() => setConfirmOpen(false)}
+                      style={{
+                        background: 'transparent', color: 'var(--text-secondary)', border: '1px solid var(--border-color)',
+                        borderRadius: 0, padding: '8px 20px', fontSize: 13, fontWeight: 600, cursor: 'pointer',
+                      }}
+                    >
+                      Отменить
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                  <button
+                    onClick={requestSave}
+                    disabled={saving}
+                    style={{
+                      background: 'var(--accent-lime)', color: '#fff', border: 'none', borderRadius: 0,
+                      padding: '10px 24px', fontSize: 14, fontWeight: 600, cursor: saving ? 'not-allowed' : 'pointer',
+                      opacity: saving ? 0.6 : 1,
+                    }}
+                  >
+                    {saving ? 'Сохранение...' : 'Сохранить'}
+                  </button>
+                  {saved && <span style={{ color: 'var(--accent-lime)', fontSize: 13, fontWeight: 600 }}>Сохранено</span>}
+                </div>
+              )}
             </div>
           )}
         </div>
