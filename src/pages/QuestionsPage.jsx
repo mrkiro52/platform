@@ -1,79 +1,79 @@
 import { useEffect, useState } from 'react'
 import { SCHEDULE } from '../data'
-import Day2BasicsTasks from '../questions/day-2-basics'
-import Day3LoopsTasks from '../questions/day-3-loops'
-import Day4AlgorithmsTasks from '../questions/day-4-algorithms'
-import Day5LogicTasks from '../questions/day-5-logic'
-import Day6GraphsTasks from '../questions/day-6-graphs'
-import Day7StructuresTasks from '../questions/day-7-structures'
-import Day8StacksQueuesTasks from '../questions/day-8-stacks-queues'
-import Day9HashtablesTasks from '../questions/day-9-hashtables'
-import Day10TreesTasks from '../questions/day-10-trees'
-import Day11GitTasks from '../questions/day-11-git'
-import Day12AiToolsTasks from '../questions/day-12-ai-tools'
-import Day13ProjectTasks from '../questions/day-13-project'
-import Day15TimeManagementTasks from '../questions/day-15-timemanagement'
-import Day16LanguagesTasks from '../questions/day-16-languages'
-import Day17TrendsTasks from '../questions/day-17-trends'
-import Day18TestingTasks from '../questions/day-18-testing'
-import Day19SqlTasks from '../questions/day-19-sql'
-import Day20ApiTasks from '../questions/day-20-api'
-import Day23SortingTasks from '../questions/day-23-sorting'
-import Day24PatternsTasks from '../questions/day-24-patterns'
-import Day25SecurityTasks from '../questions/day-25-security'
-import Day26SoftSkillsTasks from '../questions/day-26-softs-kills'
-import Day27LearningTasks from '../questions/day-27-learning'
-import Day29ResumeTasks from '../questions/day-29-resume'
-import July1PythonTasks from '../questions/july-1-python'
-import July1HtmlTasks from '../questions/july-1-html'
-import July1BackendTasks from '../questions/july-1-backend'
-import July1SecurityTasks from '../questions/july-1-security'
-import July2OsTasks from '../questions/july-2-os'
-import July2CombinatoricsTasks from '../questions/july-2-combinatorics'
-import July2MlIntroTasks from '../questions/july-2-ml-intro'
-import July2BackendArchTasks from '../questions/july-2-backend-arch'
-import July2CssTasks from '../questions/july-2-css'
-import July4NetworksTasks from '../questions/july-4-networks'
-import July4NumpyTasks from '../questions/july-4-numpy'
-import July4SqlOrmTasks from '../questions/july-4-sql-orm'
-import July4PreprocessorsTasks from '../questions/july-4-preprocessors'
-import July5JavaScriptTasks from '../questions/july-5-javascript'
-import July5DjangoTasks from '../questions/july-5-django'
-import July5PandasTasks from '../questions/july-5-pandas'
-import July5AssemblyTasks from '../questions/july-5-assembly'
-import July8TypeScriptTasks from '../questions/july-8-typescript'
-import July8DjangoValidationTasks from '../questions/july-8-django-validation'
-import July8MetricsTasks from '../questions/july-8-metrics'
-import July8GradientDescentTasks from '../questions/july-8-gradient-descent'
-import July8CryptoTasks from '../questions/july-8-crypto'
-import July9MatplotlibTasks from '../questions/july-9-matplotlib'
-import July9WebSocketTasks from '../questions/july-9-websocket'
-import July9OwaspTasks from '../questions/july-9-owasp'
-import July13OopTasks from '../questions/july-13-oop'
-import July13AbTestingTasks from '../questions/july-13-ab-testing'
-import July13MetricsTasks from '../questions/july-13-metrics'
-import July13CctvTasks from '../questions/july-13-cctv'
-import July14GeneralizationTasks from '../questions/july-14-generalization'
-import July14VectorsTasks from '../questions/july-14-vectors'
-import July14SsrSsgTasks from '../questions/july-14-ssr-ssg'
-import July14MicroservicesTasks from '../questions/july-14-microservices'
-import July14PhishingTasks from '../questions/july-14-phishing'
-import July14DataCleaningTasks from '../questions/july-14-data-cleaning'
-import July15DockerTasks from '../questions/july-15-docker'
-import July15DocumentsTasks from '../questions/july-15-documents'
-import July16DistributionsTasks from '../questions/july-16-distributions'
-import July16DatabasesTasks from '../questions/july-16-databases'
-import July16SecurityDevicesTasks from '../questions/july-16-security-devices'
-import July18KnnTasks from '../questions/july-18-knn'
-import July18OptimizationTasks from '../questions/july-18-optimization'
-import July29DecisionTreesTasks from '../questions/july-29-decision-trees'
-import July29FastApiBasicsTasks from '../questions/july-29-fastapi-basics'
-import July29NetworkSecurityTasks from '../questions/july-29-network-security'
-import July6DomTasks from '../questions/july-6-dom'
-import July6AuthTasks from '../questions/july-6-auth'
-import July6StatisticsTasks from '../questions/july-6-statistics'
-import July6LinRegTasks from '../questions/july-6-linreg'
-import July6WinApiTasks from '../questions/july-6-winapi'
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 const JULY_TRACK_LABELS = {
   101: '1 июля · Frontend — Основы HTML',
@@ -129,81 +129,81 @@ const JULY_TRACK_LABELS = {
 }
 
 const QUESTIONS_COMPONENTS = {
-  2: Day2BasicsTasks,
-  3: Day3LoopsTasks,
-  4: Day4AlgorithmsTasks,
-  5: Day5LogicTasks,
-  6: Day6GraphsTasks,
-  7: Day7StructuresTasks,
-  8: Day8StacksQueuesTasks,
-  9: Day9HashtablesTasks,
-  10: Day10TreesTasks,
-  11: Day11GitTasks,
-  12: Day12AiToolsTasks,
-  13: Day13ProjectTasks,
-  15: Day15TimeManagementTasks,
-  16: Day16LanguagesTasks,
-  17: Day17TrendsTasks,
-  18: Day18TestingTasks,
-  19: Day19SqlTasks,
-  20: Day20ApiTasks,
-  22: Day23SortingTasks,
-  23: Day24PatternsTasks,
-  24: Day25SecurityTasks,
-  26: Day26SoftSkillsTasks,
-  27: Day27LearningTasks,
-  29: Day29ResumeTasks,
+  2: () => import('../questions/day-2-basics'),
+  3: () => import('../questions/day-3-loops'),
+  4: () => import('../questions/day-4-algorithms'),
+  5: () => import('../questions/day-5-logic'),
+  6: () => import('../questions/day-6-graphs'),
+  7: () => import('../questions/day-7-structures'),
+  8: () => import('../questions/day-8-stacks-queues'),
+  9: () => import('../questions/day-9-hashtables'),
+  10: () => import('../questions/day-10-trees'),
+  11: () => import('../questions/day-11-git'),
+  12: () => import('../questions/day-12-ai-tools'),
+  13: () => import('../questions/day-13-project'),
+  15: () => import('../questions/day-15-timemanagement'),
+  16: () => import('../questions/day-16-languages'),
+  17: () => import('../questions/day-17-trends'),
+  18: () => import('../questions/day-18-testing'),
+  19: () => import('../questions/day-19-sql'),
+  20: () => import('../questions/day-20-api'),
+  22: () => import('../questions/day-23-sorting'),
+  23: () => import('../questions/day-24-patterns'),
+  24: () => import('../questions/day-25-security'),
+  26: () => import('../questions/day-26-softs-kills'),
+  27: () => import('../questions/day-27-learning'),
+  29: () => import('../questions/day-29-resume'),
   // Июль — специализация (треки)
-  101: July1HtmlTasks,     // Frontend
-  102: July1BackendTasks,  // Backend
-  103: July1PythonTasks,   // ML / Аналитика
-  104: July1SecurityTasks, // Кибербезопасность
-  105: July2OsTasks,             // Кибербезопасность, 2 июля
-  106: July2CombinatoricsTasks,  // Аналитика, 2 июля
-  107: July2MlIntroTasks,        // ML, 2 июля
-  108: July2BackendArchTasks,    // Backend, 2 июля
-  110: July2CssTasks,            // Frontend, 2 июля
-  111: July4NetworksTasks,       // Кибербезопасность, 4 июля
-  112: July4NumpyTasks,          // Аналитика/ML, 4 июля
-  113: July4SqlOrmTasks,         // Backend, 4 июля
-  114: July4PreprocessorsTasks,  // Frontend, 4 июля
-  115: July5JavaScriptTasks,     // Frontend, 5 июля
-  116: July5DjangoTasks,         // Backend, 5 июля
-  117: July5PandasTasks,         // Аналитика/ML, 5 июля
-  118: July5AssemblyTasks,       // Кибербезопасность, 5 июля
-  119: July6DomTasks,            // Frontend, 6 июля
-  120: July6AuthTasks,           // Backend, 6 июля
-  121: July6StatisticsTasks,     // Аналитика, 6 июля
-  122: July6LinRegTasks,         // ML, 6 июля
-  123: July6WinApiTasks,         // Кибербезопасность, 6 июля
-  125: July8TypeScriptTasks,        // Frontend, 8 июля
-  126: July8DjangoValidationTasks,  // Backend, 8 июля
-  127: July8MetricsTasks,           // Аналитика, 8 июля
-  128: July8GradientDescentTasks,   // ML, 8 июля
-  129: July8CryptoTasks,            // Кибербезопасность, 8 июля
-  130: July9MatplotlibTasks,         // Аналитика/ML, 9 июля
-  131: July9WebSocketTasks,          // Backend/Frontend, 9 июля
-  132: July9OwaspTasks,              // Кибербезопасность, 9 июля
-  136: July13OopTasks,               // Frontend/Backend, 13 июля
-  137: July13AbTestingTasks,         // Аналитика, 13 июля
-  138: July13MetricsTasks,           // ML, 13 июля
-  139: July13CctvTasks,              // Кибербезопасность, 13 июля
-  140: July14GeneralizationTasks,     // ML, 14 июля
-  141: July14VectorsTasks,            // Аналитика, 14 июля
-  142: July14SsrSsgTasks,             // Frontend, 14 июля
-  143: July14MicroservicesTasks,      // Backend, 14 июля
-  144: July14PhishingTasks,           // Кибербезопасность, 14 июля
-  145: July14DataCleaningTasks,       // Аналитика, 14 июля — очистка данных
-  146: July15DockerTasks,             // Frontend/Backend, 15 июля — Docker
-  147: July15DocumentsTasks,          // Кибербезопасность, 15 июля — ЭДО и нормативка
-  148: July16DistributionsTasks,      // Аналитика/ML, 16 июля — распределения
-  149: July16DatabasesTasks,          // Frontend/Backend, 16 июля — виды баз данных
-  150: July16SecurityDevicesTasks,    // Кибербезопасность, 16 июля — технические средства охраны
-  152: July18KnnTasks,                // Аналитика/ML, 18 июля — kNN
-  153: July18OptimizationTasks,       // Frontend/Backend, 18 июля — оптимизация
-  163: July29DecisionTreesTasks,       // Аналитика/ML, 29 июля — решающие деревья
-  164: July29FastApiBasicsTasks,       // Backend, 29 июля — FastAPI основы
-  165: July29NetworkSecurityTasks,     // Кибербезопасность, 29 июля — сетевая безопасность
+  101: () => import('../questions/july-1-html'),     // Frontend
+  102: () => import('../questions/july-1-backend'),  // Backend
+  103: () => import('../questions/july-1-python'),   // ML / Аналитика
+  104: () => import('../questions/july-1-security'), // Кибербезопасность
+  105: () => import('../questions/july-2-os'),             // Кибербезопасность, 2 июля
+  106: () => import('../questions/july-2-combinatorics'),  // Аналитика, 2 июля
+  107: () => import('../questions/july-2-ml-intro'),        // ML, 2 июля
+  108: () => import('../questions/july-2-backend-arch'),    // Backend, 2 июля
+  110: () => import('../questions/july-2-css'),            // Frontend, 2 июля
+  111: () => import('../questions/july-4-networks'),       // Кибербезопасность, 4 июля
+  112: () => import('../questions/july-4-numpy'),          // Аналитика/ML, 4 июля
+  113: () => import('../questions/july-4-sql-orm'),         // Backend, 4 июля
+  114: () => import('../questions/july-4-preprocessors'),  // Frontend, 4 июля
+  115: () => import('../questions/july-5-javascript'),     // Frontend, 5 июля
+  116: () => import('../questions/july-5-django'),         // Backend, 5 июля
+  117: () => import('../questions/july-5-pandas'),         // Аналитика/ML, 5 июля
+  118: () => import('../questions/july-5-assembly'),       // Кибербезопасность, 5 июля
+  119: () => import('../questions/july-6-dom'),            // Frontend, 6 июля
+  120: () => import('../questions/july-6-auth'),           // Backend, 6 июля
+  121: () => import('../questions/july-6-statistics'),     // Аналитика, 6 июля
+  122: () => import('../questions/july-6-linreg'),         // ML, 6 июля
+  123: () => import('../questions/july-6-winapi'),         // Кибербезопасность, 6 июля
+  125: () => import('../questions/july-8-typescript'),        // Frontend, 8 июля
+  126: () => import('../questions/july-8-django-validation'),  // Backend, 8 июля
+  127: () => import('../questions/july-8-metrics'),           // Аналитика, 8 июля
+  128: () => import('../questions/july-8-gradient-descent'),   // ML, 8 июля
+  129: () => import('../questions/july-8-crypto'),            // Кибербезопасность, 8 июля
+  130: () => import('../questions/july-9-matplotlib'),         // Аналитика/ML, 9 июля
+  131: () => import('../questions/july-9-websocket'),          // Backend/Frontend, 9 июля
+  132: () => import('../questions/july-9-owasp'),              // Кибербезопасность, 9 июля
+  136: () => import('../questions/july-13-oop'),               // Frontend/Backend, 13 июля
+  137: () => import('../questions/july-13-ab-testing'),         // Аналитика, 13 июля
+  138: () => import('../questions/july-13-metrics'),           // ML, 13 июля
+  139: () => import('../questions/july-13-cctv'),              // Кибербезопасность, 13 июля
+  140: () => import('../questions/july-14-generalization'),     // ML, 14 июля
+  141: () => import('../questions/july-14-vectors'),            // Аналитика, 14 июля
+  142: () => import('../questions/july-14-ssr-ssg'),             // Frontend, 14 июля
+  143: () => import('../questions/july-14-microservices'),      // Backend, 14 июля
+  144: () => import('../questions/july-14-phishing'),           // Кибербезопасность, 14 июля
+  145: () => import('../questions/july-14-data-cleaning'),       // Аналитика, 14 июля — очистка данных
+  146: () => import('../questions/july-15-docker'),             // Frontend/Backend, 15 июля — Docker
+  147: () => import('../questions/july-15-documents'),          // Кибербезопасность, 15 июля — ЭДО и нормативка
+  148: () => import('../questions/july-16-distributions'),      // Аналитика/ML, 16 июля — распределения
+  149: () => import('../questions/july-16-databases'),          // Frontend/Backend, 16 июля — виды баз данных
+  150: () => import('../questions/july-16-security-devices'),    // Кибербезопасность, 16 июля — технические средства охраны
+  152: () => import('../questions/july-18-knn'),                // Аналитика/ML, 18 июля — kNN
+  153: () => import('../questions/july-18-optimization'),       // Frontend/Backend, 18 июля — оптимизация
+  163: () => import('../questions/july-29-decision-trees'),       // Аналитика/ML, 29 июля — решающие деревья
+  164: () => import('../questions/july-29-fastapi-basics'),       // Backend, 29 июля — FastAPI основы
+  165: () => import('../questions/july-29-network-security'),     // Кибербезопасность, 29 июля — сетевая безопасность
 }
 
 function QuestionCard({ question, taskIndex, totalTasks, onAnswer, isSolved, savedAnswer }) {
@@ -377,28 +377,38 @@ export default function QuestionsPage({ selectedDay, onBack }) {
   const [switching, setSwitching] = useState(false)
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      const getQuestions = QUESTIONS_COMPONENTS[selectedDay]
-      if (getQuestions) {
-        const data = getQuestions()
-        setQuestions(data.tasks || [])
+    let cancelled = false
+    setLoading(true)
 
-        // Load task statuses from localStorage
-        const saved = localStorage.getItem('taskStatuses')
-        const statusData = saved ? JSON.parse(saved) : {}
-        const dayKey = `day${selectedDay}`
-        setTaskStatuses(statusData[dayKey] || {})
-
-        // Load task answers from localStorage
-        const answersSaved = localStorage.getItem('taskAnswers')
-        const answersData = answersSaved ? JSON.parse(answersSaved) : {}
-        setTaskAnswers(answersData[dayKey] || {})
-      }
+    const loadQuestions = QUESTIONS_COMPONENTS[selectedDay]
+    if (!loadQuestions) {
+      setQuestions([])
       setCurrentIndex(0)
       setLoading(false)
-    }, 300)
+      return
+    }
 
-    return () => clearTimeout(timer)
+    loadQuestions().then(mod => {
+      if (cancelled) return
+      const data = mod.default()
+      setQuestions(data.tasks || [])
+
+      // Load task statuses from localStorage
+      const saved = localStorage.getItem('taskStatuses')
+      const statusData = saved ? JSON.parse(saved) : {}
+      const dayKey = `day${selectedDay}`
+      setTaskStatuses(statusData[dayKey] || {})
+
+      // Load task answers from localStorage
+      const answersSaved = localStorage.getItem('taskAnswers')
+      const answersData = answersSaved ? JSON.parse(answersSaved) : {}
+      setTaskAnswers(answersData[dayKey] || {})
+
+      setCurrentIndex(0)
+      setLoading(false)
+    })
+
+    return () => { cancelled = true }
   }, [selectedDay])
 
   const handleAnswerCorrect = (taskIndex, isCorrect, answer) => {

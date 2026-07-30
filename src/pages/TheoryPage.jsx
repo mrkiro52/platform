@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, lazy, Suspense } from 'react'
 import { SCHEDULE } from '../data'
 import VideoPlayer from '../components/VideoPlayer'
 
@@ -38,93 +38,93 @@ const VIDEO_URLS = {
   149: 'https://s3.regru.cloud/kirocamp/day16full.mov',
   150: 'https://s3.regru.cloud/kirocamp/day16sec.mov',
 }
-import Day1IntroTheory from '../theory/day-1-intro'
-import Day2BasicsTheory from '../theory/day-2-basics'
-import Day3LoopsTheory from '../theory/day-3-loops'
-import Day4AlgorithmsTheory from '../theory/day-4-algorithms'
-import Day5LogicTheory from '../theory/day-5-logic'
-import Day6GraphsTheory from '../theory/day-6-graphs'
-import Day7StructuresTheory from '../theory/day-7-structures'
-import Day8StacksQueuesTheory from '../theory/day-8-stacks-queues'
-import Day9HashtablesTheory from '../theory/day-9-hashtables'
-import Day10TreesTheory from '../theory/day-10-trees'
-import Day11GitTheory from '../theory/day-11-git'
-import Day12AiToolsTheory from '../theory/day-12-ai-tools'
-import Day13ProjectTheory from '../theory/day-13-project'
-import Day15TimeManagementTheory from '../theory/day-15-timemanagement'
-import Day16LanguagesTheory from '../theory/day-16-languages'
-import Day17TrendsTheory from '../theory/day-17-trends'
-import Day18TestingTheory from '../theory/day-18-testing'
-import Day19SqlTheory from '../theory/day-19-sql'
-import Day20ApiTheory from '../theory/day-20-api'
-import Day22SortingTheory from '../theory/day-22-sorting'
-import Day24PatternsTheory from '../theory/day-24-patterns'
-import Day25SecurityTheory from '../theory/day-25-security'
-import Day26SoftSkillsTheory from '../theory/day-26-softs-kills'
-import Day27LearningTheory from '../theory/day-27-learning'
-import Day21Insider2Theory from '../theory/day-21-insider2'
-import Day29ResumeTheory from '../theory/day-29-resume'
-import July1PythonTheory from '../theory/july-1-python'
-import July1HtmlTheory from '../theory/july-1-html'
-import July1BackendTheory from '../theory/july-1-backend'
-import July1SecurityTheory from '../theory/july-1-security'
-import July2OsTheory from '../theory/july-2-os'
-import July2CombinatoricsTheory from '../theory/july-2-combinatorics'
-import July2MlIntroTheory from '../theory/july-2-ml-intro'
-import July2BackendArchTheory from '../theory/july-2-backend-arch'
-import July3LeetcodeTheory from '../theory/july-3-leetcode'
-import July2CssTheory from '../theory/july-2-css'
-import July4NetworksTheory from '../theory/july-4-networks'
-import July4NumpyTheory from '../theory/july-4-numpy'
-import July4SqlOrmTheory from '../theory/july-4-sql-orm'
-import July4PreprocessorsTheory from '../theory/july-4-preprocessors'
-import July5JavaScriptTheory from '../theory/july-5-javascript'
-import July5DjangoTheory from '../theory/july-5-django'
-import July5PandasTheory from '../theory/july-5-pandas'
-import July5AssemblyTheory from '../theory/july-5-assembly'
-import July6DomTheory from '../theory/july-6-dom'
-import July6AuthTheory from '../theory/july-6-auth'
-import July6StatisticsTheory from '../theory/july-6-statistics'
-import July6LinRegTheory from '../theory/july-6-linreg'
-import July6WinApiTheory from '../theory/july-6-winapi'
-import July7AlgorithmsTheory from '../theory/july-7-algorithms'
-import July8TypeScriptTheory from '../theory/july-8-typescript'
-import July8DjangoValidationTheory from '../theory/july-8-django-validation'
-import July8MetricsTheory from '../theory/july-8-metrics'
-import July8GradientDescentTheory from '../theory/july-8-gradient-descent'
-import July8CryptoTheory from '../theory/july-8-crypto'
-import July9MatplotlibTheory from '../theory/july-9-matplotlib'
-import July9WebSocketTheory from '../theory/july-9-websocket'
-import July9OwaspTheory from '../theory/july-9-owasp'
-import July1112PetProjectTheory from '../theory/july-11-12-petproject'
-import July13OopTheory from '../theory/july-13-oop'
-import July13AbTestingTheory from '../theory/july-13-ab-testing'
-import July13MetricsTheory from '../theory/july-13-metrics'
-import July13CctvTheory from '../theory/july-13-cctv'
-import July14GeneralizationTheory from '../theory/july-14-generalization'
-import July14VectorsTheory from '../theory/july-14-vectors'
-import July14SsrSsgTheory from '../theory/july-14-ssr-ssg'
-import July14MicroservicesTheory from '../theory/july-14-microservices'
-import July14PhishingTheory from '../theory/july-14-phishing'
-import July14DataCleaningTheory from '../theory/july-14-data-cleaning'
-import July15DockerTheory from '../theory/july-15-docker'
-import July15DocumentsTheory from '../theory/july-15-documents'
-import July16DistributionsTheory from '../theory/july-16-distributions'
-import July16DatabasesTheory from '../theory/july-16-databases'
-import July16SecurityDevicesTheory from '../theory/july-16-security-devices'
-import July17LeetcodeTheory from '../theory/july-17-leetcode'
-import July18KnnTheory from '../theory/july-18-knn'
-import July18OptimizationTheory from '../theory/july-18-optimization'
-import July18CtfTheory from '../theory/july-18-ctf'
-import July20MlInterviewTheory from '../theory/july-20-ml-interview'
-import July21AnalyticsInterviewTheory from '../theory/july-21-analytics-interview'
-import July22FullstackInterviewTheory from '../theory/july-22-fullstack-interview'
-import July23SecurityInterviewTheory from '../theory/july-23-security-interview'
-import July24InsiderShow3Theory from '../theory/july-24-insider-show-3'
-import July28MicroservicesSystemDesignTheory from '../theory/july-28-microservices-system-design'
-import July29DecisionTreesTheory from '../theory/july-29-decision-trees'
-import July29FastApiBasicsTheory from '../theory/july-29-fastapi-basics'
-import July29NetworkSecurityTheory from '../theory/july-29-network-security'
+const Day1IntroTheory = lazy(() => import('../theory/day-1-intro'))
+const Day2BasicsTheory = lazy(() => import('../theory/day-2-basics'))
+const Day3LoopsTheory = lazy(() => import('../theory/day-3-loops'))
+const Day4AlgorithmsTheory = lazy(() => import('../theory/day-4-algorithms'))
+const Day5LogicTheory = lazy(() => import('../theory/day-5-logic'))
+const Day6GraphsTheory = lazy(() => import('../theory/day-6-graphs'))
+const Day7StructuresTheory = lazy(() => import('../theory/day-7-structures'))
+const Day8StacksQueuesTheory = lazy(() => import('../theory/day-8-stacks-queues'))
+const Day9HashtablesTheory = lazy(() => import('../theory/day-9-hashtables'))
+const Day10TreesTheory = lazy(() => import('../theory/day-10-trees'))
+const Day11GitTheory = lazy(() => import('../theory/day-11-git'))
+const Day12AiToolsTheory = lazy(() => import('../theory/day-12-ai-tools'))
+const Day13ProjectTheory = lazy(() => import('../theory/day-13-project'))
+const Day15TimeManagementTheory = lazy(() => import('../theory/day-15-timemanagement'))
+const Day16LanguagesTheory = lazy(() => import('../theory/day-16-languages'))
+const Day17TrendsTheory = lazy(() => import('../theory/day-17-trends'))
+const Day18TestingTheory = lazy(() => import('../theory/day-18-testing'))
+const Day19SqlTheory = lazy(() => import('../theory/day-19-sql'))
+const Day20ApiTheory = lazy(() => import('../theory/day-20-api'))
+const Day22SortingTheory = lazy(() => import('../theory/day-22-sorting'))
+const Day24PatternsTheory = lazy(() => import('../theory/day-24-patterns'))
+const Day25SecurityTheory = lazy(() => import('../theory/day-25-security'))
+const Day26SoftSkillsTheory = lazy(() => import('../theory/day-26-softs-kills'))
+const Day27LearningTheory = lazy(() => import('../theory/day-27-learning'))
+const Day21Insider2Theory = lazy(() => import('../theory/day-21-insider2'))
+const Day29ResumeTheory = lazy(() => import('../theory/day-29-resume'))
+const July1PythonTheory = lazy(() => import('../theory/july-1-python'))
+const July1HtmlTheory = lazy(() => import('../theory/july-1-html'))
+const July1BackendTheory = lazy(() => import('../theory/july-1-backend'))
+const July1SecurityTheory = lazy(() => import('../theory/july-1-security'))
+const July2OsTheory = lazy(() => import('../theory/july-2-os'))
+const July2CombinatoricsTheory = lazy(() => import('../theory/july-2-combinatorics'))
+const July2MlIntroTheory = lazy(() => import('../theory/july-2-ml-intro'))
+const July2BackendArchTheory = lazy(() => import('../theory/july-2-backend-arch'))
+const July3LeetcodeTheory = lazy(() => import('../theory/july-3-leetcode'))
+const July2CssTheory = lazy(() => import('../theory/july-2-css'))
+const July4NetworksTheory = lazy(() => import('../theory/july-4-networks'))
+const July4NumpyTheory = lazy(() => import('../theory/july-4-numpy'))
+const July4SqlOrmTheory = lazy(() => import('../theory/july-4-sql-orm'))
+const July4PreprocessorsTheory = lazy(() => import('../theory/july-4-preprocessors'))
+const July5JavaScriptTheory = lazy(() => import('../theory/july-5-javascript'))
+const July5DjangoTheory = lazy(() => import('../theory/july-5-django'))
+const July5PandasTheory = lazy(() => import('../theory/july-5-pandas'))
+const July5AssemblyTheory = lazy(() => import('../theory/july-5-assembly'))
+const July6DomTheory = lazy(() => import('../theory/july-6-dom'))
+const July6AuthTheory = lazy(() => import('../theory/july-6-auth'))
+const July6StatisticsTheory = lazy(() => import('../theory/july-6-statistics'))
+const July6LinRegTheory = lazy(() => import('../theory/july-6-linreg'))
+const July6WinApiTheory = lazy(() => import('../theory/july-6-winapi'))
+const July7AlgorithmsTheory = lazy(() => import('../theory/july-7-algorithms'))
+const July8TypeScriptTheory = lazy(() => import('../theory/july-8-typescript'))
+const July8DjangoValidationTheory = lazy(() => import('../theory/july-8-django-validation'))
+const July8MetricsTheory = lazy(() => import('../theory/july-8-metrics'))
+const July8GradientDescentTheory = lazy(() => import('../theory/july-8-gradient-descent'))
+const July8CryptoTheory = lazy(() => import('../theory/july-8-crypto'))
+const July9MatplotlibTheory = lazy(() => import('../theory/july-9-matplotlib'))
+const July9WebSocketTheory = lazy(() => import('../theory/july-9-websocket'))
+const July9OwaspTheory = lazy(() => import('../theory/july-9-owasp'))
+const July1112PetProjectTheory = lazy(() => import('../theory/july-11-12-petproject'))
+const July13OopTheory = lazy(() => import('../theory/july-13-oop'))
+const July13AbTestingTheory = lazy(() => import('../theory/july-13-ab-testing'))
+const July13MetricsTheory = lazy(() => import('../theory/july-13-metrics'))
+const July13CctvTheory = lazy(() => import('../theory/july-13-cctv'))
+const July14GeneralizationTheory = lazy(() => import('../theory/july-14-generalization'))
+const July14VectorsTheory = lazy(() => import('../theory/july-14-vectors'))
+const July14SsrSsgTheory = lazy(() => import('../theory/july-14-ssr-ssg'))
+const July14MicroservicesTheory = lazy(() => import('../theory/july-14-microservices'))
+const July14PhishingTheory = lazy(() => import('../theory/july-14-phishing'))
+const July14DataCleaningTheory = lazy(() => import('../theory/july-14-data-cleaning'))
+const July15DockerTheory = lazy(() => import('../theory/july-15-docker'))
+const July15DocumentsTheory = lazy(() => import('../theory/july-15-documents'))
+const July16DistributionsTheory = lazy(() => import('../theory/july-16-distributions'))
+const July16DatabasesTheory = lazy(() => import('../theory/july-16-databases'))
+const July16SecurityDevicesTheory = lazy(() => import('../theory/july-16-security-devices'))
+const July17LeetcodeTheory = lazy(() => import('../theory/july-17-leetcode'))
+const July18KnnTheory = lazy(() => import('../theory/july-18-knn'))
+const July18OptimizationTheory = lazy(() => import('../theory/july-18-optimization'))
+const July18CtfTheory = lazy(() => import('../theory/july-18-ctf'))
+const July20MlInterviewTheory = lazy(() => import('../theory/july-20-ml-interview'))
+const July21AnalyticsInterviewTheory = lazy(() => import('../theory/july-21-analytics-interview'))
+const July22FullstackInterviewTheory = lazy(() => import('../theory/july-22-fullstack-interview'))
+const July23SecurityInterviewTheory = lazy(() => import('../theory/july-23-security-interview'))
+const July24InsiderShow3Theory = lazy(() => import('../theory/july-24-insider-show-3'))
+const July28MicroservicesSystemDesignTheory = lazy(() => import('../theory/july-28-microservices-system-design'))
+const July29DecisionTreesTheory = lazy(() => import('../theory/july-29-decision-trees'))
+const July29FastApiBasicsTheory = lazy(() => import('../theory/july-29-fastapi-basics'))
+const July29NetworkSecurityTheory = lazy(() => import('../theory/july-29-network-security'))
 
 // Маппинг дней на компоненты с теорией
 const THEORY_COMPONENTS = {
@@ -344,7 +344,7 @@ export default function TheoryPage({ selectedDay, onBack }) {
     <section className="page active">
       <div className="theory-breadcrumbs">
         <button className="breadcrumb-link" onClick={onBack}>
-          📚 Библиотека знаний
+          Библиотека знаний
         </button>
         <span className="breadcrumb-sep">/</span>
         <span className="breadcrumb-current">
@@ -352,7 +352,9 @@ export default function TheoryPage({ selectedDay, onBack }) {
         </span>
       </div>
 
-      <TheoryComponent videoUrl={VIDEO_URLS[selectedDay] || null} />
+      <Suspense fallback={<p style={{ color: 'var(--text-secondary)', padding: '20px 0' }}>Загрузка...</p>}>
+        <TheoryComponent videoUrl={VIDEO_URLS[selectedDay] || null} />
+      </Suspense>
 
       <div className="theory-footer">
         <button className="btn-back" onClick={onBack}>

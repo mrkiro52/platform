@@ -1,10 +1,11 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, lazy, Suspense } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import PandasLikbez from './likebezy/PandasLikbez'
-import SqlLikbez from './likebezy/SqlLikbez'
-import MlLikbez from './likebezy/MlLikbez'
-import PythonLikbez from './likebezy/PythonLikbez'
-import PythonOopLikbez from './likebezy/PythonOopLikbez'
+
+const PandasLikbez = lazy(() => import('./likebezy/PandasLikbez'))
+const SqlLikbez = lazy(() => import('./likebezy/SqlLikbez'))
+const MlLikbez = lazy(() => import('./likebezy/MlLikbez'))
+const PythonLikbez = lazy(() => import('./likebezy/PythonLikbez'))
+const PythonOopLikbez = lazy(() => import('./likebezy/PythonOopLikbez'))
 
 const LIKEBEZY = [
   {
@@ -90,7 +91,11 @@ export default function LikebezyPage() {
     const item = LIKEBEZY.find(l => l.id === id)
     if (item) {
       const Component = item.component
-      return <Component onBack={() => navigate('/likebezy')} />
+      return (
+        <Suspense fallback={<p style={{ color: 'var(--text-secondary)', padding: '20px 0' }}>Загрузка...</p>}>
+          <Component onBack={() => navigate('/likebezy')} />
+        </Suspense>
+      )
     }
   }
 
