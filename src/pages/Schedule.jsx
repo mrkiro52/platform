@@ -91,6 +91,9 @@ const JULY_SCHEDULE_FALLBACK = [
   { day:29, date:'ср, 29 июля', meeting_time:'20:00', title:'Решающие деревья', tracks:['Аналитика','ML'], description:'Определение решающего дерева, жадный алгоритм построения, критерии Джини/энтропия, регуляризация (pre/post-pruning).' },
   { day:29, date:'ср, 29 июля', meeting_time:'20:30', title:'FastAPI: основы', tracks:['Backend'], description:'Основы FastAPI за час: эндпоинты, валидация через Pydantic, подключение встроенной базы данных SQLite, CRUD.' },
   { day:29, date:'ср, 29 июля', meeting_time:'21:00', title:'Основы сетевой безопасности', tracks:['Кибербезопасность'], description:'Сетевые угрозы, firewall и сегментация, инструменты диагностики (ping, traceroute, nmap, tcpdump/Wireshark) и команды.' },
+  { day:30, date:'чт, 30 июля', meeting_time:'20:00', title:'Нейронные сети и LLM', tracks:['Аналитика','ML'], description:'Как устроены нейросети и LLM, чем отличаются GPT/Claude/Gemini/Llama, что даёт их API, и как это выглядит с точки зрения AI-разработчика.' },
+  { day:30, date:'чт, 30 июля', meeting_time:'20:30', title:'Методы оптимизации фронтенда и бэкенда', tracks:['Frontend','Backend'], description:'От базового сжатия и кэша до SSR, шардирования и профилирования — полный путь оптимизации веб-приложения.' },
+  { day:30, date:'чт, 30 июля', meeting_time:'21:00', title:'Основы криптографии', tracks:['Кибербезопасность'], description:'Шифрование, хеширование, электронная подпись, стеганография и криптоанализ — базовые понятия и инструменты каждого направления.' },
 ].map((e, i) => ({ id: -1000 - i, month: 'july', type: 'lecture', theory: [], tasks: [], hw: '', meeting_link: '', ...e }))
 
 // Объединяем события июля из API с резервными. Резервные данные считаются

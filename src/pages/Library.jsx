@@ -156,6 +156,12 @@ const JULY_TRACKS_DAY29 = [
   { name: 'Кибербезопасность', id: 165, lesson: 'Основы сетевой безопасности',            color: { bg:'rgba(239,68,68,0.12)', border:'rgba(239,68,68,0.3)',  text:'#f87171' } },
 ]
 
+const JULY_TRACKS_DAY30 = [
+  { name: 'Аналитика / ML',     id: 166, lesson: 'Нейронные сети и LLM',                   color: { bg:'rgba(99,102,241,0.12)', border:'rgba(99,102,241,0.3)', text:'#818cf8' }, showQuestions: false, showHomework: false },
+  { name: 'Frontend / Backend', id: 167, lesson: 'Методы оптимизации фронтенда и бэкенда', color: { bg:'rgba(234,179,8,0.12)',  border:'rgba(234,179,8,0.3)',  text:'#facc15' }, showQuestions: false, showHomework: false },
+  { name: 'Кибербезопасность',  id: 168, lesson: 'Основы криптографии',                    color: { bg:'rgba(239,68,68,0.12)', border:'rgba(239,68,68,0.3)',  text:'#f87171' }, showQuestions: false, showHomework: false },
+]
+
 const JULY_DAYS = [
   { day: 1, date: 'ср, 1 июля', tracks: JULY_TRACKS },
   { day: 2, date: 'чт, 2 июля', tracks: JULY_TRACKS_DAY2 },
@@ -184,6 +190,7 @@ const JULY_DAYS = [
   { day: 27, date: 'пн, 27 июля', tracks: JULY_TRACKS_DAY27 },
   { day: 28, date: 'вт, 28 июля', tracks: JULY_TRACKS_DAY28 },
   { day: 29, date: 'ср, 29 июля', tracks: JULY_TRACKS_DAY29 },
+  { day: 30, date: 'чт, 30 июля', tracks: JULY_TRACKS_DAY30 },
 ]
 
 function JulyTrackRow({ track, onOpenTheory, onOpenQuestions, onOpenHomework }) {

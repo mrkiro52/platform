@@ -125,6 +125,9 @@ const July28MicroservicesSystemDesignTheory = lazy(() => import('../theory/july-
 const July29DecisionTreesTheory = lazy(() => import('../theory/july-29-decision-trees'))
 const July29FastApiBasicsTheory = lazy(() => import('../theory/july-29-fastapi-basics'))
 const July29NetworkSecurityTheory = lazy(() => import('../theory/july-29-network-security'))
+const July30NeuralNetworksLlmTheory = lazy(() => import('../theory/july-30-neural-networks-llm'))
+const July30OptimizationTheory = lazy(() => import('../theory/july-30-frontend-backend-optimization'))
+const July30CryptoBasicsTheory = lazy(() => import('../theory/july-30-crypto-basics'))
 
 // Маппинг дней на компоненты с теорией
 const THEORY_COMPONENTS = {
@@ -219,6 +222,9 @@ const THEORY_COMPONENTS = {
   163: July29DecisionTreesTheory,       // Аналитика/ML, 29 июля — решающие деревья
   164: July29FastApiBasicsTheory,       // Backend, 29 июля — FastAPI основы
   165: July29NetworkSecurityTheory,     // Кибербезопасность, 29 июля — сетевая безопасность
+  166: July30NeuralNetworksLlmTheory,    // Аналитика/ML, 30 июля — нейронные сети и LLM
+  167: July30OptimizationTheory,         // Frontend/Backend, 30 июля — оптимизация фронтенда и бэкенда
+  168: July30CryptoBasicsTheory,         // Кибербезопасность, 30 июля — основы криптографии
 }
 
 // Заголовки для июльских треков (синтетические id)
@@ -288,6 +294,9 @@ export const JULY_TRACK_LABELS = {
   163: '29 июля · Аналитика/ML — Решающие деревья',
   164: '29 июля · Backend — FastAPI: основы',
   165: '29 июля · Кибербезопасность — Основы сетевой безопасности',
+  166: '30 июля · Аналитика/ML — Нейронные сети и LLM',
+  167: '30 июля · Frontend/Backend — Методы оптимизации фронтенда и бэкенда',
+  168: '30 июля · Кибербезопасность — Основы криптографии',
 }
 
 const THEORY_TITLES = {
