@@ -52,4 +52,6 @@ export const api = {
   posts:         ()          => req('/api/posts'),
   createPost:    (text)      => req('/api/posts', { method: 'POST', body: JSON.stringify({ text }) }),
   deletePost:    (id)        => req(`/api/posts/${id}`, { method: 'DELETE' }),
+  reactToPost:   (id, reaction) => req(`/api/posts/${id}/reaction`, { method: 'PUT', body: JSON.stringify({ reaction }) }),
+  addComment:    (id, text)  => req(`/api/posts/${id}/comments`, { method: 'POST', body: JSON.stringify({ text }) }),
 }

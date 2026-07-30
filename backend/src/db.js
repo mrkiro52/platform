@@ -468,6 +468,38 @@ function migrate() {
       console.error('❌ Migration 12 failed:', err.message)
     }
   }
+
+  // Migration 13: add post_reactions + post_comments (Стена) — additive only, no data loss
+  if (schemaVersion < 13) {
+    try {
+      db.exec(`
+        CREATE TABLE IF NOT EXISTS post_reactions (
+          id         INTEGER PRIMARY KEY AUTOINCREMENT,
+          post_id    INTEGER NOT NULL,
+          user_id    INTEGER NOT NULL,
+          reaction   TEXT NOT NULL,
+          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+          FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE,
+          FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+          UNIQUE(post_id, user_id)
+        );
+
+        CREATE TABLE IF NOT EXISTS post_comments (
+          id         INTEGER PRIMARY KEY AUTOINCREMENT,
+          post_id    INTEGER NOT NULL,
+          user_id    INTEGER NOT NULL,
+          text       TEXT NOT NULL,
+          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+          FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE,
+          FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+        );
+      `)
+      db.pragma('user_version = 13')
+      console.log('✅ Migration 13 completed: added post_reactions and post_comments tables')
+    } catch (err) {
+      console.error('❌ Migration 13 failed:', err.message)
+    }
+  }
 }
 
 migrate()

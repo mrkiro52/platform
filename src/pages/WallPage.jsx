@@ -14,6 +14,14 @@ function formatDate(isoLike) {
   })
 }
 
+const REACTIONS = [
+  { type: 'heart',      emoji: '❤️' },
+  { type: 'mind_blown', emoji: '🤯' },
+  { type: 'clap',       emoji: '👏' },
+  { type: 'party',      emoji: '🥳' },
+  { type: 'cry',        emoji: '😢' },
+]
+
 function Avatar({ name, avatarUrl, size = 40 }) {
   if (avatarUrl) {
     return (
@@ -32,6 +40,153 @@ function Avatar({ name, avatarUrl, size = 40 }) {
       display: 'flex', alignItems: 'center', justifyContent: 'center',
     }}>
       {getInitials(name)}
+    </div>
+  )
+}
+
+function CommentComposer({ user, avatarUrl, onSubmit }) {
+  const [text, setText] = useState('')
+  const [sending, setSending] = useState(false)
+
+  const submit = async () => {
+    const trimmed = text.trim()
+    if (!trimmed || sending) return
+    setSending(true)
+    try {
+      await onSubmit(trimmed)
+      setText('')
+    } finally {
+      setSending(false)
+    }
+  }
+
+  return (
+    <div style={{ display: 'flex', gap: 8, alignItems: 'flex-start', marginTop: 10 }}>
+      <Avatar name={user?.name} avatarUrl={avatarUrl} size={28} />
+      <div style={{ flex: 1, display: 'flex', gap: 8 }}>
+        <textarea
+          value={text}
+          onChange={e => setText(e.target.value)}
+          placeholder="Написать комментарий..."
+          rows={1}
+          style={{
+            flex: 1, minHeight: 36, resize: 'vertical', border: '1px solid var(--border-color)',
+            borderRadius: 0, background: 'var(--bg-tertiary)', color: 'var(--text-primary)',
+            padding: '8px 10px', fontSize: 13, fontFamily: 'var(--font-inter)', outline: 'none',
+            whiteSpace: 'pre-wrap', overflowWrap: 'break-word', wordBreak: 'break-word',
+          }}
+        />
+        <button
+          onClick={submit}
+          disabled={!text.trim() || sending}
+          style={{
+            padding: '0 16px', fontSize: 12.5, fontWeight: 600, border: 'none', borderRadius: 0,
+            background: 'var(--accent-lime)', color: '#fff', outline: 'none', flexShrink: 0,
+            cursor: !text.trim() || sending ? 'not-allowed' : 'pointer',
+            opacity: !text.trim() || sending ? 0.5 : 1,
+          }}
+        >
+          Комментировать
+        </button>
+      </div>
+    </div>
+  )
+}
+
+function PostCard({ post, user, avatarUrl, onReact, onComment }) {
+  const [visibleCount, setVisibleCount] = useState(3)
+
+  const comments = post.comments || []
+  const shown = comments.slice(-visibleCount)
+  const hasMore = comments.length > visibleCount
+
+  return (
+    <div style={{
+      border: '1px solid var(--border-color)', borderRadius: 0, background: 'var(--bg-secondary)',
+      padding: 16,
+    }}>
+      <div style={{ display: 'flex', gap: 10, alignItems: 'center', marginBottom: 10 }}>
+        <Avatar name={post.author.name} avatarUrl={post.author.avatarUrl} size={36} />
+        <div>
+          <div style={{ fontWeight: 600, fontSize: 13.5, color: 'var(--text-primary)' }}>{post.author.name}</div>
+          <div style={{ fontSize: 11.5, color: 'var(--text-tertiary)' }}>{formatDate(post.createdAt)}</div>
+        </div>
+      </div>
+
+      <p style={{
+        margin: '0 0 12px', fontSize: 14, color: 'var(--text-primary)', lineHeight: 1.6,
+        whiteSpace: 'pre-wrap', overflowWrap: 'break-word', wordBreak: 'break-word',
+      }}>
+        {post.text}
+      </p>
+
+      {/* Реакции */}
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 12 }}>
+        {REACTIONS.map(r => {
+          const count = post.reactions?.[r.type] || 0
+          const active = post.myReaction === r.type
+          return (
+            <button
+              key={r.type}
+              onClick={() => onReact(post.id, r.type)}
+              style={{
+                display: 'inline-flex', alignItems: 'center', gap: 5,
+                border: `1px solid ${active ? 'var(--accent-lime)' : 'var(--border-color)'}`,
+                borderRadius: 0,
+                background: active ? 'rgba(32,190,255,0.12)' : 'var(--bg-tertiary)',
+                color: active ? 'var(--accent-lime)' : 'var(--text-secondary)',
+                padding: '5px 10px', fontSize: 13, fontWeight: 600, cursor: 'pointer', outline: 'none',
+              }}
+            >
+              <span>{r.emoji}</span>
+              <span>{count}</span>
+            </button>
+          )
+        })}
+        <span style={{
+          display: 'inline-flex', alignItems: 'center', gap: 5, fontSize: 12.5, color: 'var(--text-tertiary)',
+          padding: '5px 4px',
+        }}>
+          💬 {comments.length}
+        </span>
+      </div>
+
+      {/* Комментарии */}
+      {shown.length > 0 && (
+        <div style={{ borderTop: '1px solid var(--border-color)', paddingTop: 10, display: 'flex', flexDirection: 'column', gap: 10 }}>
+          {hasMore && (
+            <button
+              onClick={() => setVisibleCount(c => c + 3)}
+              style={{
+                alignSelf: 'flex-start', border: '1px solid var(--border-color)', borderRadius: 0,
+                background: 'transparent', color: 'var(--text-secondary)', fontSize: 12, fontWeight: 600,
+                padding: '5px 12px', cursor: 'pointer', outline: 'none',
+              }}
+            >
+              Показать следующие
+            </button>
+          )}
+          {shown.map(c => (
+            <div key={c.id} style={{ display: 'flex', gap: 8 }}>
+              <Avatar name={c.author.name} avatarUrl={c.author.avatarUrl} size={28} />
+              <div style={{ flex: 1 }}>
+                <div style={{ display: 'flex', gap: 8, alignItems: 'baseline' }}>
+                  <span style={{ fontWeight: 600, fontSize: 12.5, color: 'var(--text-primary)' }}>{c.author.name}</span>
+                  <span style={{ fontSize: 11, color: 'var(--text-tertiary)' }}>{formatDate(c.createdAt)}</span>
+                </div>
+                <p style={{
+                  margin: 0, fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.5,
+                  whiteSpace: 'pre-wrap', overflowWrap: 'break-word', wordBreak: 'break-word',
+                }}>
+                  {c.text}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      <CommentComposer user={user} avatarUrl={avatarUrl} onSubmit={text => onComment(post.id, text)} />
     </div>
   )
 }
@@ -66,6 +221,30 @@ export default function WallPage({ user, avatarUrl }) {
     }
   }
 
+  const handleReact = async (postId, reaction) => {
+    // оптимистичное обновление
+    setPosts(prev => prev.map(p => {
+      if (p.id !== postId) return p
+      const wasActive = p.myReaction === reaction
+      const reactions = { ...p.reactions }
+      if (p.myReaction) reactions[p.myReaction] = Math.max(0, (reactions[p.myReaction] || 0) - 1)
+      if (!wasActive) reactions[reaction] = (reactions[reaction] || 0) + 1
+      return { ...p, reactions, myReaction: wasActive ? null : reaction }
+    }))
+    try {
+      const result = await api.reactToPost(postId, reaction)
+      setPosts(prev => prev.map(p => p.id === postId ? { ...p, reactions: result.reactions, myReaction: result.myReaction } : p))
+    } catch {
+      // откатываемся, перезагрузив ленту
+      api.posts().then(setPosts).catch(() => {})
+    }
+  }
+
+  const handleComment = async (postId, text) => {
+    const newComment = await api.addComment(postId, text)
+    setPosts(prev => prev.map(p => p.id === postId ? { ...p, comments: [...(p.comments || []), newComment] } : p))
+  }
+
   return (
     <section className="page active">
       <div className="page-header">
@@ -75,40 +254,39 @@ export default function WallPage({ user, avatarUrl }) {
 
       {/* Форма публикации */}
       <div style={{
-        display: 'flex', gap: 12, marginBottom: 24,
+        display: 'flex', gap: 12, marginBottom: 24, alignItems: 'flex-start',
         border: '1px solid var(--border-color)', borderRadius: 0, background: 'var(--bg-secondary)',
         padding: 16,
       }}>
         <Avatar name={user?.name} avatarUrl={avatarUrl} />
-        <div style={{ flex: 1 }}>
+        <div style={{ flex: 1, display: 'flex', gap: 10, alignItems: 'flex-start' }}>
           <textarea
             value={text}
             onChange={e => setText(e.target.value)}
             placeholder="Поделиться мыслями..."
+            rows={1}
             style={{
-              width: '100%', minHeight: 80, resize: 'vertical', border: '1px solid var(--border-color)',
+              flex: 1, minHeight: 44, resize: 'vertical', border: '1px solid var(--border-color)',
               borderRadius: 0, background: 'var(--bg-tertiary)', color: 'var(--text-primary)',
               padding: '10px 12px', fontSize: 14, fontFamily: 'var(--font-inter)', outline: 'none',
               whiteSpace: 'pre-wrap', overflowWrap: 'break-word', wordBreak: 'break-word',
             }}
           />
-          {error && <div style={{ color: '#ff3333', fontSize: 12, marginTop: 6 }}>{error}</div>}
-          <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 10 }}>
-            <button
-              onClick={handlePublish}
-              disabled={!text.trim() || publishing}
-              style={{
-                padding: '9px 22px', fontSize: 13.5, fontWeight: 600, border: 'none', borderRadius: 0,
-                background: 'var(--accent-lime)', color: '#fff', outline: 'none',
-                cursor: !text.trim() || publishing ? 'not-allowed' : 'pointer',
-                opacity: !text.trim() || publishing ? 0.5 : 1,
-              }}
-            >
-              {publishing ? 'Публикуем...' : 'Опубликовать'}
-            </button>
-          </div>
+          <button
+            onClick={handlePublish}
+            disabled={!text.trim() || publishing}
+            style={{
+              padding: '0 22px', height: 44, fontSize: 13.5, fontWeight: 600, border: 'none', borderRadius: 0,
+              background: 'var(--accent-lime)', color: '#fff', outline: 'none', flexShrink: 0,
+              cursor: !text.trim() || publishing ? 'not-allowed' : 'pointer',
+              opacity: !text.trim() || publishing ? 0.5 : 1,
+            }}
+          >
+            {publishing ? 'Публикуем...' : 'Опубликовать'}
+          </button>
         </div>
       </div>
+      {error && <div style={{ color: '#ff3333', fontSize: 12, marginTop: -16, marginBottom: 16 }}>{error}</div>}
 
       {/* Лента постов */}
       {loading ? (
@@ -118,24 +296,14 @@ export default function WallPage({ user, avatarUrl }) {
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
           {posts.map(post => (
-            <div key={post.id} style={{
-              border: '1px solid var(--border-color)', borderRadius: 0, background: 'var(--bg-secondary)',
-              padding: 16,
-            }}>
-              <div style={{ display: 'flex', gap: 10, alignItems: 'center', marginBottom: 10 }}>
-                <Avatar name={post.author.name} avatarUrl={post.author.avatarUrl} size={36} />
-                <div>
-                  <div style={{ fontWeight: 600, fontSize: 13.5, color: 'var(--text-primary)' }}>{post.author.name}</div>
-                  <div style={{ fontSize: 11.5, color: 'var(--text-tertiary)' }}>{formatDate(post.createdAt)}</div>
-                </div>
-              </div>
-              <p style={{
-                margin: 0, fontSize: 14, color: 'var(--text-primary)', lineHeight: 1.6,
-                whiteSpace: 'pre-wrap', overflowWrap: 'break-word', wordBreak: 'break-word',
-              }}>
-                {post.text}
-              </p>
-            </div>
+            <PostCard
+              key={post.id}
+              post={post}
+              user={user}
+              avatarUrl={avatarUrl}
+              onReact={handleReact}
+              onComment={handleComment}
+            />
           ))}
         </div>
       )}
