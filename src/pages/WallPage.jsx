@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { api } from '../api'
 
 function getInitials(name) {
@@ -21,6 +21,35 @@ const REACTIONS = [
   { type: 'party',      emoji: '🥳' },
   { type: 'cry',        emoji: '😢' },
 ]
+
+function AutoTextarea({ value, onChange, placeholder, minHeight, style }) {
+  const ref = useRef(null)
+
+  const resize = (el) => {
+    if (!el) return
+    el.style.height = 'auto'
+    el.style.height = `${el.scrollHeight}px`
+  }
+
+  useEffect(() => { resize(ref.current) }, [value])
+
+  return (
+    <textarea
+      ref={ref}
+      value={value}
+      onChange={e => { onChange(e.target.value); resize(e.target) }}
+      placeholder={placeholder}
+      rows={1}
+      style={{
+        minHeight, resize: 'none', overflow: 'hidden', border: '1px solid var(--border-color)',
+        borderRadius: 0, background: 'var(--bg-tertiary)', color: 'var(--text-primary)',
+        fontFamily: 'var(--font-inter)', outline: 'none',
+        whiteSpace: 'pre-wrap', overflowWrap: 'break-word', wordBreak: 'break-word',
+        ...style,
+      }}
+    />
+  )
+}
 
 function Avatar({ name, avatarUrl, size = 40 }) {
   if (avatarUrl) {
@@ -63,24 +92,19 @@ function CommentComposer({ user, avatarUrl, onSubmit }) {
   return (
     <div style={{ display: 'flex', gap: 8, alignItems: 'flex-start', marginTop: 10 }}>
       <Avatar name={user?.name} avatarUrl={avatarUrl} size={28} />
-      <div style={{ flex: 1, display: 'flex', gap: 8 }}>
-        <textarea
+      <div style={{ flex: 1, display: 'flex', gap: 8, alignItems: 'flex-start' }}>
+        <AutoTextarea
           value={text}
-          onChange={e => setText(e.target.value)}
+          onChange={setText}
           placeholder="Написать комментарий..."
-          rows={1}
-          style={{
-            flex: 1, minHeight: 36, resize: 'vertical', border: '1px solid var(--border-color)',
-            borderRadius: 0, background: 'var(--bg-tertiary)', color: 'var(--text-primary)',
-            padding: '8px 10px', fontSize: 13, fontFamily: 'var(--font-inter)', outline: 'none',
-            whiteSpace: 'pre-wrap', overflowWrap: 'break-word', wordBreak: 'break-word',
-          }}
+          minHeight={36}
+          style={{ flex: 1, padding: '8px 10px', fontSize: 13 }}
         />
         <button
           onClick={submit}
           disabled={!text.trim() || sending}
           style={{
-            padding: '0 16px', fontSize: 12.5, fontWeight: 600, border: 'none', borderRadius: 0,
+            padding: '0 16px', height: 36, fontSize: 12.5, fontWeight: 600, border: 'none', borderRadius: 0,
             background: 'var(--accent-lime)', color: '#fff', outline: 'none', flexShrink: 0,
             cursor: !text.trim() || sending ? 'not-allowed' : 'pointer',
             opacity: !text.trim() || sending ? 0.5 : 1,
@@ -121,7 +145,7 @@ function PostCard({ post, user, avatarUrl, onReact, onComment }) {
       </p>
 
       {/* Реакции */}
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 12 }}>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 8 }}>
         {REACTIONS.map(r => {
           const count = post.reactions?.[r.type] || 0
           const active = post.myReaction === r.type
@@ -130,12 +154,13 @@ function PostCard({ post, user, avatarUrl, onReact, onComment }) {
               key={r.type}
               onClick={() => onReact(post.id, r.type)}
               style={{
-                display: 'inline-flex', alignItems: 'center', gap: 5,
+                display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 5,
+                width: 62, flexShrink: 0,
                 border: `1px solid ${active ? 'var(--accent-lime)' : 'var(--border-color)'}`,
                 borderRadius: 0,
                 background: active ? 'rgba(32,190,255,0.12)' : 'var(--bg-tertiary)',
                 color: active ? 'var(--accent-lime)' : 'var(--text-secondary)',
-                padding: '5px 10px', fontSize: 13, fontWeight: 600, cursor: 'pointer', outline: 'none',
+                padding: '5px 0', fontSize: 13, fontWeight: 600, cursor: 'pointer', outline: 'none',
               }}
             >
               <span>{r.emoji}</span>
@@ -143,12 +168,9 @@ function PostCard({ post, user, avatarUrl, onReact, onComment }) {
             </button>
           )
         })}
-        <span style={{
-          display: 'inline-flex', alignItems: 'center', gap: 5, fontSize: 12.5, color: 'var(--text-tertiary)',
-          padding: '5px 4px',
-        }}>
-          💬 {comments.length}
-        </span>
+      </div>
+      <div style={{ fontSize: 12.5, color: 'var(--text-tertiary)', marginBottom: 12 }}>
+        Комментарии: {comments.length}
       </div>
 
       {/* Комментарии */}
@@ -260,17 +282,12 @@ export default function WallPage({ user, avatarUrl }) {
       }}>
         <Avatar name={user?.name} avatarUrl={avatarUrl} />
         <div style={{ flex: 1, display: 'flex', gap: 10, alignItems: 'flex-start' }}>
-          <textarea
+          <AutoTextarea
             value={text}
-            onChange={e => setText(e.target.value)}
+            onChange={setText}
             placeholder="Поделиться мыслями..."
-            rows={1}
-            style={{
-              flex: 1, minHeight: 44, resize: 'vertical', border: '1px solid var(--border-color)',
-              borderRadius: 0, background: 'var(--bg-tertiary)', color: 'var(--text-primary)',
-              padding: '10px 12px', fontSize: 14, fontFamily: 'var(--font-inter)', outline: 'none',
-              whiteSpace: 'pre-wrap', overflowWrap: 'break-word', wordBreak: 'break-word',
-            }}
+            minHeight={44}
+            style={{ flex: 1, padding: '10px 12px', fontSize: 14 }}
           />
           <button
             onClick={handlePublish}

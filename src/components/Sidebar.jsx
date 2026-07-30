@@ -7,10 +7,10 @@ function getInitials(name) {
 
 const NAV_ITEMS = [
   { path: '/dashboard', label: 'Дэшборд' },
+  { path: '/wall',      label: 'Стена' },
   { path: '/schedule',  label: 'Расписание' },
   { path: '/library',   label: 'Библиотека знаний' },
   { path: '/trainings', label: 'Тренировки' },
-  { path: '/wall',      label: 'Стена' },
   { path: '/links',     label: 'Полезные ссылки' },
   { path: '/likebezy',  label: 'Полные ликбезы' },
   { path: '/antireels', label: 'AntiReels' },
