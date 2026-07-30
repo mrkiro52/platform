@@ -22,7 +22,7 @@ export default function MultiPartVideo({ parts = [] }) {
         display: 'flex',
         maxWidth: 800,
         margin: '-20px auto 0',
-        borderRadius: 8,
+        borderRadius: 0,
         overflow: 'hidden',
         border: '1px solid rgba(32,190,255,0.25)',
       }}>

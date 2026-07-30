@@ -11,7 +11,7 @@ export default function Day3LoopsTheory() {
       </section>
 
       <section className="theory-section">
-        <h2 className="theory-heading-2">🎥 Видео-лекция: Основы Python (4 части)</h2>
+        <h2 className="theory-heading-2">Видео-лекция: Основы Python (4 части)</h2>
         <MultiPartVideo parts={PYTHON_BASICS_PARTS} />
       </section>
 

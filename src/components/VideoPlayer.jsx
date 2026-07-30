@@ -147,7 +147,7 @@ export default function VideoPlayer({ src }) {
       maxWidth: 800,
       margin: '0 auto 32px',
       background: '#0d0d18',
-      borderRadius: isFullscreen ? 0 : '12px',
+      borderRadius: 0,
       overflow: 'hidden',
       border: '1px solid var(--border-color)',
       ...(isFullscreen && {
@@ -279,7 +279,7 @@ export default function VideoPlayer({ src }) {
             onClick={(e) => { e.stopPropagation(); setShowSpeedMenu(v => !v) }}
             style={{
               ...iconBtnStyle,
-              padding: '4px 10px', borderRadius: 6,
+              padding: '4px 10px', borderRadius: 0,
               background: showSpeedMenu ? '#1c1c2a' : 'transparent',
               fontSize: 13, fontWeight: 600, color: 'var(--accent-lime)',
               minWidth: 44, border: '1px solid #2a2a3a',
@@ -292,7 +292,7 @@ export default function VideoPlayer({ src }) {
               position: 'absolute', bottom: '110%', right: 0,
               background: '#1c1c2a',
               border: '1px solid #2a2a3a',
-              borderRadius: 8, overflow: 'hidden',
+              borderRadius: 0, overflow: 'hidden',
               boxShadow: '0 4px 20px rgba(0,0,0,0.4)',
               zIndex: 10,
             }}>

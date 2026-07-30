@@ -1313,7 +1313,7 @@ img { max-width: 100%; display: block; }
 .theory-code-block {
   position: relative;
   margin: 20px 0;
-  border-radius: var(--radius-lg);
+  border-radius: 0;
   overflow: hidden;
   border: 1px solid var(--border-color);
   background: var(--bg-tertiary);

@@ -42,7 +42,7 @@ export default function July4NetworksTheory() {
       </section>
 
       <section className="theory-section">
-        <h2 className="theory-heading-2">🎥 Видео-лекция: Компьютерные сети</h2>
+        <h2 className="theory-heading-2">Видео-лекция: Компьютерные сети</h2>
         <VideoPlayer src="https://s3.regru.cloud/kirocamp/day4cybersec.mov" />
       </section>
 

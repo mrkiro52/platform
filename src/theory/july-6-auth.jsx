@@ -40,7 +40,7 @@ export default function July6AuthTheory() {
       </section>
 
       <section className="theory-section">
-        <h2 className="theory-heading-2">🎥 Видео-лекция: Аутентификация и авторизация</h2>
+        <h2 className="theory-heading-2">Видео-лекция: Аутентификация и авторизация</h2>
         <VideoPlayer src="https://s3.regru.cloud/kirocamp/backendDay7.mov" />
       </section>
 

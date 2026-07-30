@@ -40,7 +40,7 @@ export default function July4SqlOrmTheory() {
       </section>
 
       <section className="theory-section">
-        <h2 className="theory-heading-2">🎥 Видео-лекция: SQL и ORM</h2>
+        <h2 className="theory-heading-2">Видео-лекция: SQL и ORM</h2>
         <VideoPlayer src="https://s3.regru.cloud/kirocamp/day4backend.mov" />
       </section>
 

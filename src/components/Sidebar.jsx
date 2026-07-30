@@ -9,6 +9,7 @@ const NAV_ITEMS = [
   { path: '/dashboard', label: 'Дэшборд' },
   { path: '/schedule',  label: 'Расписание' },
   { path: '/library',   label: 'Библиотека знаний' },
+  { path: '/trainings', label: 'Тренировки' },
   { path: '/links',     label: 'Полезные ссылки' },
   { path: '/likebezy',  label: 'Полные ликбезы' },
   { path: '/antireels', label: 'AntiReels' },
@@ -29,6 +30,7 @@ export default function Sidebar({ user, avatarUrl, onLogout, onClose }) {
   const isActive = (path) => {
     if (path === '/library') return location.pathname.startsWith('/library')
     if (path === '/likebezy') return location.pathname.startsWith('/likebezy')
+    if (path === '/trainings') return location.pathname.startsWith('/trainings')
     return location.pathname === path
   }
 
