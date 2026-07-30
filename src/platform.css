@@ -736,7 +736,7 @@ img { max-width: 100%; display: block; }
 
 .profile-card {
   background: var(--bg-secondary); border: 1px solid var(--border-color);
-  border-radius: var(--radius-xl); padding: 24px 20px; text-align: center;
+  border-radius: 0; padding: 24px 20px; text-align: center;
 }
 .profile-avatar {
   width: 72px; height: 72px; border-radius: 50%;
@@ -759,7 +759,7 @@ img { max-width: 100%; display: block; }
 
 .profile-details {
   background: var(--bg-secondary); border: 1px solid var(--border-color);
-  border-radius: var(--radius-xl); padding: 22px;
+  border-radius: 0; padding: 22px;
 }
 .profile-section-h {
   font-family: var(--font-syne); font-size: 13px; font-weight: 700; color: var(--text-primary);
@@ -785,7 +785,7 @@ img { max-width: 100%; display: block; }
 
 .notes-area {
   width: 100%; min-height: 130px; background: var(--bg-tertiary);
-  border: 1px solid var(--border-color); border-radius: var(--radius-md);
+  border: 1px solid var(--border-color); border-radius: 0;
   color: var(--text-primary); font-family: var(--font-inter); font-size: 13px;
   padding: 12px; resize: vertical; outline: none; line-height: 1.6;
   transition: border-color 0.2s, background 0.2s;
@@ -823,7 +823,7 @@ img { max-width: 100%; display: block; }
 .timer-setup { display: flex; align-items: center; gap: 6px; justify-content: center; padding: 12px 0; }
 .timer-setup input {
   width: 60px; text-align: center; background: var(--bg-tertiary); border: 1px solid var(--border-color);
-  border-radius: var(--radius-sm); color: var(--text-primary); font-family: var(--font-syne); font-size: 20px;
+  border-radius: 0; color: var(--text-primary); font-family: var(--font-syne); font-size: 20px;
   font-weight: 700; padding: 8px 4px; outline: none; transition: border-color 0.15s;
 }
 .timer-setup input:focus { border-color: var(--accent-lime); }
@@ -832,13 +832,13 @@ img { max-width: 100%; display: block; }
 
 .timer-btns { display: flex; gap: 8px; justify-content: center; }
 .timer-btn-start {
-  background: var(--accent-ink); color: #ffffff; border: none; border-radius: var(--radius-pill);
+  background: var(--accent-ink); color: #ffffff; border: none; border-radius: 0;
   padding: 8px 24px; font-weight: 700; font-size: 13px; cursor: pointer; transition: opacity 0.15s;
 }
 .timer-btn-start:disabled { opacity: 0.4; cursor: default; }
 .timer-btn-pause, .timer-btn-reset {
   background: transparent; border: 1px solid var(--border-color); color: var(--text-secondary);
-  border-radius: var(--radius-pill); padding: 8px 18px; font-size: 13px; cursor: pointer; transition: border-color 0.15s;
+  border-radius: 0; padding: 8px 18px; font-size: 13px; cursor: pointer; transition: border-color 0.15s;
 }
 .timer-btn-pause:hover, .timer-btn-reset:hover { border-color: var(--accent-lime); color: #0b93cf; }
 

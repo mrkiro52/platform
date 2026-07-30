@@ -1,13 +1,54 @@
 const router = require('express').Router()
 const bcrypt = require('bcryptjs')
+const multer = require('multer')
 const db = require('../db')
 const { requireAdmin, verifyToken } = require('../middleware/auth')
+const { uploadAvatar, deleteAvatar, keyFromUrl, s3Configured } = require('../s3')
+
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 5 * 1024 * 1024 },
+  fileFilter: (req, file, cb) => {
+    if (!['image/jpeg', 'image/png', 'image/webp', 'image/gif'].includes(file.mimetype)) {
+      return cb(new Error('Разрешены только изображения JPEG, PNG, WebP или GIF'))
+    }
+    cb(null, true)
+  },
+})
 
 // GET /api/users/me — current user's own profile
 router.get('/me', verifyToken, (req, res) => {
-  const user = db.prepare('SELECT id, name, nickname, email, track, plan, bio, position, birthday FROM users WHERE id = ?').get(req.user.id)
+  const user = db.prepare('SELECT id, name, nickname, email, track, plan, bio, position, birthday, avatar_url FROM users WHERE id = ?').get(req.user.id)
   if (!user) return res.status(404).json({ message: 'Пользователь не найден' })
   res.json(user)
+})
+
+// POST /api/users/me/avatar — upload/replace profile picture (stored in S3)
+router.post('/me/avatar', verifyToken, (req, res) => {
+  if (!s3Configured) {
+    return res.status(503).json({ message: 'Загрузка изображений временно недоступна — не настроено S3-хранилище' })
+  }
+  upload.single('avatar')(req, res, async (err) => {
+    if (err) return res.status(400).json({ message: err.message })
+    if (!req.file) return res.status(400).json({ message: 'Файл не найден' })
+
+    try {
+      const prev = db.prepare('SELECT avatar_url FROM users WHERE id = ?').get(req.user.id)
+      const ext = (req.file.mimetype.split('/')[1] || 'jpg').replace('jpeg', 'jpg')
+      const key = `avatars/${req.user.id}-${Date.now()}.${ext}`
+      const url = await uploadAvatar(key, req.file.buffer, req.file.mimetype)
+
+      db.prepare('UPDATE users SET avatar_url=? WHERE id=?').run(url, req.user.id)
+
+      const oldKey = keyFromUrl(prev?.avatar_url)
+      if (oldKey) deleteAvatar(oldKey).catch(() => {})
+
+      const user = db.prepare('SELECT id, name, nickname, email, track, plan, bio, position, birthday, avatar_url FROM users WHERE id = ?').get(req.user.id)
+      res.json(user)
+    } catch (e) {
+      res.status(500).json({ message: 'Не удалось загрузить изображение' })
+    }
+  })
 })
 
 // PUT /api/users/me — update own profile (name, email, login, password, bio, position, birthday)
@@ -28,7 +69,7 @@ router.put('/me', verifyToken, (req, res) => {
     throw e
   }
 
-  const user = db.prepare('SELECT id, name, nickname, email, track, plan, bio, position, birthday FROM users WHERE id = ?').get(req.user.id)
+  const user = db.prepare('SELECT id, name, nickname, email, track, plan, bio, position, birthday, avatar_url FROM users WHERE id = ?').get(req.user.id)
   res.json(user)
 })
 

@@ -338,7 +338,7 @@ export default function Schedule() {
             onClick={() => !tab.locked && setActiveMonth(tab.value)}
             style={{
               padding: '8px 20px',
-              borderRadius: 8,
+              borderRadius: 0,
               border: activeMonth === tab.value
                 ? '1px solid rgba(32,190,255,0.4)'
                 : '1px solid var(--border-color)',

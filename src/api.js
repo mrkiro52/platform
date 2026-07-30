@@ -21,6 +21,23 @@ async function req(path, opts = {}) {
   return res.json()
 }
 
+async function reqForm(path, formData) {
+  const t = token()
+  const headers = {}
+  if (t) headers.Authorization = `Bearer ${t}`
+  const res = await fetch(`${BASE}${path}`, { method: 'POST', headers, body: formData })
+  if (res.status === 401) {
+    localStorage.removeItem('kiro_user')
+    window.location.reload()
+    return
+  }
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}))
+    throw Object.assign(new Error(body.message || res.statusText), { status: res.status })
+  }
+  return res.json()
+}
+
 export const api = {
   login:         (email, pw) => req('/api/auth/login', { method: 'POST', body: JSON.stringify({ email, password: pw }) }),
   schedule:      ()          => req('/api/schedule'),
@@ -31,4 +48,5 @@ export const api = {
   links:         ()          => req('/api/links'),
   profile:       ()          => req('/api/users/me'),
   updateProfile: (data)      => req('/api/users/me', { method: 'PUT', body: JSON.stringify(data) }),
+  uploadAvatar:  (file)      => { const fd = new FormData(); fd.append('avatar', file); return reqForm('/api/users/me/avatar', fd) },
 }

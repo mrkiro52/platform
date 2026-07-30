@@ -437,6 +437,18 @@ function migrate() {
       console.error('❌ Migration 10 failed:', err.message)
     }
   }
+
+  // Migration 11: add avatar_url to users — additive only, no data loss
+  if (schemaVersion < 11) {
+    try {
+      const cols = db.prepare("PRAGMA table_info(users)").all().map(c => c.name)
+      if (!cols.includes('avatar_url')) db.prepare("ALTER TABLE users ADD COLUMN avatar_url TEXT DEFAULT ''").run()
+      db.pragma('user_version = 11')
+      console.log('✅ Migration 11 completed: added avatar_url column to users')
+    } catch (err) {
+      console.error('❌ Migration 11 failed:', err.message)
+    }
+  }
 }
 
 migrate()

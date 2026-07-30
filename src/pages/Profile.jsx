@@ -45,6 +45,9 @@ export default function Profile({ user, onUpdateUser }) {
   const [birthDay, setBirthDay] = useState('')
   const [birthMonth, setBirthMonth] = useState('')
   const [birthYear, setBirthYear] = useState('')
+  const [avatarUrl, setAvatarUrl] = useState('')
+  const [avatarUploading, setAvatarUploading] = useState(false)
+  const [avatarError, setAvatarError] = useState('')
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
@@ -58,6 +61,7 @@ export default function Profile({ user, onUpdateUser }) {
       setNickname(p.nickname || '')
       setBio(p.bio || '')
       setPosition(p.position || '')
+      setAvatarUrl(p.avatar_url || '')
       const parsed = parseBirthday(p.birthday)
       setBirthDay(parsed.day)
       setBirthMonth(parsed.month)
@@ -68,6 +72,22 @@ export default function Profile({ user, onUpdateUser }) {
 
   if (!user) return null
   const initials = getInitials(name || user.name || '')
+
+  const handleAvatarChange = async (e) => {
+    const file = e.target.files?.[0]
+    e.target.value = ''
+    if (!file) return
+    setAvatarError('')
+    setAvatarUploading(true)
+    try {
+      const updated = await api.uploadAvatar(file)
+      setAvatarUrl(updated.avatar_url || '')
+    } catch (err) {
+      setAvatarError(err.message || 'Не удалось загрузить фото')
+    } finally {
+      setAvatarUploading(false)
+    }
+  }
 
   const requestSave = () => {
     setError('')
@@ -103,10 +123,38 @@ export default function Profile({ user, onUpdateUser }) {
 
       <div className="profile-layout">
         <div className="profile-card">
-          <div className="profile-avatar">{initials}</div>
+          <label style={{ position: 'relative', display: 'inline-block', cursor: 'pointer' }}>
+            {avatarUrl ? (
+              <img
+                src={avatarUrl}
+                alt="Аватар"
+                style={{
+                  width: 72, height: 72, borderRadius: '50%', objectFit: 'cover',
+                  border: '2px solid rgba(32,190,255,0.4)', display: 'block', margin: '0 auto 12px',
+                }}
+              />
+            ) : (
+              <div className="profile-avatar">{initials}</div>
+            )}
+            <div style={{
+              position: 'absolute', bottom: 12, right: -4, width: 24, height: 24,
+              background: 'var(--accent-lime)', border: '2px solid var(--bg-secondary)', borderRadius: '50%',
+              display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12,
+            }}>
+              {avatarUploading ? '···' : '✎'}
+            </div>
+            <input
+              type="file"
+              accept="image/png,image/jpeg,image/webp,image/gif"
+              onChange={handleAvatarChange}
+              disabled={avatarUploading}
+              style={{ display: 'none' }}
+            />
+          </label>
           <div className="profile-name">{name || user.name}</div>
           <div className="profile-email">{email || user.email}</div>
           {position && <div style={{ fontSize: 13, color: 'var(--text-tertiary)', marginTop: 2 }}>{position}</div>}
+          {avatarError && <div style={{ fontSize: 12, color: '#ff3333', marginTop: 8 }}>{avatarError}</div>}
         </div>
 
         <div className="profile-details">
