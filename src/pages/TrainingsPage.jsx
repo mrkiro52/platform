@@ -2,6 +2,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { lazy, Suspense } from 'react'
 
 const AlgorithmComplexityTraining = lazy(() => import('./trainings/AlgorithmComplexityTraining'))
+const PythonOutputTraining = lazy(() => import('./trainings/PythonOutputTraining'))
 
 const TRAININGS = [
   {
@@ -11,6 +12,14 @@ const TRAININGS = [
     tag: 'Алгоритмы',
     questions: 20,
     component: AlgorithmComplexityTraining,
+  },
+  {
+    id: 'python-output',
+    title: 'Что выведет? (Python)',
+    subtitle: 'Неочевидные примеры на Python — впиши, что именно выведет код',
+    tag: 'Python',
+    questions: 20,
+    component: PythonOutputTraining,
   },
 ]
 

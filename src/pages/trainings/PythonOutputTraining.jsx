@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { ALGORITHM_POOL, COMPLEXITY_OPTIONS } from '../../data/algorithmComplexityTraining'
+import { PYTHON_OUTPUT_POOL } from '../../data/pythonOutputTraining'
 
 function shuffle(arr) {
   const a = [...arr]
@@ -10,45 +10,55 @@ function shuffle(arr) {
   return a
 }
 
-const COUNT_OPTIONS = [5, 10]
-
-const optionBtnBase = {
-  padding: '12px 8px',
-  fontSize: 14,
-  fontWeight: 700,
-  fontFamily: 'ui-monospace, monospace',
-  border: '1px solid var(--border-color)',
-  borderRadius: 0,
-  background: 'var(--bg-secondary)',
-  color: 'var(--text-primary)',
-  cursor: 'pointer',
-  outline: 'none',
-  transition: 'border-color 0.15s, background 0.15s, color 0.15s',
+function normalize(str) {
+  return str
+    .replace(/\r\n/g, '\n')
+    .split('\n')
+    .map(line => line.trim())
+    .join('\n')
+    .trim()
 }
 
-export default function AlgorithmComplexityTraining({ onBack }) {
+const COUNT_OPTIONS = [5, 10]
+
+const fieldStyle = {
+  width: '100%',
+  minHeight: 110,
+  background: 'var(--bg-tertiary)',
+  border: '1px solid var(--border-color)',
+  borderRadius: 0,
+  padding: '12px 14px',
+  fontSize: 14,
+  fontFamily: 'ui-monospace, monospace',
+  color: 'var(--text-primary)',
+  outline: 'none',
+  resize: 'vertical',
+}
+
+export default function PythonOutputTraining({ onBack }) {
   const [phase, setPhase] = useState('select') // select | question | finished
   const [questions, setQuestions] = useState([])
   const [currentIndex, setCurrentIndex] = useState(0)
-  const [results, setResults] = useState([]) // { correct: bool } per answered question
-  const [selectedOption, setSelectedOption] = useState(null)
+  const [results, setResults] = useState([])
+  const [inputValue, setInputValue] = useState('')
   const [isAnswered, setIsAnswered] = useState(false)
+  const [lastCorrect, setLastCorrect] = useState(false)
 
   const startTraining = (count) => {
-    const picked = shuffle(ALGORITHM_POOL).slice(0, count)
+    const picked = shuffle(PYTHON_OUTPUT_POOL).slice(0, count)
     setQuestions(picked)
     setCurrentIndex(0)
     setResults([])
-    setSelectedOption(null)
+    setInputValue('')
     setIsAnswered(false)
     setPhase('question')
   }
 
-  const handleAnswer = (option) => {
-    if (isAnswered) return
+  const handleCheck = () => {
+    if (isAnswered || !inputValue.trim()) return
     const current = questions[currentIndex]
-    const correct = option === current.answer
-    setSelectedOption(option)
+    const correct = normalize(inputValue) === normalize(current.answer)
+    setLastCorrect(correct)
     setIsAnswered(true)
     setResults(prev => [...prev, { correct }])
   }
@@ -59,7 +69,7 @@ export default function AlgorithmComplexityTraining({ onBack }) {
       return
     }
     setCurrentIndex(i => i + 1)
-    setSelectedOption(null)
+    setInputValue('')
     setIsAnswered(false)
   }
 
@@ -68,7 +78,7 @@ export default function AlgorithmComplexityTraining({ onBack }) {
     setQuestions([])
     setResults([])
     setCurrentIndex(0)
-    setSelectedOption(null)
+    setInputValue('')
     setIsAnswered(false)
   }
 
@@ -84,12 +94,12 @@ export default function AlgorithmComplexityTraining({ onBack }) {
           Тренировки
         </button>
         <span className="breadcrumb-sep">/</span>
-        <span className="breadcrumb-current">Сложность алгоритмов</span>
+        <span className="breadcrumb-current">Что выведет? (Python)</span>
       </div>
 
       <div className="page-header">
-        <h1 className="page-title">Сложность алгоритмов</h1>
-        <p className="page-subtitle">Смотри на код и угадывай его временную сложность</p>
+        <h1 className="page-title">Что выведет? (Python)</h1>
+        <p className="page-subtitle">Смотри на код и пиши, что именно он напечатает в консоль</p>
       </div>
 
       {phase === 'select' && (
@@ -123,7 +133,6 @@ export default function AlgorithmComplexityTraining({ onBack }) {
 
       {phase === 'question' && questions[currentIndex] && (
         <div>
-          {/* Статистика */}
           <div style={{
             display: 'flex', flexWrap: 'wrap', gap: 16, marginBottom: 20,
             border: '1px solid var(--border-color)', borderRadius: 0, padding: '12px 16px',
@@ -150,47 +159,48 @@ export default function AlgorithmComplexityTraining({ onBack }) {
             {questions[currentIndex].code}
           </pre>
 
-          <div key={currentIndex} style={{
-            display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(90px, 1fr))', gap: 8, marginBottom: 20,
-          }}>
-            {COMPLEXITY_OPTIONS.map(opt => {
-              const isCorrectOpt = opt === questions[currentIndex].answer
-              const isSelected = opt === selectedOption
-              let style = { ...optionBtnBase }
-              if (isAnswered) {
-                if (isCorrectOpt) {
-                  style = { ...style, borderColor: 'var(--accent-lime)', background: 'rgba(32,190,255,0.1)', color: 'var(--accent-lime)' }
-                } else if (isSelected) {
-                  style = { ...style, borderColor: '#ff3333', background: 'rgba(255,51,51,0.08)', color: '#ff3333' }
-                } else {
-                  style = { ...style, opacity: 0.5 }
-                }
-              }
-              return (
-                <button
-                  key={opt}
-                  onClick={e => { handleAnswer(opt); e.currentTarget.blur() }}
-                  disabled={isAnswered}
-                  style={{ ...style, cursor: isAnswered ? 'default' : 'pointer' }}
-                  onMouseEnter={e => { if (!isAnswered) { e.currentTarget.style.borderColor = 'var(--accent-lime)'; e.currentTarget.style.color = 'var(--accent-lime)' } }}
-                  onMouseLeave={e => { if (!isAnswered) { e.currentTarget.style.borderColor = 'var(--border-color)'; e.currentTarget.style.color = 'var(--text-primary)' } }}
-                >
-                  {opt}
-                </button>
-              )
-            })}
+          <div style={{ marginBottom: 16 }}>
+            <textarea
+              value={inputValue}
+              onChange={e => setInputValue(e.target.value)}
+              disabled={isAnswered}
+              placeholder="Впиши сюда, что выведет этот код (каждая строка — с новой строки)"
+              style={{ ...fieldStyle, opacity: isAnswered ? 0.7 : 1 }}
+            />
           </div>
 
+          {!isAnswered && (
+            <button
+              onClick={e => { handleCheck(); e.currentTarget.blur() }}
+              disabled={!inputValue.trim()}
+              style={{
+                padding: '10px 24px', fontSize: 14, fontWeight: 600, border: 'none', borderRadius: 0,
+                background: 'var(--accent-lime)', color: '#fff', outline: 'none',
+                cursor: inputValue.trim() ? 'pointer' : 'not-allowed', opacity: inputValue.trim() ? 1 : 0.5,
+              }}
+            >
+              Проверить
+            </button>
+          )}
+
           {isAnswered && (
-            <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-              <span style={{
-                fontWeight: 700, fontSize: 14,
-                color: selectedOption === questions[currentIndex].answer ? 'var(--accent-lime)' : '#ff3333',
+            <div>
+              <div style={{
+                marginBottom: 12, padding: '12px 14px', border: `1px solid ${lastCorrect ? 'var(--accent-lime)' : '#ff3333'}`,
+                background: lastCorrect ? 'rgba(32,190,255,0.06)' : 'rgba(255,51,51,0.06)',
               }}>
-                {selectedOption === questions[currentIndex].answer
-                  ? 'Правильно!'
-                  : `Неправильно. Верный ответ: ${questions[currentIndex].answer}`}
-              </span>
+                <div style={{ fontWeight: 700, fontSize: 14, color: lastCorrect ? 'var(--accent-lime)' : '#ff3333', marginBottom: lastCorrect ? 0 : 8 }}>
+                  {lastCorrect ? 'Правильно!' : 'Неправильно'}
+                </div>
+                {!lastCorrect && (
+                  <div>
+                    <div style={{ fontSize: 12, color: 'var(--text-tertiary)', marginBottom: 4 }}>Правильный ответ:</div>
+                    <pre style={{ margin: 0, fontFamily: 'ui-monospace, monospace', fontSize: 13, color: 'var(--text-primary)', whiteSpace: 'pre-wrap' }}>
+                      {questions[currentIndex].answer}
+                    </pre>
+                  </div>
+                )}
+              </div>
               <button
                 onClick={e => { goNext(); e.currentTarget.blur() }}
                 style={{
@@ -229,7 +239,7 @@ export default function AlgorithmComplexityTraining({ onBack }) {
                 onClick={restart}
                 style={{
                   padding: '10px 24px', fontSize: 14, fontWeight: 600, border: 'none', borderRadius: 0,
-                  background: 'var(--accent-lime)', color: '#fff', cursor: 'pointer',
+                  background: 'var(--accent-lime)', color: '#fff', cursor: 'pointer', outline: 'none',
                 }}
               >
                 Пройти ещё раз
@@ -238,7 +248,7 @@ export default function AlgorithmComplexityTraining({ onBack }) {
                 onClick={onBack}
                 style={{
                   padding: '10px 24px', fontSize: 14, fontWeight: 600, border: '1px solid var(--border-color)', borderRadius: 0,
-                  background: 'transparent', color: 'var(--text-secondary)', cursor: 'pointer',
+                  background: 'transparent', color: 'var(--text-secondary)', cursor: 'pointer', outline: 'none',
                 }}
               >
                 К тренировкам
