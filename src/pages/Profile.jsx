@@ -5,15 +5,6 @@ function getInitials(name) {
   return name.split(' ').map(p => p[0] || '').join('').toUpperCase().slice(0, 2)
 }
 
-const TARIFF_FEATURES = [
-  '12 недель полной программы',
-  'Еженедельный личный созвон с Ханилем',
-  'Индивидуальный feedback по проектам',
-  'Доступ ко всем материалам навсегда',
-  '4 Insider Show с BigTech-специалистами',
-  'Демо-день и возможность рефералки',
-]
-
 const fieldStyle = {
   width: '100%',
   background: 'var(--bg-secondary)',
@@ -26,10 +17,30 @@ const fieldStyle = {
   outline: 'none',
 }
 
+const selectStyle = { ...fieldStyle, cursor: 'pointer' }
+
+const MONTHS = [
+  'Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь',
+  'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь',
+]
+
+function parseBirthday(str) {
+  const m = /^(\d{1,2})\.(\d{1,2})\.(\d{4})$/.exec(str || '')
+  if (!m) return { day: '', month: '', year: '' }
+  return { day: m[1], month: m[2], year: m[3] }
+}
+
+function formatBirthday(day, month, year) {
+  if (!day || !month || !year) return ''
+  return `${String(day).padStart(2, '0')}.${String(month).padStart(2, '0')}.${year}`
+}
+
 export default function Profile({ user }) {
   const [bio, setBio] = useState('')
   const [position, setPosition] = useState('')
-  const [birthday, setBirthday] = useState('')
+  const [birthDay, setBirthDay] = useState('')
+  const [birthMonth, setBirthMonth] = useState('')
+  const [birthYear, setBirthYear] = useState('')
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
@@ -38,19 +49,22 @@ export default function Profile({ user }) {
     api.profile().then(p => {
       setBio(p.bio || '')
       setPosition(p.position || '')
-      setBirthday(p.birthday || '')
+      const parsed = parseBirthday(p.birthday)
+      setBirthDay(parsed.day)
+      setBirthMonth(parsed.month)
+      setBirthYear(parsed.year)
       setLoading(false)
     }).catch(() => setLoading(false))
   }, [])
 
   if (!user) return null
   const initials = getInitials(user.name || '')
-  const tariffStr = `${user.plan || '—'} · ${(user.tariff || 0).toLocaleString('ru')} ₽`
 
   const handleSave = async () => {
     setSaving(true)
     setSaved(false)
     try {
+      const birthday = formatBirthday(birthDay, birthMonth, birthYear)
       await api.updateProfile({ bio, position, birthday })
       setSaved(true)
       setTimeout(() => setSaved(false), 2000)
@@ -60,6 +74,10 @@ export default function Profile({ user }) {
       setSaving(false)
     }
   }
+
+  const days = Array.from({ length: 31 }, (_, i) => i + 1)
+  const currentYear = new Date().getFullYear()
+  const years = Array.from({ length: 80 }, (_, i) => currentYear - i)
 
   return (
     <section className="page active">
@@ -74,15 +92,6 @@ export default function Profile({ user }) {
           <div className="profile-name">{user.name}</div>
           <div className="profile-email">{user.email}</div>
           {position && <div style={{ fontSize: 13, color: 'var(--text-tertiary)', marginTop: 2 }}>{position}</div>}
-          <div className="profile-track-badge">
-            <span>{user.track}</span>
-          </div>
-          <div className="profile-stats-mini">
-            <div className="psm"><div className="psm-val">{user.points}</div><div className="psm-label">Очков</div></div>
-            <div className="psm"><div className="psm-val">{user.streak}</div><div className="psm-label">Дней стрик</div></div>
-            <div className="psm"><div className="psm-val">{user.completedTasks}</div><div className="psm-label">Заданий</div></div>
-            <div className="psm"><div className="psm-val">1</div><div className="psm-label">Неделя</div></div>
-          </div>
         </div>
 
         <div className="profile-details">
@@ -96,10 +105,6 @@ export default function Profile({ user }) {
             <span className="pf-value">{user.email}</span>
           </div>
           <div className="profile-field">
-            <span className="pf-label">Тариф</span>
-            <span className="pf-value">{tariffStr}</span>
-          </div>
-          <div className="profile-field">
             <span className="pf-label">Трек</span>
             <span className="pf-value">{user.track}</span>
           </div>
@@ -110,16 +115,6 @@ export default function Profile({ user }) {
           <div className="profile-field">
             <span className="pf-label">Финал</span>
             <span className="pf-value">31 августа 2026 · Демо-день</span>
-          </div>
-
-          <div className="profile-section-h" style={{ marginTop: 20 }}>Что входит в тариф</div>
-          <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
-            {TARIFF_FEATURES.map((f, i) => (
-              <div key={i} style={{ display:'flex', gap:8, alignItems:'flex-start', fontSize:13, color:'var(--text-secondary)' }}>
-                <span style={{ color:'var(--accent-lime)', fontWeight:700, flexShrink:0 }}>✓</span>
-                {f}
-              </div>
-            ))}
           </div>
 
           <div className="profile-section-h" style={{ marginTop: 20 }}>Личная информация</div>
@@ -147,12 +142,20 @@ export default function Profile({ user }) {
               </div>
               <div>
                 <span className="pf-label" style={{ display: 'block', marginBottom: 6 }}>Дата рождения</span>
-                <input
-                  style={fieldStyle}
-                  value={birthday}
-                  onChange={e => setBirthday(e.target.value)}
-                  placeholder="Например: 15 марта"
-                />
+                <div style={{ display: 'flex', gap: 8 }}>
+                  <select style={selectStyle} value={birthDay} onChange={e => setBirthDay(e.target.value)}>
+                    <option value="">День</option>
+                    {days.map(d => <option key={d} value={d}>{d}</option>)}
+                  </select>
+                  <select style={{ ...selectStyle, flex: 1.5 }} value={birthMonth} onChange={e => setBirthMonth(e.target.value)}>
+                    <option value="">Месяц</option>
+                    {MONTHS.map((m, i) => <option key={m} value={i + 1}>{m}</option>)}
+                  </select>
+                  <select style={selectStyle} value={birthYear} onChange={e => setBirthYear(e.target.value)}>
+                    <option value="">Год</option>
+                    {years.map(y => <option key={y} value={y}>{y}</option>)}
+                  </select>
+                </div>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                 <button
