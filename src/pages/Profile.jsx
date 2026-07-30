@@ -35,7 +35,7 @@ function digitsOnly(value, maxLen) {
   return value.replace(/\D/g, '').slice(0, maxLen)
 }
 
-export default function Profile({ user, onUpdateUser }) {
+export default function Profile({ user, onAvatarChange }) {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [nickname, setNickname] = useState('')
@@ -62,6 +62,7 @@ export default function Profile({ user, onUpdateUser }) {
       setBio(p.bio || '')
       setPosition(p.position || '')
       setAvatarUrl(p.avatar_url || '')
+      onAvatarChange?.(p.avatar_url || '')
       const parsed = parseBirthday(p.birthday)
       setBirthDay(parsed.day)
       setBirthMonth(parsed.month)
@@ -82,6 +83,7 @@ export default function Profile({ user, onUpdateUser }) {
     try {
       const updated = await api.uploadAvatar(file)
       setAvatarUrl(updated.avatar_url || '')
+      onAvatarChange?.(updated.avatar_url || '')
     } catch (err) {
       setAvatarError(err.message || 'Не удалось загрузить фото')
     } finally {

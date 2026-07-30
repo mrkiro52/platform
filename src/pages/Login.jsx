@@ -89,12 +89,9 @@ export default function LoginPage({ onLogin }) {
       <div className="login-wrap">
         <div className="login-card">
           <div className="login-brand">
-            <span className="login-brand-kiro">KIRO</span>
-            <div className="login-brand-sep" />
-            <span className="login-brand-platform">Platform</span>
+            <span className="login-brand-kiro">KIRO PLATFORM</span>
           </div>
           <h1 className="login-title">IT Summer Camp '26</h1>
-          <p className="login-subtitle">Войдите чтобы получить доступ к платформе</p>
 
           <form onSubmit={handleSubmit} noValidate>
             <div className="form-group">
@@ -136,7 +133,7 @@ export default function LoginPage({ onLogin }) {
             </div>
             {sessionExpired && (
               <div className="login-error" style={{ background: 'rgba(255, 153, 0, 0.1)', borderColor: '#ff9900' }}>
-                ⏰ Ваша сессия истекла. Пожалуйста, войдите снова.
+                Ваша сессия истекла. Пожалуйста, войдите снова.
               </div>
             )}
             {error && <div className="login-error">{error}</div>}
@@ -151,7 +148,7 @@ export default function LoginPage({ onLogin }) {
           </form>
 
           <p className="login-note">
-            🔒 Доступ выдаётся менеджером после оплаты.<br/>
+            Доступ выдаётся менеджером после оплаты.<br/>
             Для получения доступа напишите{' '}
             <a href="https://t.me/kiro_team_manager" target="_blank" rel="noopener">@kiro_team_manager</a>
           </p>

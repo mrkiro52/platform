@@ -307,11 +307,11 @@ function QuestionCard({ question, taskIndex, totalTasks, onAnswer, isSolved, sav
       <div className="question-actions">
         <div className="question-actions-left">
           <button
-            onClick={() => setShowHint(!showHint)}
-            className="btn-hint"
-            disabled={isChecking}
+            onClick={handleCheck}
+            className={`btn-check ${isChecking ? 'checking' : ''}`}
+            disabled={isChecking || (isAnswered && feedback?.correct)}
           >
-            {showHint ? 'Скрыть подсказку' : 'Подсказка'}
+            {isChecking ? '⟳' : isAnswered && feedback?.correct ? '✓ Решено' : 'Проверить'}
           </button>
           <button
             onClick={handleClear}
@@ -322,11 +322,11 @@ function QuestionCard({ question, taskIndex, totalTasks, onAnswer, isSolved, sav
           </button>
         </div>
         <button
-          onClick={handleCheck}
-          className={`btn-check ${isChecking ? 'checking' : ''}`}
-          disabled={isChecking || (isAnswered && feedback?.correct)}
+          onClick={() => setShowHint(!showHint)}
+          className="btn-hint"
+          disabled={isChecking}
         >
-          {isChecking ? '⟳' : isAnswered && feedback?.correct ? '✓ Решено' : 'Проверить'}
+          {showHint ? 'Скрыть подсказку' : 'Подсказка'}
         </button>
       </div>
 

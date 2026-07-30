@@ -1,9 +1,9 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { Routes, Route, Navigate, useNavigate, useParams } from 'react-router-dom'
 import Sidebar from './components/Sidebar'
 import TopBar from './components/TopBar'
 import DayModal from './components/DayModal'
-import { useState } from 'react'
+import { api } from './api'
 import Dashboard from './pages/Dashboard'
 import Schedule from './pages/Schedule'
 import Library from './pages/Library'
@@ -43,12 +43,17 @@ export default function AppShell({ user, onLogout }) {
   const navigate = useNavigate()
   const [dayModal, setDayModal] = useState(null)
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [avatarUrl, setAvatarUrl] = useState('')
 
   useEffect(() => {
     // classList.add/remove (не className=) — чтобы не затирать классы,
     // которые добавляют дочерние страницы (например reels-lock у AntiReels)
     document.body.classList.add('app-page')
     return () => document.body.classList.remove('app-page')
+  }, [])
+
+  useEffect(() => {
+    api.profile().then(p => setAvatarUrl(p.avatar_url || '')).catch(() => {})
   }, [])
 
   const openTheory    = (day) => navigate(`/library/theory/${day.day}`)
@@ -60,6 +65,7 @@ export default function AppShell({ user, onLogout }) {
       <aside id="sidebar" className={`sidebar${sidebarOpen ? ' open' : ''}`}>
         <Sidebar
           user={user}
+          avatarUrl={avatarUrl}
           onLogout={onLogout}
           onClose={() => setSidebarOpen(false)}
         />
@@ -93,7 +99,7 @@ export default function AppShell({ user, onLogout }) {
             <Route path="/library/questions/:day" element={<QuestionsRoute />} />
             <Route path="/library/homework/:day"  element={<HomeworkRoute />} />
             <Route path="/links"      element={<Links />} />
-            <Route path="/profile"    element={<Profile user={user} />} />
+            <Route path="/profile"    element={<Profile user={user} onAvatarChange={setAvatarUrl} />} />
             <Route path="/likebezy"   element={<LikebezyPage />} />
             <Route path="/likebezy/:id" element={<LikebezyPage />} />
             <Route path="/antireels" element={<AntiReels />} />

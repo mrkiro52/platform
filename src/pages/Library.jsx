@@ -194,7 +194,7 @@ function JulyTrackRow({ track, onOpenTheory, onOpenQuestions, onOpenHomework }) 
   const btn = {
     display: 'inline-flex', alignItems: 'center', gap: 5,
     background: 'var(--bg-tertiary)', border: '1px solid var(--border-color)',
-    borderRadius: 8, padding: '6px 12px', fontSize: 12.5, fontWeight: 600,
+    borderRadius: 0, padding: '6px 12px', fontSize: 12.5, fontWeight: 600,
     color: 'var(--text-secondary)', cursor: 'pointer', whiteSpace: 'nowrap',
     transition: 'border-color 0.15s, color 0.15s',
   }
@@ -319,7 +319,7 @@ function buildJuneDays(scheduleData, libraryData) {
 const libBtnStyle = {
   display: 'inline-flex', alignItems: 'center', gap: 5,
   background: 'var(--bg-tertiary)', border: '1px solid var(--border-color)',
-  borderRadius: 8, padding: '6px 12px', fontSize: 12.5, fontWeight: 600,
+  borderRadius: 0, padding: '6px 12px', fontSize: 12.5, fontWeight: 600,
   color: 'var(--text-secondary)', cursor: 'pointer', whiteSpace: 'nowrap',
   transition: 'border-color 0.15s, color 0.15s',
 }

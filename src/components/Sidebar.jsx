@@ -15,7 +15,7 @@ const NAV_ITEMS = [
   { path: '/profile',   label: 'Профиль' },
 ]
 
-export default function Sidebar({ user, onLogout, onClose }) {
+export default function Sidebar({ user, avatarUrl, onLogout, onClose }) {
   const [confirmLogout, setConfirmLogout] = useState(false)
   const navigate = useNavigate()
   const location = useLocation()
@@ -42,7 +42,16 @@ export default function Sidebar({ user, onLogout, onClose }) {
       </div>
 
       <div className="sidebar-user" style={{ cursor: 'pointer' }} onClick={() => handleNav('/profile')}>
-        <div className="sidebar-avatar">{initials}</div>
+        {avatarUrl ? (
+          <img
+            src={avatarUrl}
+            alt="Аватар"
+            className="sidebar-avatar"
+            style={{ objectFit: 'cover' }}
+          />
+        ) : (
+          <div className="sidebar-avatar">{initials}</div>
+        )}
         <div className="sidebar-user-name">{user?.name || '—'}</div>
       </div>
 
