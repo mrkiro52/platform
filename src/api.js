@@ -49,4 +49,7 @@ export const api = {
   profile:       ()          => req('/api/users/me'),
   updateProfile: (data)      => req('/api/users/me', { method: 'PUT', body: JSON.stringify(data) }),
   uploadAvatar:  (file)      => { const fd = new FormData(); fd.append('avatar', file); return reqForm('/api/users/me/avatar', fd) },
+  posts:         ()          => req('/api/posts'),
+  createPost:    (text)      => req('/api/posts', { method: 'POST', body: JSON.stringify({ text }) }),
+  deletePost:    (id)        => req(`/api/posts/${id}`, { method: 'DELETE' }),
 }

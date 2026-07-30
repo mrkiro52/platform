@@ -20,6 +20,7 @@ app.use('/api/tasks',         require('./src/routes/tasks'))
 app.use('/api/announcements', require('./src/routes/announcements'))
 app.use('/api/news',          require('./src/routes/news'))
 app.use('/api/links',         require('./src/routes/links'))
+app.use('/api/posts',         require('./src/routes/posts'))
 
 // ── Admin Panel ──────────────────────────────────────────────────────────────
 app.use('/admin', express.static(path.join(__dirname, 'admin')))

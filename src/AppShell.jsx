@@ -10,6 +10,7 @@ import Library from './pages/Library'
 import Links from './pages/Links'
 import Profile from './pages/Profile'
 import TrainingsPage from './pages/TrainingsPage'
+import WallPage from './pages/WallPage'
 import TheoryPage from './pages/TheoryPage'
 import QuestionsPage from './pages/QuestionsPage'
 import HomeworkPage from './pages/HomeworkPage'
@@ -103,6 +104,7 @@ export default function AppShell({ user, onLogout }) {
             <Route path="/profile"    element={<Profile user={user} onAvatarChange={setAvatarUrl} />} />
             <Route path="/trainings"    element={<TrainingsPage />} />
             <Route path="/trainings/:id" element={<TrainingsPage />} />
+            <Route path="/wall" element={<WallPage user={user} avatarUrl={avatarUrl} />} />
             <Route path="/likebezy"   element={<LikebezyPage />} />
             <Route path="/likebezy/:id" element={<LikebezyPage />} />
             <Route path="/antireels" element={<AntiReels />} />

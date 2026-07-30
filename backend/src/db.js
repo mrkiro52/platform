@@ -449,6 +449,25 @@ function migrate() {
       console.error('❌ Migration 11 failed:', err.message)
     }
   }
+
+  // Migration 12: add posts table (Стена) — additive only, no data loss
+  if (schemaVersion < 12) {
+    try {
+      db.exec(`
+        CREATE TABLE IF NOT EXISTS posts (
+          id         INTEGER PRIMARY KEY AUTOINCREMENT,
+          user_id    INTEGER NOT NULL,
+          text       TEXT NOT NULL,
+          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+          FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+        );
+      `)
+      db.pragma('user_version = 12')
+      console.log('✅ Migration 12 completed: added posts table')
+    } catch (err) {
+      console.error('❌ Migration 12 failed:', err.message)
+    }
+  }
 }
 
 migrate()

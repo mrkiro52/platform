@@ -70,8 +70,7 @@ export default function TrainingsPage() {
               marginBottom: 12,
             }}>{t.tag}</span>
             <h2 style={{ fontSize: 18, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 6 }}>{t.title}</h2>
-            <p style={{ color: 'var(--text-secondary)', fontSize: 13, marginBottom: 12 }}>{t.subtitle}</p>
-            <span style={{ fontSize: 12, color: 'var(--text-tertiary)' }}>{t.questions} задач в пуле</span>
+            <p style={{ color: 'var(--text-secondary)', fontSize: 13 }}>{t.subtitle}</p>
           </div>
         ))}
       </div>
