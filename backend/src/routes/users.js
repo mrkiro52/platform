@@ -1,7 +1,23 @@
 const router = require('express').Router()
 const bcrypt = require('bcryptjs')
 const db = require('../db')
-const { requireAdmin } = require('../middleware/auth')
+const { requireAdmin, verifyToken } = require('../middleware/auth')
+
+// GET /api/users/me — current user's own profile
+router.get('/me', verifyToken, (req, res) => {
+  const user = db.prepare('SELECT id, name, nickname, email, track, plan, bio, position, birthday FROM users WHERE id = ?').get(req.user.id)
+  if (!user) return res.status(404).json({ message: 'Пользователь не найден' })
+  res.json(user)
+})
+
+// PUT /api/users/me — update own profile (bio, position, birthday only)
+router.put('/me', verifyToken, (req, res) => {
+  const { bio, position, birthday } = req.body
+  db.prepare('UPDATE users SET bio=?, position=?, birthday=? WHERE id=?')
+    .run(bio ?? '', position ?? '', birthday ?? '', req.user.id)
+  const user = db.prepare('SELECT id, name, nickname, email, track, plan, bio, position, birthday FROM users WHERE id = ?').get(req.user.id)
+  res.json(user)
+})
 
 // GET /api/users
 router.get('/', requireAdmin, (req, res) => {

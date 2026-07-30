@@ -4,14 +4,12 @@ import { api } from '../api'
 const CHANNELS = [
   {
     href: 'https://t.me/kiro_team',
-    icon: '📣',
     title: 'Канал KIRO Team',
     desc: 'Главный канал сообщества. Объявления, новости и важная информация о лагере.',
     tag: '→ Открыть в Telegram',
   },
   {
     href: 'https://t.me/kiro_team_manager',
-    icon: '👨‍💼',
     title: 'Менеджер',
     desc: 'Вопросы по оплате, доступу и организационным моментам — пиши менеджеру.',
     tag: '→ Написать менеджеру',
@@ -21,49 +19,42 @@ const CHANNELS = [
 const LEARNING_PLATFORMS = [
   {
     href: 'https://www.kaggle.com/learn',
-    icon: '📚',
     title: 'Kaggle Learn',
     desc: 'Бесплатные мини-курсы по Data Science, ML, Python и другим направлениям.',
     tag: '→ Открыть',
   },
   {
     href: 'https://www.hackthebox.com',
-    icon: '🔓',
     title: 'HackTheBox',
     desc: 'Платформа для практики пентестинга и взлома систем. Реальные сценарии и вызовы.',
     tag: '→ Открыть',
   },
   {
     href: 'https://tryhackme.com',
-    icon: '🛡️',
     title: 'TryHackMe',
     desc: 'Интерактивные курсы и лабы по кибербезопасности. От новичка до профессионала.',
     tag: '→ Открыть',
   },
   {
     href: 'https://picoctf.org',
-    icon: '🚩',
     title: 'picoCTF',
     desc: 'Популярный CTF для обучения: флаги, задачи, вызовы. Регистрация на play.picoctf.org',
     tag: '→ Открыть',
   },
   {
     href: 'https://ringzer0team.com',
-    icon: '⭕',
     title: 'RingZer0 CTF',
     desc: 'CTF платформа с задачами по криптографии, веб-безопасности и системам.',
     tag: '→ Открыть',
   },
   {
     href: 'https://codeby.net',
-    icon: '🎮',
     title: 'Codeby Games',
     desc: 'Кибербезопасность в игровом формате. Задачи, флаги и обучающие челленджи.',
     tag: '→ Открыть',
   },
   {
     href: 'https://training.hackerdom.ru',
-    icon: '🏆',
     title: 'Hackerdom (RuCTF)',
     desc: 'Платформа организаторов Russian CTF с обучающими задачами и соревнованиями.',
     tag: '→ Открыть',
@@ -73,14 +64,12 @@ const LEARNING_PLATFORMS = [
 const SECURITY_RESOURCES = [
   {
     href: 'https://deiteriy.com',
-    icon: '🔐',
     title: 'Deiteriy Security',
     desc: 'Компания и сообщество специалистов по кибербезопасности. Полезные материалы и услуги.',
     tag: '→ Открыть',
   },
   {
     href: 'https://www.gns3.com',
-    icon: '🌐',
     title: 'GNS3',
     desc: 'Симулятор сетевых топологий. Строй сети, практикуй маршрутизацию и безопасность.',
     tag: '→ Открыть',
@@ -90,21 +79,18 @@ const SECURITY_RESOURCES = [
 const ARTICLES_AND_GUIDES = [
   {
     href: 'https://t.me/Young_and_Yandex',
-    icon: '💼',
     title: 'Young&Yandex',
     desc: 'Телеграм канал о стажировках и карьере в Яндексе. Советы и новости.',
     tag: '→ Открыть в Telegram',
   },
   {
     href: 'https://habr.com/ru/articles/1055310/',
-    icon: '📖',
     title: 'HTTP QUERY метод',
     desc: 'Статья про новый метод запроса QUERY в HTTP стандарте и его применение.',
     tag: '→ Открыть на Habr',
   },
   {
     href: 'https://habr.com/ru/articles/867012/',
-    icon: '📝',
     title: 'Как писать коммиты',
     desc: 'Подробное руководство по написанию хороших git коммитов. Best practices.',
     tag: '→ Открыть на Habr',
@@ -128,7 +114,6 @@ export default function Links({ onNavigate }) {
       <div className="community-grid">
         {CHANNELS.map((c, i) => (
           <a key={i} className="community-card" href={c.href} target="_blank" rel="noopener">
-            <div className="community-card-icon">{c.icon}</div>
             <div className="community-card-title">{c.title}</div>
             <div className="community-card-desc">{c.desc}</div>
             <div className="community-card-tag">{c.tag}</div>
@@ -140,7 +125,6 @@ export default function Links({ onNavigate }) {
       <div className="community-grid">
         {LEARNING_PLATFORMS.map((c, i) => (
           <a key={i} className="community-card" href={c.href} target="_blank" rel="noopener">
-            <div className="community-card-icon">{c.icon}</div>
             <div className="community-card-title">{c.title}</div>
             <div className="community-card-desc">{c.desc}</div>
             <div className="community-card-tag">{c.tag}</div>
@@ -152,7 +136,6 @@ export default function Links({ onNavigate }) {
       <div className="community-grid">
         {SECURITY_RESOURCES.map((c, i) => (
           <a key={i} className="community-card" href={c.href} target="_blank" rel="noopener">
-            <div className="community-card-icon">{c.icon}</div>
             <div className="community-card-title">{c.title}</div>
             <div className="community-card-desc">{c.desc}</div>
             <div className="community-card-tag">{c.tag}</div>
@@ -164,7 +147,6 @@ export default function Links({ onNavigate }) {
       <div className="community-grid">
         {ARTICLES_AND_GUIDES.map((c, i) => (
           <a key={i} className="community-card" href={c.href} target="_blank" rel="noopener">
-            <div className="community-card-icon">{c.icon}</div>
             <div className="community-card-title">{c.title}</div>
             <div className="community-card-desc">{c.desc}</div>
             <div className="community-card-tag">{c.tag}</div>
@@ -184,7 +166,6 @@ export default function Links({ onNavigate }) {
                 target="_blank"
                 rel="noopener"
               >
-                <div className="community-card-icon">🔗</div>
                 <div className="community-card-title">{link.title}</div>
                 <div className="community-card-desc">{link.description}</div>
                 <div className="community-card-tag">→ Открыть</div>

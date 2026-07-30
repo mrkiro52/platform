@@ -423,6 +423,20 @@ function migrate() {
       console.error('❌ Migration 9 failed:', err.message)
     }
   }
+
+  // Migration 10: add profile fields to users (bio, position, birthday) — additive only, no data loss
+  if (schemaVersion < 10) {
+    try {
+      const cols = db.prepare("PRAGMA table_info(users)").all().map(c => c.name)
+      if (!cols.includes('bio'))      db.prepare("ALTER TABLE users ADD COLUMN bio TEXT DEFAULT ''").run()
+      if (!cols.includes('position')) db.prepare("ALTER TABLE users ADD COLUMN position TEXT DEFAULT ''").run()
+      if (!cols.includes('birthday')) db.prepare("ALTER TABLE users ADD COLUMN birthday TEXT DEFAULT ''").run()
+      db.pragma('user_version = 10')
+      console.log('✅ Migration 10 completed: added bio/position/birthday columns to users')
+    } catch (err) {
+      console.error('❌ Migration 10 failed:', err.message)
+    }
+  }
 }
 
 migrate()

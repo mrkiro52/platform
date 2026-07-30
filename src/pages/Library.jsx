@@ -212,12 +212,12 @@ function JulyTrackRow({ track, onOpenTheory, onOpenQuestions, onOpenHomework }) 
         <div style={{ color: 'var(--text-primary)', fontSize: 13.5, fontWeight: 500 }}>{track.lesson}</div>
       </div>
       <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-        <button style={btn} onMouseEnter={e => hover(e, true)} onMouseLeave={e => hover(e, false)} onClick={() => onOpenTheory(target)}>📚 Теория</button>
+        <button style={btn} onMouseEnter={e => hover(e, true)} onMouseLeave={e => hover(e, false)} onClick={() => onOpenTheory(target)}>Теория</button>
         {showQuestions && (
-          <button style={btn} onMouseEnter={e => hover(e, true)} onMouseLeave={e => hover(e, false)} onClick={() => onOpenQuestions(target)}>✅ Онлайн тесты</button>
+          <button style={btn} onMouseEnter={e => hover(e, true)} onMouseLeave={e => hover(e, false)} onClick={() => onOpenQuestions(target)}>Онлайн тесты</button>
         )}
         {showHomework && (
-          <button style={btn} onMouseEnter={e => hover(e, true)} onMouseLeave={e => hover(e, false)} onClick={() => onOpenHomework(target)}>📝 Домашние задания</button>
+          <button style={btn} onMouseEnter={e => hover(e, true)} onMouseLeave={e => hover(e, false)} onClick={() => onOpenHomework(target)}>Домашние задания</button>
         )}
       </div>
     </div>
@@ -236,9 +236,7 @@ function JulyDayCard({ day, open, onToggle, onOpenTheory, onOpenQuestions, onOpe
     <div className={`sched-day${open ? ' sched-day--open' : ''}`} style={{ marginBottom: 8 }}>
       <div className="sched-day-header" onClick={onToggle} style={{ cursor: 'pointer' }}>
         <div className="sched-day-meta">
-          <span className="sched-day-num">День {day.day}</span>
-          <span className="sched-day-sep">·</span>
-          <span className="sched-day-date">{day.date}</span>
+          <span className="sched-day-num">{day.date}</span>
         </div>
         <div className="sched-day-title" style={{ flex: 1 }}>
           {day.tracks.map(t => t.name).join(' / ')}
@@ -330,7 +328,7 @@ const libBtnHover = (e, on) => {
   e.currentTarget.style.color = on ? 'var(--accent-lime)' : 'var(--text-secondary)'
 }
 
-function LibButton({ emoji, text, onClick }) {
+function LibButton({ text, onClick }) {
   return (
     <button
       style={libBtnStyle}
@@ -338,7 +336,7 @@ function LibButton({ emoji, text, onClick }) {
       onMouseLeave={e => libBtnHover(e, false)}
       onClick={(e) => { e.stopPropagation(); onClick() }}
     >
-      <span>{emoji}</span>{text}
+      {text}
     </button>
   )
 }
@@ -355,21 +353,18 @@ function DayCard({ day, onOpen, onOpenTheory, onOpenQuestions, onOpenHomework })
       style={locked ? { opacity: 0.4 } : { cursor:'default' }}
     >
       <div className="sched-day-header" style={{ flexWrap: 'wrap', rowGap: 10 }}>
-        <div className="sched-day-stripe" style={{ background: color }} />
         <div className="sched-day-meta">
-          <span className="sched-day-num">{String(day.day).padStart(2,'0')}</span>
-          <span className="sched-day-sep">·</span>
-          <span className="sched-day-date">{dayDateLabel(day.day)}</span>
+          <span className="sched-day-num">{dayDateLabel(day.day)}</span>
         </div>
         <div className="sched-day-title">{day.title}</div>
         <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap', flexShrink: 0 }}>
           {showButtons && (
             <>
-              <LibButton emoji="📚" text="Теория" onClick={() => onOpenTheory(day)} />
+              <LibButton text="Теория" onClick={() => onOpenTheory(day)} />
               {day.day !== 13 && (
-                <LibButton emoji="✅" text="Онлайн тесты" onClick={() => onOpenQuestions(day)} />
+                <LibButton text="Онлайн тесты" onClick={() => onOpenQuestions(day)} />
               )}
-              <LibButton emoji="📝" text="Домашние задания" onClick={() => onOpenHomework(day)} />
+              <LibButton text="Домашние задания" onClick={() => onOpenHomework(day)} />
             </>
           )}
           {!locked && hasMats && (

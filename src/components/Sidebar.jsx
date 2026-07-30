@@ -12,6 +12,7 @@ const NAV_ITEMS = [
   { path: '/links',     label: 'Полезные ссылки' },
   { path: '/likebezy',  label: 'Полные ликбезы' },
   { path: '/antireels', label: 'AntiReels' },
+  { path: '/profile',   label: 'Профиль' },
 ]
 
 export default function Sidebar({ user, onLogout, onClose }) {
@@ -35,12 +36,12 @@ export default function Sidebar({ user, onLogout, onClose }) {
     <>
       <div className="sidebar-header">
         <a className="sidebar-logo" href="#">
-          <span className="sidebar-logo-platform" style={{color: '#20beff', fontWeight: 600, fontSize: 15}}>kiro platform</span>
+          <span className="sidebar-logo-platform" style={{color: '#20beff', fontWeight: 600, fontSize: 15, textTransform: 'uppercase'}}>kiro platform</span>
         </a>
         <button className="sidebar-close-btn" onClick={onClose}>&times;</button>
       </div>
 
-      <div className="sidebar-user">
+      <div className="sidebar-user" style={{ cursor: 'pointer' }} onClick={() => handleNav('/profile')}>
         <div className="sidebar-avatar">{initials}</div>
         <div className="sidebar-user-name">{user?.name || '—'}</div>
       </div>

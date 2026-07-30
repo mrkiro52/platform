@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { SCHEDULE, TYPE_COLORS, TYPE_LABELS, TYPE_BADGE, HW_LINKS } from '../data'
 import { api } from '../api'
-import { SkeletonScheduleDay, SkeletonCampProgress } from '../components/Skeleton'
+import { SkeletonScheduleDay } from '../components/Skeleton'
 
 const MONTH_TABS = [
   { value: 'june',   label: 'Июнь',   locked: false },
@@ -180,9 +180,7 @@ function JuneDayCard({ day, expanded, onToggle }) {
     <div className={`sched-day${expanded ? ' sched-day--open' : ''}`}>
       <div className="sched-day-header" onClick={onToggle}>
         <div className="sched-day-meta">
-          <span className="sched-day-num">День {day.day}</span>
-          <span className="sched-day-sep">·</span>
-          <span className="sched-day-date">{day.date}</span>
+          <span className="sched-day-num">{day.date}</span>
         </div>
         <div className="sched-day-title">{day.title}</div>
         <span className={`badge ${badge}`}>{label}</span>
@@ -273,9 +271,7 @@ function JulyDayGroup({ dayNum, dateLabel, sessions, open, onToggle }) {
     <div className={`sched-day${open ? ' sched-day--open' : ''}`} style={{ marginBottom: 8 }}>
       <div className="sched-day-header" onClick={onToggle} style={{ cursor: 'pointer' }}>
         <div className="sched-day-meta">
-          <span className="sched-day-num">День {dayNum}</span>
-          <span className="sched-day-sep">·</span>
-          <span className="sched-day-date">{dateLabel}</span>
+          <span className="sched-day-num">{dateLabel}</span>
         </div>
         <div className="sched-day-title" style={{ flex: 1 }}>
           {tracksList}
@@ -332,8 +328,6 @@ export default function Schedule() {
         <h1 className="page-title">Расписание</h1>
         <p className="page-subtitle">Программа лагеря — теория, задания и ДЗ по каждому дню</p>
       </div>
-
-      {loading ? <SkeletonCampProgress /> : <CampProgress />}
 
       {/* Вкладки месяцев */}
       <div style={{ display: 'flex', gap: 8, margin: '20px 0 24px' }}>

@@ -29,4 +29,6 @@ export const api = {
   setTaskStatus: (id, st)    => req(`/api/tasks/${id}/status`, { method: 'PATCH', body: JSON.stringify({ status: st }) }),
   announcements: ()          => req('/api/announcements'),
   links:         ()          => req('/api/links'),
+  profile:       ()          => req('/api/users/me'),
+  updateProfile: (data)      => req('/api/users/me', { method: 'PUT', body: JSON.stringify(data) }),
 }

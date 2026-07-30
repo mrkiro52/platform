@@ -132,7 +132,7 @@ export default function LikebezyPage() {
                 style={{
                   background: 'var(--bg-secondary)',
                   border: '1px solid var(--border-color)',
-                  borderRadius: 12,
+                  borderRadius: 0,
                   padding: 'clamp(16px, 3vw, 24px)',
                   cursor: 'pointer',
                   transition: 'border-color 0.2s, transform 0.15s',
@@ -207,7 +207,7 @@ export default function LikebezyPage() {
                 style={{
                   background: 'var(--bg-secondary)',
                   border: '1px solid var(--border-color)',
-                  borderRadius: 10,
+                  borderRadius: 0,
                   padding: 16,
                   opacity: 0.6,
                 }}

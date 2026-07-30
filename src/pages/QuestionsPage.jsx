@@ -258,7 +258,7 @@ function QuestionCard({ question, taskIndex, totalTasks, onAnswer, isSolved, sav
   const isAnswered = savedAnswer && savedAnswer.status
 
   const feedbackStyle = {
-    color: feedback?.correct ? '#00ff00' : '#ff3333',
+    color: feedback?.correct ? '#20beff' : '#ff3333',
     fontSize: '13px',
     fontWeight: 600,
     marginTop: '8px',
@@ -485,7 +485,7 @@ export default function QuestionsPage({ selectedDay, onBack }) {
     <section className="page active">
       <div className="theory-breadcrumbs">
         <button className="breadcrumb-link" onClick={onBack}>
-          📚 Библиотека знаний
+          Библиотека знаний
         </button>
         <span className="breadcrumb-sep">/</span>
         <span className="breadcrumb-current">
