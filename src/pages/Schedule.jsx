@@ -94,6 +94,7 @@ const JULY_SCHEDULE_FALLBACK = [
   { day:30, date:'чт, 30 июля', meeting_time:'20:00', title:'Нейронные сети и LLM', tracks:['Аналитика','ML'], description:'Как устроены нейросети и LLM, чем отличаются GPT/Claude/Gemini/Llama, что даёт их API, и как это выглядит с точки зрения AI-разработчика.' },
   { day:30, date:'чт, 30 июля', meeting_time:'20:30', title:'Методы оптимизации фронтенда и бэкенда', tracks:['Frontend','Backend'], description:'От базового сжатия и кэша до SSR, шардирования и профилирования — полный путь оптимизации веб-приложения.' },
   { day:30, date:'чт, 30 июля', meeting_time:'21:00', title:'Основы криптографии', tracks:['Кибербезопасность'], description:'Шифрование, хеширование, электронная подпись, стеганография и криптоанализ — базовые понятия и инструменты каждого направления.' },
+  { day:31, date:'пт, 31 июля', meeting_time:'20:00', title:'Нарешиваем LeetCode', tracks:['Frontend','Backend','Аналитика','ML','Кибербезопасность'], description:'Практика алгоритмических задач для всех треков: Climbing Stairs, Sqrt(x), Word Pattern и 3Sum из подборки Top Interview 150.' },
 ].map((e, i) => ({ id: -1000 - i, month: 'july', type: 'lecture', theory: [], tasks: [], hw: '', meeting_link: '', ...e }))
 
 // Объединяем события июля из API с резервными. Резервные данные считаются

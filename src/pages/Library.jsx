@@ -162,6 +162,10 @@ const JULY_TRACKS_DAY30 = [
   { name: 'Кибербезопасность',  id: 168, lesson: 'Основы криптографии',                    color: { bg:'rgba(239,68,68,0.12)', border:'rgba(239,68,68,0.3)',  text:'#f87171' }, showQuestions: false, showHomework: false },
 ]
 
+const JULY_TRACKS_DAY31 = [
+  { name: 'Все треки', id: 169, lesson: 'Нарешиваем LeetCode', color: { bg:'rgba(32,190,255,0.12)', border:'rgba(32,190,255,0.3)', text:'#20beff' }, showQuestions: false, showHomework: false },
+]
+
 const JULY_DAYS = [
   { day: 1, date: 'ср, 1 июля', tracks: JULY_TRACKS },
   { day: 2, date: 'чт, 2 июля', tracks: JULY_TRACKS_DAY2 },
@@ -191,6 +195,7 @@ const JULY_DAYS = [
   { day: 28, date: 'вт, 28 июля', tracks: JULY_TRACKS_DAY28 },
   { day: 29, date: 'ср, 29 июля', tracks: JULY_TRACKS_DAY29 },
   { day: 30, date: 'чт, 30 июля', tracks: JULY_TRACKS_DAY30 },
+  { day: 31, date: 'пт, 31 июля', tracks: JULY_TRACKS_DAY31 },
 ]
 
 function JulyTrackRow({ track, onOpenTheory, onOpenQuestions, onOpenHomework }) {
