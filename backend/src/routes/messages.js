@@ -29,7 +29,6 @@ router.get('/', verifyToken, (req, res) => {
     SELECT
       m.id, m.text, m.created_at, m.read_at, m.sender_id,
       u.id AS partner_id, u.name AS partner_name, u.avatar_url AS partner_avatar,
-      u.position AS partner_position,
       (
         SELECT COUNT(*) FROM messages
         WHERE sender_id = u.id AND recipient_id = ? AND read_at IS NULL
@@ -50,7 +49,6 @@ router.get('/', verifyToken, (req, res) => {
       id: r.partner_id,
       name: r.partner_name,
       avatarUrl: r.partner_avatar || '',
-      position: r.partner_position || '',
     },
     unread: r.unread,
     lastMessage: {
@@ -65,7 +63,7 @@ router.get('/', verifyToken, (req, res) => {
 // GET /api/messages/:userId — переписка с пользователем (входящие помечаются прочитанными)
 router.get('/:userId', verifyToken, (req, res) => {
   const partner = db.prepare(
-    'SELECT id, name, avatar_url, position FROM users WHERE id = ?'
+    'SELECT id, name, avatar_url FROM users WHERE id = ?'
   ).get(req.params.userId)
   if (!partner) return res.status(404).json({ message: 'Пользователь не найден' })
 
@@ -84,7 +82,6 @@ router.get('/:userId', verifyToken, (req, res) => {
       id: partner.id,
       name: partner.name,
       avatarUrl: partner.avatar_url || '',
-      position: partner.position || '',
     },
     messages: rows.map(r => mapMessage(r, req.user.id)),
   })

@@ -8,7 +8,6 @@ const PATH_TITLES = {
   '/likebezy':  'Полные ликбезы',
   '/announcements': 'Объявления',
   '/wall':      'Стена',
-  '/people':    'Участники',
   '/messages':  'Сообщения',
   '/notifications': 'Уведомления',
   '/profile':   'Профиль',

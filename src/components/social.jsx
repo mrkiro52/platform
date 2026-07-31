@@ -31,6 +31,33 @@ export function timeAgo(isoLike) {
   return d.toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' })
 }
 
+// Сжимает изображение перед загрузкой: масштабирует до maxDim по большей
+// стороне и перекодирует в JPEG. GIF не трогаем — canvas убил бы анимацию.
+export function compressImage(file, maxDim = 1600, quality = 0.82) {
+  if (file.type === 'image/gif') return Promise.resolve(file)
+
+  return new Promise((resolve) => {
+    const img = new Image()
+    const url = URL.createObjectURL(file)
+    img.onload = () => {
+      URL.revokeObjectURL(url)
+      const scale = Math.min(1, maxDim / Math.max(img.width, img.height))
+      const w = Math.round(img.width * scale)
+      const h = Math.round(img.height * scale)
+      const canvas = document.createElement('canvas')
+      canvas.width = w
+      canvas.height = h
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h)
+      canvas.toBlob(
+        (blob) => resolve(blob ? new File([blob], file.name, { type: 'image/jpeg' }) : file),
+        'image/jpeg', quality,
+      )
+    }
+    img.onerror = () => { URL.revokeObjectURL(url); resolve(file) }
+    img.src = url
+  })
+}
+
 export function AutoTextarea({ value, onChange, placeholder, minHeight = 0, maxHeight = 220, style, onEnter }) {
   const ref = useRef(null)
 
@@ -155,7 +182,7 @@ export function UserRow({ user, onOpenChat }) {
       <div style={{ flex: 1, minWidth: 0 }}>
         <div style={{ fontWeight: 600, fontSize: 14, color: 'var(--text-primary)' }}>{user.name}</div>
         <div style={{ fontSize: 12, color: 'var(--text-tertiary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-          {[user.position, user.track].filter(Boolean).join(' · ') || 'Участник лагеря'}
+          {user.track || 'Участник лагеря'}
         </div>
         <div style={{ fontSize: 11.5, color: 'var(--text-tertiary)', marginTop: 2 }}>
           Подписчиков: {user.stats?.followers ?? 0} · Постов: {user.stats?.posts ?? 0}

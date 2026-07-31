@@ -1,6 +1,14 @@
 import { useState, useRef } from 'react'
 import { api } from '../api'
-import { Avatar, AutoTextarea, UserName, Btn, formatDate } from './social'
+import { Avatar, AutoTextarea, UserName, Btn, formatDate, compressImage } from './social'
+
+function PaperclipIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M21.44 11.05l-9.19 9.19a5 5 0 0 1-7.07-7.07l9.19-9.19a3.5 3.5 0 0 1 4.95 4.95l-9.2 9.19a1.5 1.5 0 0 1-2.12-2.12l8.49-8.48" />
+    </svg>
+  )
+}
 
 const REACTIONS = [
   { type: 'heart',      emoji: '❤️' },
@@ -28,7 +36,7 @@ function CommentComposer({ user, avatarUrl, onSubmit }) {
 
   return (
     <div style={{ display: 'flex', gap: 8, alignItems: 'flex-start', marginTop: 10 }}>
-      <Avatar name={user?.name} avatarUrl={avatarUrl} size={28} />
+      <Avatar name={user?.name} avatarUrl={avatarUrl} size={36} />
       <div style={{ flex: 1, display: 'flex', gap: 8, alignItems: 'flex-start' }}>
         <AutoTextarea
           value={text}
@@ -80,24 +88,27 @@ export function PostCard({ post, user, avatarUrl, onReact, onComment, onDelete, 
         )}
       </div>
 
-      {post.text && (
+      {post.imageUrl ? (
+        <div className="post-media">
+          {post.text && (
+            <p className="post-media-text" style={{
+              margin: 0, fontSize: 14, color: 'var(--text-primary)', lineHeight: 1.6,
+              whiteSpace: 'pre-wrap', overflowWrap: 'break-word', wordBreak: 'break-word',
+            }}>
+              {post.text}
+            </p>
+          )}
+          <div className="post-media-image">
+            <img src={post.imageUrl} alt="" />
+          </div>
+        </div>
+      ) : post.text && (
         <p style={{
           margin: '0 0 12px', fontSize: 14, color: 'var(--text-primary)', lineHeight: 1.6,
           whiteSpace: 'pre-wrap', overflowWrap: 'break-word', wordBreak: 'break-word',
         }}>
           {post.text}
         </p>
-      )}
-
-      {post.imageUrl && (
-        <img
-          src={post.imageUrl}
-          alt=""
-          style={{
-            width: '100%', maxHeight: 460, objectFit: 'cover', borderRadius: 0,
-            border: '1px solid var(--border-color)', marginBottom: 12, display: 'block',
-          }}
-        />
       )}
 
       {/* Реакции */}
@@ -197,7 +208,8 @@ export function PostComposer({ user, avatarUrl, onPublished }) {
     setUploading(true)
     setError('')
     try {
-      const { imageUrl: url } = await api.uploadPostImage(file)
+      const compressed = await compressImage(file)
+      const { imageUrl: url } = await api.uploadPostImage(compressed)
       setImageUrl(url)
     } catch (err) {
       setError(err.message || 'Не удалось загрузить изображение')
@@ -243,6 +255,21 @@ export function PostComposer({ user, avatarUrl, onPublished }) {
               minHeight={44}
               style={{ flex: 1, padding: '10px 12px', fontSize: 14 }}
             />
+            <input ref={fileRef} type="file" accept="image/*" onChange={pickImage} style={{ display: 'none' }} />
+            <button
+              onClick={() => fileRef.current?.click()}
+              disabled={uploading}
+              title={imageUrl ? 'Заменить изображение' : 'Добавить изображение'}
+              style={{
+                width: 44, height: 44, flexShrink: 0, border: '1px solid var(--border-color)', borderRadius: 0,
+                background: imageUrl ? 'rgba(32,190,255,0.10)' : 'transparent',
+                color: imageUrl ? 'var(--accent-lime)' : 'var(--text-secondary)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                cursor: uploading ? 'wait' : 'pointer', outline: 'none',
+              }}
+            >
+              {uploading ? '···' : <PaperclipIcon />}
+            </button>
             <Btn onClick={publish} disabled={!canPublish}
               style={{ height: 44, padding: '0 22px', fontSize: 13.5, flexShrink: 0 }}>
               {publishing ? 'Публикуем...' : 'Опубликовать'}
@@ -267,21 +294,6 @@ export function PostComposer({ user, avatarUrl, onPublished }) {
               </button>
             </div>
           )}
-
-          <div style={{ marginTop: 10 }}>
-            <input ref={fileRef} type="file" accept="image/*" onChange={pickImage} style={{ display: 'none' }} />
-            <button
-              onClick={() => fileRef.current?.click()}
-              disabled={uploading}
-              style={{
-                border: '1px solid var(--border-color)', borderRadius: 0, background: 'transparent',
-                color: 'var(--text-secondary)', fontSize: 12, fontWeight: 600, padding: '6px 14px',
-                cursor: uploading ? 'wait' : 'pointer', outline: 'none',
-              }}
-            >
-              {uploading ? 'Загрузка...' : imageUrl ? 'Заменить изображение' : 'Добавить изображение'}
-            </button>
-          </div>
         </div>
       </div>
       {error && <div style={{ color: '#ff3333', fontSize: 12, marginTop: 8 }}>{error}</div>}

@@ -3,10 +3,12 @@ const db = require('../db')
 const { verifyToken } = require('../middleware/auth')
 const { notify } = require('../notify')
 
-// Публичные поля профиля. Намеренно НЕ отдаём email и nickname —
-// nickname используется как логин при входе, публиковать его нельзя.
+// Публичные поля профиля. Намеренно НЕ отдаём email и nickname в листингах —
+// nickname используется как логин при входе. Поле "должность" в продукте
+// больше не используется (колонка в БД сохранена нетронутой ради истории
+// данных, просто больше не выбирается и не показывается).
 const PUBLIC_FIELDS = `
-  users.id, users.name, users.position, users.bio, users.track,
+  users.id, users.name, users.bio, users.track,
   users.avatar_url, users.created_at
 `
 
@@ -22,7 +24,6 @@ function withCounts(user, currentUserId) {
   return {
     id: user.id,
     name: user.name,
-    position: user.position || '',
     bio: user.bio || '',
     track: user.track || '',
     avatarUrl: user.avatar_url || '',
@@ -33,18 +34,16 @@ function withCounts(user, currentUserId) {
   }
 }
 
-// GET /api/social/people?q= — каталог участников с поиском
-router.get('/people', verifyToken, (req, res) => {
-  const q = (req.query.q || '').trim()
-  const rows = q
-    ? db.prepare(`
-        SELECT ${PUBLIC_FIELDS} FROM users
-        WHERE users.name LIKE ? OR users.position LIKE ?
-        ORDER BY users.name COLLATE NOCASE
-      `).all(`%${q}%`, `%${q}%`)
-    : db.prepare(`SELECT ${PUBLIC_FIELDS} FROM users ORDER BY users.name COLLATE NOCASE`).all()
-
-  res.json(rows.map(u => withCounts(u, req.user.id)))
+// GET /api/social/find?nickname= — точный поиск по никнейму (регистронезависимо).
+// Никакого листинга всех пользователей — только совпадение 1 в 1, чтобы не
+// давать возможность перебором собрать список ников (которые = логины).
+router.get('/find', verifyToken, (req, res) => {
+  const nickname = (req.query.nickname || '').trim()
+  if (!nickname) return res.json(null)
+  const row = db.prepare('SELECT id FROM users WHERE nickname = ? COLLATE NOCASE').get(nickname)
+  if (!row) return res.json(null)
+  const user = db.prepare(`SELECT ${PUBLIC_FIELDS} FROM users WHERE users.id = ?`).get(row.id)
+  res.json(withCounts(user, req.user.id))
 })
 
 // GET /api/social/users/:id — публичный профиль

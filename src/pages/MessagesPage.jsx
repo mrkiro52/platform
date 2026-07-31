@@ -3,6 +3,56 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { api } from '../api'
 import { Avatar, AutoTextarea, Btn, timeAgo, formatDate } from '../components/social'
 
+function NicknameSearch() {
+  const navigate = useNavigate()
+  const [nickname, setNickname] = useState('')
+  const [searching, setSearching] = useState(false)
+  const [notFound, setNotFound] = useState(false)
+
+  const search = async () => {
+    const trimmed = nickname.trim()
+    if (!trimmed || searching) return
+    setSearching(true)
+    setNotFound(false)
+    try {
+      const user = await api.findByNickname(trimmed)
+      if (user) navigate(`/messages/${user.id}`)
+      else setNotFound(true)
+    } catch {
+      setNotFound(true)
+    } finally {
+      setSearching(false)
+    }
+  }
+
+  return (
+    <div style={{ marginBottom: 20 }}>
+      <div style={{ display: 'flex', gap: 10 }}>
+        <input
+          value={nickname}
+          onChange={e => { setNickname(e.target.value); setNotFound(false) }}
+          onKeyDown={e => { if (e.key === 'Enter') search() }}
+          placeholder="Никнейм пользователя..."
+          style={{
+            flex: 1, padding: '11px 14px', fontSize: 13.5,
+            border: '1px solid var(--border-color)', borderRadius: 0,
+            background: 'var(--bg-tertiary)', color: 'var(--text-primary)',
+            fontFamily: 'var(--font-inter)', outline: 'none',
+          }}
+        />
+        <Btn onClick={search} disabled={!nickname.trim() || searching}>
+          {searching ? 'Ищем...' : 'Искать'}
+        </Btn>
+      </div>
+      {notFound && (
+        <div style={{ color: 'var(--text-tertiary)', fontSize: 12.5, marginTop: 8 }}>
+          Пользователь с таким никнеймом не найден.
+        </div>
+      )}
+    </div>
+  )
+}
+
 function ConversationList({ onUnreadChange }) {
   const navigate = useNavigate()
   const [items, setItems] = useState([])
@@ -24,15 +74,14 @@ function ConversationList({ onUnreadChange }) {
         <p className="page-subtitle">Личная переписка с участниками лагеря</p>
       </div>
 
+      <NicknameSearch />
+
       {loading ? (
         <p style={{ color: 'var(--text-secondary)', fontSize: 13 }}>Загрузка...</p>
       ) : items.length === 0 ? (
-        <div>
-          <p style={{ color: 'var(--text-tertiary)', fontSize: 13, marginBottom: 14 }}>
-            Переписок пока нет. Найди собеседника в разделе «Участники».
-          </p>
-          <Btn variant="ghost" onClick={() => navigate('/people')}>К участникам</Btn>
-        </div>
+        <p style={{ color: 'var(--text-tertiary)', fontSize: 13 }}>
+          Переписок пока нет. Найди собеседника по никнейму выше.
+        </p>
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
           {items.map(c => (
@@ -159,7 +208,7 @@ function Thread({ userId, user, onUnreadChange }) {
                 {partner.name}
               </div>
               <div style={{ fontSize: 11.5, color: 'var(--text-tertiary)' }}>
-                {partner.position || 'Участник лагеря'}
+                Участник лагеря
               </div>
             </div>
           </>

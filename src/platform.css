@@ -194,6 +194,22 @@ img { max-width: 100%; display: block; }
 .form-group input::placeholder { color: var(--text-tertiary); }
 .form-group input.error { border-color: #e14b4b; }
 
+/* ── Профиль: серые плейсхолдеры в полях редактирования ─────────── */
+.profile-field::placeholder { color: var(--text-tertiary); }
+
+/* ── Посты: фото + текст ──────────────────────────────────────────
+   ПК: фото слева, текст справа. Планшет/мобайл: текст сверху, фото
+   снизу на всю ширину, высота пропорциональна оригиналу. ───────── */
+.post-media { display: flex; gap: 16px; align-items: flex-start; margin-bottom: 12px; }
+.post-media-image { flex: 0 0 220px; max-width: 220px; }
+.post-media-image img { width: 100%; height: auto; display: block; border: 1px solid var(--border-color); }
+.post-media-text { flex: 1; min-width: 0; }
+@media (max-width: 900px) {
+  .post-media { flex-direction: column; }
+  .post-media-image { flex: none; width: 100%; max-width: 100%; order: 2; }
+  .post-media-text { order: 1; }
+}
+
 /* ================================================================
    LOGIN PAGE
 ================================================================ */

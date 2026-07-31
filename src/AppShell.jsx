@@ -11,7 +11,6 @@ import Links from './pages/Links'
 import Profile from './pages/Profile'
 import TrainingsPage from './pages/TrainingsPage'
 import WallPage from './pages/WallPage'
-import PeoplePage from './pages/PeoplePage'
 import UserProfilePage from './pages/UserProfilePage'
 import MessagesPage from './pages/MessagesPage'
 import NotificationsPage from './pages/NotificationsPage'
@@ -126,7 +125,6 @@ export default function AppShell({ user, onLogout }) {
             <Route path="/trainings"    element={<TrainingsPage />} />
             <Route path="/trainings/:id" element={<TrainingsPage />} />
             <Route path="/wall" element={<WallPage user={user} avatarUrl={avatarUrl} />} />
-            <Route path="/people" element={<PeoplePage />} />
             <Route path="/u/:id" element={<UserProfilePage user={user} avatarUrl={avatarUrl} />} />
             <Route path="/messages" element={
               <MessagesPage user={user} onUnreadChange={refreshBadges} />

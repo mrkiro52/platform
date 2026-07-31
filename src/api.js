@@ -64,7 +64,7 @@ export const api = {
   deleteComment: (postId, commentId) => req(`/api/posts/${postId}/comments/${commentId}`, { method: 'DELETE' }),
 
   // ── Социальная сеть ──────────────────────────────────────────────────────
-  people:        (q = '')    => req(`/api/social/people${q ? `?q=${encodeURIComponent(q)}` : ''}`),
+  findByNickname: (nickname) => req(`/api/social/find?nickname=${encodeURIComponent(nickname)}`),
   userProfile:   (id)        => req(`/api/social/users/${id}`),
   toggleFollow:  (id)        => req(`/api/social/users/${id}/follow`, { method: 'POST' }),
   followers:     (id)        => req(`/api/social/users/${id}/followers`),

@@ -1,5 +1,6 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { api } from '../api'
+import { PostCard, usePostActions } from '../components/PostFeed'
 
 function getInitials(name) {
   return name.split(' ').map(p => p[0] || '').join('').toUpperCase().slice(0, 2)
@@ -41,7 +42,6 @@ export default function Profile({ user, onAvatarChange }) {
   const [nickname, setNickname] = useState('')
   const [password, setPassword] = useState('')
   const [bio, setBio] = useState('')
-  const [position, setPosition] = useState('')
   const [birthDay, setBirthDay] = useState('')
   const [birthMonth, setBirthMonth] = useState('')
   const [birthYear, setBirthYear] = useState('')
@@ -53,6 +53,8 @@ export default function Profile({ user, onAvatarChange }) {
   const [saved, setSaved] = useState(false)
   const [error, setError] = useState('')
   const [confirmOpen, setConfirmOpen] = useState(false)
+  const [myPosts, setMyPosts] = useState([])
+  const [postsLoading, setPostsLoading] = useState(true)
 
   useEffect(() => {
     api.profile().then(p => {
@@ -60,7 +62,6 @@ export default function Profile({ user, onAvatarChange }) {
       setEmail(p.email || '')
       setNickname(p.nickname || '')
       setBio(p.bio || '')
-      setPosition(p.position || '')
       setAvatarUrl(p.avatar_url || '')
       onAvatarChange?.(p.avatar_url || '')
       const parsed = parseBirthday(p.birthday)
@@ -70,6 +71,16 @@ export default function Profile({ user, onAvatarChange }) {
       setLoading(false)
     }).catch(() => setLoading(false))
   }, [])
+
+  const reloadPosts = useCallback(() => {
+    if (!user) return
+    api.posts({ userId: user.id }).then(setMyPosts).catch(() => {}).finally(() => setPostsLoading(false))
+  }, [user])
+
+  useEffect(() => { reloadPosts() }, [reloadPosts])
+
+  const { handleReact, handleComment, handleDelete, handleDeleteComment } =
+    usePostActions(setMyPosts, reloadPosts)
 
   if (!user) return null
   const initials = getInitials(name || user.name || '')
@@ -103,7 +114,7 @@ export default function Profile({ user, onAvatarChange }) {
     setError('')
     try {
       const birthday = formatBirthday(birthDay, birthMonth, birthYear)
-      const payload = { name, email, nickname, bio, position, birthday }
+      const payload = { name, email, nickname, bio, birthday }
       if (password) payload.password = password
       await api.updateProfile(payload)
       setPassword('')
@@ -155,7 +166,6 @@ export default function Profile({ user, onAvatarChange }) {
           </label>
           <div className="profile-name">{name || user.name}</div>
           <div className="profile-email">{email || user.email}</div>
-          {position && <div style={{ fontSize: 13, color: 'var(--text-tertiary)', marginTop: 2 }}>{position}</div>}
           {avatarError && <div style={{ fontSize: 12, color: '#ff3333', marginTop: 8 }}>{avatarError}</div>}
         </div>
 
@@ -167,19 +177,20 @@ export default function Profile({ user, onAvatarChange }) {
             <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
               <div>
                 <span className="pf-label" style={{ display: 'block', marginBottom: 6 }}>Имя</span>
-                <input style={fieldStyle} value={name} onChange={e => setName(e.target.value)} placeholder="Имя" />
+                <input className="profile-field" style={fieldStyle} value={name} onChange={e => setName(e.target.value)} placeholder="Имя" />
               </div>
               <div>
                 <span className="pf-label" style={{ display: 'block', marginBottom: 6 }}>Почта</span>
-                <input style={fieldStyle} value={email} onChange={e => setEmail(e.target.value)} placeholder="email@example.com" type="email" />
+                <input className="profile-field" style={fieldStyle} value={email} onChange={e => setEmail(e.target.value)} placeholder="email@example.com" type="email" />
               </div>
               <div>
                 <span className="pf-label" style={{ display: 'block', marginBottom: 6 }}>Логин (для входа)</span>
-                <input style={fieldStyle} value={nickname} onChange={e => setNickname(e.target.value)} placeholder="Логин" />
+                <input className="profile-field" style={fieldStyle} value={nickname} onChange={e => setNickname(e.target.value)} placeholder="Логин" />
               </div>
               <div>
                 <span className="pf-label" style={{ display: 'block', marginBottom: 6 }}>Новый пароль</span>
                 <input
+                  className="profile-field"
                   style={fieldStyle}
                   value={password}
                   onChange={e => setPassword(e.target.value)}
@@ -189,17 +200,9 @@ export default function Profile({ user, onAvatarChange }) {
                 />
               </div>
               <div>
-                <span className="pf-label" style={{ display: 'block', marginBottom: 6 }}>Должность</span>
-                <input
-                  style={fieldStyle}
-                  value={position}
-                  onChange={e => setPosition(e.target.value)}
-                  placeholder="Например: Frontend-разработчик"
-                />
-              </div>
-              <div>
                 <span className="pf-label" style={{ display: 'block', marginBottom: 6 }}>О себе</span>
                 <textarea
+                  className="profile-field"
                   style={{ ...fieldStyle, minHeight: 90, resize: 'vertical' }}
                   value={bio}
                   onChange={e => setBio(e.target.value)}
@@ -210,6 +213,7 @@ export default function Profile({ user, onAvatarChange }) {
                 <span className="pf-label" style={{ display: 'block', marginBottom: 6 }}>Дата рождения</span>
                 <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
                   <input
+                    className="profile-field"
                     style={smallFieldStyle}
                     value={birthDay}
                     onChange={e => setBirthDay(digitsOnly(e.target.value, 2))}
@@ -218,6 +222,7 @@ export default function Profile({ user, onAvatarChange }) {
                   />
                   <span style={{ color: 'var(--text-tertiary)' }}>.</span>
                   <input
+                    className="profile-field"
                     style={smallFieldStyle}
                     value={birthMonth}
                     onChange={e => setBirthMonth(digitsOnly(e.target.value, 2))}
@@ -226,6 +231,7 @@ export default function Profile({ user, onAvatarChange }) {
                   />
                   <span style={{ color: 'var(--text-tertiary)' }}>.</span>
                   <input
+                    className="profile-field"
                     style={yearFieldStyle}
                     value={birthYear}
                     onChange={e => setBirthYear(digitsOnly(e.target.value, 4))}
@@ -283,6 +289,30 @@ export default function Profile({ user, onAvatarChange }) {
             </div>
           )}
         </div>
+      </div>
+
+      <div style={{ marginTop: 28 }}>
+        <div className="profile-section-h">Мои посты</div>
+        {postsLoading ? (
+          <p style={{ color: 'var(--text-secondary)', fontSize: 13 }}>Загрузка...</p>
+        ) : myPosts.length === 0 ? (
+          <p style={{ color: 'var(--text-tertiary)', fontSize: 13 }}>Ты пока ничего не публиковал на Стене.</p>
+        ) : (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+            {myPosts.map(post => (
+              <PostCard
+                key={post.id}
+                post={post}
+                user={user}
+                avatarUrl={avatarUrl}
+                onReact={handleReact}
+                onComment={handleComment}
+                onDelete={handleDelete}
+                onDeleteComment={handleDeleteComment}
+              />
+            ))}
+          </div>
+        )}
       </div>
     </section>
   )

@@ -82,7 +82,7 @@ export default function UserProfilePage({ user, avatarUrl }) {
     return (
       <section className="page active">
         <div className="page-header"><h1 className="page-title">Профиль не найден</h1></div>
-        <Btn variant="ghost" onClick={() => navigate('/people')}>К участникам</Btn>
+        <Btn variant="ghost" onClick={() => navigate('/wall')}>К стене</Btn>
       </section>
     )
   }
@@ -101,7 +101,7 @@ export default function UserProfilePage({ user, avatarUrl }) {
               {profile.name}
             </h1>
             <div style={{ fontSize: 13, color: 'var(--text-secondary)', marginTop: 4 }}>
-              {[profile.position, profile.track].filter(Boolean).join(' · ') || 'Участник лагеря'}
+              {profile.track || 'Участник лагеря'}
             </div>
             {profile.bio && (
               <p style={{
