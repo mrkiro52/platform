@@ -1,6 +1,7 @@
 import { useState, useCallback, useEffect } from 'react'
 import { Routes, Route, Navigate, useNavigate } from 'react-router-dom'
 import LoginPage from './pages/Login'
+import Landing from './pages/Landing'
 import AppShell from './AppShell'
 
 function isTokenValid(token) {
@@ -98,6 +99,10 @@ export default function App() {
 
   return (
     <Routes>
+      {/* Гостя на "/" встречает лендинг; залогиненного сразу уводим в дэшборд */}
+      <Route path="/" element={
+        user ? <Navigate to="/dashboard" replace /> : <Landing />
+      } />
       <Route path="/login" element={
         user ? <Navigate to="/dashboard" replace /> : <LoginPage onLogin={handleLogin} />
       } />
