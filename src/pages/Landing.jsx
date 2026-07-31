@@ -2,115 +2,93 @@ import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import '../landing.css'
 
-const TG_MANAGER = 'https://t.me/kiro_team_manager'
-
-/* ── Иконки (inline SVG, без внешних зависимостей) ──────────────── */
-const Ico = {
-  calendar: <><rect x="3" y="4" width="18" height="18" rx="2" /><path d="M16 2v4M8 2v4M3 10h18" /></>,
-  book: <><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" /><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" /></>,
-  target: <><circle cx="12" cy="12" r="9" /><circle cx="12" cy="12" r="5" /><circle cx="12" cy="12" r="1.5" /></>,
-  users: <><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" /></>,
-  chart: <><path d="M3 3v18h18" /><path d="M7 15l4-5 3 3 5-7" /></>,
-  chat: <><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" /></>,
-  code: <><polyline points="16 18 22 12 16 6" /><polyline points="8 6 2 12 8 18" /></>,
-  spark: <><path d="M12 2l1.9 5.8L20 9.7l-5 3.6L16.2 20 12 16.6 7.8 20 9 13.3l-5-3.6 6.1-1.9z" /></>,
-  shield: <><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /></>,
-  check: <polyline points="20 6 9 17 4 12" />,
-}
-function Icon({ name, size = 22 }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor"
-      strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">{Ico[name]}</svg>
-  )
-}
-
-/* ── Счётчик, оживающий при попадании в вьюпорт ─────────────────── */
-function Counter({ to, suffix = '' }) {
-  const ref = useRef(null)
-  const [val, setVal] = useState(0)
-
-  useEffect(() => {
-    const el = ref.current
-    if (!el) return
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) { setVal(to); return }
-
-    let raf
-    const io = new IntersectionObserver(([e]) => {
-      if (!e.isIntersecting) return
-      io.disconnect()
-      const start = performance.now()
-      const dur = 1400
-      const tick = (now) => {
-        const p = Math.min(1, (now - start) / dur)
-        setVal(Math.round(to * (1 - Math.pow(1 - p, 3))))   // ease-out cubic
-        if (p < 1) raf = requestAnimationFrame(tick)
-      }
-      raf = requestAnimationFrame(tick)
-    }, { threshold: 0.4 })
-
-    io.observe(el)
-    return () => { io.disconnect(); cancelAnimationFrame(raf) }
-  }, [to])
-
-  return <div className="lp-stat-num" ref={ref}>{val}{suffix}</div>
-}
+const TG = 'https://t.me/kiro_team_manager'
 
 /* ── Появление секций при скролле ───────────────────────────────── */
 function useReveal() {
   useEffect(() => {
-    const items = document.querySelectorAll('.lp-reveal')
+    const items = document.querySelectorAll('.lp-rev')
     if (!items.length) return
     const io = new IntersectionObserver((entries) => {
-      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('is-visible'); io.unobserve(e.target) } })
-    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' })
+      entries.forEach(e => {
+        if (e.isIntersecting) { e.target.classList.add('on'); io.unobserve(e.target) }
+      })
+    }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' })
     items.forEach(i => io.observe(i))
     return () => io.disconnect()
   }, [])
 }
 
-const FEATURES = [
-  { ico: 'calendar', t: 'Расписание', d: 'Программа по дням: тема занятия, время созвона и ссылка на встречу — всё в одном месте.' },
-  { ico: 'book', t: 'Библиотека знаний', d: 'Конспект каждого занятия с разборами, схемами и примерами кода. Доступен навсегда.' },
-  { ico: 'target', t: 'Тесты и домашки', d: 'После теории — проверка себя: тесты по материалу и практические задания с разбором.' },
-  { ico: 'code', t: 'Тренажёры', d: '«Сложность алгоритмов» — угадай Big O по коду. «Что выведет?» — впиши вывод хитрого кода на Python.' },
-  { ico: 'spark', t: 'Полные ликбезы', d: 'Отдельные мини-курсы: Python, ООП в Python, Pandas, SQL и Machine Learning для собеседований.' },
-  { ico: 'users', t: 'Соцсеть лагеря', d: 'Своя лента, профили участников, подписки, реакции и комментарии — учишься не в одиночку.' },
-  { ico: 'chat', t: 'Личные сообщения', d: 'Пиши однокурсникам напрямую, находи людей по нику, получай уведомления.' },
-  { ico: 'chart', t: 'Прогресс', d: 'Дэшборд с твоей статистикой: пройденные задания, стрик и позиция в общем зачёте.' },
-  { ico: 'shield', t: 'AntiReels', d: 'Лента коротких карточек по темам — полезный скролл вместо бесконечной ленты в соцсетях.' },
+/* ── Счётчик, оживающий в вьюпорте ──────────────────────────────── */
+function Num({ to, suffix = '' }) {
+  const ref = useRef(null)
+  const [v, setV] = useState(0)
+
+  useEffect(() => {
+    const el = ref.current
+    if (!el) return
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) { setV(to); return }
+    let raf
+    const io = new IntersectionObserver(([e]) => {
+      if (!e.isIntersecting) return
+      io.disconnect()
+      const t0 = performance.now(), dur = 1300
+      const tick = (now) => {
+        const p = Math.min(1, (now - t0) / dur)
+        setV(Math.round(to * (1 - Math.pow(1 - p, 3))))
+        if (p < 1) raf = requestAnimationFrame(tick)
+      }
+      raf = requestAnimationFrame(tick)
+    }, { threshold: 0.5 })
+    io.observe(el)
+    return () => { io.disconnect(); cancelAnimationFrame(raf) }
+  }, [to])
+
+  return <span ref={ref}>{v}<i>{suffix}</i></span>
+}
+
+/* ── Заголовок секции: [индекс] ── линия ── название ────────────── */
+function SHead({ n, children }) {
+  return (
+    <div className="lp-shead lp-rev">
+      <span className="lp-idx">[ {n} ]</span>
+      <span className="lp-shead-line" />
+      <span className="lp-mono">{children}</span>
+    </div>
+  )
+}
+
+const TICKER = [
+  'Закрытое сообщество', '90 конспектов', 'AntiReels', 'Онлайн-тесты', 'Тренажёры',
+  'Вакансии и стажировки', 'Полные ликбезы', 'Видеозаписи занятий', 'Личные сообщения',
+  'Frontend', 'Backend', 'Аналитика', 'Machine Learning', 'Кибербезопасность',
 ]
 
-const MONTHS = [
-  {
-    n: 'Месяц 1', t: 'Июнь — Фундамент', s: '30 занятий: база, без которой дальше никак',
-    topics: ['Программирование с нуля: типы, циклы, функции', 'Алгоритмическое мышление и Big O',
-             'Структуры данных: списки, стек, очередь, хэш-таблицы, деревья', 'Git и командная работа',
-             'Основы SQL, сети и REST API'],
-  },
-  {
-    n: 'Месяц 2', t: 'Июль — Специализация', s: 'Выбираешь трек и уходишь вглубь',
-    topics: ['Frontend: CSS, продвинутый JS, TypeScript, SSR и Next.js', 'Backend: архитектура, БД и ORM, микросервисы, FastAPI',
-             'Аналитика и ML: NumPy, Pandas, статистика, нейросети и LLM', 'Кибербезопасность: сети, криптография, OWASP Top 10, CTF',
-             'Пет-проекты, LeetCode и Insider Show с практиками'],
-  },
-  {
-    n: 'Месяц 3', t: 'Август — Карьера', s: 'Готовим к реальному найму', accent: true,
-    topics: ['Разбор резюме каждого студента лично', 'Подготовка к техническим и поведенческим собеседованиям',
-             'Разбор алгоритмов с LeetCode под формат собесов', 'Созвоны с ребятами из BigTech',
-             'Сбор портфолио и стратегия откликов'],
-  },
+const LIKBEZY = [
+  { t: 'Python',           s: 'Синтаксис, структуры данных, стандартная библиотека — с нуля до уверенного уровня', tag: 'Язык' },
+  { t: 'ООП в Python',     s: 'От классов и наследования до метаклассов, SOLID и паттернов проектирования',        tag: 'Язык' },
+  { t: 'Pandas',           s: 'DataFrame, индексация, группировки, слияния, очистка реальных данных',              tag: 'Инструмент' },
+  { t: 'SQL',              s: 'Полный курс по базам данных: выборки, JOIN, агрегации, оконные функции',            tag: 'База данных' },
+  { t: 'Machine Learning', s: 'Вся теория для собеседования на ML в БигТех — мастхэв для стажёра и джуна',         tag: 'Направление' },
+  { t: 'NumPy',            s: 'Массивы, линейная алгебра, векторизация вычислений',                                tag: 'Скоро', soon: true },
+  { t: 'Git и GitHub',     s: 'Ветки, merge, rebase, pull request, командная работа и CI/CD',                      tag: 'Скоро', soon: true },
 ]
 
-const TRACKS = [
-  { e: '🎨', t: 'Frontend', d: 'HTML, CSS, JavaScript, TypeScript, React, SSR и оптимизация интерфейсов.', c: '#facc15' },
-  { e: '⚙️', t: 'Backend', d: 'Python, базы данных и ORM, REST API, аутентификация, микросервисы.', c: '#60a5fa' },
-  { e: '📊', t: 'Аналитика / ML', d: 'NumPy, Pandas, статистика, метрики, классические модели и нейросети.', c: '#4ade80' },
-  { e: '🛡', t: 'Кибербезопасность', d: 'Сети, операционные системы, криптография, OWASP, CTF-задачи.', c: '#f87171' },
+const VAULT = [
+  { k: 'Вакансии',    h: 'Открытые позиции',      p: 'Джуниор- и стажёрские вакансии, которые участники находят и приносят в сообщество.' },
+  { k: 'Стажировки',  h: 'Наборы в BigTech',      p: 'Сроки подачи в программы стажировок, требования и что спрашивают на отборе.' },
+  { k: 'Практика',    h: 'Тренировочные площадки', p: 'Kaggle Learn, HackTheBox, TryHackMe, picoCTF, Codeby Games и другие — с описанием, кому что.' },
+  { k: 'Разборы',     h: 'Как проходят отбор',     p: 'Личный опыт участников: какие задачи давали, что спрашивали, чем всё закончилось.' },
+  { k: 'Компании',    h: 'Куда идти',              p: 'Что за компания, как устроен найм, какой стек и чего ждать от процесса.' },
+  { k: 'Ресурсы',     h: 'Проверенное',            p: 'Статьи, гайды и материалы, отобранные сообществом, — без информационного шума.' },
 ]
 
-const MARQUEE = ['Big O', 'Структуры данных', 'Git', 'SQL', 'REST API', 'Python', 'TypeScript', 'React',
-                 'Pandas', 'NumPy', 'Machine Learning', 'LLM', 'Docker', 'OWASP Top 10', 'Криптография',
-                 'LeetCode', 'Пет-проекты', 'Резюме', 'Собеседования']
+const FOMO = [
+  { w: 'Сегодня',   t: 'кто-то забрал вакансию, ссылку на которую скинули в закрытый раздел' },
+  { w: 'Вчера',     t: 'разобрали задачу с реального собеседования — с объяснением, почему решение именно такое' },
+  { w: 'На неделе', t: 'выложили новый конспект и набор тестов к нему' },
+  { w: 'Прямо сейчас', t: 'кто-то листает AntiReels и закрывает пробел, о котором ты пока не знаешь' },
+]
 
 export default function Landing() {
   const navigate = useNavigate()
@@ -123,336 +101,449 @@ export default function Landing() {
   }, [])
 
   useEffect(() => {
-    const onScroll = () => setStuck(window.scrollY > 8)
+    const onScroll = () => setStuck(window.scrollY > 10)
     onScroll()
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
-  const toLogin = () => navigate('/login')
+  const go = () => navigate('/login')
 
   return (
     <div className="lp">
-      {/* ── Шапка ─────────────────────────────────────────────── */}
-      <header className={`lp-nav${stuck ? ' is-stuck' : ''}`}>
-        <div className="lp-container lp-nav-inner">
-          <span className="lp-logo">KIRO PLATFORM</span>
-          <nav className="lp-nav-links">
-            <a className="lp-nav-link" href="#features">Платформа</a>
-            <a className="lp-nav-link" href="#program">Программа</a>
-            <a className="lp-nav-link" href="#tracks">Треки</a>
-            <a className="lp-nav-link" href="#practice">Практика</a>
+
+      {/* ══ ШАПКА ══════════════════════════════════════════════ */}
+      <header className={`lp-nav${stuck ? ' stuck' : ''}`}>
+        <div className="lp-wrap lp-nav-in">
+          <div className="lp-brand">
+            <span className="lp-brand-k">KIRO</span>
+            <span className="lp-brand-t">PLATFORM</span>
+          </div>
+          <nav className="lp-nav-mid">
+            <a href="#inside">Внутри</a>
+            <a href="#antireels">AntiReels</a>
+            <a href="#likbez">Ликбезы</a>
+            <a href="#vault">База</a>
           </nav>
-          <button className="lp-btn lp-btn--primary lp-btn--sm lp-nav-cta" onClick={toLogin}>
-            Войти <span className="lp-btn-arrow">→</span>
-          </button>
+          <div className="lp-nav-right">
+            <span className="lp-nav-badge">Доступ по приглашению</span>
+            <button className="lp-btn lp-btn--go lp-btn--sm" onClick={go}>
+              Войти <span className="lp-arr">→</span>
+            </button>
+          </div>
         </div>
       </header>
 
-      {/* ── Hero ──────────────────────────────────────────────── */}
+      {/* ══ HERO ═══════════════════════════════════════════════ */}
       <section className="lp-hero">
-        <div className="lp-hero-grid-bg" />
-        <div className="lp-orb lp-orb--1" />
-        <div className="lp-orb lp-orb--2" />
+        <div className="lp-hero-mesh" />
+        <div className="lp-hero-glow" />
+        <div className="lp-wrap lp-hero-in">
 
-        <div className="lp-container lp-hero-inner">
           <div>
-            <span className="lp-hero-badge">
-              <span className="lp-hero-dot" /> IT Summer Camp &apos;26 · 3 месяца обучения
-            </span>
-            <h1>Путь в IT — <em>от первой строчки кода</em> до оффера</h1>
+            <span className="lp-hero-tag"><span className="lp-dot" /> Закрытая платформа · вход по логину</span>
+            <h1 className="lp-display">
+              Не ещё один<br />
+              <span className="lp-strike">курс</span> в закладках.<br />
+              Среда, где <em style={{ fontStyle: 'normal', color: 'var(--cy)' }}>растут</em>.
+            </h1>
             <p className="lp-hero-sub">
-              Образовательная платформа KIRO: программа на три месяца, четыре трека на выбор,
-              тренажёры, живые созвоны и подготовка к собеседованиям. Всё обучение — в одном месте.
+              Внутри — соцсеть для разработчиков, библиотека из десятков конспектов и видеозаписей,
+              тренажёры, онлайн-тесты, AntiReels и закрытая база вакансий, стажировок и ресурсов.
+              <b> Снаружи ничего этого не видно.</b>
             </p>
             <div className="lp-hero-cta">
-              <button className="lp-btn lp-btn--primary lp-btn--lg" onClick={toLogin}>
-                Войти на платформу <span className="lp-btn-arrow">→</span>
+              <button className="lp-btn lp-btn--go" onClick={go}>
+                Войти на платформу <span className="lp-arr">→</span>
               </button>
-              <a className="lp-btn lp-btn--onDark lp-btn--lg" href={TG_MANAGER} target="_blank" rel="noopener">
-                Получить доступ
+              <a className="lp-btn lp-btn--wire" href={TG} target="_blank" rel="noopener">
+                Запросить доступ
               </a>
             </div>
-            <p className="lp-hero-note">
-              <b>Уже учишься?</b> Входи по логину от менеджера — весь прогресс на месте.
+            <p className="lp-hero-fine">
+              <s>●</s> Регистрация закрыта — аккаунт выдаёт менеджер
             </p>
           </div>
 
-          {/* Иллюстрация платформы — чистая вёрстка, без картинок */}
-          <div style={{ position: 'relative' }}>
-            <div className="lp-mock">
-              <div className="lp-mock-bar">
-                <span className="lp-mock-dot" style={{ background: '#ff5f57' }} />
-                <span className="lp-mock-dot" style={{ background: '#febc2e' }} />
-                <span className="lp-mock-dot" style={{ background: '#28c840' }} />
-                <span className="lp-mock-url">kirocamp.ru/dashboard</span>
+          {/* Панель «живой» активности */}
+          <div className="lp-live lp-rev" data-d="2">
+            <div className="lp-live-head">
+              <span className="lp-live-dot" />
+              <span>Внутри платформы · сейчас</span>
+            </div>
+            <div className="lp-live-body">
+              <div className="lp-live-row">
+                <div className="lp-av">АК</div>
+                <div className="lp-live-txt"><b>Анна</b> выложила разбор задачи с собеса в Яндекс</div>
+                <span className="lp-live-when">2м</span>
               </div>
-              <div className="lp-mock-body">
-                <aside className="lp-mock-side">
-                  <span className="lp-mock-navitem is-active" />
-                  <span className="lp-mock-navitem" style={{ width: '80%' }} />
-                  <span className="lp-mock-navitem" style={{ width: '65%' }} />
-                  <span className="lp-mock-navitem" style={{ width: '85%' }} />
-                  <span className="lp-mock-navitem" style={{ width: '70%' }} />
-                  <span className="lp-mock-navitem" style={{ width: '55%' }} />
-                </aside>
-                <main className="lp-mock-main">
-                  <div className="lp-mock-stats">
-                    <div className="lp-mock-stat"><b>840</b><span>очков</span></div>
-                    <div className="lp-mock-stat"><b>12</b><span>стрик</span></div>
-                    <div className="lp-mock-stat"><b>49</b><span>занятий</span></div>
-                  </div>
-                  <div className="lp-mock-card">
-                    <div className="lp-mock-line w60" />
-                    <div className="lp-mock-progress">
-                      <span style={{ width: '72%' }} />
-                    </div>
-                  </div>
-                  <div className="lp-mock-card">
-                    <div className="lp-mock-line w80" />
-                    <div className="lp-mock-line w40" />
-                  </div>
-                </main>
+              <div className="lp-live-row">
+                <div className="lp-av">ДМ</div>
+                <div className="lp-live-txt"><b>Дмитрий</b> скинул вакансию джуна в закрытый раздел</div>
+                <span className="lp-live-when">14м</span>
+              </div>
+              <div className="lp-live-row">
+                <div className="lp-av">СВ</div>
+                <div className="lp-live-txt"><b>Света</b> прошла тест по SQL на 18/20</div>
+                <span className="lp-live-when">31м</span>
+              </div>
+              <div className="lp-live-row">
+                <div className="lp-av">ИЛ</div>
+                <div className="lp-live-txt"><b>Илья</b> открыл ликбез по ООП в Python</div>
+                <span className="lp-live-when">48м</span>
               </div>
             </div>
-
-            <span className="lp-float lp-float--a"><i>✅</i> Тест пройден</span>
-            <span className="lp-float lp-float--b"><i>🔥</i> Стрик 12 дней</span>
-            <span className="lp-float lp-float--c"><i>🎙</i> Insider Show</span>
+            <div className="lp-live-foot">
+              <span>Лента доступна участникам</span>
+              <em>[ закрыто ]</em>
+            </div>
           </div>
+
         </div>
       </section>
 
-      {/* ── Бегущая строка тем ────────────────────────────────── */}
-      <div className="lp-marquee" aria-hidden="true">
-        <div className="lp-marquee-track">
-          {[...MARQUEE, ...MARQUEE].map((m, i) => (
-            <span className="lp-marquee-item" key={i}>{m}</span>
+      {/* ══ ТИКЕР ══════════════════════════════════════════════ */}
+      <div className="lp-ticker" aria-hidden="true">
+        <div className="lp-ticker-track">
+          {[...TICKER, ...TICKER].map((t, i) => (
+            <span className="lp-ticker-it" key={i}><i>◆</i> {t}</span>
           ))}
         </div>
       </div>
 
-      {/* ── Цифры ─────────────────────────────────────────────── */}
-      <section className="lp-section lp-section--tight">
-        <div className="lp-container">
-          <div className="lp-stats">
-            <div className="lp-stat lp-reveal"><Counter to={3} /><div className="lp-stat-label">месяца программы</div></div>
-            <div className="lp-stat lp-reveal" data-d="1"><Counter to={49} suffix="+" /><div className="lp-stat-label">занятий с конспектами</div></div>
-            <div className="lp-stat lp-reveal" data-d="2"><Counter to={4} /><div className="lp-stat-label">трека на выбор</div></div>
-            <div className="lp-stat lp-reveal" data-d="3"><Counter to={5} /><div className="lp-stat-label">полных ликбеза</div></div>
+      {/* ══ ЦИФРЫ ══════════════════════════════════════════════ */}
+      <section className="lp-sec lp-sec--sm">
+        <div className="lp-wrap">
+          <div className="lp-nums lp-rev">
+            <div className="lp-num">
+              <div className="lp-num-v"><Num to={90} suffix="+" /></div>
+              <div className="lp-num-l">конспектов с разборами, схемами и кодом</div>
+            </div>
+            <div className="lp-num">
+              <div className="lp-num-v"><Num to={79} suffix="" /></div>
+              <div className="lp-num-l">наборов онлайн-тестов для самопроверки</div>
+            </div>
+            <div className="lp-num">
+              <div className="lp-num-v"><Num to={30} suffix="" /></div>
+              <div className="lp-num-l">карточек AntiReels по 5 направлениям</div>
+            </div>
+            <div className="lp-num">
+              <div className="lp-num-v"><Num to={5} suffix="" /></div>
+              <div className="lp-num-l">полных ликбезов — от Python до ML</div>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* ── Возможности платформы ─────────────────────────────── */}
-      <section className="lp-section" id="features">
-        <div className="lp-container">
-          <div className="lp-center lp-reveal">
-            <span className="lp-eyebrow">Платформа</span>
-            <h2 className="lp-h2">Всё обучение — в одном окне</h2>
-            <p className="lp-lead">
-              Не разрозненные чаты и папки на диске, а собранная система: теория, практика,
-              прогресс и общение с одногруппниками.
-            </p>
-          </div>
+      {/* ══ BENTO: ЧТО ВНУТРИ ══════════════════════════════════ */}
+      <section className="lp-sec" id="inside">
+        <div className="lp-wrap">
+          <SHead n="01">Что за дверью</SHead>
+          <h2 className="lp-h2 lp-rev" style={{ maxWidth: 760 }}>
+            Это не папка с видео.<br />Это <em>рабочая среда</em>, в которой живёшь каждый день.
+          </h2>
 
-          <div className="lp-features">
-            {FEATURES.map((f, i) => (
-              <article className="lp-feature lp-reveal" data-d={String(i % 4)} key={f.t}>
-                <div className="lp-feature-ico"><Icon name={f.ico} /></div>
-                <h3>{f.t}</h3>
-                <p>{f.d}</p>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
+          <div className="lp-bento" style={{ marginTop: 44 }}>
 
-      {/* ── Программа ─────────────────────────────────────────── */}
-      <section className="lp-section" id="program" style={{ background: 'var(--bg-tertiary)' }}>
-        <div className="lp-container">
-          <div className="lp-center lp-reveal">
-            <span className="lp-eyebrow">Программа</span>
-            <h2 className="lp-h2">Три месяца — от нуля до собеседования</h2>
-            <p className="lp-lead">
-              Каждый месяц закрывает свою задачу. Присоединился позже — материалы
-              прошлых месяцев открываются сразу.
-            </p>
-          </div>
-
-          <div className="lp-months">
-            {MONTHS.map((m, i) => (
-              <article className={`lp-month lp-reveal${m.accent ? ' lp-month--accent' : ''}`} data-d={String(i)} key={m.t}>
-                <div className="lp-month-num">{m.n}</div>
-                <h3>{m.t}</h3>
-                <p className="lp-month-sub">{m.s}</p>
-                <div className="lp-month-topics">
-                  {m.topics.map(t => <div className="lp-month-topic" key={t}>{t}</div>)}
+            {/* Соцсеть — крупная плитка */}
+            <article className="lp-tile lp-tile--wide lp-rev">
+              <span className="lp-tile-k">Соцсеть для разработчиков</span>
+              <h3>Своя лента, а не чат на 500 непрочитанных</h3>
+              <p>
+                Делись новостями и мнением, спорь в комментариях, подписывайся на тех,
+                кто пишет по делу. Личные сообщения — чтобы дожать вопрос один на один.
+              </p>
+              <div className="lp-mini-feed">
+                <div className="lp-mini-post">
+                  <span><b>Кирилл:</b> завалил вопрос про GIL, разбираю по частям →</span>
+                  <span className="lp-chips"><span className="lp-chip hot">❤ 24</span><span className="lp-chip">12</span></span>
                 </div>
-              </article>
-            ))}
+                <div className="lp-mini-post">
+                  <span><b>Марина:</b> оффер! спасибо за разбор резюме 🎉</span>
+                  <span className="lp-chips"><span className="lp-chip hot">🎉 61</span><span className="lp-chip">30</span></span>
+                </div>
+              </div>
+            </article>
+
+            {/* AntiReels — вертикальная */}
+            <article className="lp-tile lp-tile--tall lp-rev" data-d="1">
+              <span className="lp-tile-k">AntiReels</span>
+              <h3>Скролл, который качает</h3>
+              <p>Листаешь как ленту — но вместо мусора факт, который спросят на собесе.</p>
+              <div className="lp-stack">
+                <div className="lp-stack-c"><b>Big O</b> — почему <code>in</code> по списку это O(n), а по set — O(1)</div>
+                <div className="lp-stack-c">Семантические теги и SEO</div>
+                <div className="lp-stack-c">Что такое GIL</div>
+              </div>
+            </article>
+
+            {/* Конспекты */}
+            <article className="lp-tile lp-tile--third lp-rev">
+              <span className="lp-tile-k">Библиотека</span>
+              <h3>Конспекты</h3>
+              <p>Десятки разборов со схемами, примерами кода и пояснениями — доступны навсегда, а не «до конца потока».</p>
+            </article>
+
+            {/* Видео */}
+            <article className="lp-tile lp-tile--third lp-rev" data-d="1">
+              <span className="lp-tile-k">Видеозаписи</span>
+              <h3>Записи занятий</h3>
+              <p>Пропустил или не понял с первого раза — пересматриваешь в своём темпе, с разбивкой по частям.</p>
+            </article>
+
+            {/* Тесты */}
+            <article className="lp-tile lp-tile--third lp-rev" data-d="2">
+              <span className="lp-tile-k">Проверка</span>
+              <h3>Онлайн-тесты</h3>
+              <p>После каждой темы — тест. Сразу видно, что реально усвоил, а что только казалось понятным.</p>
+            </article>
+
+            {/* Тренажёры */}
+            <article className="lp-tile lp-tile--half lp-rev">
+              <span className="lp-tile-k">Тренажёры</span>
+              <h3>Навык, а не конспект в закладках</h3>
+              <p>
+                «Сложность алгоритмов» — смотришь на код и называешь Big O.
+                «Что выведет?» — вписываешь точный вывод неочевидного Python-кода.
+                Повторяешь, пока не станет автоматизмом.
+              </p>
+            </article>
+
+            {/* Ссылки */}
+            <article className="lp-tile lp-tile--half lp-rev" data-d="1">
+              <span className="lp-tile-k">Закрытая база</span>
+              <h3>Вакансии, стажировки, ресурсы</h3>
+              <p>
+                Внутри сообщества — подборка вакансий, наборов на стажировки, компаний
+                и проверенных площадок для практики. Всё в одном месте, без гугления
+                и без информационного шума.
+              </p>
+            </article>
+
           </div>
         </div>
       </section>
 
-      {/* ── Треки ─────────────────────────────────────────────── */}
-      <section className="lp-section" id="tracks">
-        <div className="lp-container">
-          <div className="lp-center lp-reveal">
-            <span className="lp-eyebrow">Направления</span>
-            <h2 className="lp-h2">Выбираешь трек — и уходишь вглубь</h2>
-            <p className="lp-lead">
-              Первый месяц общий для всех. Дальше — своя программа под выбранное направление.
+      {/* ══ ANTIREELS — отдельная секция ═══════════════════════ */}
+      <section className="lp-reels lp-sec" id="antireels">
+        <div className="lp-wrap lp-reels-in">
+          <div>
+            <SHead n="02">AntiReels</SHead>
+            <h2 className="lp-h2">
+              Тот же жест.<br />Противоположный <em>результат</em>.
+            </h2>
+            <p className="lp-p lp-p--wide">
+              Ты всё равно листаешь ленту — вопрос только в том, что там. AntiReels
+              подсовывает короткие карточки с фактом, который спрашивают на собеседовании:
+              Big O, семантика HTML, GIL, индексы в БД, метрики модели.
             </p>
-          </div>
 
-          <div className="lp-tracks">
-            {TRACKS.map((t, i) => (
-              <article className="lp-track lp-reveal" data-d={String(i)} key={t.t}>
-                <span className="lp-track-emoji">{t.e}</span>
-                <h3>{t.t}</h3>
-                <p>{t.d}</p>
-                <div className="lp-track-bar"><span style={{ width: '100%', background: t.c }} /></div>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── Практика: тренажёры ───────────────────────────────── */}
-      <section className="lp-section" id="practice" style={{ background: 'var(--bg-tertiary)' }}>
-        <div className="lp-container lp-split">
-          <div className="lp-reveal">
-            <span className="lp-eyebrow">Практика</span>
-            <h2 className="lp-h2">Тренажёры, а не только конспекты</h2>
-            <p className="lp-lead">
-              Читать про алгоритмы и уметь их разбирать — разные вещи. На платформе есть
-              интерактивные тренировки, которые доводят навык до автоматизма.
-            </p>
-            <div className="lp-checklist">
-              <div className="lp-check">
-                <span className="lp-check-ico"><Icon name="check" size={13} /></span>
-                <span><b>Сложность алгоритмов</b> — смотришь на код и определяешь его Big O</span>
+            <div className="lp-vs">
+              <div className="lp-vs-box bad">
+                <div className="lp-vs-k">Обычная лента</div>
+                <p>40 минут скролла → ноль в голове, минус время, плюс тревожность.</p>
               </div>
-              <div className="lp-check">
-                <span className="lp-check-ico"><Icon name="check" size={13} /></span>
-                <span><b>Что выведет? (Python)</b> — вписываешь точный вывод неочевидного кода</span>
-              </div>
-              <div className="lp-check">
-                <span className="lp-check-ico"><Icon name="check" size={13} /></span>
-                <span><b>Тесты после каждой темы</b> — сразу видно, что не усвоилось</span>
-              </div>
-              <div className="lp-check">
-                <span className="lp-check-ico"><Icon name="check" size={13} /></span>
-                <span><b>Разбор задач с LeetCode</b> — под формат реальных собеседований</span>
+              <div className="lp-vs-mid">VS</div>
+              <div className="lp-vs-box good">
+                <div className="lp-vs-k">AntiReels</div>
+                <p>40 минут скролла → десятки закрытых пробелов, которые всплывут на собесе.</p>
               </div>
             </div>
           </div>
 
-          <div className="lp-demo lp-reveal" data-d="1">
-            <div className="lp-demo-head"><Icon name="code" size={15} /> Сложность алгоритмов</div>
-            <pre className="lp-demo-code">
-{`  `}<span className="c-key">def</span> <span className="c-fn">find_pair</span>(nums, target):{`
-    `}seen = <span className="c-fn">set</span>(){`
-    `}<span className="c-key">for</span> n <span className="c-key">in</span> nums:{`
-        `}<span className="c-key">if</span> target - n <span className="c-key">in</span> seen:{`
-            `}<span className="c-key">return</span> <span className="c-num">True</span>{`
-        `}seen.<span className="c-fn">add</span>(n){`
-    `}<span className="c-key">return</span> <span className="c-num">False</span><span className="lp-demo-caret" />
-            </pre>
-            <div className="lp-demo-opts">
-              <span className="lp-demo-opt">O(1)</span>
-              <span className="lp-demo-opt is-right">O(n)</span>
-              <span className="lp-demo-opt">O(n²)</span>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ── Соцсеть ───────────────────────────────────────────── */}
-      <section className="lp-section">
-        <div className="lp-container lp-split">
-          <div className="lp-social-card lp-reveal">
-            <div className="lp-post-head">
-              <div className="lp-ava">АК</div>
-              <div>
-                <div className="lp-post-name">Анна К.</div>
-                <div className="lp-post-time">2 часа назад</div>
-              </div>
-            </div>
-            <p className="lp-post-text">
-              Дожала пет-проект на React за выходные 🎉 Спасибо всем, кто помогал
-              в комментариях — без вас бы застряла на роутинге.
-            </p>
-            <div className="lp-reactions">
-              <span className="lp-reaction is-on">❤️ 12</span>
-              <span className="lp-reaction">🤯 4</span>
-              <span className="lp-reaction">👏 9</span>
-              <span className="lp-reaction">🥳 3</span>
-            </div>
-          </div>
-
-          <div className="lp-reveal" data-d="1">
-            <span className="lp-eyebrow">Комьюнити</span>
-            <h2 className="lp-h2">Учиться в одиночку — тяжело</h2>
-            <p className="lp-lead">
-              Внутри платформы своя соцсеть: общая стена, профили участников, подписки,
-              реакции и комментарии. Плюс личные сообщения и уведомления, чтобы ничего не терялось.
-            </p>
-            <div className="lp-checklist">
-              <div className="lp-check">
-                <span className="lp-check-ico"><Icon name="check" size={13} /></span>
-                <span>Делись прогрессом и получай обратную связь от группы</span>
-              </div>
-              <div className="lp-check">
-                <span className="lp-check-ico"><Icon name="check" size={13} /></span>
-                <span>Находи людей по нику и пиши напрямую</span>
-              </div>
-              <div className="lp-check">
-                <span className="lp-check-ico"><Icon name="check" size={13} /></span>
-                <span>Живые созвоны и Insider Show с ребятами из индустрии</span>
+          <div className="lp-rev" data-d="2">
+            <div className="lp-phone">
+              <div className="lp-phone-scr">
+                <div className="lp-phone-k">Backend · карточка 12 / 30</div>
+                <div className="lp-phone-t">Почему поиск по set быстрее списка</div>
+                <div className="lp-phone-b">
+                  <p style={{ margin: '0 0 12px' }}>
+                    Проверка <code>x in list</code> перебирает элементы по одному — это <code>O(n)</code>.
+                  </p>
+                  <p style={{ margin: '0 0 12px' }}>
+                    <code>set</code> и <code>dict</code> считают хеш и прыгают сразу в нужную ячейку — <code>O(1)</code> в среднем.
+                  </p>
+                  <p style={{ margin: 0 }}>
+                    На миллионе элементов это разница между миллисекундой и секундами.
+                  </p>
+                </div>
+                <div className="lp-phone-nav">
+                  <span>◄ назад</span>
+                  <span className="lp-swipe"><span>▲</span>свайп</span>
+                  <span>далее ►</span>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* ── Финальный CTA ─────────────────────────────────────── */}
-      <section className="lp-final">
-        <div className="lp-orb lp-orb--1" style={{ top: '-180px', right: '10%' }} />
-        <div className="lp-orb lp-orb--2" style={{ bottom: '-200px', left: '8%' }} />
-        <div className="lp-container">
-          <h2>Начни учиться сегодня</h2>
-          <p>
-            Три месяца программы, тренажёры, комьюнити и подготовка к собеседованиям —
-            всё уже открыто внутри платформы.
+      {/* ══ ТРЕНАЖЁРЫ + ТЕСТЫ ══════════════════════════════════ */}
+      <section className="lp-sec">
+        <div className="lp-wrap">
+          <SHead n="03">Практика</SHead>
+          <h2 className="lp-h2 lp-rev" style={{ maxWidth: 720 }}>
+            Читать про алгоритмы и <em>уметь их разбирать</em> — разные вещи
+          </h2>
+          <p className="lp-p lp-p--wide lp-rev" style={{ marginBottom: 40 }}>
+            Поэтому внутри не только текст. Тренажёры гоняют навык до автоматизма,
+            тесты после каждой темы показывают дыры до того, как их найдёт интервьюер.
           </p>
-          <div className="lp-final-cta">
-            <button className="lp-btn lp-btn--primary lp-btn--lg" onClick={toLogin}>
-              Войти на платформу <span className="lp-btn-arrow">→</span>
+
+          <div className="lp-two">
+            <div className="lp-pane lp-rev">
+              <div className="lp-pane-head"><span>Тренажёр · сложность алгоритмов</span><em>O(?)</em></div>
+              <pre className="lp-code">
+<span className="c">{'# что тут по времени?'}</span>{'\n'}
+<span className="k">def</span> <span className="f">has_duplicate</span>(nums):{'\n'}
+{'    '}seen = <span className="f">set</span>(){'\n'}
+{'    '}<span className="k">for</span> n <span className="k">in</span> nums:{'\n'}
+{'        '}<span className="k">if</span> n <span className="k">in</span> seen:{'\n'}
+{'            '}<span className="k">return</span> <span className="s">True</span>{'\n'}
+{'        '}seen.<span className="f">add</span>(n){'\n'}
+{'    '}<span className="k">return</span> <span className="s">False</span><span className="lp-caret" />
+              </pre>
+              <div className="lp-opts">
+                <span className="lp-opt">O(1)</span>
+                <span className="lp-opt ok">O(n)</span>
+                <span className="lp-opt">O(n²)</span>
+              </div>
+            </div>
+
+            <div className="lp-pane lp-rev" data-d="1">
+              <div className="lp-pane-head"><span>Онлайн-тест · SQL</span><em>18 / 20</em></div>
+              <div className="lp-q">
+                <div className="lp-q-t">Какой JOIN вернёт строки левой таблицы, даже если в правой совпадений нет?</div>
+                <div className="lp-q-a">
+                  <div className="lp-q-o"><i>A</i> INNER JOIN</div>
+                  <div className="lp-q-o ok"><i>B</i> LEFT JOIN</div>
+                  <div className="lp-q-o"><i>C</i> CROSS JOIN</div>
+                  <div className="lp-q-o"><i>D</i> Ни один из них</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ══ ЛИКБЕЗЫ — editorial-список ═════════════════════════ */}
+      <section className="lp-sec" id="likbez" style={{ background: 'var(--panel)', borderTop: '1px solid var(--line)', borderBottom: '1px solid var(--line)' }}>
+        <div className="lp-wrap">
+          <SHead n="04">Полные ликбезы</SHead>
+          <h2 className="lp-h2 lp-rev" style={{ maxWidth: 720 }}>
+            Отдельные мини-курсы по темам, языкам и <em>инструментам</em>
+          </h2>
+          <p className="lp-p lp-p--wide lp-rev" style={{ marginBottom: 38 }}>
+            Не нарезка занятий, а собранный с нуля материал по одной теме — читаешь
+            подряд и закрываешь направление целиком.
+          </p>
+
+          <div className="lp-list lp-rev">
+            {LIKBEZY.map((l, i) => (
+              <div className={`lp-li${l.soon ? ' lp-li--soon' : ''}`} key={l.t}>
+                <span className="lp-li-n">{String(i + 1).padStart(2, '0')}</span>
+                <div className="lp-li-t">{l.t}<span>{l.s}</span></div>
+                <span className="lp-li-tag">{l.tag}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ══ ЗАКРЫТАЯ БАЗА — заблокированный блок ═══════════════ */}
+      <section className="lp-sec" id="vault">
+        <div className="lp-wrap">
+          <SHead n="05">Закрытая база</SHead>
+          <h2 className="lp-h2 lp-rev" style={{ maxWidth: 780 }}>
+            Вакансии и стажировки, о которых <em>не пишут в открытых чатах</em>
+          </h2>
+          <p className="lp-p lp-p--wide lp-rev" style={{ marginBottom: 38 }}>
+            Участники приносят внутрь то, что находят сами: открытые позиции, сроки набора
+            в стажировки, разборы отбора, проверенные площадки для практики.
+            Доступно только тем, кто внутри.
+          </p>
+
+          <div className="lp-vault lp-rev">
+            <div className="lp-vault-grid">
+              {VAULT.map((v, i) => (
+                <div className={`lp-vault-c${i > 1 ? ' blur' : ''}`} key={v.h}>
+                  <div className="lp-vault-k">{v.k}</div>
+                  <h4>{v.h}</h4>
+                  <p>{v.p}</p>
+                </div>
+              ))}
+            </div>
+            <div className="lp-vault-lock">
+              <p>Содержимое доступно участникам</p>
+              <button className="lp-btn lp-btn--go lp-btn--sm" onClick={go}>
+                Войти и открыть <span className="lp-arr">→</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ══ FOMO ═══════════════════════════════════════════════ */}
+      <section className="lp-sec lp-fomo">
+        <div className="lp-wrap">
+          <div className="lp-fomo-in lp-rev">
+            <div className="lp-fomo-k">Пока тебя нет</div>
+            <h2>
+              Платформа не ждёт.<br />Она живёт <span style={{ color: 'var(--hot)' }}>без тебя</span>.
+            </h2>
+            <p className="lp-p lp-p--wide">
+              Каждый день внутри что-то происходит. Разница между теми, кто получил оффер,
+              и теми, кто «ещё готовится», обычно не в таланте — а в том, что первые были там,
+              где это обсуждали.
+            </p>
+
+            <div className="lp-fomo-rows">
+              {FOMO.map(f => (
+                <div className="lp-fomo-row" key={f.w}>
+                  <b>{f.w}</b>
+                  <span>{f.t}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ══ ФИНАЛЬНЫЙ CTA ══════════════════════════════════════ */}
+      <section className="lp-end">
+        <div className="lp-end-glow" />
+        <div className="lp-wrap">
+          <h2>Дверь открывается<br />только изнутри</h2>
+          <p>
+            Аккаунты выдаёт менеджер — регистрации с улицы нет.
+            Если у тебя уже есть логин, всё это ждёт за одним экраном.
+          </p>
+          <div className="lp-end-cta">
+            <button className="lp-btn lp-btn--go" onClick={go}>
+              Войти на платформу <span className="lp-arr">→</span>
             </button>
-            <a className="lp-btn lp-btn--onDark lp-btn--lg" href={TG_MANAGER} target="_blank" rel="noopener">
-              Получить доступ
+            <a className="lp-btn lp-btn--wire" href={TG} target="_blank" rel="noopener">
+              Запросить доступ
             </a>
           </div>
-          <p className="lp-final-note">
-            Доступ выдаётся менеджером после оплаты — напиши{' '}
-            <a href={TG_MANAGER} target="_blank" rel="noopener">@kiro_team_manager</a>
+          <p className="lp-end-fine">
+            Нет логина? Напиши <a href={TG} target="_blank" rel="noopener">@kiro_team_manager</a>
           </p>
         </div>
       </section>
 
-      {/* ── Подвал ────────────────────────────────────────────── */}
-      <footer className="lp-footer">
-        <div className="lp-container lp-footer-inner">
-          <span>© 2026 KIRO IT Summer Camp</span>
+      {/* ══ ПОДВАЛ ═════════════════════════════════════════════ */}
+      <footer className="lp-foot">
+        <div className="lp-wrap lp-foot-in">
+          <span>© 2026 KIRO PLATFORM</span>
           <span>
-            <a href={TG_MANAGER} target="_blank" rel="noopener">@kiro_team_manager</a>
-            {' · '}
-            <a href="/login">Вход для студентов</a>
+            <a href={TG} target="_blank" rel="noopener">@kiro_team_manager</a>
+            {'  ·  '}
+            <a href="/login">Вход для участников</a>
           </span>
         </div>
       </footer>
+
     </div>
   )
 }
