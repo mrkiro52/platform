@@ -6,18 +6,33 @@ function getInitials(name) {
 }
 
 const NAV_ITEMS = [
-  { path: '/dashboard', label: 'Дэшборд' },
-  { path: '/wall',      label: 'Стена' },
-  { path: '/schedule',  label: 'Расписание' },
-  { path: '/library',   label: 'Библиотека знаний' },
-  { path: '/trainings', label: 'Тренировки' },
-  { path: '/links',     label: 'Полезные ссылки' },
-  { path: '/likebezy',  label: 'Полные ликбезы' },
-  { path: '/antireels', label: 'AntiReels' },
-  { path: '/profile',   label: 'Профиль' },
+  { path: '/dashboard',     label: 'Дэшборд' },
+  { path: '/wall',          label: 'Стена' },
+  { path: '/people',        label: 'Участники' },
+  { path: '/messages',      label: 'Сообщения', badge: 'messages' },
+  { path: '/notifications', label: 'Уведомления', badge: 'notifications' },
+  { path: '/schedule',      label: 'Расписание' },
+  { path: '/library',       label: 'Библиотека знаний' },
+  { path: '/trainings',     label: 'Тренировки' },
+  { path: '/links',         label: 'Полезные ссылки' },
+  { path: '/likebezy',      label: 'Полные ликбезы' },
+  { path: '/antireels',     label: 'AntiReels' },
+  { path: '/profile',       label: 'Профиль' },
 ]
 
-export default function Sidebar({ user, avatarUrl, onLogout, onClose }) {
+function Badge({ count }) {
+  if (!count) return null
+  return (
+    <span style={{
+      marginLeft: 'auto', background: 'var(--accent-lime)', color: '#fff',
+      fontSize: 11, fontWeight: 700, padding: '1px 7px', borderRadius: 0, flexShrink: 0,
+    }}>
+      {count > 99 ? '99+' : count}
+    </span>
+  )
+}
+
+export default function Sidebar({ user, avatarUrl, onLogout, onClose, badges = {} }) {
   const [confirmLogout, setConfirmLogout] = useState(false)
   const navigate = useNavigate()
   const location = useLocation()
@@ -32,6 +47,8 @@ export default function Sidebar({ user, avatarUrl, onLogout, onClose }) {
     if (path === '/library') return location.pathname.startsWith('/library')
     if (path === '/likebezy') return location.pathname.startsWith('/likebezy')
     if (path === '/trainings') return location.pathname.startsWith('/trainings')
+    if (path === '/messages') return location.pathname.startsWith('/messages')
+    if (path === '/people') return location.pathname.startsWith('/people') || location.pathname.startsWith('/u/')
     return location.pathname === path
   }
 
@@ -64,8 +81,10 @@ export default function Sidebar({ user, avatarUrl, onLogout, onClose }) {
             key={item.path}
             className={`nav-item${isActive(item.path) ? ' active' : ''}`}
             onClick={() => handleNav(item.path)}
+            style={item.badge ? { display: 'flex', alignItems: 'center', gap: 8 } : undefined}
           >
             {item.label}
+            {item.badge && <Badge count={badges[item.badge]} />}
           </button>
         ))}
       </nav>

@@ -49,9 +49,33 @@ export const api = {
   profile:       ()          => req('/api/users/me'),
   updateProfile: (data)      => req('/api/users/me', { method: 'PUT', body: JSON.stringify(data) }),
   uploadAvatar:  (file)      => { const fd = new FormData(); fd.append('avatar', file); return reqForm('/api/users/me/avatar', fd) },
-  posts:         ()          => req('/api/posts'),
-  createPost:    (text)      => req('/api/posts', { method: 'POST', body: JSON.stringify({ text }) }),
+  posts:         (opts = {}) => {
+    const qs = new URLSearchParams()
+    if (opts.feed)   qs.set('feed', opts.feed)
+    if (opts.userId) qs.set('userId', opts.userId)
+    const s = qs.toString()
+    return req(`/api/posts${s ? `?${s}` : ''}`)
+  },
+  createPost:    (text, imageUrl = '') => req('/api/posts', { method: 'POST', body: JSON.stringify({ text, imageUrl }) }),
   deletePost:    (id)        => req(`/api/posts/${id}`, { method: 'DELETE' }),
+  uploadPostImage: (file)    => { const fd = new FormData(); fd.append('image', file); return reqForm('/api/posts/image', fd) },
   reactToPost:   (id, reaction) => req(`/api/posts/${id}/reaction`, { method: 'PUT', body: JSON.stringify({ reaction }) }),
   addComment:    (id, text)  => req(`/api/posts/${id}/comments`, { method: 'POST', body: JSON.stringify({ text }) }),
+  deleteComment: (postId, commentId) => req(`/api/posts/${postId}/comments/${commentId}`, { method: 'DELETE' }),
+
+  // ── Социальная сеть ──────────────────────────────────────────────────────
+  people:        (q = '')    => req(`/api/social/people${q ? `?q=${encodeURIComponent(q)}` : ''}`),
+  userProfile:   (id)        => req(`/api/social/users/${id}`),
+  toggleFollow:  (id)        => req(`/api/social/users/${id}/follow`, { method: 'POST' }),
+  followers:     (id)        => req(`/api/social/users/${id}/followers`),
+  following:     (id)        => req(`/api/social/users/${id}/following`),
+
+  conversations:    ()            => req('/api/messages'),
+  thread:           (userId)      => req(`/api/messages/${userId}`),
+  sendMessage:      (userId, text) => req(`/api/messages/${userId}`, { method: 'POST', body: JSON.stringify({ text }) }),
+  unreadMessages:   ()            => req('/api/messages/unread-count'),
+
+  notifications:      ()  => req('/api/notifications'),
+  unreadNotifications:()  => req('/api/notifications/unread-count'),
+  readNotifications:  ()  => req('/api/notifications/read', { method: 'POST' }),
 }

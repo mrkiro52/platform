@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { Routes, Route, Navigate, useNavigate, useParams } from 'react-router-dom'
 import Sidebar from './components/Sidebar'
 import TopBar from './components/TopBar'
@@ -11,6 +11,10 @@ import Links from './pages/Links'
 import Profile from './pages/Profile'
 import TrainingsPage from './pages/TrainingsPage'
 import WallPage from './pages/WallPage'
+import PeoplePage from './pages/PeoplePage'
+import UserProfilePage from './pages/UserProfilePage'
+import MessagesPage from './pages/MessagesPage'
+import NotificationsPage from './pages/NotificationsPage'
 import TheoryPage from './pages/TheoryPage'
 import QuestionsPage from './pages/QuestionsPage'
 import HomeworkPage from './pages/HomeworkPage'
@@ -46,6 +50,22 @@ export default function AppShell({ user, onLogout }) {
   const [dayModal, setDayModal] = useState(null)
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [avatarUrl, setAvatarUrl] = useState('')
+  const [badges, setBadges] = useState({ messages: 0, notifications: 0 })
+
+  // Счётчики непрочитанного для сайдбара. Обновляются периодически и точечно
+  // после действий пользователя (открыл диалог, зашёл в уведомления).
+  const refreshBadges = useCallback(() => {
+    Promise.all([
+      api.unreadMessages().catch(() => ({ count: 0 })),
+      api.unreadNotifications().catch(() => ({ count: 0 })),
+    ]).then(([m, n]) => setBadges({ messages: m.count || 0, notifications: n.count || 0 }))
+  }, [])
+
+  useEffect(() => {
+    refreshBadges()
+    const t = setInterval(refreshBadges, 30000)
+    return () => clearInterval(t)
+  }, [refreshBadges])
 
   useEffect(() => {
     // classList.add/remove (не className=) — чтобы не затирать классы,
@@ -70,6 +90,7 @@ export default function AppShell({ user, onLogout }) {
           avatarUrl={avatarUrl}
           onLogout={onLogout}
           onClose={() => setSidebarOpen(false)}
+          badges={badges}
         />
       </aside>
 
@@ -105,6 +126,15 @@ export default function AppShell({ user, onLogout }) {
             <Route path="/trainings"    element={<TrainingsPage />} />
             <Route path="/trainings/:id" element={<TrainingsPage />} />
             <Route path="/wall" element={<WallPage user={user} avatarUrl={avatarUrl} />} />
+            <Route path="/people" element={<PeoplePage />} />
+            <Route path="/u/:id" element={<UserProfilePage user={user} avatarUrl={avatarUrl} />} />
+            <Route path="/messages" element={
+              <MessagesPage user={user} onUnreadChange={refreshBadges} />
+            } />
+            <Route path="/messages/:userId" element={
+              <MessagesPage user={user} onUnreadChange={refreshBadges} />
+            } />
+            <Route path="/notifications" element={<NotificationsPage onRead={refreshBadges} />} />
             <Route path="/likebezy"   element={<LikebezyPage />} />
             <Route path="/likebezy/:id" element={<LikebezyPage />} />
             <Route path="/antireels" element={<AntiReels />} />

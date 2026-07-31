@@ -500,6 +500,65 @@ function migrate() {
       console.error('❌ Migration 13 failed:', err.message)
     }
   }
+
+  // Migration 14: социальная сеть — подписки, личные сообщения, уведомления,
+  // картинки в постах. Строго additive: только CREATE TABLE IF NOT EXISTS и
+  // ALTER TABLE ADD COLUMN. Таблица users не изменяется — учётные данные целы.
+  if (schemaVersion < 14) {
+    try {
+      db.exec(`
+        CREATE TABLE IF NOT EXISTS follows (
+          id           INTEGER PRIMARY KEY AUTOINCREMENT,
+          follower_id  INTEGER NOT NULL,
+          following_id INTEGER NOT NULL,
+          created_at   DATETIME DEFAULT CURRENT_TIMESTAMP,
+          FOREIGN KEY (follower_id)  REFERENCES users(id) ON DELETE CASCADE,
+          FOREIGN KEY (following_id) REFERENCES users(id) ON DELETE CASCADE,
+          UNIQUE(follower_id, following_id)
+        );
+        CREATE INDEX IF NOT EXISTS idx_follows_follower  ON follows(follower_id);
+        CREATE INDEX IF NOT EXISTS idx_follows_following ON follows(following_id);
+
+        CREATE TABLE IF NOT EXISTS messages (
+          id           INTEGER PRIMARY KEY AUTOINCREMENT,
+          sender_id    INTEGER NOT NULL,
+          recipient_id INTEGER NOT NULL,
+          text         TEXT NOT NULL,
+          read_at      DATETIME,
+          created_at   DATETIME DEFAULT CURRENT_TIMESTAMP,
+          FOREIGN KEY (sender_id)    REFERENCES users(id) ON DELETE CASCADE,
+          FOREIGN KEY (recipient_id) REFERENCES users(id) ON DELETE CASCADE
+        );
+        CREATE INDEX IF NOT EXISTS idx_messages_pair ON messages(sender_id, recipient_id, id);
+        CREATE INDEX IF NOT EXISTS idx_messages_inbox ON messages(recipient_id, read_at);
+
+        CREATE TABLE IF NOT EXISTS notifications (
+          id         INTEGER PRIMARY KEY AUTOINCREMENT,
+          user_id    INTEGER NOT NULL,
+          actor_id   INTEGER,
+          type       TEXT NOT NULL,
+          post_id    INTEGER,
+          preview    TEXT DEFAULT '',
+          read_at    DATETIME,
+          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+          FOREIGN KEY (user_id)  REFERENCES users(id) ON DELETE CASCADE,
+          FOREIGN KEY (actor_id) REFERENCES users(id) ON DELETE CASCADE,
+          FOREIGN KEY (post_id)  REFERENCES posts(id) ON DELETE CASCADE
+        );
+        CREATE INDEX IF NOT EXISTS idx_notifications_user ON notifications(user_id, read_at, id);
+      `)
+
+      const postCols = db.prepare("PRAGMA table_info(posts)").all().map(c => c.name)
+      if (!postCols.includes('image_url')) {
+        db.prepare("ALTER TABLE posts ADD COLUMN image_url TEXT DEFAULT ''").run()
+      }
+
+      db.pragma('user_version = 14')
+      console.log('✅ Migration 14 completed: follows, messages, notifications, posts.image_url')
+    } catch (err) {
+      console.error('❌ Migration 14 failed:', err.message)
+    }
+  }
 }
 
 migrate()

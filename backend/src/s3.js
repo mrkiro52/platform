@@ -41,4 +41,13 @@ function keyFromUrl(url) {
   return url.startsWith(marker) ? url.slice(marker.length) : null
 }
 
-module.exports = { uploadAvatar, deleteAvatar, keyFromUrl, s3Configured }
+// uploadAvatar принимает произвольный key — тот же путь используется и для
+// картинок постов (posts/...), поэтому экспортируем нейтральный алиас.
+module.exports = {
+  uploadAvatar,
+  uploadObject: uploadAvatar,
+  deleteAvatar,
+  deleteObject: deleteAvatar,
+  keyFromUrl,
+  s3Configured,
+}

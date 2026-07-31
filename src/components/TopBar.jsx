@@ -7,6 +7,11 @@ const PATH_TITLES = {
   '/links':     'Полезные ссылки',
   '/likebezy':  'Полные ликбезы',
   '/announcements': 'Объявления',
+  '/wall':      'Стена',
+  '/people':    'Участники',
+  '/messages':  'Сообщения',
+  '/notifications': 'Уведомления',
+  '/profile':   'Профиль',
 }
 
 function getInitials(name) {
@@ -19,6 +24,8 @@ function getTitle(pathname) {
   if (pathname.startsWith('/library/homework'))  return 'Домашнее задание'
   if (pathname.startsWith('/library'))           return 'Библиотека знаний'
   if (pathname.startsWith('/likebezy'))          return 'Полные ликбезы'
+  if (pathname.startsWith('/messages'))          return 'Сообщения'
+  if (pathname.startsWith('/u/'))                return 'Профиль участника'
   return PATH_TITLES[pathname] || ''
 }
 
