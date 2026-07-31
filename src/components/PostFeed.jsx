@@ -19,6 +19,25 @@ function PaperPlaneIcon() {
   )
 }
 
+function TrashIcon() {
+  return (
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="3 6 5 6 21 6" />
+      <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+      <path d="M10 11v6" /><path d="M14 11v6" />
+      <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
+    </svg>
+  )
+}
+
+function ChatIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+    </svg>
+  )
+}
+
 const REACTIONS = [
   { type: 'heart',      emoji: '❤️' },
   { type: 'mind_blown', emoji: '🤯' },
@@ -44,7 +63,7 @@ function CommentComposer({ user, avatarUrl, onSubmit }) {
   }
 
   return (
-    <div className="composer-row" style={{ marginTop: 10 }}>
+    <div className="composer-row" style={{ marginTop: 12 }}>
       <div className="composer-avatar">
         <Avatar name={user?.name} avatarUrl={avatarUrl} size={36} />
       </div>
@@ -76,27 +95,17 @@ export function PostCard({ post, user, avatarUrl, onReact, onComment, onDelete, 
   const isAuthor = post.author.id === user?.id
 
   return (
-    <div style={{
-      border: '1px solid var(--border-color)', borderRadius: 0, background: 'var(--bg-secondary)',
-      padding: 16,
-    }}>
+    <div className="post-card">
       <div style={{ display: 'flex', gap: 10, alignItems: 'center', marginBottom: 10 }}>
         <Avatar name={post.author.name} avatarUrl={post.author.avatarUrl} size={36}
           userId={post.author.id} clickable />
-        <div style={{ flex: 1 }}>
+        <div style={{ flex: 1, minWidth: 0 }}>
           <UserName id={post.author.id} name={post.author.name} />
           <div style={{ fontSize: 11.5, color: 'var(--text-tertiary)' }}>{formatDate(post.createdAt)}</div>
         </div>
         {isAuthor && onDelete && (
-          <button
-            onClick={() => onDelete(post.id)}
-            title="Удалить пост"
-            style={{
-              border: 'none', background: 'transparent', color: 'var(--text-tertiary)',
-              fontSize: 12, cursor: 'pointer', outline: 'none', padding: 4,
-            }}
-          >
-            Удалить
+          <button className="icon-btn" onClick={() => onDelete(post.id)} title="Удалить пост">
+            <TrashIcon />
           </button>
         )}
       </div>
@@ -125,7 +134,7 @@ export function PostCard({ post, user, avatarUrl, onReact, onComment, onDelete, 
       )}
 
       {/* Реакции */}
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 8 }}>
+      <div className="reaction-row">
         {REACTIONS.map(r => {
           const count = post.reactions?.[r.type] || 0
           const active = post.myReaction === r.type
@@ -133,15 +142,7 @@ export function PostCard({ post, user, avatarUrl, onReact, onComment, onDelete, 
             <button
               key={r.type}
               onClick={() => onReact(post.id, r.type)}
-              style={{
-                display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 5,
-                width: 62, flexShrink: 0,
-                border: `1px solid ${active ? 'var(--accent-lime)' : 'var(--border-color)'}`,
-                borderRadius: 0,
-                background: active ? 'rgba(32,190,255,0.12)' : 'var(--bg-tertiary)',
-                color: active ? 'var(--accent-lime)' : 'var(--text-secondary)',
-                padding: '5px 0', fontSize: 13, fontWeight: 600, cursor: 'pointer', outline: 'none',
-              }}
+              className={`reaction-pill${active ? ' active' : ''}`}
             >
               <span>{r.emoji}</span>
               <span>{count}</span>
@@ -149,21 +150,19 @@ export function PostCard({ post, user, avatarUrl, onReact, onComment, onDelete, 
           )
         })}
       </div>
-      <div style={{ fontSize: 12.5, color: 'var(--text-tertiary)', marginBottom: 12 }}>
-        Комментарии: {comments.length}
+      <div style={{
+        display: 'flex', alignItems: 'center', gap: 5,
+        fontSize: 12.5, color: 'var(--text-tertiary)', marginBottom: 12,
+      }}>
+        <ChatIcon />
+        <span>{comments.length === 0 ? 'Нет комментариев' : `Комментариев: ${comments.length}`}</span>
       </div>
 
       {shown.length > 0 && (
         <div style={{ borderTop: '1px solid var(--border-color)', paddingTop: 10, display: 'flex', flexDirection: 'column', gap: 10 }}>
           {hasMore && (
-            <button
-              onClick={() => setVisibleCount(c => c + 3)}
-              style={{
-                alignSelf: 'flex-start', border: '1px solid var(--border-color)', borderRadius: 0,
-                background: 'transparent', color: 'var(--text-secondary)', fontSize: 12, fontWeight: 600,
-                padding: '5px 12px', cursor: 'pointer', outline: 'none',
-              }}
-            >
+            <button className="btn-ghost" style={{ alignSelf: 'flex-start', fontSize: 12 }}
+              onClick={() => setVisibleCount(c => c + 3)}>
               Показать следующие
             </button>
           )}
@@ -179,13 +178,12 @@ export function PostCard({ post, user, avatarUrl, onReact, onComment, onDelete, 
                     <span style={{ fontSize: 11, color: 'var(--text-tertiary)' }}>{formatDate(c.createdAt)}</span>
                     {canDelete && onDeleteComment && (
                       <button
+                        className="icon-btn"
+                        style={{ width: 22, height: 22, marginLeft: 'auto' }}
                         onClick={() => onDeleteComment(post.id, c.id)}
-                        style={{
-                          marginLeft: 'auto', border: 'none', background: 'transparent',
-                          color: 'var(--text-tertiary)', fontSize: 11, cursor: 'pointer', outline: 'none',
-                        }}
+                        title="Удалить комментарий"
                       >
-                        Удалить
+                        <TrashIcon />
                       </button>
                     )}
                   </div>
@@ -253,10 +251,7 @@ export function PostComposer({ user, avatarUrl, onPublished }) {
 
   return (
     <div style={{ marginBottom: 24 }}>
-      <div style={{
-        border: '1px solid var(--border-color)', borderRadius: 0, background: 'var(--bg-secondary)',
-        padding: 16,
-      }}>
+      <div className="wall-composer">
         <div className="composer-row">
           <div className="composer-avatar">
             <Avatar name={user?.name} avatarUrl={avatarUrl} />
@@ -296,13 +291,13 @@ export function PostComposer({ user, avatarUrl, onPublished }) {
         {imageUrl && (
           <div style={{ marginTop: 12, position: 'relative', display: 'inline-block' }}>
             <img src={imageUrl} alt="" style={{
-              maxHeight: 180, maxWidth: '100%', display: 'block', borderRadius: 0,
+              maxHeight: 180, maxWidth: '100%', display: 'block', borderRadius: 'var(--radius-md)',
               border: '1px solid var(--border-color)',
             }} />
             <button
               onClick={() => setImageUrl('')}
               style={{
-                position: 'absolute', top: 6, right: 6, border: 'none', borderRadius: 0,
+                position: 'absolute', top: 6, right: 6, border: 'none', borderRadius: 'var(--radius-pill)',
                 background: 'rgba(0,0,0,0.7)', color: '#fff', fontSize: 12, fontWeight: 600,
                 padding: '4px 10px', cursor: 'pointer', outline: 'none',
               }}

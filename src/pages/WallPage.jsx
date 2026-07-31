@@ -40,18 +40,12 @@ export default function WallPage({ user, avatarUrl }) {
       />
 
       {/* Вкладки ленты */}
-      <div style={{ display: 'flex', gap: 0, marginBottom: 18, borderBottom: '1px solid var(--border-color)' }}>
+      <div className="wall-tabs">
         {TABS.map(t => (
           <button
             key={t.key}
             onClick={() => setTab(t.key)}
-            style={{
-              padding: '10px 20px', fontSize: 13.5, fontWeight: 600, borderRadius: 0, outline: 'none',
-              border: 'none', borderBottom: `2px solid ${tab === t.key ? 'var(--accent-lime)' : 'transparent'}`,
-              background: 'transparent', cursor: 'pointer',
-              color: tab === t.key ? 'var(--accent-lime)' : 'var(--text-secondary)',
-              marginBottom: -1,
-            }}
+            className={`wall-tab${tab === t.key ? ' active' : ''}`}
           >
             {t.label}
           </button>
@@ -59,13 +53,33 @@ export default function WallPage({ user, avatarUrl }) {
       </div>
 
       {loading ? (
-        <p style={{ color: 'var(--text-secondary)', fontSize: 13 }}>Загрузка...</p>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+          {[0, 1, 2].map(i => (
+            <div key={i} className="skeleton-card">
+              <div style={{ display: 'flex', gap: 10, alignItems: 'center', marginBottom: 14 }}>
+                <div className="skeleton" style={{ width: 36, height: 36, borderRadius: '50%' }} />
+                <div style={{ flex: 1 }}>
+                  <div className="skeleton skeleton-text" style={{ width: '30%' }} />
+                  <div className="skeleton skeleton-text" style={{ width: '18%' }} />
+                </div>
+              </div>
+              <div className="skeleton skeleton-text" style={{ width: '90%' }} />
+              <div className="skeleton skeleton-text" style={{ width: '60%' }} />
+            </div>
+          ))}
+        </div>
       ) : posts.length === 0 ? (
-        <p style={{ color: 'var(--text-tertiary)', fontSize: 13 }}>
-          {tab === 'following'
-            ? 'Здесь появятся посты тех, на кого ты подпишешься. Загляни в «Участники».'
-            : 'Постов пока нет — стань первым!'}
-        </p>
+        <div className="wall-empty">
+          <div className="wall-empty-icon">{tab === 'following' ? '👀' : '📝'}</div>
+          <div className="wall-empty-title">
+            {tab === 'following' ? 'Пока пусто' : 'Постов пока нет'}
+          </div>
+          <div className="wall-empty-sub">
+            {tab === 'following'
+              ? 'Здесь появятся посты тех, на кого ты подпишешься'
+              : 'Стань первым, кто поделится мыслями'}
+          </div>
+        </div>
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
           {posts.map(post => (

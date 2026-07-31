@@ -197,40 +197,122 @@ img { max-width: 100%; display: block; }
 /* ── Профиль: серые плейсхолдеры в полях редактирования ─────────── */
 .profile-field::placeholder { color: var(--text-tertiary); }
 
-/* ── Посты: фото + текст ──────────────────────────────────────────
-   ПК: фото слева, текст справа. Планшет/мобайл: текст сверху, фото
-   снизу на всю ширину, высота пропорциональна оригиналу. ───────── */
-.post-media { display: flex; gap: 16px; align-items: flex-start; margin-bottom: 12px; }
-.post-media-image { flex: 0 0 220px; max-width: 220px; }
-.post-media-image img { width: 100%; height: auto; display: block; border: 1px solid var(--border-color); }
-.post-media-text { flex: 1; min-width: 0; }
-@media (max-width: 900px) {
-  .post-media { flex-direction: column; }
-  .post-media-image { flex: none; width: 100%; max-width: 100%; order: 2; }
-  .post-media-text { order: 1; }
-}
+/* ════════════════════════════════════════════════════════════════
+   СТЕНА — карточки постов, композер, реакции, вкладки
+   Брейкпоинты — те же, что и у остального сайта (768 / 480), чтобы
+   Стена переключалась в мобильный режим синхронно с сайдбаром и
+   .pages-wrap, а не по своим случайным точкам.
+═════════════════════════════════════════════════════════════════ */
 
-/* ── Стена: композер поста и комментария ───────────────────────────
-   ПК: аватар, поле ввода, скрепка, кнопка — всё в один ряд.
-   Мобайл (≤640px): аватар + скрепка + кнопка-иконка — ряд сверху,
-   поле ввода — отдельной строкой на всю ширину под ним. Достигается
-   flex-wrap + order + flex-basis:100% на самом поле (стандартный
-   приём принудительного переноса во flex-строке). ─────────────────*/
+/* ── Вкладки ленты: сегментированный pill-переключатель ─────────── */
+.wall-tabs {
+  display: inline-flex; gap: 2px; padding: 4px; margin-bottom: 20px;
+  background: var(--bg-tertiary); border: 1px solid var(--border-color);
+  border-radius: var(--radius-pill);
+}
+.wall-tab {
+  padding: 8px 20px; border: none; background: transparent; border-radius: var(--radius-pill);
+  font-size: 13px; font-weight: 600; color: var(--text-secondary); cursor: pointer;
+  transition: background 0.15s, color 0.15s, box-shadow 0.15s; white-space: nowrap;
+}
+.wall-tab:hover { color: var(--text-primary); }
+.wall-tab.active { background: #ffffff; color: var(--accent-lime); box-shadow: var(--shadow-sm); }
+
+/* ── Композер (пост / комментарий): единая карточка с фокус-состоянием ── */
+.wall-composer {
+  background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-lg);
+  padding: 16px; box-shadow: var(--shadow-sm); margin-bottom: 22px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.wall-composer:focus-within { border-color: rgba(32,190,255,0.4); box-shadow: var(--shadow-md); }
+
 .composer-row { display: flex; gap: 10px; align-items: flex-start; flex-wrap: wrap; }
 .composer-row .composer-avatar  { order: 1; }
 .composer-row .composer-input   { order: 2; flex: 1; min-width: 0; }
 .composer-row .composer-attach  { order: 3; }
 .composer-row .composer-submit  { order: 4; }
+.composer-submit { border-radius: var(--radius-md) !important; transition: transform 0.15s, box-shadow 0.15s; }
+.composer-submit:not(:disabled):hover { transform: translateY(-1px); box-shadow: var(--shadow-hover); }
 .composer-submit .composer-submit-label { display: inline; }
 .composer-submit .composer-submit-icon  { display: none; }
 
-@media (max-width: 640px) {
+.composer-attach {
+  border-radius: var(--radius-md) !important;
+  transition: border-color 0.15s, color 0.15s, background 0.15s;
+}
+.composer-attach:hover:not(:disabled) { border-color: var(--accent-lime); color: var(--accent-lime); background: rgba(32,190,255,0.06); }
+
+/* Мобайл (≤480px): аватар + скрепка + кнопка-иконка — ряд сверху,
+   поле ввода — отдельной строкой на всю ширину под ним. Достигается
+   flex-wrap + order + flex-basis:100% (стандартный приём принудитель-
+   ного переноса во flex-строке), без единой строчки JS. ──────────── */
+@media (max-width: 480px) {
   .composer-row .composer-attach  { order: 2; }
   .composer-row .composer-submit  { order: 3; }
   .composer-row .composer-input   { order: 4; flex-basis: 100%; }
   .composer-submit { width: 44px; padding: 0 !important; }
   .composer-submit .composer-submit-label { display: none; }
   .composer-submit .composer-submit-icon  { display: inline-flex; }
+  .wall-tabs { display: flex; width: 100%; }
+  .wall-tab { flex: 1; text-align: center; padding: 9px 8px; }
+}
+
+/* ── Карточка поста: скруглённая, с мягкой тенью и hover-подсветкой,
+   как .event-card/.community-card в остальном приложении ─────────── */
+.post-card {
+  background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-lg);
+  padding: 18px; box-shadow: var(--shadow-sm); transition: border-color 0.2s, box-shadow 0.2s;
+}
+.post-card:hover { border-color: rgba(32,190,255,0.22); box-shadow: var(--shadow-md); }
+@media (max-width: 480px) { .post-card { padding: 14px; } }
+
+/* Иконка-кнопка (удалить и т.п.) вместо голых текстовых ссылок */
+.icon-btn {
+  width: 30px; height: 30px; flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+  border: none; background: transparent; color: var(--text-tertiary); border-radius: var(--radius-md);
+  cursor: pointer; transition: background 0.15s, color 0.15s;
+}
+.icon-btn:hover { background: rgba(225,75,75,0.10); color: #e14b4b; }
+
+/* Ряд реакций: гибкие pill-кнопки без фиксированной ширины — на узких
+   экранах ряд превращается в горизонтальный свайп вместо некрасивого
+   переноса на вторую строку вразнобой. ───────────────────────────── */
+.reaction-row {
+  display: flex; gap: 6px; margin-bottom: 10px; overflow-x: auto; padding-bottom: 2px;
+  scrollbar-width: none; -webkit-overflow-scrolling: touch;
+}
+.reaction-row::-webkit-scrollbar { display: none; }
+.reaction-pill {
+  flex: 0 0 auto; display: inline-flex; align-items: center; gap: 5px;
+  padding: 6px 12px; border-radius: var(--radius-pill); border: 1px solid var(--border-color);
+  background: var(--bg-tertiary); color: var(--text-secondary); font-size: 13px; font-weight: 600;
+  cursor: pointer; white-space: nowrap; transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+.reaction-pill:hover { border-color: rgba(32,190,255,0.4); background: rgba(32,190,255,0.06); }
+.reaction-pill.active { background: rgba(32,190,255,0.12); border-color: var(--accent-lime); color: var(--accent-lime); }
+
+/* Пустое состояние ленты — карточка вместо голого серого текста */
+.wall-empty {
+  display: flex; flex-direction: column; align-items: center; text-align: center; gap: 6px;
+  padding: 48px 24px; border: 1px dashed var(--border-color); border-radius: var(--radius-lg);
+  color: var(--text-tertiary);
+}
+.wall-empty-icon { font-size: 28px; margin-bottom: 4px; }
+.wall-empty-title { font-size: 14px; font-weight: 600; color: var(--text-secondary); }
+.wall-empty-sub { font-size: 13px; }
+
+/* ── Посты: фото + текст ──────────────────────────────────────────
+   ПК: фото слева, текст справа. Планшет/мобайл (≤768px): текст
+   сверху, фото снизу на всю ширину, высота пропорциональна ориги-
+   налу. Изображение скруглено в тон карточки. ────────────────────── */
+.post-media { display: flex; gap: 16px; align-items: flex-start; margin-bottom: 12px; }
+.post-media-image { flex: 0 0 220px; max-width: 220px; border-radius: var(--radius-md); overflow: hidden; }
+.post-media-image img { width: 100%; height: auto; display: block; }
+.post-media-text { flex: 1; min-width: 0; }
+@media (max-width: 768px) {
+  .post-media { flex-direction: column; }
+  .post-media-image { flex: none; width: 100%; max-width: 100%; order: 2; }
+  .post-media-text { order: 1; }
 }
 
 /* ================================================================
