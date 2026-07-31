@@ -1,7 +1,7 @@
 import { TheoryTable, TheoryCode, TheoryExample } from './components/TheoryTable'
 import VideoPlayer from '../components/VideoPlayer'
 
-const VIDEO_SRC = 'https://s3.regru.cloud/kirocamp/leetcode31aug.mov?response-content-disposition=attachment&AWSAccessKeyId=PJF2Y6YQG2J6VQT285VT&Signature=v7i4%2BnxGNaohvHrE2ECVoUd1ogg%3D&Expires=1786134575'
+const VIDEO_SRC = 'https://s3.regru.cloud/kirocamp/leetcode31july.mov'
 
 function Fig({ children, caption }) {
   return (
