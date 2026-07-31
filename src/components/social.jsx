@@ -58,7 +58,7 @@ export function compressImage(file, maxDim = 1600, quality = 0.82) {
   })
 }
 
-export function AutoTextarea({ value, onChange, placeholder, minHeight = 0, maxHeight = 220, style, onEnter }) {
+export function AutoTextarea({ value, onChange, placeholder, minHeight = 0, maxHeight = 220, style, onEnter, className }) {
   const ref = useRef(null)
 
   // Замеряем от нулевой высоты, а не от 'auto': во flex-контейнере 'auto'
@@ -84,6 +84,7 @@ export function AutoTextarea({ value, onChange, placeholder, minHeight = 0, maxH
   return (
     <textarea
       ref={ref}
+      className={className}
       value={value}
       onChange={e => { onChange(e.target.value); resize(e.target) }}
       onKeyDown={e => {
@@ -146,7 +147,7 @@ export function UserName({ id, name, size = 13.5, bold = true }) {
   )
 }
 
-export function Btn({ children, onClick, variant = 'primary', disabled, style }) {
+export function Btn({ children, onClick, variant = 'primary', disabled, style, className }) {
   const palette = {
     primary: { background: 'var(--accent-lime)', color: '#fff', border: 'none' },
     ghost: { background: 'transparent', color: 'var(--text-secondary)', border: '1px solid var(--border-color)' },
@@ -157,9 +158,11 @@ export function Btn({ children, onClick, variant = 'primary', disabled, style })
     <button
       onClick={onClick}
       disabled={disabled}
+      className={className}
       style={{
         padding: '8px 18px', fontSize: 13, fontWeight: 600, borderRadius: 0, outline: 'none',
         cursor: disabled ? 'not-allowed' : 'pointer', opacity: disabled ? 0.5 : 1,
+        display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
         ...palette, ...style,
       }}
     >

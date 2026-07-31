@@ -10,6 +10,15 @@ function PaperclipIcon() {
   )
 }
 
+function PaperPlaneIcon() {
+  return (
+    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <line x1="22" y1="2" x2="11" y2="13" />
+      <polygon points="22 2 15 22 11 13 2 9 22 2" />
+    </svg>
+  )
+}
+
 const REACTIONS = [
   { type: 'heart',      emoji: '❤️' },
   { type: 'mind_blown', emoji: '🤯' },
@@ -35,21 +44,25 @@ function CommentComposer({ user, avatarUrl, onSubmit }) {
   }
 
   return (
-    <div style={{ display: 'flex', gap: 8, alignItems: 'flex-start', marginTop: 10 }}>
-      <Avatar name={user?.name} avatarUrl={avatarUrl} size={36} />
-      <div style={{ flex: 1, display: 'flex', gap: 8, alignItems: 'flex-start' }}>
-        <AutoTextarea
-          value={text}
-          onChange={setText}
-          placeholder="Написать комментарий..."
-          minHeight={36}
-          style={{ flex: 1, padding: '8px 10px', fontSize: 13 }}
-        />
-        <Btn onClick={submit} disabled={!text.trim() || sending}
-          style={{ height: 36, padding: '0 16px', fontSize: 12.5, flexShrink: 0 }}>
-          Комментировать
-        </Btn>
+    <div className="composer-row" style={{ marginTop: 10 }}>
+      <div className="composer-avatar">
+        <Avatar name={user?.name} avatarUrl={avatarUrl} size={36} />
       </div>
+      <AutoTextarea
+        className="composer-input"
+        value={text}
+        onChange={setText}
+        onEnter={submit}
+        placeholder="Написать комментарий..."
+        minHeight={36}
+        style={{ padding: '8px 10px', fontSize: 13 }}
+      />
+      <Btn onClick={submit} disabled={!text.trim() || sending}
+        className="composer-submit"
+        style={{ height: 36, padding: '0 16px', fontSize: 12.5, flexShrink: 0 }}>
+        <span className="composer-submit-label">Комментировать</span>
+        <span className="composer-submit-icon"><PaperPlaneIcon /></span>
+      </Btn>
     </div>
   )
 }
@@ -241,60 +254,63 @@ export function PostComposer({ user, avatarUrl, onPublished }) {
   return (
     <div style={{ marginBottom: 24 }}>
       <div style={{
-        display: 'flex', gap: 12, alignItems: 'flex-start',
         border: '1px solid var(--border-color)', borderRadius: 0, background: 'var(--bg-secondary)',
         padding: 16,
       }}>
-        <Avatar name={user?.name} avatarUrl={avatarUrl} />
-        <div style={{ flex: 1 }}>
-          <div style={{ display: 'flex', gap: 10, alignItems: 'flex-start' }}>
-            <AutoTextarea
-              value={text}
-              onChange={setText}
-              placeholder="Поделиться мыслями..."
-              minHeight={44}
-              style={{ flex: 1, padding: '10px 12px', fontSize: 14 }}
-            />
-            <input ref={fileRef} type="file" accept="image/*" onChange={pickImage} style={{ display: 'none' }} />
+        <div className="composer-row">
+          <div className="composer-avatar">
+            <Avatar name={user?.name} avatarUrl={avatarUrl} />
+          </div>
+          <AutoTextarea
+            className="composer-input"
+            value={text}
+            onChange={setText}
+            placeholder="Поделиться мыслями..."
+            minHeight={44}
+            style={{ padding: '10px 12px', fontSize: 14 }}
+          />
+          <input ref={fileRef} type="file" accept="image/*" onChange={pickImage} style={{ display: 'none' }} />
+          <button
+            onClick={() => fileRef.current?.click()}
+            disabled={uploading}
+            title={imageUrl ? 'Заменить изображение' : 'Добавить изображение'}
+            className="composer-attach"
+            style={{
+              width: 44, height: 44, flexShrink: 0, border: '1px solid var(--border-color)', borderRadius: 0,
+              background: imageUrl ? 'rgba(32,190,255,0.10)' : 'transparent',
+              color: imageUrl ? 'var(--accent-lime)' : 'var(--text-secondary)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              cursor: uploading ? 'wait' : 'pointer', outline: 'none',
+            }}
+          >
+            {uploading ? '···' : <PaperclipIcon />}
+          </button>
+          <Btn onClick={publish} disabled={!canPublish}
+            className="composer-submit"
+            style={{ height: 44, padding: '0 22px', fontSize: 13.5, flexShrink: 0 }}>
+            <span className="composer-submit-label">{publishing ? 'Публикуем...' : 'Опубликовать'}</span>
+            <span className="composer-submit-icon"><PaperPlaneIcon /></span>
+          </Btn>
+        </div>
+
+        {imageUrl && (
+          <div style={{ marginTop: 12, position: 'relative', display: 'inline-block' }}>
+            <img src={imageUrl} alt="" style={{
+              maxHeight: 180, maxWidth: '100%', display: 'block', borderRadius: 0,
+              border: '1px solid var(--border-color)',
+            }} />
             <button
-              onClick={() => fileRef.current?.click()}
-              disabled={uploading}
-              title={imageUrl ? 'Заменить изображение' : 'Добавить изображение'}
+              onClick={() => setImageUrl('')}
               style={{
-                width: 44, height: 44, flexShrink: 0, border: '1px solid var(--border-color)', borderRadius: 0,
-                background: imageUrl ? 'rgba(32,190,255,0.10)' : 'transparent',
-                color: imageUrl ? 'var(--accent-lime)' : 'var(--text-secondary)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                cursor: uploading ? 'wait' : 'pointer', outline: 'none',
+                position: 'absolute', top: 6, right: 6, border: 'none', borderRadius: 0,
+                background: 'rgba(0,0,0,0.7)', color: '#fff', fontSize: 12, fontWeight: 600,
+                padding: '4px 10px', cursor: 'pointer', outline: 'none',
               }}
             >
-              {uploading ? '···' : <PaperclipIcon />}
+              Убрать
             </button>
-            <Btn onClick={publish} disabled={!canPublish}
-              style={{ height: 44, padding: '0 22px', fontSize: 13.5, flexShrink: 0 }}>
-              {publishing ? 'Публикуем...' : 'Опубликовать'}
-            </Btn>
           </div>
-
-          {imageUrl && (
-            <div style={{ marginTop: 12, position: 'relative', display: 'inline-block' }}>
-              <img src={imageUrl} alt="" style={{
-                maxHeight: 180, maxWidth: '100%', display: 'block', borderRadius: 0,
-                border: '1px solid var(--border-color)',
-              }} />
-              <button
-                onClick={() => setImageUrl('')}
-                style={{
-                  position: 'absolute', top: 6, right: 6, border: 'none', borderRadius: 0,
-                  background: 'rgba(0,0,0,0.7)', color: '#fff', fontSize: 12, fontWeight: 600,
-                  padding: '4px 10px', cursor: 'pointer', outline: 'none',
-                }}
-              >
-                Убрать
-              </button>
-            </div>
-          )}
-        </div>
+        )}
       </div>
       {error && <div style={{ color: '#ff3333', fontSize: 12, marginTop: 8 }}>{error}</div>}
     </div>

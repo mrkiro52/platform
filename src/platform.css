@@ -210,6 +210,29 @@ img { max-width: 100%; display: block; }
   .post-media-text { order: 1; }
 }
 
+/* ── Стена: композер поста и комментария ───────────────────────────
+   ПК: аватар, поле ввода, скрепка, кнопка — всё в один ряд.
+   Мобайл (≤640px): аватар + скрепка + кнопка-иконка — ряд сверху,
+   поле ввода — отдельной строкой на всю ширину под ним. Достигается
+   flex-wrap + order + flex-basis:100% на самом поле (стандартный
+   приём принудительного переноса во flex-строке). ─────────────────*/
+.composer-row { display: flex; gap: 10px; align-items: flex-start; flex-wrap: wrap; }
+.composer-row .composer-avatar  { order: 1; }
+.composer-row .composer-input   { order: 2; flex: 1; min-width: 0; }
+.composer-row .composer-attach  { order: 3; }
+.composer-row .composer-submit  { order: 4; }
+.composer-submit .composer-submit-label { display: inline; }
+.composer-submit .composer-submit-icon  { display: none; }
+
+@media (max-width: 640px) {
+  .composer-row .composer-attach  { order: 2; }
+  .composer-row .composer-submit  { order: 3; }
+  .composer-row .composer-input   { order: 4; flex-basis: 100%; }
+  .composer-submit { width: 44px; padding: 0 !important; }
+  .composer-submit .composer-submit-label { display: none; }
+  .composer-submit .composer-submit-icon  { display: inline-flex; }
+}
+
 /* ================================================================
    LOGIN PAGE
 ================================================================ */
