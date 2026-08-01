@@ -94,106 +94,6 @@ function TemplateMap() {
   )
 }
 
-/* ─── Interactive: симулятор совпадения резюме с вакансией ─── */
-function VacancyMatcher() {
-  const keywords = [
-    // Frontend
-    'JavaScript', 'TypeScript', 'React', 'Vue', 'Angular', 'Next.js', 'Nuxt', 'Svelte',
-    'HTML', 'CSS', 'Sass', 'Tailwind', 'Webpack', 'Vite', 'Redux', 'Zustand',
-    'Jest', 'Cypress', 'Figma', 'WebSocket',
-    // Backend
-    'Python', 'Node.js', 'Java', 'Go', 'Kotlin', 'C#', 'PHP', 'Ruby',
-    'FastAPI', 'Django', 'Flask', 'Express', 'Spring', 'NestJS', 'Laravel',
-    'REST API', 'GraphQL', 'gRPC', 'Kafka', 'RabbitMQ', 'Celery',
-    'JWT', 'OAuth', 'OpenAPI', 'Swagger',
-    // Базы данных
-    'SQL', 'PostgreSQL', 'MySQL', 'SQLite', 'MongoDB', 'Redis', 'Elasticsearch',
-    'ClickHouse', 'Cassandra', 'DynamoDB',
-    // DevOps
-    'Git', 'Docker', 'Kubernetes', 'CI/CD', 'Linux', 'Nginx', 'Ansible', 'Terraform',
-    'GitHub Actions', 'GitLab CI', 'Jenkins', 'AWS', 'GCP', 'Azure',
-    // ML / Data
-    'TensorFlow', 'PyTorch', 'scikit-learn', 'pandas', 'NumPy', 'Jupyter',
-    'Airflow', 'MLflow', 'Spark', 'dbt', 'Tableau', 'Power BI',
-    // Аналитика
-    'Excel', 'Google Sheets', 'Looker', 'Metabase', 'A/B testing', 'Matplotlib', 'Seaborn',
-  ]
-  const [vacancy, setVacancy] = useState('')
-  const [resume, setResume] = useState('')
-
-  const vacancyKeywords = keywords.filter(k => vacancy.toLowerCase().includes(k.toLowerCase()))
-  const matched = vacancyKeywords.filter(k => resume.toLowerCase().includes(k.toLowerCase()))
-  const missing = vacancyKeywords.filter(k => !resume.toLowerCase().includes(k.toLowerCase()))
-  const score = vacancyKeywords.length ? Math.round((matched.length / vacancyKeywords.length) * 100) : null
-
-  const barColor = score === null ? 'var(--border-color)' : score >= 70 ? 'var(--accent-lime)' : score >= 40 ? '#fb923c' : '#f87171'
-
-  return (
-    <Card accent>
-      <div style={{ color: 'var(--text-tertiary)', fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', marginBottom: 14 }}>Симулятор — насколько твоё резюме совпадает с вакансией</div>
-      <div style={{ display: 'grid', gap: 12, marginBottom: 14 }}>
-        <div>
-          <div style={{ fontSize: 11, color: 'var(--text-tertiary)', marginBottom: 4 }}>Текст вакансии (требования)</div>
-          <textarea
-            value={vacancy}
-            onChange={e => setVacancy(e.target.value)}
-            placeholder="Вставь сюда требования из реальной вакансии..."
-            style={{
-              width: '100%', boxSizing: 'border-box', minHeight: 80,
-              background: 'var(--bg-tertiary)', border: '1px solid var(--border-color)',
-              borderRadius: 8, padding: '10px 12px', color: 'var(--text-primary)',
-              fontSize: 13, lineHeight: 1.6, resize: 'vertical', outline: 'none',
-            }}
-          />
-        </div>
-        <div>
-          <div style={{ fontSize: 11, color: 'var(--text-tertiary)', marginBottom: 4 }}>Твой раздел «Навыки» / «Опыт»</div>
-          <textarea
-            value={resume}
-            onChange={e => setResume(e.target.value)}
-            placeholder="Вставь сюда текст своего резюме..."
-            style={{
-              width: '100%', boxSizing: 'border-box', minHeight: 80,
-              background: 'var(--bg-tertiary)', border: '1px solid var(--border-color)',
-              borderRadius: 8, padding: '10px 12px', color: 'var(--text-primary)',
-              fontSize: 13, lineHeight: 1.6, resize: 'vertical', outline: 'none',
-            }}
-          />
-        </div>
-      </div>
-
-      {vacancyKeywords.length === 0 ? (
-        <S style={{ fontSize: 12, margin: 0 }}>Вставь текст вакансии — найдём в нём технологии из базы и покажем, сколько из них есть в твоём резюме.</S>
-      ) : (
-        <>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12 }}>
-            <div style={{ flex: 1, height: 8, background: 'var(--bg-tertiary)', borderRadius: 4, overflow: 'hidden' }}>
-              <div style={{ height: '100%', width: `${score}%`, background: barColor, borderRadius: 4, transition: 'width 0.3s' }} />
-            </div>
-            <span style={{ fontFamily: 'monospace', fontWeight: 700, fontSize: 15, color: barColor, minWidth: 44 }}>{score}%</span>
-          </div>
-          {matched.length > 0 && (
-            <div style={{ marginBottom: 8 }}>
-              <div style={{ fontSize: 11, color: '#4ade80', fontWeight: 700, marginBottom: 6 }}>Совпало ({matched.length})</div>
-              <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-                {matched.map(k => <span key={k} style={{ background: 'rgba(74,222,128,0.15)', border: '1px solid rgba(74,222,128,0.3)', color: '#4ade80', borderRadius: 5, padding: '2px 8px', fontSize: 12 }}>{k}</span>)}
-              </div>
-            </div>
-          )}
-          {missing.length > 0 && (
-            <div>
-              <div style={{ fontSize: 11, color: '#f87171', fontWeight: 700, marginBottom: 6 }}>Есть в вакансии, но не нашли в резюме ({missing.length})</div>
-              <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-                {missing.map(k => <span key={k} style={{ background: 'rgba(248,113,113,0.15)', border: '1px solid rgba(248,113,113,0.3)', color: '#f87171', borderRadius: 5, padding: '2px 8px', fontSize: 12 }}>{k}</span>)}
-              </div>
-            </div>
-          )}
-        </>
-      )}
-    </Card>
-  )
-}
-
 /* ─── Main ─── */
 export default function August1ResumeFlagsTheory() {
   return (
@@ -368,8 +268,6 @@ export default function August1ResumeFlagsTheory() {
         начинается с «Программист» без уточнения языка — часть систем может не засчитать совпадение по заголовку.
         Явно укажи в шапке или summary формулировку, максимально близкую к названию вакансии — если это правда.</Note>
 
-      <VacancyMatcher />
-
       <Bad><B>Не превращай резюме в список ключевых слов.</B> Вставить 40 не связанных с реальным опытом
         технологий в один абзац ради ATS — плохая идея: на собеседовании спросят про каждую, а живой рекрутер
         после ATS сразу увидит неестественный текст и отложит резюме в сторону.</Bad>
@@ -469,9 +367,6 @@ export default function August1ResumeFlagsTheory() {
         <><B>Telegram</B> — многие технические компании в СНГ сейчас общаются именно там, это ускоряет первый контакт.</>,
       ]} />
 
-      <section className="theory-section theory-section--closing" style={{ marginTop: 48 }}>
-        <p className="theory-closing-text">Резюме — не документ «один раз написал и забыл». Дорабатывай его после каждого отклика с учётом фидбека, и через пару итераций оно станет твоим сильнейшим инструментом на рынке труда.</p>
-      </section>
     </div>
   )
 }
