@@ -559,6 +559,29 @@ function migrate() {
       console.error('❌ Migration 14 failed:', err.message)
     }
   }
+
+  // Migration 15: разблокируем август — добавляем занятие 1 августа (для всех
+  // треков сразу, поэтому tracks оставляем пустым массивом)
+  if (schemaVersion < 15) {
+    try {
+      const augustCount = db.prepare("SELECT COUNT(*) as c FROM schedule WHERE month='august' AND day_num=1").get().c
+      if (augustCount === 0) {
+        const ins = db.prepare(`INSERT INTO schedule (day_num, date_label, type, title, theory, tasks, hw, month, meeting_time, tracks, description) VALUES (?,?,?,?,?,?,?,?,?,?,?)`)
+        ins.run(1, 'сб, 1 августа', 'lecture', 'Резюме: шаблон, ред- и грин-флаги', '[]', '[]', '', 'august', '20:00', '[]', 'Дорабатываем резюме до финальной версии: разбираем структуру под ATS, шаблон LaTeX и главные ред- и грин-флаги, которые видит рекрутер.')
+      }
+
+      const libDayCount = db.prepare("SELECT COUNT(*) as c FROM library_days WHERE month='august' AND day_number=1").get().c
+      if (libDayCount === 0) {
+        db.prepare(`INSERT INTO library_days (day_number, date_label, title, month, week_name, status) VALUES (?,?,?,?,?,?)`)
+          .run(1, '1 августа', 'Резюме: шаблон, ред- и грин-флаги', 'august', 'Август · карьера', 'open')
+      }
+
+      db.pragma('user_version = 15')
+      console.log('✅ Migration 15 completed: added August 1 session (Резюме: шаблон, ред- и грин-флаги)')
+    } catch (err) {
+      console.error('❌ Migration 15 failed:', err.message)
+    }
+  }
 }
 
 migrate()

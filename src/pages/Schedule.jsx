@@ -6,7 +6,7 @@ import { SkeletonScheduleDay } from '../components/Skeleton'
 const MONTH_TABS = [
   { value: 'june',   label: 'Июнь',   locked: false },
   { value: 'july',   label: 'Июль',   locked: false },
-  { value: 'august', label: 'Август', locked: true  },
+  { value: 'august', label: 'Август', locked: false },
 ]
 
 const JUNE_WEEKS = [
@@ -97,14 +97,20 @@ const JULY_SCHEDULE_FALLBACK = [
   { day:31, date:'пт, 31 июля', meeting_time:'20:00', title:'Нарешиваем LeetCode', tracks:['Frontend','Backend','Аналитика','ML','Кибербезопасность'], description:'Практика алгоритмических задач для всех треков: Climbing Stairs, Sqrt(x), Word Pattern и 3Sum из подборки Top Interview 150.' },
 ].map((e, i) => ({ id: -1000 - i, month: 'july', type: 'lecture', theory: [], tasks: [], hw: '', meeting_link: '', ...e }))
 
-// Объединяем события июля из API с резервными. Резервные данные считаются
-// источником истины по day+title (могут содержать более свежее время/описание,
+// Резервное расписание августа — та же логика, что и у июля. Теперь занятия
+// идут для всех треков сразу, поэтому поле tracks оставляем пустым.
+const AUGUST_SCHEDULE_FALLBACK = [
+  { day:1, date:'сб, 1 августа', meeting_time:'20:00', title:'Резюме: шаблон, ред- и грин-флаги', tracks:[], description:'Дорабатываем резюме до финальной версии: разбираем структуру под ATS, шаблон LaTeX и главные ред- и грин-флаги, которые видит рекрутер.' },
+].map((e, i) => ({ id: -2000 - i, month: 'august', type: 'lecture', theory: [], tasks: [], hw: '', meeting_link: '', ...e }))
+
+// Объединяем события июля и августа из API с резервными. Резервные данные считаются
+// источником истины по month+day+title (могут содержать более свежее время/описание,
 // чем ещё не задеплоенная БД на бэкенде), поэтому вытесняют совпадающие записи из API.
-function mergeJuly(apiEvents) {
-  const fallbackKeys = new Set(JULY_SCHEDULE_FALLBACK.map(e => `${e.day}|${e.title}`))
-  const filteredApi = apiEvents.filter(e => !(e.month === 'july' && fallbackKeys.has(`${e.day}|${e.title}`)))
-  const extra = JULY_SCHEDULE_FALLBACK
-  return [...filteredApi, ...extra]
+function mergeExtras(apiEvents) {
+  const extras = [...JULY_SCHEDULE_FALLBACK, ...AUGUST_SCHEDULE_FALLBACK]
+  const fallbackKeys = new Set(extras.map(e => `${e.month}|${e.day}|${e.title}`))
+  const filteredApi = apiEvents.filter(e => !fallbackKeys.has(`${e.month}|${e.day}|${e.title}`))
+  return [...filteredApi, ...extras]
 }
 
 function getDayDate(dayNum, month) {
@@ -123,6 +129,13 @@ function isAvailable(dayNum, month) {
 function getTodayJulyDay() {
   const today = new Date()
   if (today.getFullYear() !== 2026 || today.getMonth() !== 6) return null
+  return today.getDate()
+}
+
+// Число сегодняшнего дня, если сегодня август 2026, иначе null
+function getTodayAugustDay() {
+  const today = new Date()
+  if (today.getFullYear() !== 2026 || today.getMonth() !== 7) return null
   return today.getDate()
 }
 
@@ -255,9 +268,11 @@ function JulySessionCard({ session }) {
         <span style={{ fontWeight: 600, fontSize: 14, color: 'var(--text-primary)', flex: 1 }}>
           {session.title}
         </span>
-        <span style={{ fontSize: 12, color: 'var(--text-secondary)' }}>
-          {tracksStr}
-        </span>
+        {tracksStr && (
+          <span style={{ fontSize: 12, color: 'var(--text-secondary)' }}>
+            {tracksStr}
+          </span>
+        )}
       </div>
       {session.description && (
         <p style={{ color: 'var(--text-secondary)', fontSize: 13, lineHeight: 1.6, margin: 0 }}>
@@ -268,9 +283,10 @@ function JulySessionCard({ session }) {
   )
 }
 
-// Группировка занятий июля по дням
+// Группировка занятий по дням (используется и для июля, и для августа)
 function JulyDayGroup({ dayNum, dateLabel, sessions, open, onToggle }) {
-  const tracksList = [...new Set(sessions.flatMap(s => s.tracks || []))].join(' / ')
+  const trackSet = [...new Set(sessions.flatMap(s => s.tracks || []))]
+  const tracksList = trackSet.length > 0 ? trackSet.join(' / ') : sessions.map(s => s.title).join(' / ')
   return (
     <div className={`sched-day${open ? ' sched-day--open' : ''}`} style={{ marginBottom: 8 }}>
       <div className="sched-day-header" onClick={onToggle} style={{ cursor: 'pointer' }}>
@@ -294,16 +310,17 @@ function JulyDayGroup({ dayNum, dateLabel, sessions, open, onToggle }) {
 }
 
 export default function Schedule() {
-  const [activeMonth, setActiveMonth] = useState('july')
-  const [events, setEvents]           = useState(() => mergeJuly(SCHEDULE))
-  const [expandedId, setExpandedId]   = useState(() => findTodayId(SCHEDULE))
-  const [openJulyDay, setOpenJulyDay] = useState(() => getTodayJulyDay())
-  const [loading, setLoading]         = useState(true)
+  const [activeMonth, setActiveMonth]     = useState('july')
+  const [events, setEvents]               = useState(() => mergeExtras(SCHEDULE))
+  const [expandedId, setExpandedId]       = useState(() => findTodayId(SCHEDULE))
+  const [openJulyDay, setOpenJulyDay]     = useState(() => getTodayJulyDay())
+  const [openAugustDay, setOpenAugustDay] = useState(() => getTodayAugustDay() || 1)
+  const [loading, setLoading]             = useState(true)
 
   useEffect(() => {
     const startTime = Date.now()
     api.schedule().then(data => {
-      setEvents(mergeJuly(data))
+      setEvents(mergeExtras(data))
       const id = findTodayId(data)
       if (id !== null) setExpandedId(id)
       const elapsed = Date.now() - startTime
@@ -317,6 +334,7 @@ export default function Schedule() {
 
   const juneEvents = events.filter(e => e.month === 'june' || !e.month)
   const julyEvents = events.filter(e => e.month === 'july')
+  const augustEvents = events.filter(e => e.month === 'august')
 
   // Группируем июль по дням
   const julyByDay = {}
@@ -325,6 +343,14 @@ export default function Schedule() {
     julyByDay[e.day].push(e)
   })
   const julyDays = Object.keys(julyByDay).map(Number).sort((a, b) => a - b)
+
+  // Группируем август по дням
+  const augustByDay = {}
+  augustEvents.forEach(e => {
+    if (!augustByDay[e.day]) augustByDay[e.day] = []
+    augustByDay[e.day].push(e)
+  })
+  const augustDays = Object.keys(augustByDay).map(Number).sort((a, b) => a - b)
 
   return (
     <section className="page active">
@@ -417,6 +443,31 @@ export default function Schedule() {
                 sessions={julyByDay[dayNum]}
                 open={openJulyDay === dayNum}
                 onToggle={() => setOpenJulyDay(prev => prev === dayNum ? null : dayNum)}
+              />
+            ))}
+          </div>
+        )
+      )}
+
+      {/* Август */}
+      {activeMonth === 'august' && (
+        loading ? (
+          <div className="sched-week">
+            {[1].map(i => <SkeletonScheduleDay key={i} />)}
+          </div>
+        ) : augustDays.length === 0 ? (
+          <p style={{ color: 'var(--text-tertiary)', padding: '20px 0' }}>Расписание августа скоро появится</p>
+        ) : (
+          <div className="sched-week">
+            <div className="schedule-date-label">Август 2026</div>
+            {augustDays.map(dayNum => (
+              <JulyDayGroup
+                key={dayNum}
+                dayNum={dayNum}
+                dateLabel={augustByDay[dayNum][0]?.date || `${dayNum} августа`}
+                sessions={augustByDay[dayNum]}
+                open={openAugustDay === dayNum}
+                onToggle={() => setOpenAugustDay(prev => prev === dayNum ? null : dayNum)}
               />
             ))}
           </div>

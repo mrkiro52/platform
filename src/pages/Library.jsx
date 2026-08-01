@@ -6,7 +6,7 @@ import { SkeletonLibraryDay } from '../components/Skeleton'
 const TABS = [
   { value:'june',   label:'Июнь — Фундамент',    locked: false },
   { value:'july',   label:'Июль — Специализация', locked: false },
-  { value:'august', label:'Август — Карьера',      locked: true  },
+  { value:'august', label:'Август — Карьера',      locked: false },
 ]
 
 // Треки июля: направление → синтетический id дня с контентом (теория/тесты/ДЗ)
@@ -198,6 +198,15 @@ const JULY_DAYS = [
   { day: 31, date: 'пт, 31 июля', tracks: JULY_TRACKS_DAY31 },
 ]
 
+// Август — карьера. Занятия идут для всех треков сразу, поэтому name у трека пустой.
+const AUGUST_TRACKS_DAY1 = [
+  { name: '', id: 170, lesson: 'Резюме: шаблон, ред- и грин-флаги', color: { bg:'rgba(32,190,255,0.12)', border:'rgba(32,190,255,0.3)', text:'#20beff' }, showQuestions: false, showHomework: false },
+]
+
+const AUGUST_DAYS = [
+  { day: 1, date: 'сб, 1 августа', tracks: AUGUST_TRACKS_DAY1 },
+]
+
 function JulyTrackRow({ track, onOpenTheory, onOpenQuestions, onOpenHomework }) {
   const c = track.color
   const target = { day: track.id }
@@ -220,7 +229,7 @@ function JulyTrackRow({ track, onOpenTheory, onOpenQuestions, onOpenHomework }) 
       padding: '14px 16px',
     }}>
       <div style={{ minWidth: 190, flex: '1 1 190px' }}>
-        <div style={{ color: 'var(--text-secondary)', fontSize: 12, fontWeight: 500, marginBottom: 4 }}>{track.name}</div>
+        {track.name && <div style={{ color: 'var(--text-secondary)', fontSize: 12, fontWeight: 500, marginBottom: 4 }}>{track.name}</div>}
         <div style={{ color: 'var(--text-primary)', fontSize: 13.5, fontWeight: 500 }}>{track.lesson}</div>
       </div>
       <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
@@ -251,7 +260,7 @@ function JulyDayCard({ day, open, onToggle, onOpenTheory, onOpenQuestions, onOpe
           <span className="sched-day-num">{day.date}</span>
         </div>
         <div className="sched-day-title" style={{ flex: 1 }}>
-          {day.tracks.map(t => t.name).join(' / ')}
+          {day.tracks.map(t => t.name).filter(Boolean).join(' / ') || day.tracks.map(t => t.lesson).join(' / ')}
         </div>
         <span className="sched-chevron">{open ? '▴' : '▾'}</span>
       </div>
@@ -410,6 +419,7 @@ export default function Library({ onOpenDay, onOpenTheory, onOpenQuestions, onOp
 
   const juneDays = buildJuneDays(schedule, library)
   const [openJulyDay, setOpenJulyDay] = useState(() => getTodayJulyDay())
+  const [openAugustDay, setOpenAugustDay] = useState(1)
 
   return (
     <section className="page active">
@@ -475,7 +485,21 @@ export default function Library({ onOpenDay, onOpenTheory, onOpenQuestions, onOp
       )}
 
       {activeMonth === 'august' && (
-        <p style={{ color:'var(--text-tertiary)', padding:'20px 0' }}>Материалы появятся позже</p>
+        <div className="sched-week">
+          <div className="schedule-date-label">Август 2026 · карьера</div>
+          {AUGUST_DAYS.map(day => (
+            <div key={day.day} className="fade-in">
+              <JulyDayCard
+                day={day}
+                open={openAugustDay === day.day}
+                onToggle={() => setOpenAugustDay(prev => prev === day.day ? null : day.day)}
+                onOpenTheory={onOpenTheory}
+                onOpenQuestions={onOpenQuestions}
+                onOpenHomework={onOpenHomework}
+              />
+            </div>
+          ))}
+        </div>
       )}
     </section>
   )
