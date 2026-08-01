@@ -28,17 +28,17 @@ const Card = ({ children, accent }) => (
 )
 
 const Good = ({ children }) => (
-  <div style={{ background: 'rgba(74,222,128,0.07)', border: '1px solid rgba(74,222,128,0.25)', borderRadius: 8, padding: '12px 16px', margin: '10px 0', fontSize: 13.5, lineHeight: 1.7, color: 'var(--text-secondary)' }}>
+  <div style={{ border: '1px solid rgba(74,222,128,0.25)', borderRadius: 8, padding: '12px 16px', margin: '10px 0', fontSize: 13.5, lineHeight: 1.7, color: 'var(--text-secondary)' }}>
     {children}
   </div>
 )
 const Bad = ({ children }) => (
-  <div style={{ background: 'rgba(248,113,113,0.07)', border: '1px solid rgba(248,113,113,0.25)', borderRadius: 8, padding: '12px 16px', margin: '10px 0', fontSize: 13.5, lineHeight: 1.7, color: 'var(--text-secondary)' }}>
+  <div style={{ border: '1px solid rgba(248,113,113,0.25)', borderRadius: 8, padding: '12px 16px', margin: '10px 0', fontSize: 13.5, lineHeight: 1.7, color: 'var(--text-secondary)' }}>
     {children}
   </div>
 )
 const Note = ({ children }) => (
-  <div style={{ background: 'rgba(32,190,255,0.05)', border: '1px solid rgba(32,190,255,0.18)', borderRadius: 8, padding: '12px 16px', margin: '14px 0', fontSize: 13.5, lineHeight: 1.7, color: 'var(--text-secondary)' }}>
+  <div style={{ border: '1px solid rgba(32,190,255,0.18)', borderRadius: 8, padding: '12px 16px', margin: '14px 0', fontSize: 13.5, lineHeight: 1.7, color: 'var(--text-secondary)' }}>
     {children}
   </div>
 )
@@ -270,6 +270,40 @@ export default function August1ResumeFlagsTheory() {
       <Note>Быстрая проверка своими руками: открой свой PDF-файл резюме и попробуй выделить и скопировать весь
         текст (Ctrl/Cmd+A → Ctrl/Cmd+C), затем вставь в Блокнот. Если текст сохранил осмысленный порядок — ATS,
         скорее всего, прочитает его так же. Если получилась каша — робот увидит то же самое.</Note>
+
+      <S style={{ marginTop: 20 }}>Наглядно — два реальных примера рядом. Слева резюме, устроенное похоже на наш
+        шаблон, справа — типичный «яркий» шаблон из сборника готовых резюме.</S>
+
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 20, margin: '14px 0' }}>
+        <div>
+          <img
+            src="https://i.pinimg.com/originals/cb/c6/a2/cbc6a2466e1c1b5bed666c3cdf79cbe8.jpg"
+            alt="Пример хорошо структурированного резюме"
+            style={{ width: '100%', display: 'block', border: '1px solid var(--border-color)', borderRadius: 8 }}
+          />
+          <div style={{ marginTop: 10, fontSize: 12, fontWeight: 700, color: 'var(--text-primary)', textTransform: 'uppercase', letterSpacing: 1 }}>Хорошо</div>
+          <Ul items={[
+            'Один столбец — порядок чтения линейный, ATS не путает блоки.',
+            'Компании, должности и даты — обычным текстом, без иконок и графики.',
+            'Спокойная чёрно-белая типографика без декоративных элементов.',
+            'Чёткие разделы Education / Experience — структура легко распознаётся.',
+          ]} />
+        </div>
+        <div>
+          <img
+            src="https://i.pinimg.com/originals/d3/0e/fc/d30efc03e61308f88333212266b1de40.jpg"
+            alt="Пример плохо структурированного резюме"
+            style={{ width: '100%', display: 'block', border: '1px solid var(--border-color)', borderRadius: 8 }}
+          />
+          <div style={{ marginTop: 10, fontSize: 12, fontWeight: 700, color: 'var(--text-primary)', textTransform: 'uppercase', letterSpacing: 1 }}>Плохо</div>
+          <Ul items={[
+            'Два физических столбца — ровно тот многоколоночный макет, который ломает порядок чтения ATS.',
+            'Контакты и уровень навыков переданы иконками и шкалами-полосками, а не текстом — ATS их не прочитает вообще.',
+            'Декоративная графика и цветные плашки — типичный шаблон из сборника (раздел 4), рекрутер узнаёт его с первого взгляда.',
+            'Крупное фото на цветном фоне в углу — у части систем сбивает автоматическое распознавание полей.',
+          ]} />
+        </div>
+      </div>
 
       {/* ─── 3. Ключевые слова ─── */}
       <SectionHead n="03" title="Ключевые слова: как получить не просто хорошее, а идеально подходящее резюме" sub="Разница между резюме, которое проходит ATS в среднем, и резюме, которое проходит именно эту вакансию — в точности формулировок" />
