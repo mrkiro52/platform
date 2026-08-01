@@ -348,7 +348,7 @@ export default function August1ResumeFlagsTheory() {
           { n: '04', title: 'Сверь с реальным опытом', desc: 'Для каждого ключевого слова — либо у тебя есть этот опыт (тогда добавляй точную формулировку), либо нет (тогда не добавляй — на собеседовании спросят именно про это).' },
           { n: '05', title: 'Перепиши в контексте, а не списком', desc: 'Ключевые слова должны появиться внутри описания навыка или буллета с достижением, а не отдельным блоком мелким текстом — так их видит и робот, и человек.' },
         ].map(step => (
-          <div key={step.n} style={{ display: 'flex', gap: 14, alignItems: 'flex-start', background: 'var(--bg-secondary)', border: '1px solid var(--border-color)', borderRadius: 8, padding: '12px 14px' }}>
+          <div key={step.n} style={{ display: 'flex', gap: 14, alignItems: 'flex-start' }}>
             <div style={{ fontFamily: 'var(--font-syne)', fontWeight: 800, fontSize: 18, color: 'var(--accent-lime)', flexShrink: 0, minWidth: 28 }}>{step.n}</div>
             <div>
               <div style={{ fontWeight: 700, color: 'var(--text-primary)', fontSize: 14, marginBottom: 3 }}>{step.title}</div>
