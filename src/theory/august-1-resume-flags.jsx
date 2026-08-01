@@ -28,18 +28,18 @@ const Card = ({ children, accent }) => (
 )
 
 const Good = ({ children }) => (
-  <div style={{ background: 'rgba(74,222,128,0.07)', border: '1px solid rgba(74,222,128,0.25)', borderRadius: 8, padding: '12px 16px', margin: '10px 0', fontSize: 13.5, lineHeight: 1.7, color: 'var(--text-secondary)' }}>
-    <span style={{ color: '#4ade80', fontWeight: 700, marginRight: 6 }}>✅</span>{children}
+  <div style={{ background: 'rgba(74,222,128,0.07)', border: '1px solid rgba(74,222,128,0.25)', borderLeft: '3px solid #4ade80', borderRadius: 8, padding: '12px 16px', margin: '10px 0', fontSize: 13.5, lineHeight: 1.7, color: 'var(--text-secondary)' }}>
+    {children}
   </div>
 )
 const Bad = ({ children }) => (
-  <div style={{ background: 'rgba(248,113,113,0.07)', border: '1px solid rgba(248,113,113,0.25)', borderRadius: 8, padding: '12px 16px', margin: '10px 0', fontSize: 13.5, lineHeight: 1.7, color: 'var(--text-secondary)' }}>
-    <span style={{ color: '#f87171', fontWeight: 700, marginRight: 6 }}>❌</span>{children}
+  <div style={{ background: 'rgba(248,113,113,0.07)', border: '1px solid rgba(248,113,113,0.25)', borderLeft: '3px solid #f87171', borderRadius: 8, padding: '12px 16px', margin: '10px 0', fontSize: 13.5, lineHeight: 1.7, color: 'var(--text-secondary)' }}>
+    {children}
   </div>
 )
 const Note = ({ children }) => (
-  <div style={{ background: 'rgba(32,190,255,0.05)', border: '1px solid rgba(32,190,255,0.18)', borderRadius: 8, padding: '12px 16px', margin: '14px 0', fontSize: 13.5, lineHeight: 1.7, color: 'var(--text-secondary)' }}>
-    <span style={{ color: 'var(--accent-lime)', fontWeight: 700, marginRight: 6 }}>💡</span>{children}
+  <div style={{ background: 'rgba(32,190,255,0.05)', border: '1px solid rgba(32,190,255,0.18)', borderLeft: '3px solid var(--accent-lime)', borderRadius: 8, padding: '12px 16px', margin: '14px 0', fontSize: 13.5, lineHeight: 1.7, color: 'var(--text-secondary)' }}>
+    {children}
   </div>
 )
 
@@ -90,6 +90,106 @@ function TemplateMap() {
           </div>
         ))}
       </div>
+    </Card>
+  )
+}
+
+/* ─── Interactive: симулятор совпадения резюме с вакансией ─── */
+function VacancyMatcher() {
+  const keywords = [
+    // Frontend
+    'JavaScript', 'TypeScript', 'React', 'Vue', 'Angular', 'Next.js', 'Nuxt', 'Svelte',
+    'HTML', 'CSS', 'Sass', 'Tailwind', 'Webpack', 'Vite', 'Redux', 'Zustand',
+    'Jest', 'Cypress', 'Figma', 'WebSocket',
+    // Backend
+    'Python', 'Node.js', 'Java', 'Go', 'Kotlin', 'C#', 'PHP', 'Ruby',
+    'FastAPI', 'Django', 'Flask', 'Express', 'Spring', 'NestJS', 'Laravel',
+    'REST API', 'GraphQL', 'gRPC', 'Kafka', 'RabbitMQ', 'Celery',
+    'JWT', 'OAuth', 'OpenAPI', 'Swagger',
+    // Базы данных
+    'SQL', 'PostgreSQL', 'MySQL', 'SQLite', 'MongoDB', 'Redis', 'Elasticsearch',
+    'ClickHouse', 'Cassandra', 'DynamoDB',
+    // DevOps
+    'Git', 'Docker', 'Kubernetes', 'CI/CD', 'Linux', 'Nginx', 'Ansible', 'Terraform',
+    'GitHub Actions', 'GitLab CI', 'Jenkins', 'AWS', 'GCP', 'Azure',
+    // ML / Data
+    'TensorFlow', 'PyTorch', 'scikit-learn', 'pandas', 'NumPy', 'Jupyter',
+    'Airflow', 'MLflow', 'Spark', 'dbt', 'Tableau', 'Power BI',
+    // Аналитика
+    'Excel', 'Google Sheets', 'Looker', 'Metabase', 'A/B testing', 'Matplotlib', 'Seaborn',
+  ]
+  const [vacancy, setVacancy] = useState('')
+  const [resume, setResume] = useState('')
+
+  const vacancyKeywords = keywords.filter(k => vacancy.toLowerCase().includes(k.toLowerCase()))
+  const matched = vacancyKeywords.filter(k => resume.toLowerCase().includes(k.toLowerCase()))
+  const missing = vacancyKeywords.filter(k => !resume.toLowerCase().includes(k.toLowerCase()))
+  const score = vacancyKeywords.length ? Math.round((matched.length / vacancyKeywords.length) * 100) : null
+
+  const barColor = score === null ? 'var(--border-color)' : score >= 70 ? 'var(--accent-lime)' : score >= 40 ? '#fb923c' : '#f87171'
+
+  return (
+    <Card accent>
+      <div style={{ color: 'var(--text-tertiary)', fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase', marginBottom: 14 }}>Симулятор — насколько твоё резюме совпадает с вакансией</div>
+      <div style={{ display: 'grid', gap: 12, marginBottom: 14 }}>
+        <div>
+          <div style={{ fontSize: 11, color: 'var(--text-tertiary)', marginBottom: 4 }}>Текст вакансии (требования)</div>
+          <textarea
+            value={vacancy}
+            onChange={e => setVacancy(e.target.value)}
+            placeholder="Вставь сюда требования из реальной вакансии..."
+            style={{
+              width: '100%', boxSizing: 'border-box', minHeight: 80,
+              background: 'var(--bg-tertiary)', border: '1px solid var(--border-color)',
+              borderRadius: 8, padding: '10px 12px', color: 'var(--text-primary)',
+              fontSize: 13, lineHeight: 1.6, resize: 'vertical', outline: 'none',
+            }}
+          />
+        </div>
+        <div>
+          <div style={{ fontSize: 11, color: 'var(--text-tertiary)', marginBottom: 4 }}>Твой раздел «Навыки» / «Опыт»</div>
+          <textarea
+            value={resume}
+            onChange={e => setResume(e.target.value)}
+            placeholder="Вставь сюда текст своего резюме..."
+            style={{
+              width: '100%', boxSizing: 'border-box', minHeight: 80,
+              background: 'var(--bg-tertiary)', border: '1px solid var(--border-color)',
+              borderRadius: 8, padding: '10px 12px', color: 'var(--text-primary)',
+              fontSize: 13, lineHeight: 1.6, resize: 'vertical', outline: 'none',
+            }}
+          />
+        </div>
+      </div>
+
+      {vacancyKeywords.length === 0 ? (
+        <S style={{ fontSize: 12, margin: 0 }}>Вставь текст вакансии — найдём в нём технологии из базы и покажем, сколько из них есть в твоём резюме.</S>
+      ) : (
+        <>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12 }}>
+            <div style={{ flex: 1, height: 8, background: 'var(--bg-tertiary)', borderRadius: 4, overflow: 'hidden' }}>
+              <div style={{ height: '100%', width: `${score}%`, background: barColor, borderRadius: 4, transition: 'width 0.3s' }} />
+            </div>
+            <span style={{ fontFamily: 'monospace', fontWeight: 700, fontSize: 15, color: barColor, minWidth: 44 }}>{score}%</span>
+          </div>
+          {matched.length > 0 && (
+            <div style={{ marginBottom: 8 }}>
+              <div style={{ fontSize: 11, color: '#4ade80', fontWeight: 700, marginBottom: 6 }}>Совпало ({matched.length})</div>
+              <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                {matched.map(k => <span key={k} style={{ background: 'rgba(74,222,128,0.15)', border: '1px solid rgba(74,222,128,0.3)', color: '#4ade80', borderRadius: 5, padding: '2px 8px', fontSize: 12 }}>{k}</span>)}
+              </div>
+            </div>
+          )}
+          {missing.length > 0 && (
+            <div>
+              <div style={{ fontSize: 11, color: '#f87171', fontWeight: 700, marginBottom: 6 }}>Есть в вакансии, но не нашли в резюме ({missing.length})</div>
+              <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                {missing.map(k => <span key={k} style={{ background: 'rgba(248,113,113,0.15)', border: '1px solid rgba(248,113,113,0.3)', color: '#f87171', borderRadius: 5, padding: '2px 8px', fontSize: 12 }}>{k}</span>)}
+              </div>
+            </div>
+          )}
+        </>
+      )}
     </Card>
   )
 }
@@ -147,6 +247,14 @@ export default function August1ResumeFlagsTheory() {
         текст в неправильном порядке или вовсе пропустить блок.
       </S>
 
+      <S>
+        Часть ATS-систем идёт дальше построчного чтения — она пытается разложить резюме на <B>структурированные поля</B>:
+        имя, контакты, список мест работы с датами, список навыков — и индексирует каждое поле отдельно, чтобы потом
+        можно было искать «резюме, где есть опыт с Python от 2 лет» по базе. Из-за этого нестандартная вёрстка ломает
+        не только порядок чтения, но и это разбиение на поля: система может не понять, где заканчивается один блок
+        опыта и начинается следующий, или принять дату за часть названия должности.
+      </S>
+
       <S>Резюме, которые ATS <Red>не может нормально прочитать</Red>:</S>
       <Ul items={[
         <><B>Настоящие многоколоночные макеты</B> — когда левая колонка (навыки) и правая (опыт) физически расположены рядом. Робот часто читает построчно через весь лист, склеивая половину слева с половиной справа в бессмысленный текст.</>,
@@ -163,8 +271,83 @@ export default function August1ResumeFlagsTheory() {
         текст (Ctrl/Cmd+A → Ctrl/Cmd+C), затем вставь в Блокнот. Если текст сохранил осмысленный порядок — ATS,
         скорее всего, прочитает его так же. Если получилась каша — робот увидит то же самое.</Note>
 
-      {/* ─── 3. Инструменты и формат ─── */}
-      <SectionHead n="03" title="Инструменты и формат файла" sub="Где собирать резюме и в каком виде отправлять" />
+      {/* ─── 3. Ключевые слова ─── */}
+      <SectionHead n="03" title="Ключевые слова: как получить не просто хорошее, а идеально подходящее резюме" sub="Разница между резюме, которое проходит ATS в среднем, и резюме, которое проходит именно эту вакансию — в точности формулировок" />
+
+      <S>
+        «Хорошее» резюме — это правильная структура, достижения в цифрах и отсутствие ред-флагов из разделов 5–6.
+        Такое резюме можно разослать на 50 вакансий одним и тем же файлом, и оно везде будет выглядеть достойно.
+        <B> «Идеально подходящее»</B> резюме — это та же основа, донастроенная под конкретную вакансию так, чтобы
+        и ATS, и рекрутер увидели максимальное совпадение с требованиями именно этой позиции.
+      </S>
+
+      <S>
+        Ключевой факт про большинство ATS: они не «понимают» текст семантически, а ищут <B>точные текстовые
+        совпадения</B>. Для робота «база данных», «БД» и «СУБД» — три разных слова, даже если человек читает их
+        как синонимы. Если в вакансии написано «опыт работы с СУБД PostgreSQL», а в резюме — «работал с базами
+        данных», по формальному совпадению это <Red>не засчитается</Red>, хотя по смыслу это ровно то же самое.
+      </S>
+
+      <S>Частые ловушки синонимов — используй ту же формулировку, что и в вакансии:</S>
+      <Ul items={[
+        '«Фронтенд» vs «front-end» vs «клиентская часть приложения» — вакансия задаёт написание, копируй именно его.',
+        '«Тестирование» vs «QA» vs «testing» — русский и английский варианты не взаимозаменяемы для робота.',
+        '«Оптимизация производительности» vs «ускорил», «сделал быстрее» — переформулируй достижение в термины вакансии.',
+        '«Заказчик» vs «клиент» vs «пользователь» — в разных индустриях принята разная терминология; используй ту, что в вакансии.',
+      ]} />
+
+      <S>
+        Многие современные системы — внутренние ATS крупных компаний, hh.ru, Talantix, LinkedIn — не просто
+        отсеивают резюме по порогу, а считают <B>процент совпадения</B> текста резюме с текстом вакансии и
+        сортируют отклики по убыванию этого процента. Рекрутер физически видит топ кандидатов первыми и может
+        вообще не долистать до тех, кто оказался ниже. Каждое точное совпадение ключевого слова — это буквально
+        плюс к позиции в очереди на просмотр.
+      </S>
+
+      <S>Алгоритм: как вытащить ключевые слова из вакансии и встроить их в резюме, ничего не выдумывая:</S>
+
+      <div style={{ display: 'grid', gap: 10, margin: '14px 0' }}>
+        {[
+          { n: '01', title: 'Собери сырой список', desc: 'Скопируй весь текст вакансии в отдельный документ. Подчеркни все технологии, инструменты, методологии и формулировки обязанностей.' },
+          { n: '02', title: 'Раздели на must-have и nice-to-have', desc: 'Слова из блока «Требования» / «Обязательно» — критичны, ставь их в приоритет. Слова из «Будет плюсом» / «Приветствуется» — желательны, но не обязательны.' },
+          { n: '03', title: 'Отметь повторы', desc: 'Если слово или фраза встречается в тексте вакансии 2+ раза — например, и в требованиях, и в описании задач — это сигнал, что на него посмотрят в первую очередь.' },
+          { n: '04', title: 'Сверь с реальным опытом', desc: 'Для каждого ключевого слова — либо у тебя есть этот опыт (тогда добавляй точную формулировку), либо нет (тогда не добавляй — на собеседовании спросят именно про это).' },
+          { n: '05', title: 'Перепиши в контексте, а не списком', desc: 'Ключевые слова должны появиться внутри описания навыка или буллета с достижением, а не отдельным блоком мелким текстом — так их видит и робот, и человек.' },
+        ].map(step => (
+          <div key={step.n} style={{ display: 'flex', gap: 14, alignItems: 'flex-start', background: 'var(--bg-secondary)', border: '1px solid var(--border-color)', borderRadius: 8, padding: '12px 14px' }}>
+            <div style={{ fontFamily: 'var(--font-syne)', fontWeight: 800, fontSize: 18, color: 'var(--accent-lime)', flexShrink: 0, minWidth: 28 }}>{step.n}</div>
+            <div>
+              <div style={{ fontWeight: 700, color: 'var(--text-primary)', fontSize: 14, marginBottom: 3 }}>{step.title}</div>
+              <div style={{ color: 'var(--text-secondary)', fontSize: 13, lineHeight: 1.6 }}>{step.desc}</div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <S>Пример трансформации буллета. Вакансия требует: <Lime>«опыт оптимизации производительности веб-приложений»</Lime>.</S>
+      <Bad>«Ускорил загрузку сайта, добавил кэширование»</Bad>
+      <Good>«Оптимизировал производительность веб-приложения: внедрил кэширование и code-splitting, сократив время загрузки с 4.2 до 1.6 сек»</Good>
+      <S>Технический факт не изменился — изменилась формулировка. Теперь буллет содержит точную фразу из вакансии
+        <Lime> и</Lime> сохраняет цифру, которая доказывает достижение.</S>
+
+      <Note>Название должности — тоже ключевое слово. Если вакансия называется «Python Developer», а summary
+        начинается с «Программист» без уточнения языка — часть систем может не засчитать совпадение по заголовку.
+        Явно укажи в шапке или summary формулировку, максимально близкую к названию вакансии — если это правда.</Note>
+
+      <VacancyMatcher />
+
+      <Bad><B>Не превращай резюме в список ключевых слов.</B> Вставить 40 не связанных с реальным опытом
+        технологий в один абзац ради ATS — плохая идея: на собеседовании спросят про каждую, а живой рекрутер
+        после ATS сразу увидит неестественный текст и отложит резюме в сторону.</Bad>
+
+      <S style={{ marginTop: 16 }}>
+        Именно поэтому по-настоящему идеально подходящее резюме не бывает одно на все вакансии — это одна и та же
+        основа (шаблон, структура, реальный опыт), которую ты слегка донастраиваешь перед каждым важным откликом:
+        порядок навыков, формулировки в summary и 2–3 буллета в опыте под конкретную вакансию.
+      </S>
+
+      {/* ─── 4. Инструменты и формат ─── */}
+      <SectionHead n="04" title="Инструменты и формат файла" sub="Где собирать резюме и в каком виде отправлять" />
 
       <S>Инструменты для составления резюме:</S>
       <Ul items={[
@@ -179,8 +362,8 @@ export default function August1ResumeFlagsTheory() {
 
       <Note>Формат файла — всегда <B>PDF</B>, никогда не Word, если явно не попросили. PDF из Overleaf/Google Docs/Notion — <B>текстовый</B>, не скан — именно такой файл ATS прочитает корректно. Название файла: <code style={{ background: 'var(--bg-tertiary)', borderRadius: 4, padding: '1px 6px', fontSize: 13 }}>Фамилия_Имя_Роль.pdf</code>.</Note>
 
-      {/* ─── 4. Фото ─── */}
-      <SectionHead n="04" title="Фото: нужно ли" sub="Коротко — фото не обязательно, но если ставишь, оно должно работать на тебя" />
+      {/* ─── 5. Фото ─── */}
+      <SectionHead n="05" title="Фото: нужно ли" sub="Коротко — фото не обязательно, но если ставишь, оно должно работать на тебя" />
 
       <S>Фото в резюме — <B>необязательный</B> элемент. Резюме без фото ничем не хуже резюме с фото, если остальная
         структура сильная. Но если решил(а) добавить — оно должно быть к месту:</S>
@@ -193,8 +376,8 @@ export default function August1ResumeFlagsTheory() {
       <Note>Подробный разбор фото и полный ATS-конструктор мы уже проходили 29 июня — если пропустил(а), загляни в
         конспект того занятия перед тем, как собирать финальную версию.</Note>
 
-      {/* ─── 5. Ред-флаги ─── */}
-      <SectionHead n="05" title="Ред-флаги" sub="То, что отталкивает рекрутера и снижает шанс дойти до собеседования" />
+      {/* ─── 6. Ред-флаги ─── */}
+      <SectionHead n="06" title="Ред-флаги" sub="То, что отталкивает рекрутера и снижает шанс дойти до собеседования" />
 
       <Bad><B>Нерелевантный опыт.</B> Подробное описание работы курьером или продавцом-консультантом в резюме на позицию разработчика — не помогает, а разбавляет резюме нерелевантной информацией. Упоминать можно кратко, если совсем нет другого опыта, но не выносить в фокус.</Bad>
 
@@ -213,12 +396,12 @@ export default function August1ResumeFlagsTheory() {
         'Резюме на 2+ страницы без реального опыта, который это оправдывает.',
       ]} />
 
-      {/* ─── 6. Грин-флаги ─── */}
-      <SectionHead n="06" title="Грин-флаги" sub="То, что выделяет резюме среди сотни таких же джунов" />
+      {/* ─── 7. Грин-флаги ─── */}
+      <SectionHead n="07" title="Грин-флаги" sub="То, что выделяет резюме среди сотни таких же джунов" />
 
       <Good><B>Достижения, а не обязанности — и обязательно в цифрах.</B> «Оптимизировал запрос к БД, сократив время ответа с 800 до 120 мс» — это факт, который невозможно не заметить. Формула XYZ из конспекта 29 июня работает и здесь.</Good>
 
-      <Good><B>Резюме адаптировано под конкретную вакансию.</B> Ты используешь те же ключевые слова, что и в описании вакансии, и явно показываешь, что уже решал(а) похожие задачи или боли, которые сейчас есть у этого работодателя — например, если в вакансии написано «оптимизация производительности», а у тебя в опыте есть именно такой кейс, вынеси его выше.</Good>
+      <Good><B>Резюме адаптировано под конкретную вакансию.</B> Ты используешь те же ключевые слова, что и в описании вакансии (алгоритм — в разделе 3), и явно показываешь, что уже решал(а) похожие задачи или боли, которые сейчас есть у этого работодателя.</Good>
 
       <Good><B>Сразу указана должность и объём опыта.</B> Не заставляй HR догадываться — прямо в шапке или в summary укажи, на какую позицию претендуешь и сколько у тебя опыта в месяцах/годах. Это экономит 10 секунд, за которые обычно решается судьба резюме.</Good>
 
@@ -239,8 +422,8 @@ export default function August1ResumeFlagsTheory() {
         либо не отличаешь свой вклад на разных местах, либо просто скопировал текст. Каждая позиция — свой набор
         конкретных достижений.</Note>
 
-      {/* ─── 7. Контакты ─── */}
-      <SectionHead n="07" title="Контакты для связи" sub="По ним действительно попробуют связаться — указывай то, чем реально пользуешься" />
+      {/* ─── 8. Контакты ─── */}
+      <SectionHead n="08" title="Контакты для связи" sub="По ним действительно попробуют связаться — указывай то, чем реально пользуешься" />
 
       <S>В шапке резюме указывай <B>рабочие</B> контакты — телефон, который берёшь, и почту, которую проверяешь
         регулярно. Если HR не дозвонится или не получит ответ на письмо в течение пары дней — просто перейдёт к

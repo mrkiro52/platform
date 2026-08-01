@@ -291,7 +291,7 @@ function JulyDayGroup({ dayNum, dateLabel, sessions, open, onToggle }) {
     <div className={`sched-day${open ? ' sched-day--open' : ''}`} style={{ marginBottom: 8 }}>
       <div className="sched-day-header" onClick={onToggle} style={{ cursor: 'pointer' }}>
         <div className="sched-day-meta">
-          <span className="sched-day-num">{dateLabel}</span>
+          <span className="sched-day-num">{dateLabel.toUpperCase()}</span>
         </div>
         <div className="sched-day-title" style={{ flex: 1 }}>
           {tracksList}
