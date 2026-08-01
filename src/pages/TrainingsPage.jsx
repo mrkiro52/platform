@@ -8,7 +8,7 @@ const TRAININGS = [
   {
     id: 'algorithm-complexity',
     title: 'Сложность алгоритмов',
-    subtitle: 'Смотри на код и угадывай его временную сложность — от O(1) до O(2^n)',
+    subtitle: 'Смотри на код и угадывай его временную сложность',
     tag: 'Алгоритмы',
     questions: 20,
     component: AlgorithmComplexityTraining,

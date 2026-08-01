@@ -88,6 +88,7 @@ function CommentComposer({ user, avatarUrl, onSubmit }) {
 
 export function PostCard({ post, user, avatarUrl, onReact, onComment, onDelete, onDeleteComment }) {
   const [visibleCount, setVisibleCount] = useState(3)
+  const [showComposer, setShowComposer] = useState(false)
 
   const comments = post.comments || []
   const shown = comments.slice(-visibleCount)
@@ -100,7 +101,14 @@ export function PostCard({ post, user, avatarUrl, onReact, onComment, onDelete, 
         <Avatar name={post.author.name} avatarUrl={post.author.avatarUrl} size={36}
           userId={post.author.id} clickable />
         <div style={{ flex: 1, minWidth: 0 }}>
-          <UserName id={post.author.id} name={post.author.name} />
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <UserName id={post.author.id} name={post.author.name} />
+            {post.author.rank !== undefined && (
+              <span style={{ fontSize: 11, fontWeight: 600, color: 'var(--accent-lime)', background: 'rgba(32,190,255,0.1)', padding: '2px 8px', borderRadius: 3 }}>
+                Ранг {post.author.rank}
+              </span>
+            )}
+          </div>
           <div style={{ fontSize: 11.5, color: 'var(--text-tertiary)' }}>{formatDate(post.createdAt)}</div>
         </div>
         {isAuthor && onDelete && (
@@ -151,11 +159,22 @@ export function PostCard({ post, user, avatarUrl, onReact, onComment, onDelete, 
         })}
       </div>
       <div style={{
-        display: 'flex', alignItems: 'center', gap: 5,
-        fontSize: 12.5, color: 'var(--text-tertiary)', marginBottom: 12,
+        display: 'flex', alignItems: 'center', gap: 12,
+        fontSize: 12.5, marginBottom: 12,
       }}>
-        <ChatIcon />
-        <span>{comments.length === 0 ? 'Нет комментариев' : `Комментариев: ${comments.length}`}</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 5, color: 'var(--text-tertiary)' }}>
+          <ChatIcon />
+          <span>{comments.length === 0 ? 'Нет комментариев' : `Комментариев: ${comments.length}`}</span>
+        </div>
+        <button
+          onClick={() => setShowComposer(!showComposer)}
+          style={{
+            background: 'transparent', border: 'none', color: 'var(--accent-lime)',
+            fontSize: 12.5, fontWeight: 700, cursor: 'pointer', padding: 0,
+          }}
+        >
+          Комментировать
+        </button>
       </div>
 
       {shown.length > 0 && (
@@ -200,7 +219,7 @@ export function PostCard({ post, user, avatarUrl, onReact, onComment, onDelete, 
         </div>
       )}
 
-      <CommentComposer user={user} avatarUrl={avatarUrl} onSubmit={text => onComment(post.id, text)} />
+      {showComposer && <CommentComposer user={user} avatarUrl={avatarUrl} onSubmit={text => { onComment(post.id, text); setShowComposer(false) }} />}
     </div>
   )
 }

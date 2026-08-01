@@ -97,9 +97,16 @@ export default function UserProfilePage({ user, avatarUrl }) {
         <div style={{ display: 'flex', gap: 18, alignItems: 'flex-start', flexWrap: 'wrap' }}>
           <Avatar name={profile.name} avatarUrl={profile.avatarUrl} size={84} />
           <div style={{ flex: 1, minWidth: 220 }}>
-            <h1 style={{ margin: 0, fontSize: 22, fontWeight: 700, color: 'var(--text-primary)' }}>
-              {profile.name}
-            </h1>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 8 }}>
+              <h1 style={{ margin: 0, fontSize: 22, fontWeight: 700, color: 'var(--text-primary)' }}>
+                {profile.name}
+              </h1>
+              {profile.rank !== undefined && (
+                <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--accent-lime)', background: 'rgba(32,190,255,0.1)', padding: '4px 10px', borderRadius: 4 }}>
+                  Ранг {profile.rank}
+                </span>
+              )}
+            </div>
             <div style={{ fontSize: 13, color: 'var(--text-secondary)', marginTop: 4 }}>
               {profile.track || 'Участник лагеря'}
             </div>

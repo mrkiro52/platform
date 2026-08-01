@@ -42,6 +42,7 @@ export default function Profile({ user, onAvatarChange }) {
   const [nickname, setNickname] = useState('')
   const [password, setPassword] = useState('')
   const [bio, setBio] = useState('')
+  const [rank, setRank] = useState(0)
   const [birthDay, setBirthDay] = useState('')
   const [birthMonth, setBirthMonth] = useState('')
   const [birthYear, setBirthYear] = useState('')
@@ -55,6 +56,7 @@ export default function Profile({ user, onAvatarChange }) {
   const [confirmOpen, setConfirmOpen] = useState(false)
   const [myPosts, setMyPosts] = useState([])
   const [postsLoading, setPostsLoading] = useState(true)
+  const [editingProfile, setEditingProfile] = useState(false)
 
   useEffect(() => {
     api.profile().then(p => {
@@ -62,6 +64,7 @@ export default function Profile({ user, onAvatarChange }) {
       setEmail(p.email || '')
       setNickname(p.nickname || '')
       setBio(p.bio || '')
+      setRank(p.rank ?? 0)
       setAvatarUrl(p.avatar_url || '')
       onAvatarChange?.(p.avatar_url || '')
       const parsed = parseBirthday(p.birthday)
@@ -114,7 +117,7 @@ export default function Profile({ user, onAvatarChange }) {
     setError('')
     try {
       const birthday = formatBirthday(birthDay, birthMonth, birthYear)
-      const payload = { name, email, nickname, bio, birthday }
+      const payload = { name, email, nickname, bio, birthday, rank }
       if (password) payload.password = password
       await api.updateProfile(payload)
       setPassword('')
@@ -170,8 +173,23 @@ export default function Profile({ user, onAvatarChange }) {
         </div>
 
         <div className="profile-details">
-          <div className="profile-section-h">Личная информация</div>
-          {loading ? (
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
+            <div className="profile-section-h">Информация профиля</div>
+            <button
+              onClick={() => setEditingProfile(!editingProfile)}
+              style={{
+                background: 'transparent', border: 'none', fontSize: 20, cursor: 'pointer',
+                color: 'var(--accent-lime)', padding: '4px', display: 'flex', alignItems: 'center',
+              }}
+              title={editingProfile ? 'Закрыть редактирование' : 'Редактировать профиль'}
+            >
+              ✎
+            </button>
+          </div>
+
+          {!editingProfile ? (
+            <p style={{ color: 'var(--text-secondary)', fontSize: 13 }}>Нажми на карандаш для редактирования</p>
+          ) : loading ? (
             <p style={{ color: 'var(--text-secondary)', fontSize: 13 }}>Загрузка...</p>
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
@@ -207,6 +225,19 @@ export default function Profile({ user, onAvatarChange }) {
                   value={bio}
                   onChange={e => setBio(e.target.value)}
                   placeholder="Пара строк о себе"
+                />
+              </div>
+              <div>
+                <span className="pf-label" style={{ display: 'block', marginBottom: 6 }}>Ранг</span>
+                <input
+                  className="profile-field"
+                  style={{ ...smallFieldStyle, width: 100 }}
+                  value={rank}
+                  onChange={e => setRank(Math.max(0, parseInt(e.target.value) || 0))}
+                  placeholder="Ранг"
+                  inputMode="numeric"
+                  min="0"
+                  type="number"
                 />
               </div>
               <div>

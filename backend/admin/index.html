@@ -112,10 +112,31 @@ textarea:focus{border-color:var(--lime)}
 .sub-tab.active{color:var(--lime);border-bottom-color:var(--lime)}
 .sub-tab:hover{color:var(--text)}
 
+/* ─── INDIVIDS ──────────────────────────────── */
+.indiv-row{display:flex;align-items:center;gap:16px;padding:12px 16px;border-bottom:1px solid rgba(42,42,58,.5)}
+.indiv-row:last-child{border-bottom:none}
+.indiv-name{width:160px;flex-shrink:0;font-weight:600;font-size:13px;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.indiv-squares{display:flex;gap:6px;flex-wrap:wrap}
+.indiv-sq{width:28px;height:28px;border-radius:6px;border:1.5px solid var(--border);background:var(--bg3);cursor:pointer;transition:border-color .15s,background .15s;flex-shrink:0;position:relative}
+.indiv-sq:hover{border-color:var(--lime)}
+.indiv-sq.done{background:var(--lime);border-color:var(--lime)}
+.indiv-sq.done:hover{background:#b0e600;border-color:#b0e600}
+.indiv-week-labels{display:flex;gap:6px;flex-wrap:wrap;padding-left:176px;margin-bottom:4px}
+.indiv-week-label{width:28px;text-align:center;font-size:9px;color:var(--text3);flex-shrink:0}
+
+/* confirm popup */
+.indiv-popup{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:600;display:none;align-items:center;justify-content:center}
+.indiv-popup.open{display:flex}
+.indiv-popup-box{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:24px 28px;max-width:320px;width:100%;text-align:center}
+.indiv-popup-title{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:var(--text);margin-bottom:8px}
+.indiv-popup-sub{font-size:13px;color:var(--text2);margin-bottom:20px;line-height:1.5}
+.indiv-popup-btns{display:flex;gap:10px;justify-content:center}
+
 @media(max-width:768px){
   .sidebar{transform:translateX(-100%)}
   .content{margin-left:0;padding:20px 14px}
   .form-row{grid-template-columns:1fr}
+  .indiv-name{width:110px}
 }
 </style>
 </head>
@@ -146,6 +167,7 @@ textarea:focus{border-color:var(--lime)}
       <button class="nav-item"        onclick="goto('library')"> <span class="nav-icon">📚</span>Библиотека</button>
       <button class="nav-item"        onclick="goto('links')">   <span class="nav-icon">🔗</span>Полезные ссылки</button>
       <button class="nav-item"        onclick="goto('announces')"><span class="nav-icon">📣</span>Объявления</button>
+      <button class="nav-item"        onclick="goto('individs')"> <span class="nav-icon">🎯</span>Индивы</button>
     </nav>
     <div class="sb-foot">
       <button class="nav-item" onclick="logout()"><span class="nav-icon">⇥</span>Выйти</button>
@@ -226,6 +248,14 @@ textarea:focus{border-color:var(--lime)}
       </div>
     </div>
 
+    <!-- ── INDIVIDS ── -->
+    <div id="sec-individs" class="section">
+      <div class="section-header">
+        <div><div class="section-title">Индивы</div><div class="section-sub">Индивидуальные созвоны — 1 в неделю с 1 июня по 31 августа</div></div>
+      </div>
+      <div id="individs-list"></div>
+    </div>
+
   </div><!-- /content -->
 </div><!-- /app -->
 
@@ -236,6 +266,18 @@ textarea:focus{border-color:var(--lime)}
 
 <!-- ═══════════════ TOAST ═══════════════ -->
 <div id="toast"></div>
+
+<!-- ═══════════════ INDIV CONFIRM POPUP ═══════════════ -->
+<div id="indiv-popup" class="indiv-popup">
+  <div class="indiv-popup-box">
+    <div class="indiv-popup-title" id="indiv-popup-title"></div>
+    <div class="indiv-popup-sub" id="indiv-popup-sub"></div>
+    <div class="indiv-popup-btns">
+      <button class="btn-ghost" onclick="closeIndivPopup()">Отмена</button>
+      <button class="btn-lime" style="width:auto" id="indiv-popup-confirm">Подтвердить</button>
+    </div>
+  </div>
+</div>
 
 <script>
 const API = ''  // same origin; change to http://localhost:3001 if serving separately
@@ -836,6 +878,91 @@ async function deleteAnn(id) {
   try { await req('/api/announcements/' + id, 'DELETE'); toast('Удалено'); loadAnnounces() }
   catch(e) { toast(e.message, 'err') }
 }
+
+// ── INDIVIDS ──────────────────────────────────────────────────────────────
+// 14 weeks: June 1 – Aug 31, 2026
+const INDIV_WEEKS = Array.from({length: 12}, (_, i) => ({ w: i + 1, label: String(i + 1) }))
+
+function getIndivState() {
+  try { return JSON.parse(localStorage.getItem('kiro_individs') || '{}') } catch { return {} }
+}
+function saveIndivState(state) {
+  localStorage.setItem('kiro_individs', JSON.stringify(state))
+}
+
+async function loadIndivids() {
+  try {
+    const users = await req('/api/users')
+    const state = getIndivState()
+    const container = document.getElementById('individs-list')
+
+    // week header labels
+    const labels = INDIV_WEEKS.map(w =>
+      `<div class="indiv-week-label" title="Неделя ${w.w}: с ${w.label}">${w.label}</div>`
+    ).join('')
+
+    const rows = users.map(u => {
+      const done = state[u.id] || []
+      const squares = INDIV_WEEKS.map((wk, i) => {
+        const isDone = !!done[i]
+        return `<div class="indiv-sq${isDone ? ' done' : ''}"
+          title="Неделя ${wk.w}: с ${wk.label}${isDone ? ' — проведён' : ''}"
+          onclick="confirmIndiv(${u.id}, '${esc(u.name)}', ${i}, ${isDone})"></div>`
+      }).join('')
+      return `<div class="indiv-row">
+        <div class="indiv-name" title="${esc(u.name)}">${esc(u.name)}</div>
+        <div class="indiv-squares" id="indiv-sq-${u.id}">${squares}</div>
+      </div>`
+    }).join('')
+
+    container.innerHTML = `
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;overflow:hidden">
+        <div style="display:flex;align-items:center;gap:16px;padding:10px 16px 6px;border-bottom:1px solid var(--border)">
+          <div style="width:160px;flex-shrink:0;font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.05em">Участник</div>
+          <div class="indiv-squares">${INDIV_WEEKS.map(w =>
+            `<div class="indiv-week-label" style="width:28px;text-align:center;font-size:9px;color:var(--text3);flex-shrink:0" title="Неделя ${w.w}">${w.label}</div>`
+          ).join('')}</div>
+        </div>
+        ${rows}
+      </div>
+    `
+  } catch(e) { toast('Ошибка загрузки индивов', 'err') }
+}
+
+function confirmIndiv(userId, userName, weekIdx, isDone) {
+  const wk = INDIV_WEEKS[weekIdx]
+  document.getElementById('indiv-popup-title').textContent =
+    isDone ? 'Убрать отметку?' : 'Отметить индив?'
+  document.getElementById('indiv-popup-sub').innerHTML =
+    `<b style="color:var(--lime)">${esc(userName)}</b><br>Неделя ${wk.w} — с ${wk.label}`
+  document.getElementById('indiv-popup-confirm').onclick = () => {
+    const state = getIndivState()
+    if (!state[userId]) state[userId] = []
+    state[userId][weekIdx] = !isDone
+    saveIndivState(state)
+    closeIndivPopup()
+    // update just the squares for this user without full reload
+    const done = state[userId]
+    document.getElementById('indiv-sq-' + userId).innerHTML = INDIV_WEEKS.map((w, i) => {
+      const d = !!done[i]
+      return `<div class="indiv-sq${d ? ' done' : ''}"
+        title="Неделя ${w.w}: с ${w.label}${d ? ' — проведён' : ''}"
+        onclick="confirmIndiv(${userId}, '${esc(userName)}', ${i}, ${d})"></div>`
+    }).join('')
+    toast(isDone ? 'Отметка убрана' : 'Индив отмечен')
+  }
+  document.getElementById('indiv-popup').classList.add('open')
+}
+
+function closeIndivPopup() {
+  document.getElementById('indiv-popup').classList.remove('open')
+}
+document.getElementById('indiv-popup').addEventListener('click', e => {
+  if (e.target === document.getElementById('indiv-popup')) closeIndivPopup()
+})
+
+// register loader
+LOADERS['individs'] = loadIndivids
 
 // ── Utils ─────────────────────────────────────────────────────────────────
 function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;') }
