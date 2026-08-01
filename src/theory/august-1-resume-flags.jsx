@@ -28,17 +28,17 @@ const Card = ({ children, accent }) => (
 )
 
 const Good = ({ children }) => (
-  <div style={{ background: 'rgba(74,222,128,0.07)', border: '1px solid rgba(74,222,128,0.25)', borderLeft: '3px solid #4ade80', borderRadius: 8, padding: '12px 16px', margin: '10px 0', fontSize: 13.5, lineHeight: 1.7, color: 'var(--text-secondary)' }}>
+  <div style={{ background: 'rgba(74,222,128,0.07)', border: '1px solid rgba(74,222,128,0.25)', borderRadius: 8, padding: '12px 16px', margin: '10px 0', fontSize: 13.5, lineHeight: 1.7, color: 'var(--text-secondary)' }}>
     {children}
   </div>
 )
 const Bad = ({ children }) => (
-  <div style={{ background: 'rgba(248,113,113,0.07)', border: '1px solid rgba(248,113,113,0.25)', borderLeft: '3px solid #f87171', borderRadius: 8, padding: '12px 16px', margin: '10px 0', fontSize: 13.5, lineHeight: 1.7, color: 'var(--text-secondary)' }}>
+  <div style={{ background: 'rgba(248,113,113,0.07)', border: '1px solid rgba(248,113,113,0.25)', borderRadius: 8, padding: '12px 16px', margin: '10px 0', fontSize: 13.5, lineHeight: 1.7, color: 'var(--text-secondary)' }}>
     {children}
   </div>
 )
 const Note = ({ children }) => (
-  <div style={{ background: 'rgba(32,190,255,0.05)', border: '1px solid rgba(32,190,255,0.18)', borderLeft: '3px solid var(--accent-lime)', borderRadius: 8, padding: '12px 16px', margin: '14px 0', fontSize: 13.5, lineHeight: 1.7, color: 'var(--text-secondary)' }}>
+  <div style={{ background: 'rgba(32,190,255,0.05)', border: '1px solid rgba(32,190,255,0.18)', borderRadius: 8, padding: '12px 16px', margin: '14px 0', fontSize: 13.5, lineHeight: 1.7, color: 'var(--text-secondary)' }}>
     {children}
   </div>
 )
