@@ -398,7 +398,7 @@ function DayCard({ day, onOpen, onOpenTheory, onOpenQuestions, onOpenHomework })
 }
 
 export default function Library({ onOpenDay, onOpenTheory, onOpenQuestions, onOpenHomework }) {
-  const [activeMonth, setActiveMonth] = useState('july')
+  const [activeMonth, setActiveMonth] = useState('august')
   const [library, setLibrary]         = useState(LIBRARY)
   const [schedule, setSchedule]       = useState(SCHEDULE)
   const [loading, setLoading]         = useState(true)

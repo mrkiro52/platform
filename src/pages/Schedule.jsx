@@ -310,7 +310,7 @@ function JulyDayGroup({ dayNum, dateLabel, sessions, open, onToggle }) {
 }
 
 export default function Schedule() {
-  const [activeMonth, setActiveMonth]     = useState('july')
+  const [activeMonth, setActiveMonth]     = useState('august')
   const [events, setEvents]               = useState(() => mergeExtras(SCHEDULE))
   const [expandedId, setExpandedId]       = useState(() => findTodayId(SCHEDULE))
   const [openJulyDay, setOpenJulyDay]     = useState(() => getTodayJulyDay())
