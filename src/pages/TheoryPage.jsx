@@ -1,4 +1,5 @@
-import { useEffect, useState, lazy, Suspense } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState, lazy, Suspense } from 'react'
+import { createPortal } from 'react-dom'
 import { SCHEDULE } from '../data'
 import { api } from '../api'
 import { QUESTIONS_COMPONENTS, QuestionsInline } from './QuestionsPage'
@@ -319,11 +320,74 @@ function getDayLabel(dayNum) {
   return schedule ? schedule.title : `День ${dayNum}`
 }
 
+function scrollToId(e, id) {
+  e.preventDefault()
+  document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+}
+
+const pillStyle = {
+  display: 'inline-flex', alignItems: 'center', gap: 6,
+  background: 'rgba(32,190,255,0.1)', border: '1px solid rgba(32,190,255,0.4)',
+  color: 'var(--accent-lime)', fontWeight: 700, fontSize: 13.5,
+  padding: '8px 16px', borderRadius: 8, cursor: 'pointer',
+  textDecoration: 'none', whiteSpace: 'nowrap', transition: 'background 0.15s, border-color 0.15s',
+}
+
+// Плашки-переходы к записи/тесту/дз — рендерятся порталом прямо внутри
+// конспекта теории (после видео, если оно есть, иначе после даты занятия),
+// а не отдельным блоком над ним.
+function QuickLinks({ recordingMats, hasQuestions, hasHomework }) {
+  const hover = (e, on) => {
+    e.currentTarget.style.background = on ? 'rgba(32,190,255,0.2)' : 'rgba(32,190,255,0.1)'
+  }
+  return (
+    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, margin: '20px 0 0' }}>
+      {recordingMats.map(m => (
+        <a
+          key={m.id}
+          href={m.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          style={pillStyle}
+          onMouseEnter={e => hover(e, true)}
+          onMouseLeave={e => hover(e, false)}
+        >
+          {m.title} →
+        </a>
+      ))}
+      {hasQuestions && (
+        <a
+          href="#theory-test-section"
+          style={pillStyle}
+          onMouseEnter={e => hover(e, true)}
+          onMouseLeave={e => hover(e, false)}
+          onClick={e => scrollToId(e, 'theory-test-section')}
+        >
+          Перейти к тесту по теме →
+        </a>
+      )}
+      {hasHomework && (
+        <a
+          href="#theory-homework-section"
+          style={pillStyle}
+          onMouseEnter={e => hover(e, true)}
+          onMouseLeave={e => hover(e, false)}
+          onClick={e => scrollToId(e, 'theory-homework-section')}
+        >
+          Перейти к заданиям по теме →
+        </a>
+      )}
+    </div>
+  )
+}
+
 export default function TheoryPage({ selectedDay, onBack }) {
   const [TheoryComponent, setTheoryComponent] = useState(null)
   const [loading, setLoading] = useState(true)
   const [homeworkContent, setHomeworkContent] = useState(null)
   const [recordingMats, setRecordingMats] = useState([])
+  const [quickLinksMount, setQuickLinksMount] = useState(null)
+  const theoryWrapperRef = useRef(null)
 
   useEffect(() => {
     // Имитируем загрузку
@@ -355,6 +419,58 @@ export default function TheoryPage({ selectedDay, onBack }) {
 
   const hasQuestions = !!QUESTIONS_COMPONENTS[selectedDay]
   const hasHomework = (homeworkContent?.[selectedDay]?.tasks?.length || 0) > 0
+
+  // Находим точку внутри отрендеренного конспекта, куда вставить плашки:
+  // сразу после видео занятия, если оно есть, иначе сразу после даты в шапке
+  // конспекта. Конспекты — это ~90 разных файлов без общего шаблона шапки,
+  // поэтому вставляем узел в DOM напрямую и рендерим плашки в него порталом —
+  // React управляет содержимым портала как обычно, просто в другом месте дерева.
+  useLayoutEffect(() => {
+    setQuickLinksMount(null)
+    const wrapper = theoryWrapperRef.current
+    if (!wrapper) return
+
+    let mountNode = null
+    const tryInsert = () => {
+      const headerSection = wrapper.querySelector('.theory-section')
+      if (!headerSection) return false
+
+      let anchor = null
+      // Видео может идти отдельным блоком сразу после шапки-секции (частый случай)…
+      const afterHeader = headerSection.nextElementSibling
+      if (afterHeader?.querySelector?.('video')) {
+        anchor = afterHeader
+      } else {
+        // …либо быть встроено прямо внутрь шапки.
+        const videoEl = headerSection.querySelector('video')
+        if (videoEl) {
+          anchor = videoEl
+          while (anchor.parentElement && anchor.parentElement !== headerSection) {
+            anchor = anchor.parentElement
+          }
+        } else {
+          // Видео нет вообще — вставляем сразу после даты занятия.
+          anchor = headerSection.querySelector('.theory-date') || headerSection
+        }
+      }
+
+      mountNode = document.createElement('div')
+      anchor.insertAdjacentElement('afterend', mountNode)
+      setQuickLinksMount(mountNode)
+      return true
+    }
+
+    if (tryInsert()) return undefined
+
+    const observer = new MutationObserver(() => {
+      if (tryInsert()) observer.disconnect()
+    })
+    observer.observe(wrapper, { childList: true, subtree: true })
+    return () => {
+      observer.disconnect()
+      mountNode?.remove()
+    }
+  }, [selectedDay, TheoryComponent])
 
   if (loading) {
     return (
@@ -391,35 +507,16 @@ export default function TheoryPage({ selectedDay, onBack }) {
         </span>
       </div>
 
-      {(recordingMats.length > 0 || hasQuestions || hasHomework) && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 8, margin: '4px 0 20px' }}>
-          {recordingMats.map(m => (
-            <a
-              key={m.id}
-              href={m.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{ color: 'var(--accent-lime)', fontWeight: 700, fontSize: 14.5 }}
-            >
-              {m.title} →
-            </a>
-          ))}
-          {hasQuestions && (
-            <a href="#theory-test-section" style={{ color: 'var(--accent-lime)', fontWeight: 700, fontSize: 14.5 }}>
-              Перейти к тесту по теме →
-            </a>
-          )}
-          {hasHomework && (
-            <a href="#theory-homework-section" style={{ color: 'var(--accent-lime)', fontWeight: 700, fontSize: 14.5 }}>
-              Перейти к заданиям по теме →
-            </a>
-          )}
-        </div>
-      )}
+      <div ref={theoryWrapperRef}>
+        <Suspense fallback={<p style={{ color: 'var(--text-secondary)', padding: '20px 0' }}>Загрузка...</p>}>
+          <TheoryComponent videoUrl={VIDEO_URLS[selectedDay] || null} />
+        </Suspense>
+      </div>
 
-      <Suspense fallback={<p style={{ color: 'var(--text-secondary)', padding: '20px 0' }}>Загрузка...</p>}>
-        <TheoryComponent videoUrl={VIDEO_URLS[selectedDay] || null} />
-      </Suspense>
+      {quickLinksMount && (recordingMats.length > 0 || hasQuestions || hasHomework) && createPortal(
+        <QuickLinks recordingMats={recordingMats} hasQuestions={hasQuestions} hasHomework={hasHomework} />,
+        quickLinksMount
+      )}
 
       {hasQuestions && (
         <div id="theory-test-section" style={{ marginTop: 48, paddingTop: 32, borderTop: '1px solid var(--border-color)' }}>

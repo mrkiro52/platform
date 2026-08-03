@@ -77,7 +77,7 @@ export function HomeworkInline({ selectedDay }) {
   }
 
   return (
-    <div style={{ maxWidth: '900px' }}>
+    <div style={{ maxWidth: 800, margin: '0 auto' }}>
       <h2 style={{ fontSize: '18px', marginBottom: '16px' }}>{homework.title}</h2>
 
       {homework.tasks.length === 0 ? (
