@@ -128,7 +128,7 @@ const JULY_TRACK_LABELS = {
   165: '29 июля · Кибербезопасность — Основы сетевой безопасности',
 }
 
-const QUESTIONS_COMPONENTS = {
+export const QUESTIONS_COMPONENTS = {
   2: () => import('../questions/day-2-basics'),
   3: () => import('../questions/day-3-loops'),
   4: () => import('../questions/day-4-algorithms'),
@@ -368,7 +368,9 @@ function TaskIndicators({ totalTasks, taskStatuses, currentIndex, onSelectTask }
   )
 }
 
-export default function QuestionsPage({ selectedDay, onBack }) {
+// Ядро тренажёра тестов — без брейдкрамбов и обёртки страницы, чтобы можно
+// было встраивать прямо в конспект теории, а не только показывать отдельной страницей.
+export function QuestionsInline({ selectedDay }) {
   const [questions, setQuestions] = useState([])
   const [taskStatuses, setTaskStatuses] = useState({}) // { 0: 'correct', 1: 'incorrect' }
   const [taskAnswers, setTaskAnswers] = useState({}) // { 0: { answer: 'int', status: 'correct' } }
@@ -460,37 +462,72 @@ export default function QuestionsPage({ selectedDay, onBack }) {
     goToQuestion(currentIndex + 1)
   }
 
-  function getDayLabel(dayNum) {
-    if (JULY_TRACK_LABELS[dayNum]) return JULY_TRACK_LABELS[dayNum]
-    const schedule = SCHEDULE.find(e => e.day === dayNum)
-    return schedule ? schedule.title : `День ${dayNum}`
-  }
-
   if (loading) {
-    return (
-      <section className="page active">
-        <div className="page-header">
-          <p style={{ color: 'var(--text-secondary)' }}>Загрузка...</p>
-        </div>
-      </section>
-    )
+    return <p style={{ color: 'var(--text-secondary)' }}>Загрузка...</p>
   }
 
   if (!questions.length) {
-    return (
-      <section className="page active">
-        <div className="page-header">
-          <p style={{ color: 'var(--text-tertiary)' }}>Задач для этого дня нет или они еще готовятся...</p>
-        </div>
-        <button className="btn-back" onClick={onBack}>
-          ← Вернуться в Библиотеку
-        </button>
-      </section>
-    )
+    return <p style={{ color: 'var(--text-tertiary)' }}>Задач для этого дня нет или они еще готовятся...</p>
   }
 
   const currentQuestion = questions[currentIndex]
 
+  return (
+    <div className="questions-container">
+      <div className="questions-header">
+        <h2 className="questions-title">Задачи для тренировки</h2>
+        <TaskIndicators
+          totalTasks={questions.length}
+          taskStatuses={taskStatuses}
+          currentIndex={currentIndex}
+          onSelectTask={goToQuestion}
+        />
+      </div>
+
+      <div className="single-question-view">
+        <div className={`question-card-wrapper ${switching ? 'switching' : ''}`}>
+          <QuestionCard
+            key={`${selectedDay}-${currentIndex}`}
+            question={currentQuestion}
+            taskIndex={currentIndex}
+            totalTasks={questions.length}
+            onAnswer={handleAnswerCorrect}
+            isSolved={taskStatuses[currentIndex]}
+            savedAnswer={taskAnswers[currentIndex]}
+          />
+        </div>
+
+        <div className="question-navigation">
+          <button
+            className="nav-btn nav-prev"
+            onClick={goPrevious}
+            disabled={currentIndex === 0}
+          >
+            ← Предыдущая
+          </button>
+          <span className="nav-counter">{currentIndex + 1} из {questions.length}</span>
+          <button
+            className="nav-btn nav-next"
+            onClick={goNext}
+            disabled={currentIndex === questions.length - 1}
+          >
+            Следующая →
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function getDayLabel(dayNum) {
+  if (JULY_TRACK_LABELS[dayNum]) return JULY_TRACK_LABELS[dayNum]
+  const schedule = SCHEDULE.find(e => e.day === dayNum)
+  return schedule ? schedule.title : `День ${dayNum}`
+}
+
+// Полноценная страница тестов (отдельный маршрут /library/questions/:day) —
+// обёртка над QuestionsInline с брейдкрамбами и кнопкой назад.
+export default function QuestionsPage({ selectedDay, onBack }) {
   return (
     <section className="page active">
       <div className="theory-breadcrumbs">
@@ -503,49 +540,7 @@ export default function QuestionsPage({ selectedDay, onBack }) {
         </span>
       </div>
 
-      <div className="questions-container">
-        <div className="questions-header">
-          <h2 className="questions-title">Задачи для тренировки</h2>
-          <TaskIndicators
-            totalTasks={questions.length}
-            taskStatuses={taskStatuses}
-            currentIndex={currentIndex}
-            onSelectTask={goToQuestion}
-          />
-        </div>
-
-        <div className="single-question-view">
-          <div className={`question-card-wrapper ${switching ? 'switching' : ''}`}>
-            <QuestionCard
-              key={`${selectedDay}-${currentIndex}`}
-              question={currentQuestion}
-              taskIndex={currentIndex}
-              totalTasks={questions.length}
-              onAnswer={handleAnswerCorrect}
-              isSolved={taskStatuses[currentIndex]}
-              savedAnswer={taskAnswers[currentIndex]}
-            />
-          </div>
-
-          <div className="question-navigation">
-            <button
-              className="nav-btn nav-prev"
-              onClick={goPrevious}
-              disabled={currentIndex === 0}
-            >
-              ← Предыдущая
-            </button>
-            <span className="nav-counter">{currentIndex + 1} из {questions.length}</span>
-            <button
-              className="nav-btn nav-next"
-              onClick={goNext}
-              disabled={currentIndex === questions.length - 1}
-            >
-              Следующая →
-            </button>
-          </div>
-        </div>
-      </div>
+      <QuestionsInline selectedDay={selectedDay} />
 
       <div className="theory-footer">
         <button className="btn-back" onClick={onBack}>

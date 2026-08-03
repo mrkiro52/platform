@@ -2,7 +2,6 @@ import { useCallback, useEffect, useState } from 'react'
 import { Routes, Route, Navigate, useNavigate, useParams } from 'react-router-dom'
 import Sidebar from './components/Sidebar'
 import TopBar from './components/TopBar'
-import DayModal from './components/DayModal'
 import { api } from './api'
 import Dashboard from './pages/Dashboard'
 import Schedule from './pages/Schedule'
@@ -46,7 +45,6 @@ function AnnouncementsRoute() {
 
 export default function AppShell({ user, onLogout }) {
   const navigate = useNavigate()
-  const [dayModal, setDayModal] = useState(null)
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [avatarUrl, setAvatarUrl] = useState('')
   const [badges, setBadges] = useState({ messages: 0, notifications: 0 })
@@ -77,9 +75,7 @@ export default function AppShell({ user, onLogout }) {
     api.profile().then(p => setAvatarUrl(p.avatar_url || '')).catch(() => {})
   }, [])
 
-  const openTheory    = (day) => navigate(`/library/theory/${day.day}`)
-  const openQuestions = (day) => navigate(`/library/questions/${day.day}`)
-  const openHomework  = (day) => navigate(`/library/homework/${day.day}`)
+  const openTheory = (day) => navigate(`/library/theory/${day.day}`)
 
   return (
     <>
@@ -110,12 +106,7 @@ export default function AppShell({ user, onLogout }) {
             } />
             <Route path="/schedule" element={<Schedule />} />
             <Route path="/library" element={
-              <Library
-                onOpenDay={setDayModal}
-                onOpenTheory={openTheory}
-                onOpenQuestions={openQuestions}
-                onOpenHomework={openHomework}
-              />
+              <Library onOpenTheory={openTheory} />
             } />
             <Route path="/library/theory/:day"    element={<TheoryRoute />} />
             <Route path="/library/questions/:day" element={<QuestionsRoute />} />
@@ -141,10 +132,6 @@ export default function AppShell({ user, onLogout }) {
           </Routes>
         </main>
       </div>
-
-      {dayModal && (
-        <DayModal day={dayModal} onClose={() => setDayModal(null)} />
-      )}
     </>
   )
 }

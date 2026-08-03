@@ -1,6 +1,8 @@
 import { useEffect, useState, lazy, Suspense } from 'react'
 import { SCHEDULE } from '../data'
-import VideoPlayer from '../components/VideoPlayer'
+import { api } from '../api'
+import { QUESTIONS_COMPONENTS, QuestionsInline } from './QuestionsPage'
+import { HomeworkInline } from './HomeworkPage'
 
 // Ссылки на видео для каждого дня. Пустая строка = нет видео.
 const VIDEO_URLS = {
@@ -320,6 +322,8 @@ function getDayLabel(dayNum) {
 export default function TheoryPage({ selectedDay, onBack }) {
   const [TheoryComponent, setTheoryComponent] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [homeworkContent, setHomeworkContent] = useState(null)
+  const [recordingMats, setRecordingMats] = useState([])
 
   useEffect(() => {
     // Имитируем загрузку
@@ -332,6 +336,25 @@ export default function TheoryPage({ selectedDay, onBack }) {
 
     return () => clearTimeout(timer)
   }, [selectedDay])
+
+  useEffect(() => {
+    import('../data/homeworkContent').then(mod => setHomeworkContent(mod.default))
+  }, [])
+
+  // Запись встречи хранится как материал дня в Библиотеке (только для июньских дней —
+  // у июля/августа своей записи пока нет, secция просто не покажется).
+  useEffect(() => {
+    let cancelled = false
+    api.library().then(weeks => {
+      if (cancelled) return
+      const day = weeks.flatMap(w => w.days).find(d => d.num === selectedDay)
+      setRecordingMats(day?.mats || [])
+    }).catch(() => setRecordingMats([]))
+    return () => { cancelled = true }
+  }, [selectedDay])
+
+  const hasQuestions = !!QUESTIONS_COMPONENTS[selectedDay]
+  const hasHomework = (homeworkContent?.[selectedDay]?.tasks?.length || 0) > 0
 
   if (loading) {
     return (
@@ -368,9 +391,47 @@ export default function TheoryPage({ selectedDay, onBack }) {
         </span>
       </div>
 
+      {(recordingMats.length > 0 || hasQuestions || hasHomework) && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8, margin: '4px 0 20px' }}>
+          {recordingMats.map(m => (
+            <a
+              key={m.id}
+              href={m.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ color: 'var(--accent-lime)', fontWeight: 700, fontSize: 14.5 }}
+            >
+              {m.title} →
+            </a>
+          ))}
+          {hasQuestions && (
+            <a href="#theory-test-section" style={{ color: 'var(--accent-lime)', fontWeight: 700, fontSize: 14.5 }}>
+              Перейти к тесту по теме →
+            </a>
+          )}
+          {hasHomework && (
+            <a href="#theory-homework-section" style={{ color: 'var(--accent-lime)', fontWeight: 700, fontSize: 14.5 }}>
+              Перейти к заданиям по теме →
+            </a>
+          )}
+        </div>
+      )}
+
       <Suspense fallback={<p style={{ color: 'var(--text-secondary)', padding: '20px 0' }}>Загрузка...</p>}>
         <TheoryComponent videoUrl={VIDEO_URLS[selectedDay] || null} />
       </Suspense>
+
+      {hasQuestions && (
+        <div id="theory-test-section" style={{ marginTop: 48, paddingTop: 32, borderTop: '1px solid var(--border-color)' }}>
+          <QuestionsInline selectedDay={selectedDay} />
+        </div>
+      )}
+
+      {hasHomework && (
+        <div id="theory-homework-section" style={{ marginTop: 48, paddingTop: 32, borderTop: '1px solid var(--border-color)' }}>
+          <HomeworkInline selectedDay={selectedDay} />
+        </div>
+      )}
 
       <div className="theory-footer">
         <button className="btn-back" onClick={onBack}>

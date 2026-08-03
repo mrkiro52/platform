@@ -207,39 +207,21 @@ const AUGUST_DAYS = [
   { day: 1, date: 'сб, 1 августа', tracks: AUGUST_TRACKS_DAY1 },
 ]
 
-function JulyTrackRow({ track, onOpenTheory, onOpenQuestions, onOpenHomework }) {
-  const c = track.color
+function JulyTrackRow({ track, onOpenTheory }) {
   const target = { day: track.id }
-  const showQuestions = track.showQuestions !== false
-  const showHomework = track.showHomework !== false
-  const btn = {
-    display: 'inline-flex', alignItems: 'center', gap: 5,
-    background: 'var(--bg-tertiary)', border: '1px solid var(--border-color)',
-    borderRadius: 0, padding: '6px 12px', fontSize: 12.5, fontWeight: 600,
-    color: 'var(--text-secondary)', cursor: 'pointer', whiteSpace: 'nowrap',
-    transition: 'border-color 0.15s, color 0.15s',
-  }
-  const hover = (e, on) => {
-    e.currentTarget.style.borderColor = on ? 'rgba(32,190,255,0.4)' : 'var(--border-color)'
-    e.currentTarget.style.color = on ? 'var(--accent-lime)' : 'var(--text-secondary)'
-  }
   return (
-    <div style={{
-      display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap',
-      padding: '14px 16px',
-    }}>
+    <div
+      onClick={() => onOpenTheory(target)}
+      style={{
+        display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap',
+        padding: '14px 16px', cursor: 'pointer', transition: 'background 0.15s',
+      }}
+      onMouseEnter={e => e.currentTarget.style.background = 'var(--bg-tertiary)'}
+      onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+    >
       <div style={{ minWidth: 190, flex: '1 1 190px' }}>
         {track.name && <div style={{ color: 'var(--text-secondary)', fontSize: 12, fontWeight: 500, marginBottom: 4 }}>{track.name}</div>}
         <div style={{ color: 'var(--text-primary)', fontSize: 13.5, fontWeight: 500 }}>{track.lesson}</div>
-      </div>
-      <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-        <button style={btn} onMouseEnter={e => hover(e, true)} onMouseLeave={e => hover(e, false)} onClick={() => onOpenTheory(target)}>Теория</button>
-        {showQuestions && (
-          <button style={btn} onMouseEnter={e => hover(e, true)} onMouseLeave={e => hover(e, false)} onClick={() => onOpenQuestions(target)}>Онлайн тесты</button>
-        )}
-        {showHomework && (
-          <button style={btn} onMouseEnter={e => hover(e, true)} onMouseLeave={e => hover(e, false)} onClick={() => onOpenHomework(target)}>Домашние задания</button>
-        )}
       </div>
     </div>
   )
@@ -252,7 +234,7 @@ function getTodayJulyDay() {
   return today.getDate()
 }
 
-function JulyDayCard({ day, open, onToggle, onOpenTheory, onOpenQuestions, onOpenHomework }) {
+function JulyDayCard({ day, open, onToggle, onOpenTheory }) {
   return (
     <div className={`sched-day${open ? ' sched-day--open' : ''}`} style={{ marginBottom: 8 }}>
       <div className="sched-day-header" onClick={onToggle} style={{ cursor: 'pointer' }}>
@@ -271,8 +253,6 @@ function JulyDayCard({ day, open, onToggle, onOpenTheory, onOpenQuestions, onOpe
               key={track.id}
               track={track}
               onOpenTheory={onOpenTheory}
-              onOpenQuestions={onOpenQuestions}
-              onOpenHomework={onOpenHomework}
             />
           ))}
         </div>
@@ -304,13 +284,6 @@ function isAvailable(dayNum) {
   return dayDate <= today
 }
 
-function shouldShowButtons(dayNum) {
-  const today = new Date()
-  today.setHours(0, 0, 0, 0)
-  const dayDate = new Date(2026, 5, dayNum)
-  return dayNum >= 2 && dayDate <= today
-}
-
 function buildJuneDays(scheduleData, libraryData) {
   // Library API provides titles (admin-editable) + materials
   const libByDay = {}
@@ -337,67 +310,26 @@ function buildJuneDays(scheduleData, libraryData) {
   })
 }
 
-const libBtnStyle = {
-  display: 'inline-flex', alignItems: 'center', gap: 5,
-  background: 'var(--bg-tertiary)', border: '1px solid var(--border-color)',
-  borderRadius: 0, padding: '6px 12px', fontSize: 12.5, fontWeight: 600,
-  color: 'var(--text-secondary)', cursor: 'pointer', whiteSpace: 'nowrap',
-  transition: 'border-color 0.15s, color 0.15s',
-}
-const libBtnHover = (e, on) => {
-  e.currentTarget.style.borderColor = on ? 'rgba(32,190,255,0.4)' : 'var(--border-color)'
-  e.currentTarget.style.color = on ? 'var(--accent-lime)' : 'var(--text-secondary)'
-}
-
-function LibButton({ text, onClick }) {
-  return (
-    <button
-      style={libBtnStyle}
-      onMouseEnter={e => libBtnHover(e, true)}
-      onMouseLeave={e => libBtnHover(e, false)}
-      onClick={(e) => { e.stopPropagation(); onClick() }}
-    >
-      {text}
-    </button>
-  )
-}
-
-function DayCard({ day, onOpen, onOpenTheory, onOpenQuestions, onOpenHomework }) {
+function DayCard({ day, onOpenTheory }) {
   const locked = !isAvailable(day.day)
-  const showButtons = shouldShowButtons(day.day)
-  const color  = locked ? 'var(--border-color)' : '#20beff'
-  const hasMats = day.mats?.length > 0
 
   return (
     <div
-      className={`sched-day${!locked && hasMats ? ' sched-day--open' : ''}`}
-      style={locked ? { opacity: 0.4 } : { cursor:'default' }}
+      className={`sched-day${!locked ? ' sched-day--open' : ''}`}
+      style={locked ? { opacity: 0.4 } : { cursor: 'pointer' }}
+      onClick={() => !locked && onOpenTheory(day)}
     >
       <div className="sched-day-header" style={{ flexWrap: 'wrap', rowGap: 10 }}>
         <div className="sched-day-meta">
           <span className="sched-day-num">{dayDateLabel(day.day)}</span>
         </div>
         <div className="sched-day-title">{day.title}</div>
-        <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap', flexShrink: 0 }}>
-          {showButtons && (
-            <>
-              <LibButton text="Теория" onClick={() => onOpenTheory(day)} />
-              {day.day !== 13 && (
-                <LibButton text="Онлайн тесты" onClick={() => onOpenQuestions(day)} />
-              )}
-              <LibButton text="Домашние задания" onClick={() => onOpenHomework(day)} />
-            </>
-          )}
-          {!locked && hasMats && (
-            <LibButton emoji="🎬" text="Видео-лекция" onClick={() => onOpen(day)} />
-          )}
-        </div>
       </div>
     </div>
   )
 }
 
-export default function Library({ onOpenDay, onOpenTheory, onOpenQuestions, onOpenHomework }) {
+export default function Library({ onOpenTheory }) {
   const [activeMonth, setActiveMonth] = useState('august')
   const [library, setLibrary]         = useState(LIBRARY)
   const [schedule, setSchedule]       = useState(SCHEDULE)
@@ -457,7 +389,7 @@ export default function Library({ onOpenDay, onOpenTheory, onOpenQuestions, onOp
                 <div className="schedule-date-label">{week.label}</div>
                 {days.map((day, i) => (
                   <div key={day.id} className="fade-in" style={{ animationDelay: `${i * 0.02}s` }}>
-                    <DayCard day={day} onOpen={onOpenDay} onOpenTheory={onOpenTheory} onOpenQuestions={onOpenQuestions} onOpenHomework={onOpenHomework} />
+                    <DayCard day={day} onOpenTheory={onOpenTheory} />
                   </div>
                 ))}
               </div>
@@ -476,8 +408,6 @@ export default function Library({ onOpenDay, onOpenTheory, onOpenQuestions, onOp
                 open={openJulyDay === day.day}
                 onToggle={() => setOpenJulyDay(prev => prev === day.day ? null : day.day)}
                 onOpenTheory={onOpenTheory}
-                onOpenQuestions={onOpenQuestions}
-                onOpenHomework={onOpenHomework}
               />
             </div>
           ))}
@@ -494,8 +424,6 @@ export default function Library({ onOpenDay, onOpenTheory, onOpenQuestions, onOp
                 open={openAugustDay === day.day}
                 onToggle={() => setOpenAugustDay(prev => prev === day.day ? null : day.day)}
                 onOpenTheory={onOpenTheory}
-                onOpenQuestions={onOpenQuestions}
-                onOpenHomework={onOpenHomework}
               />
             </div>
           ))}

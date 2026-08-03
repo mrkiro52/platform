@@ -51,14 +51,11 @@ const JULY_TRACK_LABELS = {
   165: '29 июля · Кибербезопасность — Основы сетевой безопасности',
 }
 
-export default function HomeworkPage({ selectedDay, onBack }) {
-  const [schedule, setSchedule] = useState(SCHEDULE)
+// Ядро домашних заданий — без брейдкрамбов и обёртки страницы, чтобы можно
+// было встраивать прямо в конспект теории, а не только показывать отдельной страницей.
+export function HomeworkInline({ selectedDay }) {
   const [homeworkContent, setHomeworkContent] = useState(null)
   const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    api.schedule().then(setSchedule).catch(() => {})
-  }, [])
 
   useEffect(() => {
     let cancelled = false
@@ -75,16 +72,56 @@ export default function HomeworkPage({ selectedDay, onBack }) {
   const currentDay = selectedDay || 1
   const homework = (homeworkContent && homeworkContent[currentDay]) || { title: 'Домашние задания', tasks: [] }
 
+  if (loading) {
+    return <p style={{ color: 'var(--text-secondary)' }}>Загрузка...</p>
+  }
+
+  return (
+    <div style={{ maxWidth: '900px' }}>
+      <h2 style={{ fontSize: '18px', marginBottom: '16px' }}>{homework.title}</h2>
+
+      {homework.tasks.length === 0 ? (
+        <p style={{ color: 'var(--text-tertiary)' }}>Домашние задания еще не добавлены</p>
+      ) : (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          {homework.tasks.map((task, idx) => (
+            <div
+              key={idx}
+              style={{
+                padding: '16px',
+                backgroundColor: 'var(--bg-tertiary)',
+                border: '1px solid var(--border-color)',
+                borderRadius: 0,
+              }}
+            >
+              <h3 style={{ margin: '0 0 8px 0', fontSize: '16px' }}>
+                Задача {task.num}: {task.title}
+              </h3>
+              <p style={{ margin: 0, color: 'var(--text-secondary)', whiteSpace: 'pre-wrap', lineHeight: '1.6' }}>
+                {task.description}
+              </p>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
+// Полноценная страница домашних заданий (отдельный маршрут /library/homework/:day) —
+// обёртка над HomeworkInline с брейдкрамбами и кнопкой назад.
+export default function HomeworkPage({ selectedDay, onBack }) {
+  const [schedule, setSchedule] = useState(SCHEDULE)
+  const currentDay = selectedDay || 1
+
+  useEffect(() => {
+    api.schedule().then(setSchedule).catch(() => {})
+  }, [])
+
   function getDayLabel(dayNum) {
     if (JULY_TRACK_LABELS[dayNum]) return JULY_TRACK_LABELS[dayNum]
-    // Ищем в schedule (может быть с API или дефолт)
     const schedule_item = schedule.find(e => e.day === dayNum)
-    if (schedule_item && schedule_item.title) {
-      return schedule_item.title
-    }
-    // Резервный вариант из homeworkContent
-    const homework_title = homeworkContent?.[dayNum]?.title
-    return homework_title || `День ${dayNum}`
+    return schedule_item?.title || `День ${dayNum}`
   }
 
   return (
@@ -99,43 +136,7 @@ export default function HomeworkPage({ selectedDay, onBack }) {
         </span>
       </div>
 
-      <div style={{ maxWidth: '900px', margin: '0 auto' }}>
-
-      <div style={{ marginTop: '24px' }}>
-        {loading ? (
-          <p style={{ color: 'var(--text-secondary)' }}>Загрузка...</p>
-        ) : (
-          <>
-            <h2 style={{ fontSize: '18px', marginBottom: '16px' }}>{homework.title}</h2>
-
-            {homework.tasks.length === 0 ? (
-              <p style={{ color: 'var(--text-tertiary)' }}>Домашние задания еще не добавлены</p>
-            ) : (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                {homework.tasks.map((task, idx) => (
-                  <div
-                    key={idx}
-                    style={{
-                      padding: '16px',
-                      backgroundColor: 'var(--bg-tertiary)',
-                      border: '1px solid var(--border-color)',
-                      borderRadius: 0,
-                    }}
-                  >
-                    <h3 style={{ margin: '0 0 8px 0', fontSize: '16px' }}>
-                      Задача {task.num}: {task.title}
-                    </h3>
-                    <p style={{ margin: 0, color: 'var(--text-secondary)', whiteSpace: 'pre-wrap', lineHeight: '1.6' }}>
-                      {task.description}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            )}
-          </>
-        )}
-      </div>
-      </div>
+      <HomeworkInline selectedDay={currentDay} />
 
       <div className="theory-footer">
         <button className="btn-back" onClick={onBack}>
