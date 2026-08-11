@@ -203,8 +203,13 @@ const AUGUST_TRACKS_DAY1 = [
   { name: '', id: 170, lesson: 'Резюме: шаблон, ред- и грин-флаги', color: { bg:'rgba(32,190,255,0.12)', border:'rgba(32,190,255,0.3)', text:'#20beff' }, showQuestions: false, showHomework: false },
 ]
 
+const AUGUST_TRACKS_DAY11 = [
+  { name: '', id: 171, lesson: 'Самопрезентация на собеседовании', color: { bg:'rgba(32,190,255,0.12)', border:'rgba(32,190,255,0.3)', text:'#20beff' }, showQuestions: false, showHomework: false },
+]
+
 const AUGUST_DAYS = [
   { day: 1, date: 'сб, 1 августа', tracks: AUGUST_TRACKS_DAY1 },
+  { day: 11, date: 'вт, 11 августа', tracks: AUGUST_TRACKS_DAY11 },
 ]
 
 function JulyTrackRow({ track, onOpenTheory }) {

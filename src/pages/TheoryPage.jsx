@@ -133,6 +133,7 @@ const July30OptimizationTheory = lazy(() => import('../theory/july-30-frontend-b
 const July30CryptoBasicsTheory = lazy(() => import('../theory/july-30-crypto-basics'))
 const July31LeetcodeTheory = lazy(() => import('../theory/july-31-leetcode'))
 const August1ResumeFlagsTheory = lazy(() => import('../theory/august-1-resume-flags'))
+const August11SelfPresentationTheory = lazy(() => import('../theory/august-11-self-presentation'))
 
 // Маппинг дней на компоненты с теорией
 const THEORY_COMPONENTS = {
@@ -233,6 +234,7 @@ const THEORY_COMPONENTS = {
   169: July31LeetcodeTheory,             // Все треки, 31 июля — разбор LeetCode
   // Август — карьера (без деления на треки)
   170: August1ResumeFlagsTheory,          // 1 августа — Резюме: шаблон, ред- и грин-флаги
+  171: August11SelfPresentationTheory,    // 11 августа — Самопрезентация на собеседовании
 }
 
 // Заголовки для июльских треков (синтетические id)
@@ -307,6 +309,7 @@ export const JULY_TRACK_LABELS = {
   168: '30 июля · Кибербезопасность — Основы криптографии',
   169: '31 июля · Все треки — Нарешиваем LeetCode',
   170: '1 августа · Резюме: шаблон, ред- и грин-флаги',
+  171: '11 августа · Самопрезентация на собеседовании',
 }
 
 const THEORY_TITLES = {

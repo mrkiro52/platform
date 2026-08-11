@@ -582,6 +582,28 @@ function migrate() {
       console.error('❌ Migration 15 failed:', err.message)
     }
   }
+
+  // Migration 16: добавляем занятие 11 августа (для всех треков сразу)
+  if (schemaVersion < 16) {
+    try {
+      const augustCount = db.prepare("SELECT COUNT(*) as c FROM schedule WHERE month='august' AND day_num=11").get().c
+      if (augustCount === 0) {
+        const ins = db.prepare(`INSERT INTO schedule (day_num, date_label, type, title, theory, tasks, hw, month, meeting_time, tracks, description) VALUES (?,?,?,?,?,?,?,?,?,?,?)`)
+        ins.run(11, 'вт, 11 августа', 'lecture', 'Самопрезентация на собеседовании', '[]', '[]', '', 'august', '20:00', '[]', 'Как рассказывать о себе на собеседовании: методики (Present-Past-Future, STAR, Elevator Pitch), структура ответа, red и green флаги, разбор примеров.')
+      }
+
+      const libDayCount = db.prepare("SELECT COUNT(*) as c FROM library_days WHERE month='august' AND day_number=11").get().c
+      if (libDayCount === 0) {
+        db.prepare(`INSERT INTO library_days (day_number, date_label, title, month, week_name, status) VALUES (?,?,?,?,?,?)`)
+          .run(11, '11 августа', 'Самопрезентация на собеседовании', 'august', 'Август · карьера', 'open')
+      }
+
+      db.pragma('user_version = 16')
+      console.log('✅ Migration 16 completed: added August 11 session (Самопрезентация на собеседовании)')
+    } catch (err) {
+      console.error('❌ Migration 16 failed:', err.message)
+    }
+  }
 }
 
 migrate()

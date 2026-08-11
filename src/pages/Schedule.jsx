@@ -101,6 +101,7 @@ const JULY_SCHEDULE_FALLBACK = [
 // идут для всех треков сразу, поэтому поле tracks оставляем пустым.
 const AUGUST_SCHEDULE_FALLBACK = [
   { day:1, date:'сб, 1 августа', meeting_time:'20:00', title:'Резюме: шаблон, ред- и грин-флаги', tracks:[], description:'Дорабатываем резюме до финальной версии: разбираем структуру под ATS, шаблон LaTeX и главные ред- и грин-флаги, которые видит рекрутер.' },
+  { day:11, date:'вт, 11 августа', meeting_time:'20:00', title:'Самопрезентация на собеседовании', tracks:[], description:'Как рассказывать о себе на собеседовании: методики (Present-Past-Future, STAR, Elevator Pitch), структура ответа, red и green флаги, разбор примеров.' },
 ].map((e, i) => ({ id: -2000 - i, month: 'august', type: 'lecture', theory: [], tasks: [], hw: '', meeting_link: '', ...e }))
 
 // Объединяем события июля и августа из API с резервными. Резервные данные считаются
