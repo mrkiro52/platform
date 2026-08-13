@@ -1,5 +1,7 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
+import { Link } from 'react-router-dom'
 import { api } from '../api'
+import AuthCanvas from '../components/AuthCanvas'
 
 export default function LoginPage({ onLogin }) {
   const [email, setEmail]       = useState('')
@@ -8,65 +10,18 @@ export default function LoginPage({ onLogin }) {
   const [error, setError]       = useState('')
   const [loading, setLoading]   = useState(false)
   const [sessionExpired, setSessionExpired] = useState(false)
-  const canvasRef = useRef(null)
 
   useEffect(() => {
     document.body.className = 'login-page'
 
-    // Check if session expired
+    // Баннер показываем только если сессия истекла сама по себе (не после
+    // обычного ручного выхода — см. App.jsx handleLogout).
     if (localStorage.getItem('sessionExpired')) {
       setSessionExpired(true)
       localStorage.removeItem('sessionExpired')
     }
 
     return () => { document.body.className = '' }
-  }, [])
-
-  useEffect(() => {
-    const canvas = canvasRef.current
-    if (!canvas) return
-    const ctx = canvas.getContext('2d')
-    let particles = []
-    let raf
-
-    const resize = () => {
-      canvas.width = window.innerWidth
-      canvas.height = window.innerHeight
-    }
-    const mkParticle = () => ({
-      x: Math.random() * canvas.width,
-      y: Math.random() * canvas.height,
-      r: Math.random() * 1.8 + 0.4,
-      vx: (Math.random() - 0.5) * 0.2,
-      vy: (Math.random() - 0.5) * 0.2,
-      o: Math.random() * 0.08 + 0.03,
-    })
-    const init = () => {
-      resize()
-      particles = Array.from({ length: 60 }, mkParticle)
-    }
-    const draw = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height)
-      particles.forEach(p => {
-        ctx.beginPath()
-        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2)
-        ctx.fillStyle = `rgba(32,190,255,${p.o})`
-        ctx.fill()
-        p.x += p.vx; p.y += p.vy
-        if (p.x < -5) p.x = canvas.width + 5
-        if (p.x > canvas.width + 5) p.x = -5
-        if (p.y < -5) p.y = canvas.height + 5
-        if (p.y > canvas.height + 5) p.y = -5
-      })
-      raf = requestAnimationFrame(draw)
-    }
-    init()
-    draw()
-    window.addEventListener('resize', init, { passive: true })
-    return () => {
-      cancelAnimationFrame(raf)
-      window.removeEventListener('resize', init)
-    }
   }, [])
 
   const handleSubmit = async (e) => {
@@ -85,13 +40,12 @@ export default function LoginPage({ onLogin }) {
 
   return (
     <>
-      <canvas id="login-canvas" ref={canvasRef} />
+      <AuthCanvas />
       <div className="login-wrap">
         <div className="login-card">
           <div className="login-brand">
             <span className="login-brand-kiro">KIRO PLATFORM</span>
           </div>
-          <h1 className="login-title">IT Summer Camp '26</h1>
 
           <form onSubmit={handleSubmit} noValidate>
             <div className="form-group">
@@ -148,8 +102,9 @@ export default function LoginPage({ onLogin }) {
           </form>
 
           <p className="login-note">
-            Доступ выдаётся менеджером после оплаты.<br/>
-            Для получения доступа напишите{' '}
+            Нет аккаунта? <Link to="/register">Зарегистрироваться</Link>
+            <br/>
+            По всем вопросам пишите{' '}
             <a href="https://t.me/kiro_team_manager" target="_blank" rel="noopener">@kiro_team_manager</a>
           </p>
         </div>

@@ -11,6 +11,7 @@ async function req(path, opts = {}) {
   const res = await fetch(`${BASE}${path}`, { ...opts, headers })
   if (res.status === 401 && !path.includes('/auth/')) {
     localStorage.removeItem('kiro_user')
+    localStorage.setItem('sessionExpired', 'true')
     window.location.reload()
     return
   }
@@ -28,6 +29,7 @@ async function reqForm(path, formData) {
   const res = await fetch(`${BASE}${path}`, { method: 'POST', headers, body: formData })
   if (res.status === 401) {
     localStorage.removeItem('kiro_user')
+    localStorage.setItem('sessionExpired', 'true')
     window.location.reload()
     return
   }
@@ -40,6 +42,7 @@ async function reqForm(path, formData) {
 
 export const api = {
   login:         (email, pw) => req('/api/auth/login', { method: 'POST', body: JSON.stringify({ email, password: pw }) }),
+  register:      (nickname, password, passwordConfirm) => req('/api/auth/register', { method: 'POST', body: JSON.stringify({ nickname, password, passwordConfirm }) }),
   schedule:      ()          => req('/api/schedule'),
   library:       ()          => req('/api/library'),
   tasks:         ()          => req('/api/tasks'),

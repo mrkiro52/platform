@@ -604,6 +604,19 @@ function migrate() {
       console.error('❌ Migration 16 failed:', err.message)
     }
   }
+
+  // Migration 17: уникальный индекс на nickname — нужен для самостоятельной
+  // регистрации (логин = nickname), чтобы два пользователя не могли занять
+  // один и тот же логин. Additive, данные не трогает.
+  if (schemaVersion < 17) {
+    try {
+      db.prepare('CREATE UNIQUE INDEX IF NOT EXISTS idx_users_nickname ON users(nickname)').run()
+      db.pragma('user_version = 17')
+      console.log('✅ Migration 17 completed: added unique index on users.nickname')
+    } catch (err) {
+      console.error('❌ Migration 17 failed (вероятно есть дубли nickname в текущих данных):', err.message)
+    }
+  }
 }
 
 migrate()

@@ -338,7 +338,7 @@ img { max-width: 100%; display: block; }
   border-radius: 0; padding: 40px 36px; box-shadow: var(--shadow-md);
 }
 
-.login-brand { display: flex; align-items: center; gap: 8px; margin-bottom: 24px; }
+.login-brand { display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 32px; }
 .login-brand-kiro { font-family: var(--font-syne); font-size: 22px; font-weight: 700; color: var(--accent-lime); }
 .login-brand-sep { width: 1px; height: 18px; background: var(--border-color); }
 .login-brand-platform { font-size: 13px; color: var(--text-tertiary); }

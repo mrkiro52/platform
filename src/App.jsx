@@ -1,6 +1,7 @@
 import { useState, useCallback, useEffect } from 'react'
 import { Routes, Route, Navigate, useNavigate } from 'react-router-dom'
 import LoginPage from './pages/Login'
+import RegisterPage from './pages/Register'
 import Landing from './pages/Landing'
 import AppShell from './AppShell'
 
@@ -91,8 +92,9 @@ export default function App() {
   }, [navigate])
 
   const handleLogout = useCallback(() => {
+    // Обычный выход пользователя — это не истечение сессии, флаг sessionExpired
+    // здесь не ставим, иначе баннер "сессия истекла" будет всплывать просто так.
     localStorage.removeItem('kiro_user')
-    localStorage.setItem('sessionExpired', 'true')
     setUser(null)
     navigate('/login')
   }, [navigate])
@@ -105,6 +107,9 @@ export default function App() {
       } />
       <Route path="/login" element={
         user ? <Navigate to="/dashboard" replace /> : <LoginPage onLogin={handleLogin} />
+      } />
+      <Route path="/register" element={
+        user ? <Navigate to="/dashboard" replace /> : <RegisterPage onLogin={handleLogin} />
       } />
       <Route path="/*" element={
         user
