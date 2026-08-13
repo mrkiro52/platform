@@ -303,9 +303,6 @@ function LessonRow({ item, onOpenTheory }) {
       onClick={() => onOpenTheory({ day: item.id })}
     >
       <div className="sched-day-header" style={{ flexWrap: 'wrap', rowGap: 10 }}>
-        <div className="sched-day-meta">
-          <span className="sched-day-num">{item.date.toUpperCase()}</span>
-        </div>
         <div className="sched-day-title">{item.title}</div>
       </div>
     </div>

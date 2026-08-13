@@ -204,7 +204,7 @@ export default function LikebezyPage() {
                     background: 'rgba(32,190,255,0.1)', border: '1px solid rgba(32,190,255,0.25)',
                     color: 'var(--accent-lime)', borderRadius: 6, padding: '5px 14px',
                     fontSize: 12, fontWeight: 600,
-                  }}>Читать →</span>
+                  }}>Читать</span>
                 </div>
               </div>
             )

@@ -158,7 +158,7 @@ export default function PythonOopLikbez({ onBack }) {
 
       {/* Back */}
       <button onClick={onBack} style={{ background: 'none', border: '1px solid var(--border-color)', color: 'var(--text-secondary)', padding: '6px 14px', borderRadius: 6, fontSize: 13, cursor: 'pointer', marginBottom: 28 }}>
-        ← Назад к ликбезам
+        Назад к ликбезам
       </button>
 
       {/* Hero */}

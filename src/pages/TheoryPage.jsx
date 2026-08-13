@@ -344,7 +344,7 @@ function QuickLinks({ recordingMats, hasQuestions, hasHomework }) {
     e.currentTarget.style.background = on ? 'rgba(32,190,255,0.2)' : 'rgba(32,190,255,0.1)'
   }
   return (
-    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, margin: '20px 0 0' }}>
+    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, margin: '20px 0 24px' }}>
       {recordingMats.map(m => (
         <a
           key={m.id}
@@ -366,7 +366,7 @@ function QuickLinks({ recordingMats, hasQuestions, hasHomework }) {
           onMouseLeave={e => hover(e, false)}
           onClick={e => scrollToId(e, 'theory-test-section')}
         >
-          Перейти к тесту по теме →
+          Перейти к тесту по теме
         </a>
       )}
       {hasHomework && (
@@ -377,7 +377,7 @@ function QuickLinks({ recordingMats, hasQuestions, hasHomework }) {
           onMouseLeave={e => hover(e, false)}
           onClick={e => scrollToId(e, 'theory-homework-section')}
         >
-          Перейти к заданиям по теме →
+          Перейти к заданиям по теме
         </a>
       )}
     </div>

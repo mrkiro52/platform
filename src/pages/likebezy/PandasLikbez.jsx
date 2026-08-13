@@ -224,7 +224,7 @@ export default function PandasLikbez({ onBack }) {
           alignItems: 'center', gap: 6,
         }}
       >
-        ← Назад к ликбезам
+        Назад к ликбезам
       </button>
 
       {/* Hero */}
