@@ -51,9 +51,7 @@ export default function Day20ApiTheory({ videoUrl }) {
     <div className="theory-container">
 
       <section className="theory-section">
-        <h1 className="theory-title">День 20</h1>
-        <p className="theory-subtitle">Сети и REST API</p>
-        <p className="theory-date">20 июня 2026</p>
+        <h1 className="theory-title">Сети и REST API</h1>
       </section>
 
       {videoUrl && <VideoPlayer src={videoUrl} />}

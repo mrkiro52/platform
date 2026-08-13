@@ -59,7 +59,7 @@ export default function July6LinRegTheory() {
       </section>
 
       <section className="theory-section">
-        <h2 className="theory-heading-2">Видео-лекция: Линейная регрессия</h2>
+        <h2 className="theory-heading-2 theory-heading-2--centered">Видео-лекция: Линейная регрессия</h2>
         <VideoPlayer src="https://s3.regru.cloud/kirocamp/MLDay7.mov" />
       </section>
 

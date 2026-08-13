@@ -4,9 +4,7 @@ export default function Day11GitTheory() {
   return (
     <div className="theory-container">
       <section className="theory-section">
-        <h1 className="theory-title">День 11</h1>
-        <p className="theory-subtitle">Git: версионирование и командная работа</p>
-        <p className="theory-date">11 июня 2026</p>
+        <h1 className="theory-title">Git: версионирование и командная работа</h1>
       </section>
 
       <section className="theory-section">

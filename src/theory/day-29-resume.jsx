@@ -290,9 +290,7 @@ export default function Day29ResumeTheory() {
   return (
     <div className="theory-container">
       <section className="theory-section">
-        <h1 className="theory-title">День 29</h1>
-        <p className="theory-subtitle">Резюме IT-джуна: пишем первую версию</p>
-        <p className="theory-date">29 июня 2026</p>
+        <h1 className="theory-title">Резюме IT-джуна: пишем первую версию</h1>
       </section>
 
       {/* ─── 1. Что такое ATS ─── */}

@@ -4,9 +4,7 @@ export default function Day17TrendsTheory() {
   return (
     <div className="theory-container">
       <section className="theory-section">
-        <h1 className="theory-title">День 17</h1>
-        <p className="theory-subtitle">SQL — часть 1: основы</p>
-        <p className="theory-date">17 июня 2026</p>
+        <h1 className="theory-title">SQL — часть 1: основы</h1>
       </section>
 
       {/* ─────────── SQL ЧАСТЬ 1 ─────────── */}

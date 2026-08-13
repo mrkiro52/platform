@@ -5,13 +5,11 @@ export default function Day2BasicsTheory() {
   return (
     <div className="theory-container">
       <section className="theory-section">
-        <h1 className="theory-title">День 2</h1>
-        <p className="theory-subtitle">Основы программирования: переменные, типы, условия</p>
-        <p className="theory-date">2 июня 2026</p>
+        <h1 className="theory-title">Основы программирования: переменные, типы, условия</h1>
       </section>
 
       <section className="theory-section">
-        <h2 className="theory-heading-2">Видео-лекция: Основы Python (4 части)</h2>
+        <h2 className="theory-heading-2 theory-heading-2--centered">Видео-лекция: Основы Python (4 части)</h2>
         <MultiPartVideo parts={PYTHON_BASICS_PARTS} />
       </section>
 

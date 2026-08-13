@@ -42,7 +42,7 @@ export default function July5PandasTheory() {
       </section>
 
       <section className="theory-section">
-        <h2 className="theory-heading-2">Видео-лекция: NumPy p.2 и Pandas</h2>
+        <h2 className="theory-heading-2 theory-heading-2--centered">Видео-лекция: NumPy p.2 и Pandas</h2>
         <MultiPartVideo parts={JULY5_ML_ANALYTICS_PARTS} />
       </section>
 

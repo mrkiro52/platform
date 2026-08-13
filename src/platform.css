@@ -1230,9 +1230,7 @@ img { max-width: 100%; display: block; }
 }
 
 .theory-date {
-  color: var(--text-tertiary);
-  font-size: 13px;
-  font-weight: 500;
+  display: none;
 }
 
 .theory-heading-2 {
@@ -1242,6 +1240,10 @@ img { max-width: 100%; display: block; }
   color: var(--text-primary);
   margin-bottom: 16px;
   letter-spacing: -0.3px;
+}
+
+.theory-heading-2--centered {
+  text-align: center;
 }
 
 .theory-heading-3 {
@@ -1505,8 +1507,7 @@ img { max-width: 100%; display: block; }
    QUESTIONS / TASKS
 ═════════════════════════════════════════════════════════════════ */
 .questions-container {
-  max-width: 800px;
-  margin: 0 auto;
+  width: 100%;
   padding: 20px 0;
 }
 

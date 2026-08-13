@@ -5,9 +5,7 @@ export default function Day4AlgorithmsTheory({ videoUrl }) {
   return (
     <div className="theory-container">
       <section className="theory-section">
-        <h1 className="theory-title">День 4</h1>
-        <p className="theory-subtitle">Алгоритмическое мышление и Big O</p>
-        <p className="theory-date">4 июня 2026</p>
+        <h1 className="theory-title">Алгоритмическое мышление и Big O</h1>
       </section>
 
       {videoUrl && <VideoPlayer src={videoUrl} />}

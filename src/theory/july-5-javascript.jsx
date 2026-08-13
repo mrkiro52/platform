@@ -42,7 +42,7 @@ export default function July5JavaScriptTheory() {
       </section>
 
       <section className="theory-section">
-        <h2 className="theory-heading-2">Видео-лекция: Продвинутый JavaScript</h2>
+        <h2 className="theory-heading-2 theory-heading-2--centered">Видео-лекция: Продвинутый JavaScript</h2>
         <MultiPartVideo parts={JULY5_FRONTEND_PARTS} />
       </section>
 

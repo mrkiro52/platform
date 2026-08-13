@@ -4,9 +4,7 @@ export default function Day5LogicTheory() {
   return (
     <div className="theory-container">
       <section className="theory-section">
-        <h1 className="theory-title">День 5</h1>
-        <p className="theory-subtitle">Дискретная математика: логика и множества</p>
-        <p className="theory-date">5 июня 2026</p>
+        <h1 className="theory-title">Дискретная математика: логика и множества</h1>
       </section>
 
       <section className="theory-section">

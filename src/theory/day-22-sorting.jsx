@@ -7,9 +7,7 @@ export default function Day22SortingTheory({ videoUrl }) {
   return (
     <div className="theory-container">
       <section className="theory-section">
-        <h1 className="theory-title">День 22</h1>
-        <p className="theory-subtitle">Алгоритмы: сортировки и поиск</p>
-        <p className="theory-date">22 июня 2026</p>
+        <h1 className="theory-title">Алгоритмы: сортировки и поиск</h1>
       </section>
 
       {videoUrl && <VideoPlayer src={videoUrl} />}

@@ -4,9 +4,7 @@ export default function Day8StacksQueuesTheory() {
   return (
     <div className="theory-container">
       <section className="theory-section">
-        <h1 className="theory-title">День 8</h1>
-        <p className="theory-subtitle">Структуры данных: стек и очередь</p>
-        <p className="theory-date">8 июня 2026</p>
+        <h1 className="theory-title">Структуры данных: стек и очередь</h1>
       </section>
 
       <section className="theory-section">

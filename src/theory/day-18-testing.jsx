@@ -4,9 +4,7 @@ export default function Day18TestingTheory() {
   return (
     <div className="theory-container">
       <section className="theory-section">
-        <h1 className="theory-title">День 18</h1>
-        <p className="theory-subtitle">Тестирование, комментарии и документация · SQL часть 2</p>
-        <p className="theory-date">18 июня 2026</p>
+        <h1 className="theory-title">Тестирование, комментарии и документация · SQL часть 2</h1>
       </section>
 
       <section className="theory-section">

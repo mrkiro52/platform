@@ -5,9 +5,7 @@ export default function Day7StructuresTheory({ videoUrl }) {
   return (
     <div className="theory-container">
       <section className="theory-section">
-        <h1 className="theory-title">День 7</h1>
-        <p className="theory-subtitle">Структуры данных: массивы и связанные списки</p>
-        <p className="theory-date">7 июня 2026</p>
+        <h1 className="theory-title">Структуры данных: массивы и связанные списки</h1>
       </section>
 
       {videoUrl && <VideoPlayer src={videoUrl} />}

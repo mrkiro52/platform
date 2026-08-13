@@ -4,9 +4,7 @@ export default function Day10TreesTheory() {
   return (
     <div className="theory-container">
       <section className="theory-section">
-        <h1 className="theory-title">День 10</h1>
-        <p className="theory-subtitle">Структуры данных: деревья</p>
-        <p className="theory-date">10 июня 2026</p>
+        <h1 className="theory-title">Структуры данных: деревья</h1>
       </section>
 
       <section className="theory-section">

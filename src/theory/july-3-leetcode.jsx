@@ -111,7 +111,7 @@ export default function July3LeetcodeTheory() {
       </section>
 
       <section className="theory-section">
-        <h2 className="theory-heading-2">Видео-лекция: разбор задач (4 части)</h2>
+        <h2 className="theory-heading-2 theory-heading-2--centered">Видео-лекция: разбор задач (4 части)</h2>
         <MultiPartVideo parts={LEETCODE_ONE_PARTS} />
       </section>
 

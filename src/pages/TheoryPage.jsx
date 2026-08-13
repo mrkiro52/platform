@@ -389,6 +389,7 @@ export default function TheoryPage({ selectedDay, onBack }) {
   const [loading, setLoading] = useState(true)
   const [homeworkContent, setHomeworkContent] = useState(null)
   const [recordingMats, setRecordingMats] = useState([])
+  const [libraryTitle, setLibraryTitle] = useState(null)
   const [quickLinksMount, setQuickLinksMount] = useState(null)
   const theoryWrapperRef = useRef(null)
 
@@ -416,6 +417,7 @@ export default function TheoryPage({ selectedDay, onBack }) {
       if (cancelled) return
       const day = weeks.flatMap(w => w.days).find(d => d.num === selectedDay)
       setRecordingMats(day?.mats || [])
+      setLibraryTitle(day?.title || null)
     }).catch(() => setRecordingMats([]))
     return () => { cancelled = true }
   }, [selectedDay])
@@ -506,7 +508,7 @@ export default function TheoryPage({ selectedDay, onBack }) {
         </button>
         <span className="breadcrumb-sep">/</span>
         <span className="breadcrumb-current">
-          {JULY_TRACK_LABELS[selectedDay] ? getDayLabel(selectedDay) : `День ${selectedDay} · ${getDayLabel(selectedDay)}`}
+          {JULY_TRACK_LABELS[selectedDay] ? getDayLabel(selectedDay) : (libraryTitle || getDayLabel(selectedDay))}
         </span>
       </div>
 

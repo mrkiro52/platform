@@ -4,9 +4,7 @@ export default function Day9HashtablesTheory() {
   return (
     <div className="theory-container">
       <section className="theory-section">
-        <h1 className="theory-title">День 9</h1>
-        <p className="theory-subtitle">Структуры данных: хэш-таблицы</p>
-        <p className="theory-date">9 июня 2026</p>
+        <h1 className="theory-title">Структуры данных: хэш-таблицы</h1>
       </section>
 
       <section className="theory-section">

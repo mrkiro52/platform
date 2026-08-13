@@ -42,7 +42,7 @@ export default function July5AssemblyTheory() {
       </section>
 
       <section className="theory-section">
-        <h2 className="theory-heading-2">Видео-лекция: Ассемблер и кое-что до</h2>
+        <h2 className="theory-heading-2 theory-heading-2--centered">Видео-лекция: Ассемблер и кое-что до</h2>
         <VideoPlayer src="https://s3.regru.cloud/kirocamp/day5Cybersec.mov" />
       </section>
 

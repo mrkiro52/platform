@@ -64,7 +64,7 @@ export default function July6StatisticsTheory() {
       </section>
 
       <section className="theory-section">
-        <h2 className="theory-heading-2">Видео-лекция: Математическая статистика</h2>
+        <h2 className="theory-heading-2 theory-heading-2--centered">Видео-лекция: Математическая статистика</h2>
         <VideoPlayer src="https://s3.regru.cloud/kirocamp/analyticsDay7.mov" />
       </section>
 

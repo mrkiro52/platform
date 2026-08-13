@@ -4,9 +4,7 @@ export default function Day13ProjectTheory() {
   return (
     <div className="theory-container">
       <section className="theory-section">
-        <h1 className="theory-title">День 13</h1>
-        <p className="theory-subtitle">Практический проект: визуализация структур данных и алгоритмов</p>
-        <p className="theory-date">13 июня 2026</p>
+        <h1 className="theory-title">Практический проект: визуализация структур данных и алгоритмов</h1>
       </section>
 
       <section className="theory-section">

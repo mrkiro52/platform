@@ -4,9 +4,7 @@ export default function Day15TimeManagementTheory() {
   return (
     <div className="theory-container">
       <section className="theory-section">
-        <h1 className="theory-title">День 15</h1>
-        <p className="theory-subtitle">Тайм- и таск-менеджмент</p>
-        <p className="theory-date">15 июня 2026</p>
+        <h1 className="theory-title">Тайм- и таск-менеджмент</h1>
       </section>
 
       <section className="theory-section">

@@ -5,13 +5,11 @@ export default function Day3LoopsTheory() {
   return (
     <div className="theory-container">
       <section className="theory-section">
-        <h1 className="theory-title">День 3</h1>
-        <p className="theory-subtitle">Основы программирования: циклы, функции, коллекции</p>
-        <p className="theory-date">3 июня 2026</p>
+        <h1 className="theory-title">Основы программирования: циклы, функции, коллекции</h1>
       </section>
 
       <section className="theory-section">
-        <h2 className="theory-heading-2">Видео-лекция: Основы Python (4 части)</h2>
+        <h2 className="theory-heading-2 theory-heading-2--centered">Видео-лекция: Основы Python (4 части)</h2>
         <MultiPartVideo parts={PYTHON_BASICS_PARTS} />
       </section>
 

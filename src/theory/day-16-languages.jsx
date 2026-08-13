@@ -4,9 +4,7 @@ export default function Day16LanguagesTheory() {
   return (
     <div className="theory-container">
       <section className="theory-section">
-        <h1 className="theory-title">День 16</h1>
-        <p className="theory-subtitle">Языки программирования и фреймворки в 2026 году</p>
-        <p className="theory-date">16 июня 2026</p>
+        <h1 className="theory-title">Языки программирования и фреймворки в 2026 году</h1>
       </section>
 
       <section className="theory-section">

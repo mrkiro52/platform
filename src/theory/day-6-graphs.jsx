@@ -4,9 +4,7 @@ export default function Day6GraphsTheory() {
   return (
     <div className="theory-container">
       <section className="theory-section">
-        <h1 className="theory-title">День 6</h1>
-        <p className="theory-subtitle">Дискретная математика: графы и алгоритмы</p>
-        <p className="theory-date">6 июня 2026</p>
+        <h1 className="theory-title">Дискретная математика: графы и алгоритмы</h1>
       </section>
 
       <section className="theory-section">

@@ -4,9 +4,7 @@ export default function Day19SqlTheory() {
   return (
     <div className="theory-container">
       <section className="theory-section">
-        <h1 className="theory-title">День 19</h1>
-        <p className="theory-subtitle">Основы баз данных и SQL · часть 3</p>
-        <p className="theory-date">19 июня 2026</p>
+        <h1 className="theory-title">Основы баз данных и SQL · часть 3</h1>
       </section>
 
       {/* ─── Ключи ─── */}

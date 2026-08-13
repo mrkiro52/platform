@@ -431,9 +431,7 @@ export default function Day26SoftSkillsTheory() {
     <div className="theory-container">
 
       <section className="theory-section">
-        <h1 className="theory-title">День 26</h1>
-        <p className="theory-subtitle">Soft skills: команда, фидбек, рост</p>
-        <p className="theory-date">26 июня 2026</p>
+        <h1 className="theory-title">Soft skills: команда, фидбек, рост</h1>
       </section>
 
       <section className="theory-section">

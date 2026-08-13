@@ -40,7 +40,7 @@ export default function July6DomTheory() {
       </section>
 
       <section className="theory-section">
-        <h2 className="theory-heading-2">Видео-лекция: Взаимодействие с DOM деревом</h2>
+        <h2 className="theory-heading-2 theory-heading-2--centered">Видео-лекция: Взаимодействие с DOM деревом</h2>
         <VideoPlayer src="https://s3.regru.cloud/kirocamp/javascriptDay7.mov" />
       </section>
 

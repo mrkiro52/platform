@@ -4,9 +4,7 @@ export default function Day12AiToolsTheory() {
   return (
     <div className="theory-container">
       <section className="theory-section">
-        <h1 className="theory-title">День 12</h1>
-        <p className="theory-subtitle">ИИ-инструменты разработчика</p>
-        <p className="theory-date">12 июня 2026</p>
+        <h1 className="theory-title">ИИ-инструменты разработчика</h1>
       </section>
 
       <section className="theory-section">

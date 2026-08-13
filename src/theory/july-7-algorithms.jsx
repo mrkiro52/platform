@@ -10,7 +10,7 @@ export default function July7AlgorithmsTheory() {
       </section>
 
       <section className="theory-section">
-        <h2 className="theory-heading-2">Видео-лекция</h2>
+        <h2 className="theory-heading-2 theory-heading-2--centered">Видео-лекция</h2>
         <MultiPartVideo parts={JULY7_ALGORITHMS_PARTS} />
       </section>
     </div>
