@@ -1,17 +1,5 @@
 // Reusable skeleton loaders for different content types
 
-export function SkeletonScheduleDay() {
-  return (
-    <div className="skeleton-schedule-day">
-      <div className="skeleton skeleton-title" />
-      <div className="skeleton skeleton-block" style={{ width: '60%' }} />
-      <div className="skeleton skeleton-text" style={{ width: '90%' }} />
-      <div className="skeleton skeleton-text" style={{ width: '85%' }} />
-      <div className="skeleton skeleton-text" style={{ width: '70%' }} />
-    </div>
-  )
-}
-
 export function SkeletonLibraryDay() {
   return (
     <div className="skeleton-schedule-day">

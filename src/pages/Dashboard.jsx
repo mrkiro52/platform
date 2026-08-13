@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-import { SCHEDULE, LIBRARY, HW_LINKS, TYPE_BADGE, TYPE_LABELS } from '../data'
+import { LIBRARY, HW_LINKS } from '../data'
 import { api } from '../api'
 import { SkeletonNewsCard, SkeletonCampProgress, SkeletonEventCard } from '../components/Skeleton'
 
@@ -238,7 +238,6 @@ function fmt(s) {
 
 export default function Dashboard({ user, onOpenDay, onNavigate }) {
   const [announcements, setAnnouncements] = useState([])
-  const [schedule, setSchedule] = useState(SCHEDULE)
   const [library, setLibrary]   = useState(LIBRARY)
   const [notes, setNotes]       = useState(() => localStorage.getItem('kiro_notes') || '')
   const [loading, setLoading]   = useState(true)
@@ -256,7 +255,6 @@ export default function Dashboard({ user, onOpenDay, onNavigate }) {
 
     Promise.all([
       api.announcements().then(setAnnouncements).catch(() => {}),
-      api.schedule().then(setSchedule).catch(() => {}),
       api.library().then(setLibrary).catch(() => {}),
     ]).then(() => {
       const elapsed = Date.now() - startTime
@@ -295,7 +293,6 @@ export default function Dashboard({ user, onOpenDay, onNavigate }) {
   const todayHwUrl  = todayDay ? HW_LINKS[todayDay] : null
   const allLibDays  = library.flatMap(wk => wk.days)
   const todayLibDay = todayDay ? allLibDays.find(d => (d.num ?? d.id) === todayDay) : null
-  const upcoming    = schedule.filter(e => todayDay ? e.day >= todayDay : true).slice(0, 3)
   const dateLabel   = `${RU_WEEKDAY[today.getDay()]}, ${today.getDate()} ${RU_MONTHS[today.getMonth()]} ${today.getFullYear()}`
 
   return (

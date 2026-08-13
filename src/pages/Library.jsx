@@ -3,12 +3,6 @@ import { SCHEDULE, LIBRARY } from '../data'
 import { api } from '../api'
 import { SkeletonLibraryDay } from '../components/Skeleton'
 
-const TABS = [
-  { value:'june',   label:'Июнь — Фундамент',    locked: false },
-  { value:'july',   label:'Июль — Специализация', locked: false },
-  { value:'august', label:'Август — Карьера',      locked: false },
-]
-
 // Треки июля: направление → синтетический id дня с контентом (теория/тесты/ДЗ)
 const JULY_TRACKS = [
   { name: 'Frontend',          id: 101, lesson: 'Основы HTML',                        color: { bg:'rgba(234,179,8,0.12)',  border:'rgba(234,179,8,0.3)',  text:'#facc15' } },
@@ -198,7 +192,7 @@ const JULY_DAYS = [
   { day: 31, date: 'пт, 31 июля', tracks: JULY_TRACKS_DAY31 },
 ]
 
-// Август — карьера. Занятия идут для всех треков сразу, поэтому name у трека пустой.
+// Карьера. Занятия идут для всех треков сразу, поэтому name у трека пустой.
 const AUGUST_TRACKS_DAY1 = [
   { name: '', id: 170, lesson: 'Резюме: шаблон, ред- и грин-флаги', color: { bg:'rgba(32,190,255,0.12)', border:'rgba(32,190,255,0.3)', text:'#20beff' }, showQuestions: false, showHomework: false },
 ]
@@ -212,68 +206,6 @@ const AUGUST_DAYS = [
   { day: 11, date: 'вт, 11 августа', tracks: AUGUST_TRACKS_DAY11 },
 ]
 
-function JulyTrackRow({ track, onOpenTheory }) {
-  const target = { day: track.id }
-  return (
-    <div
-      onClick={() => onOpenTheory(target)}
-      style={{
-        display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap',
-        padding: '14px 16px', cursor: 'pointer', transition: 'background 0.15s',
-      }}
-      onMouseEnter={e => e.currentTarget.style.background = 'var(--bg-tertiary)'}
-      onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
-    >
-      <div style={{ minWidth: 190, flex: '1 1 190px' }}>
-        {track.name && <div style={{ color: 'var(--text-secondary)', fontSize: 12, fontWeight: 500, marginBottom: 4 }}>{track.name}</div>}
-        <div style={{ color: 'var(--text-primary)', fontSize: 13.5, fontWeight: 500 }}>{track.lesson}</div>
-      </div>
-    </div>
-  )
-}
-
-// Число сегодняшнего дня, если сейчас июль 2026, иначе null
-function getTodayJulyDay() {
-  const today = new Date()
-  if (today.getFullYear() !== 2026 || today.getMonth() !== 6) return null
-  return today.getDate()
-}
-
-function JulyDayCard({ day, open, onToggle, onOpenTheory }) {
-  return (
-    <div className={`sched-day${open ? ' sched-day--open' : ''}`} style={{ marginBottom: 8 }}>
-      <div className="sched-day-header" onClick={onToggle} style={{ cursor: 'pointer' }}>
-        <div className="sched-day-meta">
-          <span className="sched-day-num">{day.date.toUpperCase()}</span>
-        </div>
-        <div className="sched-day-title" style={{ flex: 1 }}>
-          {day.tracks.map(t => t.name).filter(Boolean).join(' / ') || day.tracks.map(t => t.lesson).join(' / ')}
-        </div>
-        <span className="sched-chevron">{open ? '▴' : '▾'}</span>
-      </div>
-      {open && (
-        <div style={{ padding: '0 0 6px' }}>
-          {day.tracks.map(track => (
-            <JulyTrackRow
-              key={track.id}
-              track={track}
-              onOpenTheory={onOpenTheory}
-            />
-          ))}
-        </div>
-      )}
-    </div>
-  )
-}
-
-const WEEKS = [
-  { label:'Неделя 1 · 1–7 июня',   start:1,  end:7  },
-  { label:'Неделя 2 · 8–14 июня',  start:8,  end:14 },
-  { label:'Неделя 3 · 15–21 июня', start:15, end:21 },
-  { label:'Неделя 4 · 22–28 июня', start:22, end:28 },
-  { label:'Неделя 5 · 29–30 июня', start:29, end:99 },
-]
-
 const WD_SHORT = ['ВС','ПН','ВТ','СР','ЧТ','ПТ','СБ']
 const MON_CAPS = ['ЯНВАРЯ','ФЕВРАЛЯ','МАРТА','АПРЕЛЯ','МАЯ','ИЮНЯ','ИЮЛЯ','АВГУСТА','СЕНТЯБРЯ','ОКТЯБРЯ','НОЯБРЯ','ДЕКАБРЯ']
 
@@ -282,23 +214,18 @@ function dayDateLabel(dayNum) {
   return `${WD_SHORT[d.getDay()]}, ${dayNum} ${MON_CAPS[d.getMonth()]}`
 }
 
-function isAvailable(dayNum) {
-  const today = new Date()
-  today.setHours(0, 0, 0, 0)
-  const dayDate = new Date(2026, 5, dayNum)
-  return dayDate <= today
-}
-
 function buildJuneDays(scheduleData, libraryData) {
-  // Library API provides titles (admin-editable) + materials
+  // Library API provides titles (admin-editable) + materials. Фильтруем по
+  // месяцу — иначе day_number=1 из августа перезаписывает day_number=1 июня.
   const libByDay = {}
-  libraryData.forEach(wk => {
+  libraryData.filter(wk => wk.month === 'june').forEach(wk => {
     wk.days.forEach(d => {
       const n = d.num ?? d.id
       libByDay[n] = { title: d.title, mats: d.mats || [], id: d.id }
     })
   })
-  // Schedule provides fallback titles and guarantees all 30 days are present
+  // Локальный резервный список (SCHEDULE) подстраховывает заголовки, если их ещё
+  // нет в library API — саму страницу "Расписание" эти данные больше не питают.
   const schedByDay = {}
   scheduleData.filter(e => e.day >= 1 && e.day <= 30).forEach(e => {
     schedByDay[e.day] = e.title
@@ -315,123 +242,132 @@ function buildJuneDays(scheduleData, libraryData) {
   })
 }
 
-function DayCard({ day, onOpenTheory }) {
-  const locked = !isAvailable(day.day)
+// Категории материалов библиотеки — вместо деления по месяцам лагеря.
+const CATEGORIES = [
+  { key: 'foundations', label: 'Основы и алгоритмы' },
+  { key: 'frontend',    label: 'Frontend' },
+  { key: 'backend',     label: 'Backend' },
+  { key: 'ml',          label: 'Аналитика и Machine Learning' },
+  { key: 'security',    label: 'Кибербезопасность' },
+  { key: 'practice',    label: 'Практика и проекты' },
+  { key: 'career',      label: 'Карьера' },
+]
 
+// Трек-лейбл лекции → одна или несколько категорий библиотеки. Кросс-трековые
+// занятия (LeetCode-грайнд, пет-проект, Insider Show) уходят в "Практика".
+function categoriesForTrackName(name) {
+  if (!name || name === 'Все треки') return ['practice']
+  const cats = []
+  if (name.includes('Frontend')) cats.push('frontend')
+  if (name.includes('Backend')) cats.push('backend')
+  if (name.includes('Аналитика') || name.includes('ML') || name.includes('Machine Learning')) cats.push('ml')
+  if (name.includes('Кибербезопасность')) cats.push('security')
+  return cats.length ? cats : ['practice']
+}
+
+function buildCategoryItems(juneDays) {
+  const items = []
+
+  juneDays.forEach(d => {
+    // Навигация /library/theory/:day ждёт номер дня (1-30), а не id строки в БД.
+    items.push({ id: d.day, date: dayDateLabel(d.day), title: d.title, categories: ['foundations'] })
+  })
+
+  JULY_DAYS.forEach(day => {
+    day.tracks.forEach(track => {
+      items.push({ id: track.id, date: day.date, title: track.lesson, categories: categoriesForTrackName(track.name) })
+    })
+  })
+
+  AUGUST_DAYS.forEach(day => {
+    day.tracks.forEach(track => {
+      items.push({ id: track.id, date: day.date, title: track.lesson, categories: ['career'] })
+    })
+  })
+
+  const byCategory = {}
+  CATEGORIES.forEach(c => { byCategory[c.key] = [] })
+  items.forEach(item => {
+    item.categories.forEach(cat => {
+      if (byCategory[cat]) byCategory[cat].push(item)
+    })
+  })
+  return byCategory
+}
+
+function LessonRow({ item, onOpenTheory }) {
   return (
     <div
-      className={`sched-day${!locked ? ' sched-day--open' : ''}`}
-      style={locked ? { opacity: 0.4 } : { cursor: 'pointer' }}
-      onClick={() => !locked && onOpenTheory(day)}
+      className="sched-day sched-day--open"
+      style={{ cursor: 'pointer', marginBottom: 8 }}
+      onClick={() => onOpenTheory({ day: item.id })}
     >
       <div className="sched-day-header" style={{ flexWrap: 'wrap', rowGap: 10 }}>
         <div className="sched-day-meta">
-          <span className="sched-day-num">{dayDateLabel(day.day)}</span>
+          <span className="sched-day-num">{item.date.toUpperCase()}</span>
         </div>
-        <div className="sched-day-title">{day.title}</div>
+        <div className="sched-day-title">{item.title}</div>
       </div>
     </div>
   )
 }
 
 export default function Library({ onOpenTheory }) {
-  const [activeMonth, setActiveMonth] = useState('august')
-  const [library, setLibrary]         = useState(LIBRARY)
-  const [schedule, setSchedule]       = useState(SCHEDULE)
-  const [loading, setLoading]         = useState(true)
+  const [activeCategory, setActiveCategory] = useState('foundations')
+  const [library, setLibrary]                = useState(LIBRARY)
+  const [loading, setLoading]                = useState(true)
 
   useEffect(() => {
     const startTime = Date.now()
     const minLoadTime = 500
 
-    Promise.all([
-      api.library().then(setLibrary).catch(() => {}),
-      api.schedule().then(setSchedule).catch(() => {}),
-    ]).then(() => {
+    api.library().then(setLibrary).catch(() => {}).then(() => {
       const elapsed = Date.now() - startTime
       const remaining = Math.max(0, minLoadTime - elapsed)
       setTimeout(() => setLoading(false), remaining)
     })
   }, [])
 
-  const juneDays = buildJuneDays(schedule, library)
-  const [openJulyDay, setOpenJulyDay] = useState(() => getTodayJulyDay())
-  const [openAugustDay, setOpenAugustDay] = useState(1)
+  const juneDays = buildJuneDays(SCHEDULE, library)
+  const categoryItems = buildCategoryItems(juneDays)
+  const activeItems = categoryItems[activeCategory] || []
 
   return (
     <section className="page active">
       <div className="page-header">
         <h1 className="page-title">Библиотека знаний</h1>
-        <p className="page-subtitle">Материалы лагеря по дням — нажми на день чтобы открыть</p>
+        <p className="page-subtitle">Материалы платформы по категориям — открывай тему и изучай в своём темпе</p>
       </div>
 
       <div className="library-tabs">
-        {TABS.map(tab => (
+        {CATEGORIES.map(cat => (
           <button
-            key={tab.value}
-            className={`lib-tab${activeMonth === tab.value ? ' active' : ''}${tab.locked ? ' lib-tab--locked' : ''}`}
-            onClick={tab.locked ? undefined : () => setActiveMonth(tab.value)}
-            disabled={tab.locked}
+            key={cat.key}
+            className={`lib-tab${activeCategory === cat.key ? ' active' : ''}`}
+            onClick={() => setActiveCategory(cat.key)}
           >
-            {tab.label}{tab.locked ? ' 🔒' : ''}
+            {cat.label}
           </button>
         ))}
       </div>
 
-      {activeMonth === 'june' && (
-        loading ? (
-          <div className="sched-week">
-            {[1, 2, 3, 4, 5, 6].map(i => (
-              <SkeletonLibraryDay key={i} />
-            ))}
-          </div>
-        ) : (
-          WEEKS.map(week => {
-            const days = juneDays.filter(d => d.day >= week.start && d.day <= week.end)
-            if (!days.length) return null
-            return (
-              <div key={week.label} className="sched-week">
-                <div className="schedule-date-label">{week.label}</div>
-                {days.map((day, i) => (
-                  <div key={day.id} className="fade-in" style={{ animationDelay: `${i * 0.02}s` }}>
-                    <DayCard day={day} onOpenTheory={onOpenTheory} />
-                  </div>
-                ))}
-              </div>
-            )
-          })
-        )
-      )}
-
-      {activeMonth === 'july' && (
+      {loading ? (
         <div className="sched-week">
-          <div className="schedule-date-label">Июль 2026 · специализация</div>
-          {JULY_DAYS.map(day => (
-            <div key={day.day} className="fade-in">
-              <JulyDayCard
-                day={day}
-                open={openJulyDay === day.day}
-                onToggle={() => setOpenJulyDay(prev => prev === day.day ? null : day.day)}
-                onOpenTheory={onOpenTheory}
-              />
-            </div>
+          {[1, 2, 3, 4, 5, 6].map(i => (
+            <SkeletonLibraryDay key={i} />
           ))}
         </div>
-      )}
-
-      {activeMonth === 'august' && (
+      ) : (
         <div className="sched-week">
-          <div className="schedule-date-label">Август 2026 · карьера</div>
-          {AUGUST_DAYS.map(day => (
-            <div key={day.day} className="fade-in">
-              <JulyDayCard
-                day={day}
-                open={openAugustDay === day.day}
-                onToggle={() => setOpenAugustDay(prev => prev === day.day ? null : day.day)}
-                onOpenTheory={onOpenTheory}
-              />
-            </div>
-          ))}
+          {activeItems.length === 0 ? (
+            <p style={{ color: 'var(--text-tertiary)', padding: '20px 0' }}>Материалы этой категории скоро появятся</p>
+          ) : (
+            activeItems.map((item, i) => (
+              <div key={item.id} className="fade-in" style={{ animationDelay: `${i * 0.02}s` }}>
+                <LessonRow item={item} onOpenTheory={onOpenTheory} />
+              </div>
+            ))
+          )}
         </div>
       )}
     </section>

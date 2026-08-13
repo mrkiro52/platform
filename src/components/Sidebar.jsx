@@ -9,7 +9,6 @@ const NAV_ITEMS = [
   { path: '/dashboard',     label: 'Дэшборд' },
   { path: '/wall',          label: 'Стена' },
   { path: '/messages',      label: 'Сообщения', badge: 'messages' },
-  { path: '/schedule',      label: 'Расписание' },
   { path: '/library',       label: 'Библиотека знаний' },
   { path: '/trainings',     label: 'Тренировки' },
   { path: '/links',         label: 'Полезные ссылки' },

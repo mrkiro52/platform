@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { api } from '../api'
 import AuthCanvas from '../components/AuthCanvas'
@@ -40,6 +40,11 @@ export default function RegisterPage({ onLogin }) {
   const [loading, setLoading] = useState(false)
 
   const passwordsMismatch = passwordConfirm.length > 0 && password !== passwordConfirm
+
+  useEffect(() => {
+    document.body.className = 'login-page'
+    return () => { document.body.className = '' }
+  }, [])
 
   const handleSubmit = async (e) => {
     e.preventDefault()

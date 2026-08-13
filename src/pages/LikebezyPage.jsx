@@ -6,6 +6,7 @@ const SqlLikbez = lazy(() => import('./likebezy/SqlLikbez'))
 const MlLikbez = lazy(() => import('./likebezy/MlLikbez'))
 const PythonLikbez = lazy(() => import('./likebezy/PythonLikbez'))
 const PythonOopLikbez = lazy(() => import('./likebezy/PythonOopLikbez'))
+const ItCareer2026Likbez = lazy(() => import('./likebezy/ItCareer2026Likbez'))
 
 const LIKEBEZY = [
   {
@@ -68,6 +69,18 @@ const LIKEBEZY = [
     topics: ['Линейные модели', 'Классификация', 'Деревья', 'Леса и бустинг', 'Кластеризация'],
     component: MlLikbez,
   },
+  {
+    id: 'it-career-2026',
+    title: 'Ультимативный гайд: Как попасть в айти в 2026 году',
+    subtitle: 'Материал в разработке',
+    tag: 'Карьера',
+    level: 'Скоро',
+    time: '—',
+    chapters: 0,
+    questions: 0,
+    topics: [],
+    component: ItCareer2026Likbez,
+  },
 ]
 
 const COMING = [
@@ -81,6 +94,7 @@ const TAG_COLORS = {
   'DevOps':     { bg: 'rgba(251,146,60,0.1)',  border: 'rgba(251,146,60,0.25)', text: '#fb923c' },
   'JavaScript': { bg: 'rgba(234,179,8,0.1)',   border: 'rgba(234,179,8,0.25)',  text: '#facc15' },
   'ML':         { bg: 'rgba(34,197,94,0.1)',   border: 'rgba(34,197,94,0.25)',  text: '#4ade80' },
+  'Карьера':    { bg: 'rgba(32,190,255,0.1)',  border: 'rgba(32,190,255,0.25)', text: '#20beff' },
 }
 
 export default function LikebezyPage() {

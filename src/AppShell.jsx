@@ -4,7 +4,6 @@ import Sidebar from './components/Sidebar'
 import TopBar from './components/TopBar'
 import { api } from './api'
 import Dashboard from './pages/Dashboard'
-import Schedule from './pages/Schedule'
 import Library from './pages/Library'
 import Links from './pages/Links'
 import Profile from './pages/Profile'
@@ -104,7 +103,6 @@ export default function AppShell({ user, onLogout }) {
             <Route path="/dashboard" element={
               <Dashboard user={user} onNavigate={(p) => navigate(`/${p}`)} />
             } />
-            <Route path="/schedule" element={<Schedule />} />
             <Route path="/library" element={
               <Library onOpenTheory={openTheory} />
             } />
