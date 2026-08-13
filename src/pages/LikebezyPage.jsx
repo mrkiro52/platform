@@ -77,7 +77,7 @@ const LIKEBEZY = [
     level: 'С нуля → первый оффер',
     time: '~50 мин',
     chapters: 12,
-    questions: 6,
+    questions: 0,
     topics: ['Рынок и влияние ИИ', 'База для всех', 'Алгоритмы и LeetCode', 'Планы по направлениям', 'Стажировки в РФ', 'Резюме и ATS'],
     component: ItCareer2026Likbez,
   },
@@ -196,7 +196,7 @@ export default function LikebezyPage() {
 
                 <div style={{ display: 'flex', gap: 12, marginBottom: 16, color: 'var(--text-tertiary)', fontSize: 12 }}>
                   <span>~{item.chapters} глав</span>
-                  <span>~{item.questions} вопросов для самопроверки</span>
+                  {item.questions > 0 && <span>~{item.questions} вопросов для самопроверки</span>}
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <span style={{ fontSize: 12, color: 'var(--text-tertiary)' }}>{item.time}</span>
