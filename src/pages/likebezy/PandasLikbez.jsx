@@ -212,7 +212,7 @@ export default function PandasLikbez({ onBack }) {
   }
 
   return (
-    <div style={{ maxWidth: 900, margin: '0 auto', padding: 'clamp(16px, 4vw, 32px) clamp(12px, 3vw, 24px)' }}>
+    <div style={{ maxWidth: '100%', padding: 'clamp(16px, 4vw, 32px) clamp(12px, 3vw, 24px)' }}>
 
       {/* Back */}
       <button

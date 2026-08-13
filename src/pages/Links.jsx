@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { api } from '../api'
+import { SkeletonCard } from '../components/Skeleton'
 
 const CHANNELS = [
   {
@@ -99,10 +100,29 @@ const ARTICLES_AND_GUIDES = [
 
 export default function Links({ onNavigate }) {
   const [usefulLinks, setUsefulLinks] = useState([])
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    api.links().then(setUsefulLinks).catch(() => {})
+    const startTime = Date.now()
+    api.links().then(setUsefulLinks).catch(() => {}).then(() => {
+      const elapsed = Date.now() - startTime
+      setTimeout(() => setLoading(false), Math.max(0, 1000 - elapsed))
+    })
   }, [])
+
+  if (loading) {
+    return (
+      <section className="page active">
+        <div className="page-header">
+          <h1 className="page-title">Полезные ссылки</h1>
+          <p className="page-subtitle">Каналы, контакты и материалы для участников</p>
+        </div>
+        <div className="community-grid">
+          {[1, 2, 3, 4, 5, 6, 7, 8].map(i => <SkeletonCard key={i} />)}
+        </div>
+      </section>
+    )
+  }
 
   return (
     <section className="page active">

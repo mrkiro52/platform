@@ -269,6 +269,7 @@ function buildCategoryItems(juneDays) {
   const items = []
 
   juneDays.forEach(d => {
+    if (d.day === 1) return // "Вводное занятие: старт лагеря" — больше не показываем в библиотеке
     // Навигация /library/theory/:day ждёт номер дня (1-30), а не id строки в БД.
     items.push({ id: d.day, date: dayDateLabel(d.day), title: d.title, categories: ['foundations'] })
   })

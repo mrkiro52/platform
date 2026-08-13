@@ -13,9 +13,14 @@ export default function WallPage({ user, avatarUrl }) {
   const [loading, setLoading] = useState(true)
 
   const reload = useCallback(() => {
+    const startTime = Date.now()
     api.posts(tab === 'following' ? { feed: 'following' } : {})
-      .then(data => { setPosts(data); setLoading(false) })
-      .catch(() => setLoading(false))
+      .then(data => setPosts(data))
+      .catch(() => {})
+      .then(() => {
+        const elapsed = Date.now() - startTime
+        setTimeout(() => setLoading(false), Math.max(0, 1000 - elapsed))
+      })
   }, [tab])
 
   useEffect(() => {

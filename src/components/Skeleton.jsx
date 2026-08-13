@@ -41,6 +41,21 @@ export function SkeletonEventCard() {
   )
 }
 
+export function SkeletonMessageRow() {
+  return (
+    <div style={{
+      display: 'flex', gap: 12, alignItems: 'center', padding: 14,
+      border: '1px solid var(--border-color)', borderRadius: 0, background: 'var(--bg-secondary)',
+    }}>
+      <div className="skeleton" style={{ width: 44, height: 44, borderRadius: '50%', flexShrink: 0 }} />
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div className="skeleton skeleton-text" style={{ width: '35%', marginBottom: 8 }} />
+        <div className="skeleton skeleton-text" style={{ width: '65%' }} />
+      </div>
+    </div>
+  )
+}
+
 export function SkeletonCampProgress() {
   return (
     <div style={{ marginBottom: 24 }}>

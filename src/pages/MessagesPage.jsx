@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { api } from '../api'
 import { Avatar, AutoTextarea, Btn, timeAgo, formatDate } from '../components/social'
+import { SkeletonMessageRow } from '../components/Skeleton'
 
 function NicknameSearch() {
   const navigate = useNavigate()
@@ -57,10 +58,20 @@ function ConversationList({ onUnreadChange }) {
   const navigate = useNavigate()
   const [items, setItems] = useState([])
   const [loading, setLoading] = useState(true)
+  const firstLoad = useRef(true)
 
   useEffect(() => {
+    const startTime = Date.now()
     const load = () => api.conversations()
-      .then(data => { setItems(data); setLoading(false); onUnreadChange?.() })
+      .then(data => {
+        setItems(data)
+        onUnreadChange?.()
+        if (firstLoad.current) {
+          firstLoad.current = false
+          const elapsed = Date.now() - startTime
+          setTimeout(() => setLoading(false), Math.max(0, 1000 - elapsed))
+        }
+      })
       .catch(() => setLoading(false))
     load()
     const t = setInterval(load, 15000)
@@ -77,7 +88,9 @@ function ConversationList({ onUnreadChange }) {
       <NicknameSearch />
 
       {loading ? (
-        <p style={{ color: 'var(--text-secondary)', fontSize: 13 }}>Загрузка...</p>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+          {[1, 2, 3, 4].map(i => <SkeletonMessageRow key={i} />)}
+        </div>
       ) : items.length === 0 ? (
         <p style={{ color: 'var(--text-tertiary)', fontSize: 13 }}>
           Переписок пока нет. Найди собеседника по никнейму выше.
