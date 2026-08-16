@@ -10,6 +10,18 @@ const ItCareer2026Likbez = lazy(() => import('./likebezy/ItCareer2026Likbez'))
 
 const LIKEBEZY = [
   {
+    id: 'it-career-2026',
+    title: 'Как попасть в айти в 2026',
+    subtitle: 'Ультимативный гайд: рынок, направления, стажировки и первый оффер',
+    tag: 'Карьера',
+    level: 'С нуля → первый оффер',
+    time: '~50 мин',
+    chapters: 12,
+    questions: 0,
+    topics: ['Рынок и влияние ИИ', 'База для всех', 'Алгоритмы и LeetCode', 'Планы по направлениям', 'Стажировки в РФ', 'Резюме и ATS'],
+    component: ItCareer2026Likbez,
+  },
+  {
     id: 'python',
     title: 'Python',
     subtitle: 'Все основы языка с нуля',
@@ -68,18 +80,6 @@ const LIKEBEZY = [
     questions: 67,
     topics: ['Линейные модели', 'Классификация', 'Деревья', 'Леса и бустинг', 'Кластеризация'],
     component: MlLikbez,
-  },
-  {
-    id: 'it-career-2026',
-    title: 'Как попасть в айти в 2026',
-    subtitle: 'Ультимативный гайд: рынок, направления, стажировки и первый оффер',
-    tag: 'Карьера',
-    level: 'С нуля → первый оффер',
-    time: '~50 мин',
-    chapters: 12,
-    questions: 0,
-    topics: ['Рынок и влияние ИИ', 'База для всех', 'Алгоритмы и LeetCode', 'Планы по направлениям', 'Стажировки в РФ', 'Резюме и ATS'],
-    component: ItCareer2026Likbez,
   },
 ]
 

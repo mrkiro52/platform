@@ -75,7 +75,7 @@ function JuneChecklist({ user }) {
     ctx.fillText('KIRO', padX, padY + 18)
     ctx.fillStyle = WHITE
     ctx.font = '22px system-ui, -apple-system, sans-serif'
-    ctx.fillText('  Чек-лист за июнь', padX + 52, padY + 18)
+    ctx.fillText('  Чек-лист основ', padX + 52, padY + 18)
     ctx.fillStyle = GRAY
     ctx.font = '14px system-ui, -apple-system, sans-serif'
     ctx.fillText(`${nickname}  ·  Выполнено: ${doneCount} из ${JUNE_CHECKLIST.length}`, padX, padY + 44)
@@ -159,7 +159,7 @@ function JuneChecklist({ user }) {
   return (
     <div className="widget" style={{ marginBottom: 20 }}>
       <div className="widget-header">
-        <span className="widget-title">Чек-лист за июнь</span>
+        <span className="widget-title">Чек-лист основ</span>
         <span style={{ fontSize: 12, color: 'var(--text-tertiary)' }}>{doneCount}/{JUNE_CHECKLIST.length}</span>
       </div>
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px 20px', marginBottom: 16 }}>
