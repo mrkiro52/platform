@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import SelfCheck from '../../components/SelfCheck'
 
 /* ─── Shared UI ─── */
@@ -117,6 +117,35 @@ const Checklist = ({ items }) => (
   </div>
 )
 
+/* ─── Задача с раскрываемым решением ─── */
+const DIFF_STYLE = {
+  easy:   { bg: 'rgba(34,197,94,0.1)',  border: 'rgba(34,197,94,0.3)',  text: '#4ade80', label: 'Лёгкая' },
+  medium: { bg: 'rgba(234,179,8,0.1)',  border: 'rgba(234,179,8,0.3)',  text: '#facc15', label: 'Средняя' },
+  hard:   { bg: 'rgba(239,68,68,0.1)',  border: 'rgba(239,68,68,0.3)',  text: '#f87171', label: 'Сложная' },
+}
+
+function TaskCard({ n, difficulty, title, children, solution }) {
+  const [open, setOpen] = useState(false)
+  const d = DIFF_STYLE[difficulty]
+  return (
+    <div style={{ border: '1px solid var(--border-color)', borderRadius: 10, padding: '18px 20px', margin: '14px 0', background: 'var(--bg-secondary)' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10, flexWrap: 'wrap' }}>
+        <span style={{ fontFamily: 'monospace', fontWeight: 700, color: 'var(--text-tertiary)', fontSize: 13 }}>#{n}</span>
+        <span style={{ background: d.bg, border: `1px solid ${d.border}`, color: d.text, borderRadius: 6, padding: '2px 10px', fontSize: 11, fontWeight: 700 }}>{d.label}</span>
+        <span style={{ color: 'var(--text-primary)', fontWeight: 700, fontSize: 14.5 }}>{title}</span>
+      </div>
+      <div style={{ fontSize: 13.5, lineHeight: 1.75 }}>{children}</div>
+      <button
+        onClick={() => setOpen(o => !o)}
+        style={{ marginTop: 10, background: 'transparent', border: '1px solid var(--border-color)', color: open ? 'var(--text-tertiary)' : 'var(--accent-lime)', borderRadius: 6, padding: '6px 14px', fontSize: 12.5, fontWeight: 600, cursor: 'pointer' }}
+      >
+        {open ? 'Скрыть решение' : 'Показать решение →'}
+      </button>
+      {open && <div style={{ marginTop: 12 }}>{solution}</div>}
+    </div>
+  )
+}
+
 /* ─── TOC ─── */
 const TOC_ITEMS = [
   { id: 'intro',        label: '1. Что такое ООП и зачем оно нужно' },
@@ -142,6 +171,7 @@ const TOC_ITEMS = [
   { id: 'solid',        label: '21. Принципы SOLID' },
   { id: 'patterns',     label: '22. Базовые паттерны проектирования' },
   { id: 'checklist',    label: 'Чек-лист "знаю ли я ООП"' },
+  { id: 'practice',     label: 'Задачи для тренировки (30 шт.)' },
 ]
 
 /* ═══════════════════════════════════════════════════ */
@@ -175,7 +205,7 @@ export default function PythonOopLikbez({ onBack }) {
           кода и объяснением, почему это работает именно так.
         </p>
         <div style={{ marginTop: 20, display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-          {['Python 3.10+', '22 главы', '~90 мин'].map(t => (
+          {['Python 3.10+', '22 главы', '~90 мин', '30 задач для практики'].map(t => (
             <span key={t} style={{ background: 'var(--bg-tertiary)', border: '1px solid var(--border-color)', borderRadius: 6, padding: '4px 10px', fontSize: 12, color: 'var(--text-tertiary)' }}>{t}</span>
           ))}
         </div>
@@ -1037,6 +1067,651 @@ class Sorter:
         'Как реализовать Singleton, Factory, Strategy, Observer',
       ]} />
       <Note>Если по каждому пункту можешь дать 30-секундный ответ с примером кода — по ООП ты закрыт на уровне senior-собеседования.</Note>
+
+      {/* ─── Задачи для тренировки ─── */}
+      <SectionTitle id="practice">Задачи для тренировки (30 шт.)</SectionTitle>
+      <P>
+        Классические задачи на ООП — часть встречается на реальных собеседованиях, часть похожа на задачи с
+        тренажёров вроде LeetCode/CodeSignal, адаптированные под Python. Не подглядывай в решение сразу —
+        сначала попробуй написать код сам, потом сверься.
+      </P>
+
+      <SubTitle id="practice-easy">Лёгкие (1–10)</SubTitle>
+
+      <TaskCard n={1} difficulty="easy" title="Person"
+        solution={<Code code={`class Person:
+    def __init__(self, name, age):
+        self.name = name
+        self.age = age
+
+    def greet(self):
+        return f"Привет, меня зовут {self.name}, мне {self.age} лет"
+
+p = Person("Аня", 20)
+print(p.greet())  # Привет, меня зовут Аня, мне 20 лет`} />}>
+        <P style={{ margin: 0 }}>Напиши класс <code>Person</code> с атрибутами <code>name</code> и <code>age</code> и методом <code>greet()</code>, возвращающим строку <code>"Привет, меня зовут {'{name}'}, мне {'{age}'} лет"</code>.</P>
+      </TaskCard>
+
+      <TaskCard n={2} difficulty="easy" title="Rectangle"
+        solution={<Code code={`class Rectangle:
+    def __init__(self, width, height):
+        self.width = width
+        self.height = height
+
+    def area(self):
+        return self.width * self.height
+
+    def perimeter(self):
+        return 2 * (self.width + self.height)
+
+r = Rectangle(4, 5)
+print(r.area())       # 20
+print(r.perimeter())  # 18`} />}>
+        <P style={{ margin: 0 }}>Класс <code>Rectangle</code> с <code>width</code>/<code>height</code> и методами <code>area()</code> и <code>perimeter()</code>.</P>
+      </TaskCard>
+
+      <TaskCard n={3} difficulty="easy" title="Counter"
+        solution={<Code code={`class Counter:
+    def __init__(self):
+        self.count = 0
+
+    def increment(self, step=1):
+        self.count += step
+
+    def reset(self):
+        self.count = 0
+
+c = Counter()
+c.increment()
+c.increment(5)
+print(c.count)  # 6
+c.reset()
+print(c.count)  # 0`} />}>
+        <P style={{ margin: 0 }}>Класс <code>Counter</code> со счётчиком <code>count</code>, методами <code>increment(step=1)</code> (по умолчанию +1, но можно указать шаг) и <code>reset()</code>.</P>
+      </TaskCard>
+
+      <TaskCard n={4} difficulty="easy" title="BankAccount: базовые операции"
+        solution={<Code code={`class BankAccount:
+    def __init__(self, balance=0):
+        self.balance = balance
+
+    def deposit(self, amount):
+        self.balance += amount
+
+    def withdraw(self, amount):
+        if amount > self.balance:
+            return False
+        self.balance -= amount
+        return True
+
+acc = BankAccount(100)
+acc.deposit(50)
+print(acc.withdraw(200))  # False — не хватает денег
+print(acc.balance)        # 150`} />}>
+        <P style={{ margin: 0 }}>Класс <code>BankAccount</code> с <code>balance</code>, методами <code>deposit(amount)</code> и <code>withdraw(amount)</code>. <code>withdraw</code> возвращает <code>False</code>, если средств не хватает, иначе снимает деньги и возвращает <code>True</code>.</P>
+      </TaskCard>
+
+      <TaskCard n={5} difficulty="easy" title="Car с человекочитаемым выводом"
+        solution={<Code code={`class Car:
+    def __init__(self, make, model, year):
+        self.make = make
+        self.model = model
+        self.year = year
+
+    def __str__(self):
+        return f"{self.year} {self.make} {self.model}"
+
+print(Car("Toyota", "Corolla", 2022))  # 2022 Toyota Corolla`} />}>
+        <P style={{ margin: 0 }}>Класс <code>Car</code> с <code>make</code>/<code>model</code>/<code>year</code>. Реализуй <code>__str__</code> так, чтобы <code>print(car)</code> выводил <code>"2022 Toyota Corolla"</code>.</P>
+      </TaskCard>
+
+      <TaskCard n={6} difficulty="easy" title="Circle"
+        solution={<Code code={`import math
+
+class Circle:
+    def __init__(self, radius):
+        self.radius = radius
+
+    def area(self):
+        return math.pi * self.radius ** 2
+
+    def circumference(self):
+        return 2 * math.pi * self.radius
+
+c = Circle(3)
+print(round(c.area(), 2))           # 28.27
+print(round(c.circumference(), 2))  # 18.85`} />}>
+        <P style={{ margin: 0 }}>Класс <code>Circle</code> с <code>radius</code>, методами <code>area()</code> и <code>circumference()</code>.</P>
+      </TaskCard>
+
+      <TaskCard n={7} difficulty="easy" title="Student и средний балл"
+        solution={<Code code={`class Student:
+    def __init__(self, name):
+        self.name = name
+        self.grades = []
+
+    def add_grade(self, grade):
+        self.grades.append(grade)
+
+    def average(self):
+        return sum(self.grades) / len(self.grades) if self.grades else 0
+
+s = Student("Игорь")
+s.add_grade(4)
+s.add_grade(5)
+print(s.average())  # 4.5`} />}>
+        <P style={{ margin: 0 }}>Класс <code>Student</code> с <code>name</code> и списком <code>grades</code>. Методы <code>add_grade(grade)</code> и <code>average()</code> (0, если оценок ещё нет — без деления на ноль).</P>
+      </TaskCard>
+
+      <TaskCard n={8} difficulty="easy" title="Stack на списке"
+        solution={<Code code={`class Stack:
+    def __init__(self):
+        self._items = []
+
+    def push(self, item):
+        self._items.append(item)
+
+    def pop(self):
+        return self._items.pop() if self._items else None
+
+    def peek(self):
+        return self._items[-1] if self._items else None
+
+    def is_empty(self):
+        return len(self._items) == 0
+
+s = Stack()
+s.push(1)
+s.push(2)
+print(s.pop())       # 2
+print(s.peek())      # 1
+print(s.is_empty())  # False`} />}>
+        <P style={{ margin: 0 }}>Класс <code>Stack</code> (стек, LIFO) на основе списка: <code>push</code>, <code>pop</code>, <code>peek</code>, <code>is_empty</code>.</P>
+      </TaskCard>
+
+      <TaskCard n={9} difficulty="easy" title="Animal → Dog/Cat: базовое наследование"
+        solution={<Code code={`class Animal:
+    def __init__(self, name):
+        self.name = name
+
+    def speak(self):
+        return "..."
+
+class Dog(Animal):
+    def speak(self):
+        return f"{self.name} говорит: Гав!"
+
+class Cat(Animal):
+    def speak(self):
+        return f"{self.name} говорит: Мяу!"
+
+for animal in [Dog("Рекс"), Cat("Барсик")]:
+    print(animal.speak())
+# Рекс говорит: Гав!
+# Барсик говорит: Мяу!`} />}>
+        <P style={{ margin: 0 }}>Базовый класс <code>Animal</code> с <code>name</code> и методом <code>speak()</code>. Классы <code>Dog</code> и <code>Cat</code> наследуются и переопределяют <code>speak()</code> по-своему.</P>
+      </TaskCard>
+
+      <TaskCard n={10} difficulty="easy" title="Temperature через @property"
+        solution={<Code code={`class Temperature:
+    def __init__(self, celsius=0):
+        self.celsius = celsius
+
+    @property
+    def fahrenheit(self):
+        return self.celsius * 9 / 5 + 32
+
+t = Temperature(100)
+print(t.fahrenheit)  # 212.0`} />}>
+        <P style={{ margin: 0 }}>Класс <code>Temperature</code> хранит температуру в цельсиях. Сделай <code>fahrenheit</code> вычисляемым свойством через <code>@property</code>, а не отдельным методом.</P>
+      </TaskCard>
+
+      <SubTitle id="practice-medium">Средние (11–20)</SubTitle>
+
+      <TaskCard n={11} difficulty="medium" title="MRO: предскажи вывод"
+        solution={<>
+          <Code code={`D().hello()
+# B
+# C
+# A`} />
+          <P style={{ margin: '10px 0 0' }}>MRO для <code>D(B, C)</code> строится по алгоритму C3-линеаризации: <code>D → B → C → A → object</code>. Проверить можно через <code>D.__mro__</code>. Каждый <code>super().hello()</code> идёт к следующему классу именно в этом порядке, а не напрямую к родителю — поэтому <code>B.hello</code> зовёт не <code>A.hello</code>, а <code>C.hello</code>.</P>
+        </>}>
+        <P style={{ margin: '0 0 10px' }}>Что выведет этот код и почему? Объясни через MRO.</P>
+        <Code code={`class A:
+    def hello(self):
+        print("A")
+
+class B(A):
+    def hello(self):
+        print("B")
+        super().hello()
+
+class C(A):
+    def hello(self):
+        print("C")
+        super().hello()
+
+class D(B, C):
+    pass`} />
+      </TaskCard>
+
+      <TaskCard n={12} difficulty="medium" title="MathUtils с @staticmethod"
+        solution={<Code code={`class MathUtils:
+    @staticmethod
+    def is_prime(n):
+        if n < 2:
+            return False
+        for i in range(2, int(n ** 0.5) + 1):
+            if n % i == 0:
+                return False
+        return True
+
+print(MathUtils.is_prime(17))  # True
+print(MathUtils.is_prime(15))  # False`} />}>
+        <P style={{ margin: 0 }}>Класс <code>MathUtils</code> со статическим методом <code>is_prime(n)</code>, не использующим ни <code>self</code>, ни <code>cls</code> — просто утилита, логически сгруппированная в классе.</P>
+      </TaskCard>
+
+      <TaskCard n={13} difficulty="medium" title="Date.from_string — альтернативный конструктор"
+        solution={<Code code={`class Date:
+    def __init__(self, year, month, day):
+        self.year, self.month, self.day = year, month, day
+
+    @classmethod
+    def from_string(cls, date_str):
+        year, month, day = map(int, date_str.split("-"))
+        return cls(year, month, day)
+
+    def __repr__(self):
+        return f"{self.year}-{self.month:02d}-{self.day:02d}"
+
+d = Date.from_string("2024-01-05")
+print(d)  # 2024-01-05`} />}>
+        <P style={{ margin: 0 }}>Класс <code>Date(year, month, day)</code>. Добавь альтернативный конструктор <code>Date.from_string("2024-01-05")</code> через <code>@classmethod</code>.</P>
+      </TaskCard>
+
+      <TaskCard n={14} difficulty="medium" title="Person.age с валидацией"
+        solution={<Code code={`class Person:
+    def __init__(self, name, age):
+        self.name = name
+        self.age = age  # уходит через setter ниже
+
+    @property
+    def age(self):
+        return self._age
+
+    @age.setter
+    def age(self, value):
+        if value < 0:
+            raise ValueError("Возраст не может быть отрицательным")
+        self._age = value
+
+p = Person("Игорь", 25)
+try:
+    p.age = -5
+except ValueError as e:
+    print(e)  # Возраст не может быть отрицательным`} />}>
+        <P style={{ margin: 0 }}>Сделай так, чтобы <code>Person.age</code> нельзя было установить в отрицательное число — присваивание <code>p.age = -5</code> должно бросать <code>ValueError</code>. Используй <code>@property</code>/<code>@age.setter</code>.</P>
+      </TaskCard>
+
+      <TaskCard n={15} difficulty="medium" title="Vector: перегрузка операторов"
+        solution={<Code code={`class Vector:
+    def __init__(self, x, y):
+        self.x, self.y = x, y
+
+    def __add__(self, other):
+        return Vector(self.x + other.x, self.y + other.y)
+
+    def __mul__(self, scalar):
+        return Vector(self.x * scalar, self.y * scalar)
+
+    def __eq__(self, other):
+        return self.x == other.x and self.y == other.y
+
+    def __repr__(self):
+        return f"Vector({self.x}, {self.y})"
+
+v1, v2 = Vector(1, 2), Vector(3, 4)
+print(v1 + v2)             # Vector(4, 6)
+print(v1 * 3)               # Vector(3, 6)
+print(v1 == Vector(1, 2))   # True`} />}>
+        <P style={{ margin: 0 }}>Класс <code>Vector(x, y)</code>. Реализуй <code>__add__</code> (сложение векторов), <code>__mul__</code> (умножение на число) и <code>__eq__</code> (сравнение по координатам).</P>
+      </TaskCard>
+
+      <TaskCard n={16} difficulty="medium" title="__str__ vs __repr__"
+        solution={<Code code={`class Point:
+    def __init__(self, x, y):
+        self.x, self.y = x, y
+
+    def __repr__(self):
+        return f"Point(x={self.x}, y={self.y})"
+
+    def __str__(self):
+        return f"({self.x}, {self.y})"
+
+p = Point(1, 2)
+print(p)     # (1, 2)              — вызывает __str__
+print([p])   # [Point(x=1, y=2)]   — контейнеры всегда используют __repr__`} />}>
+        <P style={{ margin: 0 }}>Класс <code>Point(x, y)</code>. Реализуй <code>__str__</code> (короткий вывод для человека) и <code>__repr__</code> (однозначный вывод для отладки) так, чтобы они отличались, и объясни, почему <code>print([p])</code> покажет именно <code>__repr__</code>, а не <code>__str__</code>.</P>
+      </TaskCard>
+
+      <TaskCard n={17} difficulty="medium" title="Композиция: Car has-a Engine"
+        solution={<Code code={`class Engine:
+    def __init__(self, horsepower):
+        self.horsepower = horsepower
+
+    def start(self):
+        return f"Двигатель на {self.horsepower} л.с. заведён"
+
+class Car:
+    def __init__(self, model, horsepower):
+        self.model = model
+        self.engine = Engine(horsepower)  # композиция, а не наследование
+
+    def start(self):
+        return f"{self.model}: {self.engine.start()}"
+
+print(Car("Lada", 90).start())
+# Lada: Двигатель на 90 л.с. заведён`} />}>
+        <P style={{ margin: 0 }}>Класс <code>Engine(horsepower)</code> с методом <code>start()</code>. Класс <code>Car</code> должен <em>иметь</em> двигатель (композиция), а не наследоваться от него — <code>Car</code> не является видом двигателя.</P>
+      </TaskCard>
+
+      <TaskCard n={18} difficulty="medium" title="Своё исключение для банка"
+        solution={<Code code={`class InsufficientFundsError(Exception):
+    pass
+
+class BankAccount:
+    def __init__(self, balance=0):
+        self.balance = balance
+
+    def withdraw(self, amount):
+        if amount > self.balance:
+            raise InsufficientFundsError(
+                f"Недостаточно средств: баланс {self.balance}, запрошено {amount}"
+            )
+        self.balance -= amount
+
+acc = BankAccount(100)
+try:
+    acc.withdraw(150)
+except InsufficientFundsError as e:
+    print(e)`} />}>
+        <P style={{ margin: 0 }}>Вместо <code>return False</code> из задачи 4 — заведи собственный класс исключения <code>InsufficientFundsError(Exception)</code> и бросай его из <code>withdraw()</code>, если денег не хватает.</P>
+      </TaskCard>
+
+      <TaskCard n={19} difficulty="medium" title="Абстрактный класс Shape"
+        solution={<Code code={`from abc import ABC, abstractmethod
+
+class Shape(ABC):
+    @abstractmethod
+    def area(self):
+        ...
+
+class Square(Shape):
+    def __init__(self, side):
+        self.side = side
+
+    def area(self):
+        return self.side ** 2
+
+# Shape()  # TypeError: нельзя создать экземпляр абстрактного класса
+print(Square(4).area())  # 16`} />}>
+        <P style={{ margin: 0 }}>Сделай <code>Shape</code> абстрактным классом через <code>abc.ABC</code> с абстрактным методом <code>area()</code>, чтобы <code>Shape()</code> напрямую создать было нельзя, а <code>Square(Shape)</code> обязан реализовать <code>area()</code>.</P>
+      </TaskCard>
+
+      <TaskCard n={20} difficulty="medium" title="__eq__ и __hash__ для set"
+        solution={<Code code={`class Point:
+    def __init__(self, x, y):
+        self.x, self.y = x, y
+
+    def __eq__(self, other):
+        return isinstance(other, Point) and (self.x, self.y) == (other.x, other.y)
+
+    def __hash__(self):
+        return hash((self.x, self.y))
+
+points = {Point(1, 2), Point(1, 2), Point(3, 4)}
+print(len(points))  # 2 — дубликат по значению схлопнулся`} />}>
+        <P style={{ margin: 0 }}>Реализуй <code>__eq__</code> и <code>__hash__</code> для <code>Point(x, y)</code> так, чтобы два «одинаковых» по координатам объекта считались одним элементом в <code>set</code>. Подсказка: если переопределяешь <code>__eq__</code>, Python сбрасывает <code>__hash__</code> в <code>None</code> — его надо задать явно.</P>
+      </TaskCard>
+
+      <SubTitle id="practice-hard">Сложные (21–30)</SubTitle>
+
+      <TaskCard n={21} difficulty="hard" title="Итератор Fibonacci"
+        solution={<Code code={`class Fibonacci:
+    def __init__(self, limit):
+        self.limit = limit
+
+    def __iter__(self):
+        self.a, self.b, self.count = 0, 1, 0
+        return self
+
+    def __next__(self):
+        if self.count >= self.limit:
+            raise StopIteration
+        result = self.a
+        self.a, self.b = self.b, self.a + self.b
+        self.count += 1
+        return result
+
+print(list(Fibonacci(7)))  # [0, 1, 1, 2, 3, 5, 8]`} />}>
+        <P style={{ margin: 0 }}>Класс <code>Fibonacci(limit)</code>, который сам является итератором: реализуй <code>__iter__</code> и <code>__next__</code> так, чтобы <code>list(Fibonacci(7))</code> дал первые 7 чисел Фибоначчи.</P>
+      </TaskCard>
+
+      <TaskCard n={22} difficulty="hard" title="Context manager: Timer"
+        solution={<Code code={`import time
+
+class Timer:
+    def __enter__(self):
+        self.start = time.perf_counter()
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.elapsed = time.perf_counter() - self.start
+        print(f"Прошло {self.elapsed:.4f} сек")
+        return False  # не подавляем исключения, если они были
+
+with Timer():
+    total = sum(range(10**6))`} />}>
+        <P style={{ margin: 0 }}>Класс <code>Timer</code>, который можно использовать через <code>with Timer():</code> — замеряет время выполнения блока и печатает его при выходе. Реализуй <code>__enter__</code> и <code>__exit__</code>.</P>
+      </TaskCard>
+
+      <TaskCard n={23} difficulty="hard" title="Дескриптор PositiveNumber"
+        solution={<Code code={`class PositiveNumber:
+    def __set_name__(self, owner, name):
+        self.name = "_" + name
+
+    def __get__(self, obj, objtype=None):
+        return getattr(obj, self.name)
+
+    def __set__(self, obj, value):
+        if value <= 0:
+            raise ValueError(f"{self.name[1:]} должно быть положительным")
+        setattr(obj, self.name, value)
+
+class Product:
+    price = PositiveNumber()
+    quantity = PositiveNumber()
+
+    def __init__(self, price, quantity):
+        self.price = price
+        self.quantity = quantity
+
+p = Product(100, 5)
+try:
+    p.price = -10
+except ValueError as e:
+    print(e)  # price должно быть положительным`} />}>
+        <P style={{ margin: 0 }}>Напиши дескриптор <code>PositiveNumber</code> (с <code>__get__</code>/<code>__set__</code>), который можно переиспользовать для нескольких полей — <code>price</code> и <code>quantity</code> в <code>Product</code> — так, чтобы оба поля не давали присвоить неположительное значение, без копипасты property на каждое поле отдельно.</P>
+      </TaskCard>
+
+      <TaskCard n={24} difficulty="hard" title="Паттерн Observer"
+        solution={<Code code={`class Subject:
+    def __init__(self):
+        self._observers = []
+
+    def subscribe(self, observer):
+        self._observers.append(observer)
+
+    def notify(self, event):
+        for observer in self._observers:
+            observer.update(event)
+
+class EmailObserver:
+    def update(self, event):
+        print(f"Отправляю email: {event}")
+
+class LogObserver:
+    def update(self, event):
+        print(f"[LOG] {event}")
+
+subject = Subject()
+subject.subscribe(EmailObserver())
+subject.subscribe(LogObserver())
+subject.notify("Заказ оформлен")
+# Отправляю email: Заказ оформлен
+# [LOG] Заказ оформлен`} />}>
+        <P style={{ margin: 0 }}>Реализуй паттерн Observer: класс <code>Subject</code> с <code>subscribe(observer)</code> и <code>notify(event)</code>, который оповещает всех подписчиков. Заведи два разных наблюдателя (например, <code>EmailObserver</code> и <code>LogObserver</code>) с общим интерфейсом <code>update(event)</code>.</P>
+      </TaskCard>
+
+      <TaskCard n={25} difficulty="hard" title="Паттерн Factory"
+        solution={<Code code={`class Circle:
+    def area(self):
+        return "площадь круга"
+
+class Square:
+    def area(self):
+        return "площадь квадрата"
+
+class ShapeFactory:
+    _shapes = {"circle": Circle, "square": Square}
+
+    @classmethod
+    def create(cls, kind):
+        if kind not in cls._shapes:
+            raise ValueError(f"Неизвестная фигура: {kind}")
+        return cls._shapes[kind]()
+
+shape = ShapeFactory.create("circle")
+print(shape.area())  # площадь круга`} />}>
+        <P style={{ margin: 0 }}>Реализуй паттерн Factory: <code>ShapeFactory.create("circle")</code> должен вернуть правильный подкласс фигуры по строковому имени, не заставляя вызывающий код знать про конкретные классы <code>Circle</code>/<code>Square</code> напрямую.</P>
+      </TaskCard>
+
+      <TaskCard n={26} difficulty="hard" title="Паттерн Strategy"
+        solution={<Code code={`class SortContext:
+    def __init__(self, strategy):
+        self.strategy = strategy
+
+    def sort(self, data):
+        return self.strategy(data)
+
+ascending = lambda data: sorted(data)
+descending = lambda data: sorted(data, reverse=True)
+
+context = SortContext(ascending)
+print(context.sort([3, 1, 2]))  # [1, 2, 3]
+
+context.strategy = descending
+print(context.sort([3, 1, 2]))  # [3, 2, 1]`} />}>
+        <P style={{ margin: 0 }}>Реализуй паттерн Strategy: класс <code>SortContext</code>, которому можно на лету подменить алгоритм сортировки (например, по возрастанию/убыванию), не переписывая сам класс — новую стратегию добавляем отдельной функцией, а не веткой <code>if/elif</code> внутри <code>sort()</code>.</P>
+      </TaskCard>
+
+      <TaskCard n={27} difficulty="hard" title="Миксины"
+        solution={<Code code={`import json
+
+class JsonMixin:
+    def to_json(self):
+        return json.dumps(self.__dict__)
+
+class ComparableMixin:
+    def __lt__(self, other):
+        return self.value < other.value
+
+class Item(JsonMixin, ComparableMixin):
+    def __init__(self, name, value):
+        self.name = name
+        self.value = value
+
+a, b = Item("A", 10), Item("B", 20)
+print(a < b)         # True
+print(a.to_json())   # {"name": "A", "value": 10}`} />}>
+        <P style={{ margin: 0 }}>Заведи два независимых миксина — <code>JsonMixin</code> (добавляет <code>to_json()</code>) и <code>ComparableMixin</code> (добавляет <code>__lt__</code> по полю <code>value</code>) — и собери класс <code>Item</code>, наследуясь сразу от обоих.</P>
+      </TaskCard>
+
+      <TaskCard n={28} difficulty="hard" title="__slots__: что ломается"
+        solution={<>
+          <Code code={`class Point:
+    __slots__ = ("x", "y")
+
+    def __init__(self, x, y):
+        self.x, self.y = x, y
+
+p = Point(1, 2)
+p.x = 10       # работает — x объявлен в slots
+# p.z = 3      # AttributeError: 'Point' object has no attribute 'z'`} />
+          <P style={{ margin: '10px 0 0' }}><code>__slots__</code> убирает у экземпляра служебный <code>__dict__</code>, заменяя его набором фиксированных «слотов» — это экономит память при создании миллионов объектов. Плата за это: нельзя добавить атрибут, не объявленный в <code>__slots__</code>, множественное наследование от нескольких классов со своими <code>__slots__</code> усложняется, а без явного <code>"__weakref__"</code> в списке слотов на объект нельзя создать weak reference.</P>
+        </>}>
+        <P style={{ margin: 0 }}>Перепиши класс <code>Point(x, y)</code> так, чтобы он использовал <code>__slots__</code> вместо обычного <code>__dict__</code>. Что теперь перестанет работать и почему это иногда оправданный компромисс?</P>
+      </TaskCard>
+
+      <TaskCard n={29} difficulty="hard" title="Метакласс, требующий метод"
+        solution={<Code code={`class RequireRunMeta(type):
+    def __new__(mcs, name, bases, namespace):
+        if bases and "run" not in namespace:
+            raise TypeError(f"Класс {name} должен реализовать метод run()")
+        return super().__new__(mcs, name, bases, namespace)
+
+class Task(metaclass=RequireRunMeta):
+    def run(self):
+        pass
+
+class BadTask(Task):
+    pass
+# TypeError: класс BadTask должен реализовать метод run()`} />}>
+        <P style={{ margin: 0 }}>Напиши метакласс <code>RequireRunMeta</code>, который на этапе создания класса проверяет, что в нём объявлен метод <code>run()</code> — и бросает <code>TypeError</code>, если наследник забыл его реализовать. Это упрощённый самодельный аналог того, что даёт <code>abc.ABC</code>.</P>
+      </TaskCard>
+
+      <TaskCard n={30} difficulty="hard" title="Рефакторинг God Class по SOLID"
+        solution={<>
+          <Code code={`class OrderValidator:
+    def validate(self, order):
+        if not order.items:
+            raise ValueError("Пустой заказ")
+
+class PriceCalculator:
+    def calculate(self, order):
+        return sum(i.price * i.qty for i in order.items)
+
+class OrderRepository:
+    def save(self, order, total):
+        print(f"Сохраняю заказ на сумму {total} в БД")
+
+class EmailSender:
+    def send(self, order, total):
+        print(f"Письмо клиенту {order.customer_email}: заказ на {total} принят")
+
+class OrderProcessor:
+    def __init__(self):
+        self.validator = OrderValidator()
+        self.calculator = PriceCalculator()
+        self.repository = OrderRepository()
+        self.mailer = EmailSender()
+
+    def process(self, order):
+        self.validator.validate(order)
+        total = self.calculator.calculate(order)
+        self.repository.save(order, total)
+        self.mailer.send(order, total)`} />
+          <P style={{ margin: '10px 0 0' }}>Каждый класс отвечает ровно за одну вещь (Single Responsibility), а <code>OrderProcessor</code> теперь просто оркестрирует их вызовы через композицию. Захочешь заменить email на SMS — меняешь только <code>EmailSender</code>, не трогая валидацию, расчёт цены или сохранение (Open/Closed).</P>
+        </>}>
+        <P style={{ margin: '0 0 10px' }}>Класс ниже нарушает Single Responsibility Principle — делает сразу всё: валидирует заказ, считает цену, пишет в БД, шлёт письмо. Разбей его на несколько классов с одной ответственностью каждый, связав их композицией внутри <code>OrderProcessor</code>.</P>
+        <Code code={`class OrderProcessor:
+    def process(self, order):
+        if not order.items:
+            raise ValueError("Пустой заказ")
+        total = sum(i.price * i.qty for i in order.items)
+        print(f"Сохраняю заказ на сумму {total} в БД")
+        print(f"Письмо клиенту {order.customer_email}: заказ на {total} принят")`} />
+      </TaskCard>
 
     </div>
   )
