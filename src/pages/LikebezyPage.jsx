@@ -7,6 +7,7 @@ const MlLikbez = lazy(() => import('./likebezy/MlLikbez'))
 const PythonLikbez = lazy(() => import('./likebezy/PythonLikbez'))
 const PythonOopLikbez = lazy(() => import('./likebezy/PythonOopLikbez'))
 const ItCareer2026Likbez = lazy(() => import('./likebezy/ItCareer2026Likbez'))
+const BackendInterviewLikbez = lazy(() => import('./likebezy/BackendInterviewLikbez'))
 
 const LIKEBEZY = [
   {
@@ -20,6 +21,18 @@ const LIKEBEZY = [
     questions: 0,
     topics: ['Рынок и влияние ИИ', 'База для всех', 'Алгоритмы и LeetCode', 'Планы по направлениям', 'Стажировки в РФ', 'Резюме и ATS'],
     component: ItCareer2026Likbez,
+  },
+  {
+    id: 'backend-interview',
+    title: 'Бэкенд на собеседовании',
+    subtitle: 'БД, очереди и Docker — 56 реальных вопросов от Senior Backend разработчика Яндекса',
+    tag: 'Backend',
+    level: 'Junior → Senior',
+    time: '~70 мин',
+    chapters: 3,
+    questions: 56,
+    topics: ['Транзакции и ACID', 'Индексы и EXPLAIN', 'MVCC и VACUUM', 'Kafka', 'RabbitMQ', 'Docker'],
+    component: BackendInterviewLikbez,
   },
   {
     id: 'python',
@@ -95,6 +108,7 @@ const TAG_COLORS = {
   'JavaScript': { bg: 'rgba(234,179,8,0.1)',   border: 'rgba(234,179,8,0.25)',  text: '#facc15' },
   'ML':         { bg: 'rgba(34,197,94,0.1)',   border: 'rgba(34,197,94,0.25)',  text: '#4ade80' },
   'Карьера':    { bg: 'rgba(32,190,255,0.1)',  border: 'rgba(32,190,255,0.25)', text: '#20beff' },
+  'Backend':    { bg: 'rgba(251,146,60,0.1)',  border: 'rgba(251,146,60,0.25)', text: '#fb923c' },
 }
 
 export default function LikebezyPage() {
