@@ -107,7 +107,7 @@ const TAG_COLORS = {
   'DevOps':     { bg: 'rgba(251,146,60,0.1)',  border: 'rgba(251,146,60,0.25)', text: '#fb923c' },
   'JavaScript': { bg: 'rgba(234,179,8,0.1)',   border: 'rgba(234,179,8,0.25)',  text: '#facc15' },
   'ML':         { bg: 'rgba(34,197,94,0.1)',   border: 'rgba(34,197,94,0.25)',  text: '#4ade80' },
-  'Карьера':    { bg: 'rgba(32,190,255,0.1)',  border: 'rgba(32,190,255,0.25)', text: '#20beff' },
+  'Карьера':    { bg: 'rgba(255,214,10,0.1)',  border: 'rgba(255,214,10,0.25)', text: '#FFD60A' },
   'Backend':    { bg: 'rgba(251,146,60,0.1)',  border: 'rgba(251,146,60,0.25)', text: '#fb923c' },
 }
 
@@ -165,13 +165,13 @@ export default function LikebezyPage() {
                 style={{
                   background: 'var(--bg-secondary)',
                   border: '1px solid var(--border-color)',
-                  borderRadius: 0,
+                  borderRadius: 12,
                   padding: 'clamp(16px, 3vw, 24px)',
                   cursor: 'pointer',
                   transition: 'border-color 0.2s, transform 0.15s',
                 }}
                 onMouseEnter={e => {
-                  e.currentTarget.style.borderColor = 'rgba(32,190,255,0.4)'
+                  e.currentTarget.style.borderColor = 'rgba(255,214,10,0.4)'
                   e.currentTarget.style.transform = 'translateY(-2px)'
                 }}
                 onMouseLeave={e => {
@@ -215,7 +215,7 @@ export default function LikebezyPage() {
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <span style={{ fontSize: 12, color: 'var(--text-tertiary)' }}>{item.time}</span>
                   <span style={{
-                    background: 'rgba(32,190,255,0.1)', border: '1px solid rgba(32,190,255,0.25)',
+                    background: 'rgba(255,214,10,0.1)', border: '1px solid rgba(255,214,10,0.25)',
                     color: 'var(--accent-lime)', borderRadius: 6, padding: '5px 14px',
                     fontSize: 12, fontWeight: 600,
                   }}>Читать</span>
@@ -240,7 +240,7 @@ export default function LikebezyPage() {
                 style={{
                   background: 'var(--bg-secondary)',
                   border: '1px solid var(--border-color)',
-                  borderRadius: 0,
+                  borderRadius: 12,
                   padding: 16,
                   opacity: 0.6,
                 }}

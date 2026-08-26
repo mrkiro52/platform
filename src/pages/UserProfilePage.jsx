@@ -91,7 +91,7 @@ export default function UserProfilePage({ user, avatarUrl }) {
     <section className="page active">
       {/* Шапка профиля */}
       <div style={{
-        border: '1px solid var(--border-color)', borderRadius: 0, background: 'var(--bg-secondary)',
+        border: '1px solid var(--border-color)', borderRadius: 12, background: 'var(--bg-secondary)',
         padding: 20, marginBottom: 20,
       }}>
         <div style={{ display: 'flex', gap: 18, alignItems: 'flex-start', flexWrap: 'wrap' }}>
@@ -102,7 +102,7 @@ export default function UserProfilePage({ user, avatarUrl }) {
                 {profile.name}
               </h1>
               {profile.rank !== undefined && (
-                <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--accent-lime)', background: 'rgba(32,190,255,0.1)', padding: '4px 10px', borderRadius: 4 }}>
+                <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--accent-lime)', background: 'rgba(255,214,10,0.1)', padding: '4px 10px', borderRadius: 4 }}>
                   Ранг {profile.rank}
                 </span>
               )}
@@ -155,7 +155,7 @@ export default function UserProfilePage({ user, avatarUrl }) {
             key={t.key}
             onClick={() => setTab(t.key)}
             style={{
-              padding: '10px 20px', fontSize: 13.5, fontWeight: 600, borderRadius: 0, outline: 'none',
+              padding: '10px 20px', fontSize: 13.5, fontWeight: 600, borderRadius: 12, outline: 'none',
               border: 'none', borderBottom: `2px solid ${tab === t.key ? 'var(--accent-lime)' : 'transparent'}`,
               background: 'transparent', cursor: 'pointer', marginBottom: -1,
               color: tab === t.key ? 'var(--accent-lime)' : 'var(--text-secondary)',

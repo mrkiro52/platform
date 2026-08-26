@@ -92,17 +92,17 @@ export default function July16DatabasesTheory({ videoUrl }) {
             <text x="30" y="74" fill="#f5f5fa" fontSize="10">name</text>
             <text x="30" y="90" fill="#f5f5fa" fontSize="10">email</text>
 
-            <rect x="280" y="20" width="180" height="110" fill="rgba(32,190,255,0.1)" stroke="#20beff" />
-            <text x="370" y="38" fill="#20beff" fontSize="12" textAnchor="middle" fontWeight="bold">orders</text>
+            <rect x="280" y="20" width="180" height="110" fill="rgba(255,214,10,0.1)" stroke="#FFD60A" />
+            <text x="370" y="38" fill="#FFD60A" fontSize="12" textAnchor="middle" fontWeight="bold">orders</text>
             <text x="290" y="58" fill="#f5f5fa" fontSize="10">id (PK)</text>
             <text x="290" y="74" fill="#f5f5fa" fontSize="10">user_id (FK)</text>
             <text x="290" y="90" fill="#f5f5fa" fontSize="10">total</text>
             <text x="290" y="106" fill="#f5f5fa" fontSize="10">status</text>
 
-            <line x1="200" y1="65" x2="280" y2="72" stroke="#20beff" strokeWidth="1.5" markerEnd="url(#dbarrow)" />
+            <line x1="200" y1="65" x2="280" y2="72" stroke="#FFD60A" strokeWidth="1.5" markerEnd="url(#dbarrow)" />
             <defs>
               <marker id="dbarrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
-                <path d="M0,0 L6,3 L0,6 Z" fill="#20beff" />
+                <path d="M0,0 L6,3 L0,6 Z" fill="#FFD60A" />
               </marker>
             </defs>
             <text x="240" y="60" fill="#94a3b8" fontSize="9" textAnchor="middle">внешний ключ</text>
@@ -299,7 +299,7 @@ db.users.find({ city: "Москва" })   // находит всех польз�
 
             <text x="360" y="16" fill="#94a3b8" fontSize="11" textAnchor="middle">колоночное хранение</text>
             {[0, 1, 2].map((c) => (
-              <rect key={c} x={280 + c * 60} y="30" width="52" height="72" fill={c === 1 ? 'rgba(32,190,255,0.25)' : 'rgba(74,222,128,0.15)'} stroke={c === 1 ? '#20beff' : '#4ade80'} />
+              <rect key={c} x={280 + c * 60} y="30" width="52" height="72" fill={c === 1 ? 'rgba(255,214,10,0.25)' : 'rgba(74,222,128,0.15)'} stroke={c === 1 ? '#FFD60A' : '#4ade80'} />
             ))}
             <text x="360" y="130" fill="#94a3b8" fontSize="9" textAnchor="middle">читаем только нужный столбец</text>
           </svg>
@@ -343,7 +343,7 @@ GROUP BY event_type;`} />
         <Fig caption="Граф: узлы — сущности (пользователи), рёбра — связи между ними (подписки, дружба).">
           <svg viewBox="0 0 400 150" width="400" height="150" xmlns="http://www.w3.org/2000/svg">
             {[[80, 40], [220, 30], [320, 80], [150, 120], [60, 110]].map((p, i) => (
-              <circle key={i} cx={p[0]} cy={p[1]} r="18" fill="rgba(32,190,255,0.15)" stroke="#20beff" strokeWidth="2" />
+              <circle key={i} cx={p[0]} cy={p[1]} r="18" fill="rgba(255,214,10,0.15)" stroke="#FFD60A" strokeWidth="2" />
             ))}
             {[[80, 40, 220, 30], [220, 30, 320, 80], [80, 40, 150, 120], [150, 120, 60, 110], [80, 40, 60, 110]].map((l, i) => (
               <line key={i} x1={l[0]} y1={l[1]} x2={l[2]} y2={l[3]} stroke="#60a5fa" strokeWidth="1.5" />

@@ -18,7 +18,7 @@ const optionBtnBase = {
   fontWeight: 700,
   fontFamily: 'ui-monospace, monospace',
   border: '1px solid var(--border-color)',
-  borderRadius: 0,
+  borderRadius: 12,
   background: 'var(--bg-secondary)',
   color: 'var(--text-primary)',
   cursor: 'pointer',
@@ -94,7 +94,7 @@ export default function AlgorithmComplexityTraining({ onBack }) {
 
       {phase === 'select' && (
         <div style={{
-          border: '1px solid var(--border-color)', borderRadius: 0, background: 'var(--bg-secondary)',
+          border: '1px solid var(--border-color)', borderRadius: 12, background: 'var(--bg-secondary)',
           padding: 'clamp(20px, 4vw, 40px)', width: '100%',
         }}>
           <h2 style={{ fontSize: 16, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 16 }}>
@@ -107,7 +107,7 @@ export default function AlgorithmComplexityTraining({ onBack }) {
                 onClick={() => startTraining(n)}
                 style={{
                   flex: 1, padding: '18px 0', fontSize: 20, fontWeight: 700,
-                  border: '1px solid var(--border-color)', borderRadius: 0,
+                  border: '1px solid var(--border-color)', borderRadius: 12,
                   background: 'var(--bg-tertiary)', color: 'var(--text-primary)',
                   cursor: 'pointer', outline: 'none', transition: 'border-color 0.15s, color 0.15s',
                 }}
@@ -126,12 +126,12 @@ export default function AlgorithmComplexityTraining({ onBack }) {
           {/* Статистика */}
           <div style={{
             display: 'flex', flexWrap: 'wrap', gap: 16, marginBottom: 20,
-            border: '1px solid var(--border-color)', borderRadius: 0, padding: '12px 16px',
+            border: '1px solid var(--border-color)', borderRadius: 12, padding: '12px 16px',
             background: 'var(--bg-tertiary)', fontSize: 13,
           }}>
             <span style={{ color: 'var(--text-primary)', fontWeight: 700 }}>Всего: {total}</span>
-            <span style={{ color: 'var(--accent-lime)' }}>Правильно: {correctCount}</span>
-            <span style={{ color: '#ff3333' }}>Неправильно: {incorrectCount}</span>
+            <span style={{ color: 'var(--success)' }}>Правильно: {correctCount}</span>
+            <span style={{ color: 'var(--danger)' }}>Неправильно: {incorrectCount}</span>
             <span style={{ color: 'var(--text-tertiary)' }}>Осталось: {unansweredCount}</span>
           </div>
 
@@ -159,9 +159,9 @@ export default function AlgorithmComplexityTraining({ onBack }) {
               let style = { ...optionBtnBase }
               if (isAnswered) {
                 if (isCorrectOpt) {
-                  style = { ...style, borderColor: 'var(--accent-lime)', background: 'rgba(32,190,255,0.1)', color: 'var(--accent-lime)' }
+                  style = { ...style, borderColor: 'var(--success)', background: 'var(--success-dim)', color: 'var(--success)' }
                 } else if (isSelected) {
-                  style = { ...style, borderColor: '#ff3333', background: 'rgba(255,51,51,0.08)', color: '#ff3333' }
+                  style = { ...style, borderColor: 'var(--danger)', background: 'rgba(255,51,51,0.08)', color: 'var(--danger)' }
                 } else {
                   style = { ...style, opacity: 0.5 }
                 }
@@ -185,7 +185,7 @@ export default function AlgorithmComplexityTraining({ onBack }) {
             <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
               <span style={{
                 fontWeight: 700, fontSize: 14,
-                color: selectedOption === questions[currentIndex].answer ? 'var(--accent-lime)' : '#ff3333',
+                color: selectedOption === questions[currentIndex].answer ? 'var(--success)' : 'var(--danger)',
               }}>
                 {selectedOption === questions[currentIndex].answer
                   ? 'Правильно!'
@@ -194,8 +194,8 @@ export default function AlgorithmComplexityTraining({ onBack }) {
               <button
                 onClick={e => { goNext(); e.currentTarget.blur() }}
                 style={{
-                  padding: '10px 24px', fontSize: 14, fontWeight: 600, border: 'none', borderRadius: 0,
-                  background: 'var(--accent-lime)', color: '#fff', cursor: 'pointer', outline: 'none',
+                  padding: '10px 24px', fontSize: 14, fontWeight: 600, border: 'none', borderRadius: 12,
+                  background: 'var(--accent-lime)', color: 'var(--on-accent)', cursor: 'pointer', outline: 'none',
                 }}
               >
                 {currentIndex + 1 >= total ? 'Завершить' : 'Следующая задача'}
@@ -214,7 +214,7 @@ export default function AlgorithmComplexityTraining({ onBack }) {
             : 'Нужно ещё потренироваться, и всё получится!'
         return (
           <div style={{
-            border: '1px solid var(--border-color)', borderRadius: 0, background: 'var(--bg-secondary)',
+            border: '1px solid var(--border-color)', borderRadius: 12, background: 'var(--bg-secondary)',
             padding: 'clamp(24px, 5vw, 48px)', width: '100%', textAlign: 'center',
           }}>
             <div style={{ fontSize: 40, fontWeight: 800, color: 'var(--accent-lime)', marginBottom: 8 }}>{pct}%</div>
@@ -228,8 +228,8 @@ export default function AlgorithmComplexityTraining({ onBack }) {
               <button
                 onClick={restart}
                 style={{
-                  padding: '10px 24px', fontSize: 14, fontWeight: 600, border: 'none', borderRadius: 0,
-                  background: 'var(--accent-lime)', color: '#fff', cursor: 'pointer',
+                  padding: '10px 24px', fontSize: 14, fontWeight: 600, border: 'none', borderRadius: 12,
+                  background: 'var(--accent-lime)', color: 'var(--on-accent)', cursor: 'pointer',
                 }}
               >
                 Пройти ещё раз
@@ -237,7 +237,7 @@ export default function AlgorithmComplexityTraining({ onBack }) {
               <button
                 onClick={onBack}
                 style={{
-                  padding: '10px 24px', fontSize: 14, fontWeight: 600, border: '1px solid var(--border-color)', borderRadius: 0,
+                  padding: '10px 24px', fontSize: 14, fontWeight: 600, border: '1px solid var(--border-color)', borderRadius: 12,
                   background: 'transparent', color: 'var(--text-secondary)', cursor: 'pointer',
                 }}
               >

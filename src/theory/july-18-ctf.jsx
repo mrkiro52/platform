@@ -125,8 +125,8 @@ export default function July18CtfTheory() {
             <text x="130" y="163" fill="#a78bfa" fontSize="11" textAnchor="middle" fontWeight="bold">API-ответы</text>
             <text x="130" y="179" fill="#94a3b8" fontSize="9" textAnchor="middle">поля JSON, не отрисованные на странице</text>
 
-            <rect x="320" y="145" width="220" height="45" rx="6" fill="rgba(32,190,255,0.12)" stroke="#20beff" />
-            <text x="430" y="163" fill="#20beff" fontSize="11" textAnchor="middle" fontWeight="bold">Переменные окружения / конфиги</text>
+            <rect x="320" y="145" width="220" height="45" rx="6" fill="rgba(255,214,10,0.12)" stroke="#FFD60A" />
+            <text x="430" y="163" fill="#FFD60A" fontSize="11" textAnchor="middle" fontWeight="bold">Переменные окружения / конфиги</text>
             <text x="430" y="179" fill="#94a3b8" fontSize="9" textAnchor="middle">через LFI, SSRF, утечку .env</text>
           </svg>
         </Fig>

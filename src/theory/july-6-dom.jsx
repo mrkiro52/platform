@@ -1,7 +1,7 @@
 import { TheoryTable, TheoryCode, TheoryExample } from './components/TheoryTable'
 import VideoPlayer from '../components/VideoPlayer'
 
-const C = { text: 'var(--text-primary)', sub: 'var(--text-secondary)', lime: '#20beff', yellow: '#facc15', blue: '#60a5fa', border: '#2a2a3a' }
+const C = { text: 'var(--text-primary)', sub: 'var(--text-secondary)', lime: '#FFD60A', yellow: '#facc15', blue: '#60a5fa', border: '#2a2a3a' }
 
 function Fig({ children, caption }) {
   return (
@@ -184,7 +184,7 @@ list.innerHTML = ''           // быстрый способ убрать все
             <text x="95" y="88" fill={C.sub} fontSize="10" textAnchor="middle">узел "в воздухе"</text>
             <line x1="160" y1="75" x2="230" y2="75" stroke={C.sub} strokeWidth="2" markerEnd="url(#dm)" />
             <text x="195" y="66" fill={C.sub} fontSize="10" textAnchor="middle">appendChild</text>
-            <rect x="250" y="30" width="240" height="90" rx="8" fill="rgba(32,190,255,0.05)" stroke={C.lime} />
+            <rect x="250" y="30" width="240" height="90" rx="8" fill="rgba(255,214,10,0.05)" stroke={C.lime} />
             <text x="370" y="24" fill={C.lime} fontSize="11" fontWeight="700" textAnchor="middle">DOM-дерево (на странице)</text>
             {[0,1,2].map(i=>(<rect key={i} x="270" y={45+i*22} width="200" height="18" rx="3" fill="var(--bg-tertiary)" stroke={i===2?C.yellow:C.border} />))}
             <text x="370" y="112" fill={C.yellow} fontSize="10" textAnchor="middle">новый li — виден пользователю</text>

@@ -48,8 +48,8 @@ export default function NotificationsPage({ onRead }) {
               onClick={() => openTarget(n)}
               style={{
                 display: 'flex', gap: 12, alignItems: 'center', padding: 13, cursor: 'pointer',
-                border: '1px solid var(--border-color)', borderRadius: 0,
-                background: n.readAt ? 'var(--bg-secondary)' : 'rgba(32,190,255,0.06)',
+                border: '1px solid var(--border-color)', borderRadius: 12,
+                background: n.readAt ? 'var(--bg-secondary)' : 'rgba(255,214,10,0.06)',
               }}
             >
               <Avatar name={n.actor?.name} avatarUrl={n.actor?.avatarUrl} size={38}

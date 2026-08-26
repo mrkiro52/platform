@@ -1,6 +1,6 @@
 import { TheoryTable, TheoryCode, TheoryExample } from './components/TheoryTable'
 
-const C = { text: 'var(--text-primary)', sub: 'var(--text-secondary)', lime: '#20beff', blue: '#60a5fa', green: '#4ade80', red: '#f87171', indigo: '#818cf8', border: '#2a2a3a' }
+const C = { text: 'var(--text-primary)', sub: 'var(--text-secondary)', lime: '#FFD60A', blue: '#60a5fa', green: '#4ade80', red: '#f87171', indigo: '#818cf8', border: '#2a2a3a' }
 
 function Fig({ children, caption }) {
   return (
@@ -41,7 +41,7 @@ function Step({ n, title, children }) {
     <div style={{ margin: '16px 0 16px 14px', paddingLeft: 16, borderLeft: '2px dashed var(--border-color)' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
         <span style={{
-          background: 'rgba(32,190,255,0.12)', color: 'var(--accent-lime)', fontSize: 11, fontWeight: 700,
+          background: 'rgba(255,214,10,0.12)', color: 'var(--accent-lime)', fontSize: 11, fontWeight: 700,
           padding: '3px 10px', borderRadius: 999, flexShrink: 0,
         }}>Шаг {n}</span>
         <span style={{ color: 'var(--text-primary)', fontWeight: 600, fontSize: 14 }}>{title}</span>
@@ -176,7 +176,7 @@ export default function July8CryptoTheory() {
             ].map((g, i) => (
               <g key={i}>
                 <text x={g.x + 70} y="16" fill={C.text} fontSize="12" fontWeight="700" textAnchor="middle">{g.t}</text>
-                <rect x={g.x} y="30" width="140" height="34" rx="6" fill="rgba(32,190,255,0.08)" stroke={C.lime} />
+                <rect x={g.x} y="30" width="140" height="34" rx="6" fill="rgba(255,214,10,0.08)" stroke={C.lime} />
                 <text x={g.x + 70} y="51" fill={C.lime} fontSize="11" textAnchor="middle">{g.a}</text>
                 <rect x={g.x} y="74" width="140" height="34" rx="6" fill="rgba(96,165,250,0.08)" stroke={C.blue} />
                 <text x={g.x + 70} y="95" fill={C.blue} fontSize="11" textAnchor="middle">{g.b}</text>
@@ -244,7 +244,7 @@ export default function July8CryptoTheory() {
             <rect x="20" y="20" width="180" height="34" rx="6" fill="var(--bg-tertiary)" stroke={C.border} />
             <text x="110" y="41" fill={C.text} fontSize="11" fontFamily="monospace" textAnchor="middle">"Привет, мир"</text>
             <line x1="200" y1="37" x2="250" y2="37" stroke={C.sub} strokeWidth="2" markerEnd="url(#hf)" />
-            <rect x="250" y="20" width="70" height="34" rx="6" fill="rgba(32,190,255,0.10)" stroke={C.lime} />
+            <rect x="250" y="20" width="70" height="34" rx="6" fill="rgba(255,214,10,0.10)" stroke={C.lime} />
             <text x="285" y="41" fill={C.lime} fontSize="11" fontWeight="700" textAnchor="middle">SHA-256</text>
             <line x1="320" y1="37" x2="370" y2="37" stroke={C.sub} strokeWidth="2" markerEnd="url(#hf)" />
             <rect x="370" y="20" width="130" height="34" rx="6" fill="var(--bg-tertiary)" stroke={C.border} />
@@ -253,7 +253,7 @@ export default function July8CryptoTheory() {
             <rect x="20" y="76" width="180" height="34" rx="6" fill="var(--bg-tertiary)" stroke={C.border} />
             <text x="110" y="97" fill={C.text} fontSize="11" fontFamily="monospace" textAnchor="middle">"Привет, мир!"</text>
             <line x1="200" y1="93" x2="250" y2="93" stroke={C.sub} strokeWidth="2" markerEnd="url(#hf)" />
-            <rect x="250" y="76" width="70" height="34" rx="6" fill="rgba(32,190,255,0.10)" stroke={C.lime} />
+            <rect x="250" y="76" width="70" height="34" rx="6" fill="rgba(255,214,10,0.10)" stroke={C.lime} />
             <text x="285" y="97" fill={C.lime} fontSize="11" fontWeight="700" textAnchor="middle">SHA-256</text>
             <line x1="320" y1="93" x2="370" y2="93" stroke={C.sub} strokeWidth="2" markerEnd="url(#hf)" />
             <rect x="370" y="76" width="130" height="34" rx="6" fill="rgba(248,113,113,0.10)" stroke={C.red} />

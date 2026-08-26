@@ -59,9 +59,9 @@ function QuestionItem({ q }) {
         transition: 'filter 0.25s',
         margin: 0,
         padding: '8px 12px',
-        background: revealed ? 'rgba(32,190,255,0.05)' : 'rgba(0,0,0,0.2)',
+        background: revealed ? 'rgba(255,214,10,0.05)' : 'rgba(0,0,0,0.2)',
         borderRadius: 6,
-        border: revealed ? '1px solid rgba(32,190,255,0.15)' : '1px solid transparent',
+        border: revealed ? '1px solid rgba(255,214,10,0.15)' : '1px solid transparent',
       }}>
         {q.a}
       </p>
@@ -74,8 +74,8 @@ export default function SelfCheck({ questions }) {
     <div style={{
       margin: '24px 0 8px',
       padding: '20px',
-      background: 'rgba(32,190,255,0.03)',
-      border: '1px solid rgba(32,190,255,0.1)',
+      background: 'rgba(255,214,10,0.03)',
+      border: '1px solid rgba(255,214,10,0.1)',
       borderRadius: 12,
     }}>
       <div style={{

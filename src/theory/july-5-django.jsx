@@ -1,7 +1,7 @@
 import { TheoryTable, TheoryCode, TheoryExample } from './components/TheoryTable'
 import VideoPlayer from '../components/VideoPlayer'
 
-const C = { text: 'var(--text-primary)', sub: 'var(--text-secondary)', lime: '#20beff', border: '#2a2a3a' }
+const C = { text: 'var(--text-primary)', sub: 'var(--text-secondary)', lime: '#FFD60A', border: '#2a2a3a' }
 
 function Fig({ children, caption }) {
   return (
@@ -77,7 +77,7 @@ export default function July5DjangoTheory() {
             <rect x="20" y="80" width="150" height="60" rx="10" fill="rgba(96,165,250,0.10)" stroke="#60a5fa" />
             <text x="95" y="106" fill={C.text} fontSize="13" fontWeight="700" textAnchor="middle">Клиент</text>
             <text x="95" y="125" fill={C.sub} fontSize="10" textAnchor="middle">браузер / app</text>
-            <rect x="430" y="80" width="150" height="60" rx="10" fill="rgba(32,190,255,0.08)" stroke={C.lime} />
+            <rect x="430" y="80" width="150" height="60" rx="10" fill="rgba(255,214,10,0.08)" stroke={C.lime} />
             <text x="505" y="106" fill={C.lime} fontSize="13" fontWeight="700" textAnchor="middle">Сервер</text>
             <text x="505" y="125" fill={C.sub} fontSize="10" textAnchor="middle">Django + DRF</text>
             <line x1="170" y1="95" x2="430" y2="95" stroke="#60a5fa" strokeWidth="2" markerEnd="url(#da1)" />

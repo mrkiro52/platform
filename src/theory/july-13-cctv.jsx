@@ -1,6 +1,6 @@
 import { TheoryTable, TheoryExample } from './components/TheoryTable'
 
-const C = { text: 'var(--text-primary)', sub: 'var(--text-secondary)', lime: '#20beff', green: '#4ade80', blue: '#60a5fa', red: '#f87171', yellow: '#facc15', border: '#2a2a3a' }
+const C = { text: 'var(--text-primary)', sub: 'var(--text-secondary)', lime: '#FFD60A', green: '#4ade80', blue: '#60a5fa', red: '#f87171', yellow: '#facc15', border: '#2a2a3a' }
 
 function Fig({ children, caption }) {
   return (
@@ -142,7 +142,7 @@ export default function July13CctvTheory() {
         <Fig caption="Короткое фокусное расстояние даёт широкий угол обзора, но объекты вдали мелкие. Длинное фокусное расстояние сужает угол обзора, но приближает и детализирует дальние объекты">
           <svg viewBox="0 0 500 170" width="100%" style={{ maxWidth: 500 }} xmlns="http://www.w3.org/2000/svg">
             <circle cx="60" cy="90" r="6" fill={C.lime} />
-            <path d="M60 90 L220 20 L220 160 Z" fill="rgba(32,190,255,0.08)" stroke={C.lime} />
+            <path d="M60 90 L220 20 L220 160 Z" fill="rgba(255,214,10,0.08)" stroke={C.lime} />
             <text x="140" y="10" fill={C.lime} fontSize="10" textAnchor="middle">широкий FOV (2.8мм)</text>
             <circle cx="320" cy="90" r="6" fill={C.blue} />
             <path d="M320 90 L440 65 L440 115 Z" fill="rgba(96,165,250,0.08)" stroke={C.blue} />

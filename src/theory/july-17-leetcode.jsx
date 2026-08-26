@@ -66,7 +66,7 @@ function ArrayCells({ values, highlight = [], labels = {} }) {
             <div style={{
               width: 42, height: 42, display: 'flex', alignItems: 'center', justifyContent: 'center',
               borderRadius: 8, fontWeight: 700, fontSize: 15,
-              background: isHi ? 'rgba(32,190,255,0.18)' : 'var(--bg-tertiary)',
+              background: isHi ? 'rgba(255,214,10,0.18)' : 'var(--bg-tertiary)',
               border: `1.5px solid ${isHi ? 'var(--accent-lime)' : 'var(--border-color)'}`,
               color: isHi ? 'var(--accent-lime)' : 'var(--text-primary)',
             }}>{v}</div>

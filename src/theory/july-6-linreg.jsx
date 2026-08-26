@@ -1,7 +1,7 @@
 import { TheoryTable, TheoryCode, TheoryExample } from './components/TheoryTable'
 import VideoPlayer from '../components/VideoPlayer'
 
-const C = { text: 'var(--text-primary)', sub: 'var(--text-secondary)', lime: '#20beff', green: '#4ade80', blue: '#60a5fa', red: '#f87171', border: '#2a2a3a' }
+const C = { text: 'var(--text-primary)', sub: 'var(--text-secondary)', lime: '#FFD60A', green: '#4ade80', blue: '#60a5fa', red: '#f87171', border: '#2a2a3a' }
 
 function Fig({ children, caption }) {
   return (

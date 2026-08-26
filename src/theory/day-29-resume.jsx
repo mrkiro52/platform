@@ -19,7 +19,7 @@ const Ul = ({ items }) => (
 const Card = ({ children, accent }) => (
   <div style={{
     background: 'var(--bg-secondary)',
-    border: `1px solid ${accent ? 'rgba(32,190,255,0.3)' : 'var(--border-color)'}`,
+    border: `1px solid ${accent ? 'rgba(255,214,10,0.3)' : 'var(--border-color)'}`,
     borderRadius: 10,
     padding: 'clamp(14px,3vw,20px)',
     margin: '14px 0',
@@ -37,7 +37,7 @@ const Bad = ({ children }) => (
   </div>
 )
 const Note = ({ children }) => (
-  <div style={{ background: 'rgba(32,190,255,0.05)', border: '1px solid rgba(32,190,255,0.18)', borderRadius: 8, padding: '12px 16px', margin: '14px 0', fontSize: 13.5, lineHeight: 1.7, color: 'var(--text-secondary)' }}>
+  <div style={{ background: 'rgba(255,214,10,0.05)', border: '1px solid rgba(255,214,10,0.18)', borderRadius: 8, padding: '12px 16px', margin: '14px 0', fontSize: 13.5, lineHeight: 1.7, color: 'var(--text-secondary)' }}>
     <span style={{ color: 'var(--accent-lime)', fontWeight: 700, marginRight: 6 }}>💡</span>{children}
   </div>
 )

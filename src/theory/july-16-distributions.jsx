@@ -112,7 +112,7 @@ print(variation_series)
             {[18, 32, 55, 78, 92, 70, 48, 26, 12].map((h, i) => (
               <rect key={i} x={20 + i * 46} y={150 - h} width="36" height={h} fill="rgba(96,165,250,0.35)" stroke="#60a5fa" />
             ))}
-            <path d={bellPath(230, 200, 110, 150)} fill="none" stroke="#20beff" strokeWidth="2.5" />
+            <path d={bellPath(230, 200, 110, 150)} fill="none" stroke="#FFD60A" strokeWidth="2.5" />
             <line x1="10" y1="150" x2="450" y2="150" stroke="#94a3b8" strokeWidth="1" />
           </svg>
         </Fig>
@@ -137,7 +137,7 @@ print(variation_series)
         <Fig caption="Три формы распределения: симметричное нормальное, асимметричное (скошенное вправо) и полимодальное с двумя пиками.">
           <svg viewBox="0 0 560 170" width="560" height="170" xmlns="http://www.w3.org/2000/svg">
             <g>
-              <path d={bellPath(85, 70, 110, 150)} fill="rgba(32,190,255,0.15)" stroke="#20beff" strokeWidth="2.5" />
+              <path d={bellPath(85, 70, 110, 150)} fill="rgba(255,214,10,0.15)" stroke="#FFD60A" strokeWidth="2.5" />
               <text x="85" y="165" fill="#94a3b8" fontSize="11" textAnchor="middle">нормальное</text>
             </g>
             <g>
@@ -172,7 +172,7 @@ print(variation_series)
             <path d={bellPath(90, 70, 90, 130)} fill="rgba(96,165,250,0.15)" stroke="#60a5fa" strokeWidth="2.5" />
             <text x="90" y="145" fill="#94a3b8" fontSize="11" textAnchor="middle">нормальное (X)</text>
 
-            <text x="220" y="75" fill="#20beff" fontSize="13" textAnchor="middle">exp(X) →</text>
+            <text x="220" y="75" fill="#FFD60A" fontSize="13" textAnchor="middle">exp(X) →</text>
             <text x="220" y="92" fill="#94a3b8" fontSize="10" textAnchor="middle">← ln(Y)</text>
 
             <path d="M 330 130 C 345 130, 355 115, 365 90 C 375 65, 385 55, 400 53 C 415 52, 435 60, 480 130 Z"
@@ -201,10 +201,10 @@ print(variation_series)
         </P>
         <Fig caption="Слева — вся площадь под кривой равна 1 (100%). Справа — заштрихованная часть между a и b — это вероятность попадания в интервал [a, b].">
           <svg viewBox="0 0 520 160" width="520" height="160" xmlns="http://www.w3.org/2000/svg">
-            <path d={bellPath(120, 90, 100, 140)} fill="rgba(32,190,255,0.25)" stroke="#20beff" strokeWidth="2.5" />
+            <path d={bellPath(120, 90, 100, 140)} fill="rgba(255,214,10,0.25)" stroke="#FFD60A" strokeWidth="2.5" />
             <text x="120" y="155" fill="#94a3b8" fontSize="11" textAnchor="middle">площадь = 1 (100%)</text>
 
-            <path d={bellPath(390, 90, 100, 140)} fill="none" stroke="#20beff" strokeWidth="2.5" />
+            <path d={bellPath(390, 90, 100, 140)} fill="none" stroke="#FFD60A" strokeWidth="2.5" />
             <clipPath id="clip-ab"><rect x="360" y="30" width="60" height="120" /></clipPath>
             <path d={bellPath(390, 90, 100, 140)} fill="rgba(96,165,250,0.4)" clipPath="url(#clip-ab)" />
             <line x1="360" y1="40" x2="360" y2="140" stroke="#60a5fa" strokeDasharray="3" />
@@ -256,7 +256,7 @@ print(mean, variance, std)`} />
         />
         <Fig caption="Интервалы среднее ± 1σ, ±2σ, ±3σ и доля наблюдений внутри каждого из них.">
           <svg viewBox="0 0 560 190" width="560" height="190" xmlns="http://www.w3.org/2000/svg">
-            <path d={bellPath(280, 220, 120, 160)} fill="rgba(32,190,255,0.08)" stroke="#20beff" strokeWidth="2.5" />
+            <path d={bellPath(280, 220, 120, 160)} fill="rgba(255,214,10,0.08)" stroke="#FFD60A" strokeWidth="2.5" />
             {/* 1 sigma */}
             <clipPath id="s1"><rect x="220" y="20" width="120" height="150" /></clipPath>
             <path d={bellPath(280, 220, 120, 160)} fill="rgba(74,222,128,0.35)" clipPath="url(#s1)" />
@@ -306,7 +306,7 @@ print(f"99.7% значений в интервале: [{lower_3s:.2f}, {upper_3s
         <Fig caption="Симметричное: среднее = медиана = мода. Скошено вправо: мода < медиана < среднее. Скошено влево: среднее < медиана < мода.">
           <svg viewBox="0 0 560 190" width="560" height="190" xmlns="http://www.w3.org/2000/svg">
             {/* symmetric */}
-            <path d={bellPath(90, 70, 100, 150)} fill="rgba(32,190,255,0.12)" stroke="#20beff" strokeWidth="2.5" />
+            <path d={bellPath(90, 70, 100, 150)} fill="rgba(255,214,10,0.12)" stroke="#FFD60A" strokeWidth="2.5" />
             <line x1="90" y1="45" x2="90" y2="150" stroke="#f5f5fa" strokeDasharray="3" />
             <text x="90" y="165" fill="#f5f5fa" fontSize="10" textAnchor="middle">среднее=медиана=мода</text>
 
@@ -353,7 +353,7 @@ print(median, mode)`} />
         </Term>
         <Fig caption="Квартили Q1, Q2 (медиана) и Q3 делят площадь под распределением на 4 равные по 25% части.">
           <svg viewBox="0 0 480 170" width="480" height="170" xmlns="http://www.w3.org/2000/svg">
-            <path d={bellPath(240, 210, 110, 150)} fill="none" stroke="#20beff" strokeWidth="2.5" />
+            <path d={bellPath(240, 210, 110, 150)} fill="none" stroke="#FFD60A" strokeWidth="2.5" />
             {[
               { x1: 30, x2: 155, color: 'rgba(96,165,250,0.3)' },
               { x1: 155, x2: 240, color: 'rgba(74,222,128,0.3)' },

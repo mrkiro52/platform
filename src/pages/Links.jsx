@@ -199,7 +199,7 @@ export default function Links({ onNavigate }) {
         style={{
           marginTop: 32,
           padding: '16px',
-          background: 'rgba(32,190,255,0.05)',
+          background: 'rgba(255,214,10,0.05)',
           borderRadius: '8px',
           fontSize: 13,
           color: 'var(--text-secondary)',

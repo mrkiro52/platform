@@ -1,7 +1,7 @@
 import { TheoryTable, TheoryCode, TheoryExample } from './components/TheoryTable'
 import MultiPartVideo, { JULY5_FRONTEND_PARTS } from '../components/MultiPartVideo'
 
-const C = { text: 'var(--text-primary)', sub: 'var(--text-secondary)', lime: '#20beff', border: '#2a2a3a' }
+const C = { text: 'var(--text-primary)', sub: 'var(--text-secondary)', lime: '#FFD60A', border: '#2a2a3a' }
 
 function Fig({ children, caption }) {
   return (
@@ -124,7 +124,7 @@ console.log('конец')          // синхронно, выполняется
         <Fig caption="Event Loop: пока стек пуст, движок сначала опустошает все микрозадачи (промисы), затем берёт одну макрозадачу (таймер) — и цикл повторяется">
           <svg viewBox="0 0 620 300" width="100%" style={{ maxWidth: 620 }} xmlns="http://www.w3.org/2000/svg">
             {/* Call stack */}
-            <rect x="30" y="40" width="150" height="180" rx="8" fill="rgba(32,190,255,0.06)" stroke={C.lime} />
+            <rect x="30" y="40" width="150" height="180" rx="8" fill="rgba(255,214,10,0.06)" stroke={C.lime} />
             <text x="105" y="30" fill={C.lime} fontSize="13" fontWeight="700" textAnchor="middle">Call Stack</text>
             <text x="105" y="135" fill={C.sub} fontSize="11" textAnchor="middle">выполняется</text>
             <text x="105" y="152" fill={C.sub} fontSize="11" textAnchor="middle">одна функция</text>
@@ -139,7 +139,7 @@ console.log('конец')          // синхронно, выполняется
             <text x="515" y="70" fill={C.text} fontSize="10" textAnchor="middle">.then / await</text>
             <text x="515" y="90" fill={C.sub} fontSize="9" textAnchor="middle">приоритет ★</text>
             {/* Macrotask queue */}
-            <rect x="440" y="160" width="150" height="70" rx="8" fill="rgba(32,190,255,0.06)" stroke={C.border} />
+            <rect x="440" y="160" width="150" height="70" rx="8" fill="rgba(255,214,10,0.06)" stroke={C.border} />
             <text x="515" y="150" fill={C.text} fontSize="12" fontWeight="700" textAnchor="middle">Macrotasks</text>
             <text x="515" y="190" fill={C.text} fontSize="10" textAnchor="middle">setTimeout</text>
             <text x="515" y="210" fill={C.sub} fontSize="9" textAnchor="middle">по одной за проход</text>
@@ -221,7 +221,7 @@ getUser(1, (user) => {                    // шаг 1: получили поль
             <text x="280" y="42" fill={C.text} fontSize="13" fontWeight="700" textAnchor="middle">pending</text>
             <text x="280" y="58" fill={C.sub} fontSize="10" textAnchor="middle">ожидание</text>
             {/* fulfilled */}
-            <rect x="40" y="140" width="180" height="52" rx="8" fill="rgba(32,190,255,0.10)" stroke={C.lime} />
+            <rect x="40" y="140" width="180" height="52" rx="8" fill="rgba(255,214,10,0.10)" stroke={C.lime} />
             <text x="130" y="163" fill={C.lime} fontSize="13" fontWeight="700" textAnchor="middle">fulfilled</text>
             <text x="130" y="180" fill={C.sub} fontSize="10" textAnchor="middle">.then(value)</text>
             {/* rejected */}

@@ -22,9 +22,9 @@ export default function MultiPartVideo({ parts = [] }) {
         display: 'flex',
         maxWidth: 800,
         margin: '-20px auto 0',
-        borderRadius: 0,
+        borderRadius: 12,
         overflow: 'hidden',
-        border: '1px solid rgba(32,190,255,0.25)',
+        border: '1px solid rgba(255,214,10,0.25)',
       }}>
         {parts.map((_, i) => {
           const selected = i === active
@@ -40,12 +40,12 @@ export default function MultiPartVideo({ parts = [] }) {
                 cursor: 'pointer',
                 fontSize: 14,
                 fontWeight: 700,
-                background: selected ? 'var(--accent-lime)' : 'rgba(32,190,255,0.18)',
+                background: selected ? 'var(--accent-lime)' : 'rgba(255,214,10,0.18)',
                 color: selected ? '#0a0a14' : 'var(--accent-lime)',
                 transition: 'background 0.15s, color 0.15s',
               }}
-              onMouseEnter={e => { if (!selected) e.currentTarget.style.background = 'rgba(32,190,255,0.3)' }}
-              onMouseLeave={e => { if (!selected) e.currentTarget.style.background = 'rgba(32,190,255,0.18)' }}
+              onMouseEnter={e => { if (!selected) e.currentTarget.style.background = 'rgba(255,214,10,0.3)' }}
+              onMouseLeave={e => { if (!selected) e.currentTarget.style.background = 'rgba(255,214,10,0.18)' }}
             >
               {i + 1}
             </button>

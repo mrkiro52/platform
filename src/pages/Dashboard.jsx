@@ -40,7 +40,7 @@ function JuneChecklist({ user }) {
   const download = () => {
     const nickname = user?.nickname || user?.name || 'Участник'
     const doneCount = JUNE_CHECKLIST.filter((_, i) => checked[i]).length
-    const GREEN = '#20beff'
+    const GREEN = '#FFD60A'
     const BG = '#111111'
     const CARD = '#1a1a1a'
     const WHITE = '#ffffff'
@@ -145,9 +145,9 @@ function JuneChecklist({ user }) {
   const cbStyle = (isChecked) => ({
     width: 18,
     height: 18,
-    borderRadius: 0,
-    border: isChecked ? '2px solid #20beff' : '2px solid var(--border-color)',
-    background: isChecked ? '#20beff' : 'transparent',
+    borderRadius: 12,
+    border: isChecked ? '2px solid #FFD60A' : '2px solid var(--border-color)',
+    background: isChecked ? '#FFD60A' : 'transparent',
     flexShrink: 0,
     marginTop: 1,
     display: 'flex',
@@ -185,7 +185,7 @@ function JuneChecklist({ user }) {
       </div>
       <button
         onClick={download}
-        style={{ fontSize: 13, padding: '8px 20px', borderRadius: 0, border: 'none', background: 'var(--accent-ink)', color: '#fff', cursor: 'pointer', fontWeight: 700 }}
+        style={{ fontSize: 13, padding: '8px 20px', borderRadius: 12, border: 'none', background: 'var(--accent-ink)', color: 'var(--on-accent)', cursor: 'pointer', fontWeight: 700 }}
       >
         Скачать чек-лист
       </button>

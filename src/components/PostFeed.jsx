@@ -104,7 +104,7 @@ export function PostCard({ post, user, avatarUrl, onReact, onComment, onDelete, 
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             <UserName id={post.author.id} name={post.author.name} />
             {post.author.rank !== undefined && (
-              <span style={{ fontSize: 11, fontWeight: 600, color: 'var(--accent-lime)', background: 'rgba(32,190,255,0.1)', padding: '2px 8px', borderRadius: 3 }}>
+              <span style={{ fontSize: 11, fontWeight: 600, color: 'var(--accent-lime)', background: 'rgba(255,214,10,0.1)', padding: '2px 8px', borderRadius: 3 }}>
                 Ранг {post.author.rank}
               </span>
             )}
@@ -290,8 +290,8 @@ export function PostComposer({ user, avatarUrl, onPublished }) {
             title={imageUrl ? 'Заменить изображение' : 'Добавить изображение'}
             className="composer-attach"
             style={{
-              width: 44, height: 44, flexShrink: 0, border: '1px solid var(--border-color)', borderRadius: 0,
-              background: imageUrl ? 'rgba(32,190,255,0.10)' : 'transparent',
+              width: 44, height: 44, flexShrink: 0, border: '1px solid var(--border-color)', borderRadius: 12,
+              background: imageUrl ? 'rgba(255,214,10,0.10)' : 'transparent',
               color: imageUrl ? 'var(--accent-lime)' : 'var(--text-secondary)',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               cursor: uploading ? 'wait' : 'pointer', outline: 'none',
@@ -317,7 +317,7 @@ export function PostComposer({ user, avatarUrl, onPublished }) {
               onClick={() => setImageUrl('')}
               style={{
                 position: 'absolute', top: 6, right: 6, border: 'none', borderRadius: 'var(--radius-pill)',
-                background: 'rgba(0,0,0,0.7)', color: '#fff', fontSize: 12, fontWeight: 600,
+                background: 'rgba(0,0,0,0.7)', color: 'var(--on-accent)', fontSize: 12, fontWeight: 600,
                 padding: '4px 10px', cursor: 'pointer', outline: 'none',
               }}
             >
@@ -326,7 +326,7 @@ export function PostComposer({ user, avatarUrl, onPublished }) {
           </div>
         )}
       </div>
-      {error && <div style={{ color: '#ff3333', fontSize: 12, marginTop: 8 }}>{error}</div>}
+      {error && <div style={{ color: 'var(--danger)', fontSize: 12, marginTop: 8 }}>{error}</div>}
     </div>
   )
 }

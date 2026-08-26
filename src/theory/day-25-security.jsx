@@ -82,7 +82,7 @@ function SqlInjectionViz() {
     padding: '5px 14px', fontSize: 12, fontWeight: 700, cursor: 'pointer',
     borderRadius: 7, border: '1px solid',
     borderColor: active ? 'var(--accent-lime)' : 'var(--border-color)',
-    background: active ? 'rgba(32,190,255,0.12)' : 'var(--bg-tertiary)',
+    background: active ? 'rgba(255,214,10,0.12)' : 'var(--bg-tertiary)',
     color: active ? 'var(--accent-lime)' : 'var(--text-secondary)',
   })
   const normal = {
@@ -646,7 +646,7 @@ export default function Day25SecurityTheory() {
               }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
                   <span style={{
-                    width: 28, height: 28, borderRadius: 7, background: 'rgba(32,190,255,0.15)',
+                    width: 28, height: 28, borderRadius: 7, background: 'rgba(255,214,10,0.15)',
                     border: '1.5px solid var(--accent-lime)', display: 'flex', alignItems: 'center',
                     justifyContent: 'center', fontSize: 14, fontWeight: 900, color: 'var(--accent-lime)',
                     flexShrink: 0,

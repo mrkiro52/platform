@@ -27,7 +27,7 @@ const Ol = ({ items }) => (
 const Card = ({ children, accent }) => (
   <div style={{
     background: 'var(--bg-secondary)',
-    border: `1px solid ${accent ? 'rgba(32,190,255,0.3)' : 'var(--border-color)'}`,
+    border: `1px solid ${accent ? 'rgba(255,214,10,0.3)' : 'var(--border-color)'}`,
     borderRadius: 10,
     padding: 'clamp(14px,3vw,20px)',
     margin: '14px 0',

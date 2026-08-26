@@ -16,7 +16,7 @@ const L = ({ to, children }) => (
     href={to}
     target="_blank"
     rel="noopener noreferrer"
-    style={{ color: '#1668c4', textDecoration: 'underline', textUnderlineOffset: 2, fontWeight: 600 }}
+    style={{ color: 'var(--accent-lime)', textDecoration: 'underline', textUnderlineOffset: 2, fontWeight: 600 }}
   >
     {children}
   </a>
@@ -33,7 +33,7 @@ const Ul = ({ items }) => (
 )
 
 const Note = ({ children }) => (
-  <div style={{ background: 'rgba(32,190,255,0.05)', border: '1px solid rgba(32,190,255,0.18)', borderRadius: 8, padding: '12px 16px', margin: '14px 0', color: 'var(--text-secondary)', fontSize: 13.5, lineHeight: 1.7 }}>
+  <div style={{ background: 'rgba(255,214,10,0.05)', border: '1px solid rgba(255,214,10,0.18)', borderRadius: 8, padding: '12px 16px', margin: '14px 0', color: 'var(--text-secondary)', fontSize: 13.5, lineHeight: 1.7 }}>
     {children}
   </div>
 )
@@ -83,7 +83,7 @@ const Step = ({ n, title, children }) => (
   <div style={{ display: 'flex', gap: 14, margin: '14px 0', alignItems: 'flex-start' }}>
     <div style={{
       flexShrink: 0, width: 30, height: 30, borderRadius: '50%',
-      background: 'rgba(32,190,255,0.12)', border: '1px solid rgba(32,190,255,0.35)',
+      background: 'rgba(255,214,10,0.12)', border: '1px solid rgba(255,214,10,0.35)',
       color: 'var(--accent-lime)', fontWeight: 800, fontSize: 13,
       display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: 2,
     }}>{n}</div>
@@ -138,7 +138,7 @@ export default function ItCareer2026Likbez({ onBack }) {
       {/* Hero */}
       <div style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border-color)', borderRadius: 12, padding: 'clamp(20px, 4vw, 36px)', marginBottom: 32 }}>
         <div style={{ display: 'flex', gap: 10, marginBottom: 16, flexWrap: 'wrap' }}>
-          <div style={{ background: 'rgba(32,190,255,0.1)', border: '1px solid rgba(32,190,255,0.3)', borderRadius: 8, padding: '6px 14px', color: 'var(--accent-lime)', fontSize: 12, fontWeight: 700, letterSpacing: 1 }}>КАРЬЕРА</div>
+          <div style={{ background: 'rgba(255,214,10,0.1)', border: '1px solid rgba(255,214,10,0.3)', borderRadius: 8, padding: '6px 14px', color: 'var(--accent-lime)', fontSize: 12, fontWeight: 700, letterSpacing: 1 }}>КАРЬЕРА</div>
           <div style={{ color: 'var(--text-tertiary)', fontSize: 12, display: 'flex', alignItems: 'center' }}>С нуля → первый оффер</div>
         </div>
         <h1 style={{ fontFamily: 'var(--font-syne)', fontSize: 'clamp(24px, 5vw, 38px)', fontWeight: 800, color: 'var(--text-primary)', lineHeight: 1.2, marginBottom: 12 }}>
@@ -454,7 +454,7 @@ export default function ItCareer2026Likbez({ onBack }) {
       <Note>
         Про то, как конкретно строить личный бренд, вести соцсети и сделать так, чтобы клиенты и
         рекрутеры приходили сами, поговорим отдельно — в{' '}
-        <button onClick={() => scrollTo('ch11')} style={{ background: 'none', border: 'none', padding: 0, color: '#1668c4', textDecoration: 'underline', fontWeight: 600, cursor: 'pointer', font: 'inherit' }}>главе 11</button>.
+        <button onClick={() => scrollTo('ch11')} style={{ background: 'none', border: 'none', padding: 0, color: 'var(--accent-lime)', textDecoration: 'underline', fontWeight: 600, cursor: 'pointer', font: 'inherit' }}>главе 11</button>.
       </Note>
 
       {/* ═══════════ ГЛАВА 6 ═══════════ */}
@@ -1080,7 +1080,7 @@ export default function ItCareer2026Likbez({ onBack }) {
       <div style={{ marginTop: 60, padding: 24, background: 'var(--bg-secondary)', border: '1px solid var(--border-color)', borderRadius: 12, textAlign: 'center' }}>
         <P style={{ fontSize: 14, margin: 0 }}>
           Все новости, разборы и объявления — в канале{' '}
-          <a href="https://t.me/kiro_team" target="_blank" rel="noopener noreferrer" style={{ color: '#1668c4', textDecoration: 'underline', textUnderlineOffset: 2, fontWeight: 600 }}>
+          <a href="https://t.me/kiro_team" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-lime)', textDecoration: 'underline', textUnderlineOffset: 2, fontWeight: 600 }}>
             t.me/kiro_team
           </a>.
         </P>

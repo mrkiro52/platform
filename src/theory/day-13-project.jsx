@@ -9,7 +9,7 @@ export default function Day13ProjectTheory() {
 
       <section className="theory-section">
         <h2 className="theory-heading-2">📋 Дедлайны и правила</h2>
-        <div style={{ backgroundColor: 'rgba(32,190,255,0.05)', padding: '16px', borderRadius: '8px', marginBottom: '24px' }}>
+        <div style={{ backgroundColor: 'rgba(255,214,10,0.05)', padding: '16px', borderRadius: '8px', marginBottom: '24px' }}>
           <p style={{ margin: '0 0 12px 0', fontWeight: 600 }}>⏰ Когда можешь сдать:</p>
           <ul style={{ margin: '0 0 12px 0', paddingLeft: '20px' }}>
             <li>✅ Суббота, 13 июня в 21:00</li>

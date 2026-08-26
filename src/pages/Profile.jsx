@@ -10,7 +10,7 @@ const fieldStyle = {
   width: '100%',
   background: 'var(--bg-secondary)',
   border: '1px solid var(--border-color)',
-  borderRadius: 0,
+  borderRadius: 12,
   padding: '10px 14px',
   fontSize: 14,
   color: 'var(--text-primary)',
@@ -146,7 +146,7 @@ export default function Profile({ user, onAvatarChange }) {
                 alt="Аватар"
                 style={{
                   width: 72, height: 72, borderRadius: '50%', objectFit: 'cover',
-                  border: '2px solid rgba(32,190,255,0.4)', display: 'block', margin: '0 auto 12px',
+                  border: '2px solid rgba(255,214,10,0.4)', display: 'block', margin: '0 auto 12px',
                 }}
               />
             ) : (
@@ -169,7 +169,7 @@ export default function Profile({ user, onAvatarChange }) {
           </label>
           <div className="profile-name">{name || user.name}</div>
           <div className="profile-email">{email || user.email}</div>
-          {avatarError && <div style={{ fontSize: 12, color: '#ff3333', marginTop: 8 }}>{avatarError}</div>}
+          {avatarError && <div style={{ fontSize: 12, color: 'var(--danger)', marginTop: 8 }}>{avatarError}</div>}
         </div>
 
         <div className="profile-details">
@@ -272,7 +272,7 @@ export default function Profile({ user, onAvatarChange }) {
                 </div>
               </div>
 
-              {error && <div style={{ color: '#ff3333', fontSize: 13 }}>{error}</div>}
+              {error && <div style={{ color: 'var(--danger)', fontSize: 13 }}>{error}</div>}
 
               {confirmOpen ? (
                 <div style={{
@@ -284,7 +284,7 @@ export default function Profile({ user, onAvatarChange }) {
                     <button
                       onClick={handleConfirmSave}
                       style={{
-                        background: 'var(--accent-lime)', color: '#fff', border: 'none', borderRadius: 0,
+                        background: 'var(--accent-lime)', color: 'var(--on-accent)', border: 'none', borderRadius: 12,
                         padding: '8px 20px', fontSize: 13, fontWeight: 600, cursor: 'pointer',
                       }}
                     >
@@ -294,7 +294,7 @@ export default function Profile({ user, onAvatarChange }) {
                       onClick={() => setConfirmOpen(false)}
                       style={{
                         background: 'transparent', color: 'var(--text-secondary)', border: '1px solid var(--border-color)',
-                        borderRadius: 0, padding: '8px 20px', fontSize: 13, fontWeight: 600, cursor: 'pointer',
+                        borderRadius: 12, padding: '8px 20px', fontSize: 13, fontWeight: 600, cursor: 'pointer',
                       }}
                     >
                       Отменить
@@ -307,7 +307,7 @@ export default function Profile({ user, onAvatarChange }) {
                     onClick={requestSave}
                     disabled={saving}
                     style={{
-                      background: 'var(--accent-lime)', color: '#fff', border: 'none', borderRadius: 0,
+                      background: 'var(--accent-lime)', color: 'var(--on-accent)', border: 'none', borderRadius: 12,
                       padding: '10px 24px', fontSize: 14, fontWeight: 600, cursor: saving ? 'not-allowed' : 'pointer',
                       opacity: saving ? 0.6 : 1,
                     }}

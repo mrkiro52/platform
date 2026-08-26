@@ -82,7 +82,7 @@ export default function July14GeneralizationTheory() {
                     <circle key={i} cx={ox + p[0]} cy={p[1]} r="3.5" fill="#60a5fa" />
                   ))}
                   {/* линия модели */}
-                  {k === 0 && <line x1={ox + 25} y1="115" x2={ox + 145} y2="75" stroke="#20beff" strokeWidth="2" />}
+                  {k === 0 && <line x1={ox + 25} y1="115" x2={ox + 145} y2="75" stroke="#FFD60A" strokeWidth="2" />}
                   {k === 1 && <path d={`M ${ox + 25} 118 Q ${ox + 85} 70 ${ox + 145} 62`} fill="none" stroke="#4ade80" strokeWidth="2" />}
                   {k === 2 && <path d={`M ${ox + 25} 122 L ${ox + 55} 100 L ${ox + 75} 95 L ${ox + 95} 100 L ${ox + 115} 65 L ${ox + 145} 60`} fill="none" stroke="#f87171" strokeWidth="2" />}
                 </g>

@@ -84,10 +84,10 @@ export default function July14MicroservicesTheory() {
             <text x="75" y="128" fill="#f5f5fa" fontSize="11" textAnchor="middle">Orders</text>
             <text x="75" y="146" fill="#f5f5fa" fontSize="11" textAnchor="middle">Payments</text>
             {/* стрелка */}
-            <text x="180" y="120" fill="#20beff" fontSize="22">→</text>
+            <text x="180" y="120" fill="#FFD60A" fontSize="22">→</text>
             {/* шлюз */}
-            <rect x="230" y="20" width="300" height="26" rx="6" fill="rgba(32,190,255,0.12)" stroke="#20beff" />
-            <text x="380" y="38" fill="#20beff" fontSize="12" textAnchor="middle">API Gateway</text>
+            <rect x="230" y="20" width="300" height="26" rx="6" fill="rgba(255,214,10,0.12)" stroke="#FFD60A" />
+            <text x="380" y="38" fill="#FFD60A" fontSize="12" textAnchor="middle">API Gateway</text>
             {['Users', 'Orders', 'Payments'].map((s, i) => (
               <g key={s}>
                 <line x1="380" y1="46" x2={280 + i * 100} y2="80" stroke="#2a2a3a" />

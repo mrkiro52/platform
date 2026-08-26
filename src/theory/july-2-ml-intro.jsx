@@ -1,6 +1,6 @@
 import { TheoryTable, TheoryExample } from './components/TheoryTable'
 
-const C = { text: 'var(--text-primary)', sub: 'var(--text-secondary)', lime: '#20beff', green: '#4ade80', red: '#f87171', border: '#2a2a3a' }
+const C = { text: 'var(--text-primary)', sub: 'var(--text-secondary)', lime: '#FFD60A', green: '#4ade80', red: '#f87171', border: '#2a2a3a' }
 
 function Formula({ children }) {
   return (
@@ -29,7 +29,7 @@ function Step({ n, children }) {
   return (
     <div style={{ display: 'flex', gap: 12, margin: '10px 0', alignItems: 'flex-start' }}>
       <span style={{
-        flexShrink: 0, width: 26, height: 26, borderRadius: '50%', background: 'rgba(32,190,255,0.15)',
+        flexShrink: 0, width: 26, height: 26, borderRadius: '50%', background: 'rgba(255,214,10,0.15)',
         border: '1px solid var(--accent-lime)', color: 'var(--accent-lime)', fontWeight: 700, fontSize: 13,
         display: 'flex', alignItems: 'center', justifyContent: 'center',
       }}>{n}</span>
@@ -69,7 +69,7 @@ export default function July2MlIntroTheory() {
                 <text x={85+i*130} y="60" fill={C.text} fontSize="12" textAnchor="middle">{t}</text>
               </g>
             ))}
-            <rect x="105" y="95" width="90" height="34" rx="6" fill="rgba(32,190,255,0.1)" stroke={C.lime} />
+            <rect x="105" y="95" width="90" height="34" rx="6" fill="rgba(255,214,10,0.1)" stroke={C.lime} />
             <text x="150" y="117" fill={C.text} fontSize="12" textAnchor="middle">Ответы</text>
             <line x1="85" y1="72" x2="140" y2="93" stroke={C.sub} strokeWidth="1.5" markerEnd="url(#ar)" />
             <line x1="215" y1="72" x2="160" y2="93" stroke={C.sub} strokeWidth="1.5" markerEnd="url(#ar)" />
@@ -81,7 +81,7 @@ export default function July2MlIntroTheory() {
                 <text x={365+i*130} y="60" fill={C.text} fontSize="12" textAnchor="middle">{t}</text>
               </g>
             ))}
-            <rect x="385" y="95" width="90" height="34" rx="6" fill="rgba(32,190,255,0.1)" stroke={C.lime} />
+            <rect x="385" y="95" width="90" height="34" rx="6" fill="rgba(255,214,10,0.1)" stroke={C.lime} />
             <text x="430" y="117" fill={C.text} fontSize="12" textAnchor="middle">Правила</text>
             <text x="430" y="150" fill={C.sub} fontSize="11" textAnchor="middle">(обученная модель)</text>
             <line x1="365" y1="72" x2="420" y2="93" stroke={C.sub} strokeWidth="1.5" markerEnd="url(#ar)" />
@@ -127,7 +127,7 @@ export default function July2MlIntroTheory() {
           <svg viewBox="0 0 540 150" width="100%" style={{ maxWidth: 540 }} xmlns="http://www.w3.org/2000/svg">
             {['Площадь','Этаж','Комнаты','→ Цена (y)'].map((h,i)=>(
               <g key={i}>
-                <rect x={20+i*128} y="15" width="126" height="32" fill={i===3?'rgba(32,190,255,0.12)':'#242b3a'} stroke={i===3?C.lime:C.border} />
+                <rect x={20+i*128} y="15" width="126" height="32" fill={i===3?'rgba(255,214,10,0.12)':'#242b3a'} stroke={i===3?C.lime:C.border} />
                 <text x={83+i*128} y="36" fill={i===3?C.lime:C.text} fontSize="12" fontWeight="700" textAnchor="middle">{h}</text>
               </g>
             ))}

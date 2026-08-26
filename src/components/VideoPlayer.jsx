@@ -193,7 +193,7 @@ export default function VideoPlayer({ src }) {
         width: dragging ? 16 : 12, height: dragging ? 16 : 12,
         borderRadius: '50%',
         background: 'var(--accent-lime)',
-        boxShadow: dragging ? '0 0 10px rgba(32,190,255,0.8)' : '0 0 6px rgba(32,190,255,0.6)',
+        boxShadow: dragging ? '0 0 10px rgba(255,214,10,0.8)' : '0 0 6px rgba(255,214,10,0.6)',
         transition: 'width 0.1s, height 0.1s, box-shadow 0.1s',
       }} />
     </div>
@@ -253,7 +253,7 @@ export default function VideoPlayer({ src }) {
           onClick={(e) => { e.stopPropagation(); setShowSpeedMenu(v => !v) }}
           style={{
             ...iconBtnStyle,
-            padding: '4px 10px', borderRadius: 0,
+            padding: '4px 10px', borderRadius: 12,
             background: showSpeedMenu ? '#1c1c2a' : 'transparent',
             fontSize: 13, fontWeight: 600, color: 'var(--accent-lime)',
             minWidth: 44, border: '1px solid #2a2a3a',
@@ -266,7 +266,7 @@ export default function VideoPlayer({ src }) {
             position: 'absolute', bottom: '110%', right: 0,
             background: '#1c1c2a',
             border: '1px solid #2a2a3a',
-            borderRadius: 0, overflow: 'hidden',
+            borderRadius: 12, overflow: 'hidden',
             boxShadow: '0 4px 20px rgba(0,0,0,0.4)',
             zIndex: 10,
           }}>
@@ -276,7 +276,7 @@ export default function VideoPlayer({ src }) {
                 onClick={(e) => { e.stopPropagation(); setPlaybackSpeed(s) }}
                 style={{
                   display: 'block', width: '100%', padding: '8px 20px',
-                  background: s === speed ? 'rgba(32,190,255,0.1)' : 'transparent',
+                  background: s === speed ? 'rgba(255,214,10,0.1)' : 'transparent',
                   color: s === speed ? 'var(--accent-lime)' : '#f5f5fa',
                   border: 'none', cursor: 'pointer', fontSize: 13, fontWeight: 500,
                   textAlign: 'center', transition: 'background 0.15s',
@@ -306,7 +306,7 @@ export default function VideoPlayer({ src }) {
       maxWidth: 800,
       margin: '0 auto 32px',
       background: '#0d0d18',
-      borderRadius: 0,
+      borderRadius: 12,
       overflow: 'hidden',
       border: '1px solid var(--border-color)',
       ...(isFullscreen && {
@@ -342,7 +342,7 @@ export default function VideoPlayer({ src }) {
           }}>
             <div style={{
               width: 64, height: 64, borderRadius: '50%',
-              background: 'rgba(32,190,255,0.15)',
+              background: 'rgba(255,214,10,0.15)',
               backdropFilter: 'blur(8px)',
               border: '2px solid var(--accent-lime)',
               display: 'flex', alignItems: 'center', justifyContent: 'center',

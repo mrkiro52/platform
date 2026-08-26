@@ -21,8 +21,8 @@ function Badge({ count }) {
   if (!count) return null
   return (
     <span style={{
-      marginLeft: 'auto', background: 'var(--accent-lime)', color: '#fff',
-      fontSize: 11, fontWeight: 700, padding: '1px 7px', borderRadius: 0, flexShrink: 0,
+      marginLeft: 'auto', background: 'var(--accent-lime)', color: 'var(--on-accent)',
+      fontSize: 11, fontWeight: 700, padding: '1px 7px', borderRadius: 12, flexShrink: 0,
     }}>
       {count > 99 ? '99+' : count}
     </span>
@@ -47,7 +47,7 @@ function BellIcon({ count, onClick }) {
       {count > 0 && (
         <span style={{
           position: 'absolute', top: 2, right: 2, minWidth: 15, height: 15, padding: '0 3px',
-          background: 'var(--accent-lime)', color: '#fff', fontSize: 9.5, fontWeight: 700,
+          background: 'var(--accent-lime)', color: 'var(--on-accent)', fontSize: 9.5, fontWeight: 700,
           borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center',
           border: '1.5px solid var(--bg-secondary)', lineHeight: 1,
         }}>
@@ -81,7 +81,7 @@ export default function Sidebar({ user, avatarUrl, onLogout, onClose, badges = {
     <>
       <div className="sidebar-header">
         <a className="sidebar-logo" href="#">
-          <span className="sidebar-logo-platform" style={{color: '#20beff', fontWeight: 600, fontSize: 15, textTransform: 'uppercase'}}>kiro platform</span>
+          <span className="sidebar-logo-platform" style={{color: '#FFD60A', fontWeight: 600, fontSize: 15, textTransform: 'uppercase'}}>kiro platform</span>
         </a>
         <button className="sidebar-close-btn" onClick={onClose}>&times;</button>
       </div>

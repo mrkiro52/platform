@@ -1,6 +1,6 @@
 import { TheoryTable, TheoryCode, TheoryExample } from './components/TheoryTable'
 
-const C = { text: 'var(--text-primary)', sub: 'var(--text-secondary)', lime: '#20beff', blue: '#60a5fa', green: '#4ade80', red: '#f87171', yellow: '#facc15', indigo: '#818cf8', border: '#2a2a3a' }
+const C = { text: 'var(--text-primary)', sub: 'var(--text-secondary)', lime: '#FFD60A', blue: '#60a5fa', green: '#4ade80', red: '#f87171', yellow: '#facc15', indigo: '#818cf8', border: '#2a2a3a' }
 
 function Term({ name, children }) {
   return (

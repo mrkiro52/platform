@@ -1,7 +1,7 @@
 import { TheoryTable, TheoryCode, TheoryExample } from './components/TheoryTable'
 import VideoPlayer from '../components/VideoPlayer'
 
-const C = { text: 'var(--text-primary)', sub: 'var(--text-secondary)', lime: '#20beff', border: '#2a2a3a' }
+const C = { text: 'var(--text-primary)', sub: 'var(--text-secondary)', lime: '#FFD60A', border: '#2a2a3a' }
 
 function Fig({ children, caption }) {
   return (
@@ -84,9 +84,9 @@ export default function July4NetworksTheory() {
         <Fig caption="7 уровней OSI: данные идут вниз при отправке (каждый уровень добавляет свой заголовок) и вверх при приёме">
           <svg viewBox="0 0 600 320" width="100%" style={{ maxWidth: 600 }} xmlns="http://www.w3.org/2000/svg">
             {[
-              { n: 7, name: 'Прикладной (Application)', ex: 'HTTP, DNS, FTP, SMTP', c: 'rgba(32,190,255,0.14)' },
-              { n: 6, name: 'Представления (Presentation)', ex: 'шифрование, кодировки, форматы', c: 'rgba(32,190,255,0.10)' },
-              { n: 5, name: 'Сеансовый (Session)', ex: 'установка/поддержка сессий', c: 'rgba(32,190,255,0.06)' },
+              { n: 7, name: 'Прикладной (Application)', ex: 'HTTP, DNS, FTP, SMTP', c: 'rgba(255,214,10,0.14)' },
+              { n: 6, name: 'Представления (Presentation)', ex: 'шифрование, кодировки, форматы', c: 'rgba(255,214,10,0.10)' },
+              { n: 5, name: 'Сеансовый (Session)', ex: 'установка/поддержка сессий', c: 'rgba(255,214,10,0.06)' },
               { n: 4, name: 'Транспортный (Transport)', ex: 'TCP, UDP, порты', c: 'rgba(96,165,250,0.14)' },
               { n: 3, name: 'Сетевой (Network)', ex: 'IP, маршрутизация, роутеры', c: 'rgba(129,140,248,0.14)' },
               { n: 2, name: 'Канальный (Data Link)', ex: 'MAC-адреса, Ethernet, коммутаторы', c: 'rgba(248,113,113,0.10)' },
@@ -133,12 +133,12 @@ export default function July4NetworksTheory() {
         </Term>
         <Fig caption="Инкапсуляция: сообщение приложения последовательно оборачивается заголовками транспортного, сетевого и канального уровней">
           <svg viewBox="0 0 620 150" width="100%" style={{ maxWidth: 620 }} xmlns="http://www.w3.org/2000/svg">
-            <rect x="470" y="60" width="120" height="34" rx="5" fill="rgba(32,190,255,0.15)" stroke={C.lime} />
+            <rect x="470" y="60" width="120" height="34" rx="5" fill="rgba(255,214,10,0.15)" stroke={C.lime} />
             <text x="530" y="81" fill={C.text} fontSize="11" textAnchor="middle">Данные (HTTP)</text>
 
             <rect x="330" y="55" width="60" height="44" rx="5" fill="rgba(96,165,250,0.18)" stroke="#60a5fa" />
             <text x="360" y="81" fill={C.text} fontSize="10" textAnchor="middle">TCP</text>
-            <rect x="390" y="60" width="120" height="34" rx="4" fill="rgba(32,190,255,0.08)" stroke={C.border} />
+            <rect x="390" y="60" width="120" height="34" rx="4" fill="rgba(255,214,10,0.08)" stroke={C.border} />
             <text x="450" y="81" fill={C.sub} fontSize="9.5" textAnchor="middle">данные</text>
 
             <rect x="190" y="50" width="55" height="54" rx="5" fill="rgba(129,140,248,0.18)" stroke="#818cf8" />
@@ -172,7 +172,7 @@ export default function July4NetworksTheory() {
           <svg viewBox="0 0 600 120" width="100%" style={{ maxWidth: 600 }} xmlns="http://www.w3.org/2000/svg">
             {['192','168','1','10'].map((o,i)=>(
               <g key={i}>
-                <rect x={30+i*145} y="30" width="120" height="40" rx="6" fill={i<3?'rgba(129,140,248,0.15)':'rgba(32,190,255,0.15)'} stroke={i<3?'#818cf8':C.lime} />
+                <rect x={30+i*145} y="30" width="120" height="40" rx="6" fill={i<3?'rgba(129,140,248,0.15)':'rgba(255,214,10,0.15)'} stroke={i<3?'#818cf8':C.lime} />
                 <text x={90+i*145} y="55" fill={C.text} fontSize="18" fontWeight="700" textAnchor="middle">{o}</text>
                 <text x={90+i*145} y="88" fill={C.sub} fontSize="10" textAnchor="middle">8 бит</text>
                 {i<3 && <text x={158+i*145} y="55" fill={C.sub} fontSize="18" textAnchor="middle">.</text>}
@@ -316,7 +316,7 @@ export default function July4NetworksTheory() {
         </p>
         <Fig caption="Разрешение имени: запрос идёт по иерархии от корневых серверов к TLD и авторитативному серверу домена">
           <svg viewBox="0 0 600 170" width="100%" style={{ maxWidth: 600 }} xmlns="http://www.w3.org/2000/svg">
-            <rect x="30" y="65" width="110" height="42" rx="6" fill="rgba(32,190,255,0.12)" stroke={C.lime} />
+            <rect x="30" y="65" width="110" height="42" rx="6" fill="rgba(255,214,10,0.12)" stroke={C.lime} />
             <text x="85" y="82" fill={C.text} fontSize="11" fontWeight="700" textAnchor="middle">Твой</text>
             <text x="85" y="97" fill={C.text} fontSize="11" fontWeight="700" textAnchor="middle">DNS-резолвер</text>
             {[

@@ -36,7 +36,7 @@ function NicknameSearch() {
           placeholder="Никнейм пользователя..."
           style={{
             flex: 1, padding: '11px 14px', fontSize: 13.5,
-            border: '1px solid var(--border-color)', borderRadius: 0,
+            border: '1px solid var(--border-color)', borderRadius: 12,
             background: 'var(--bg-tertiary)', color: 'var(--text-primary)',
             fontFamily: 'var(--font-inter)', outline: 'none',
           }}
@@ -103,8 +103,8 @@ function ConversationList({ onUnreadChange }) {
               onClick={() => navigate(`/messages/${c.partner.id}`)}
               style={{
                 display: 'flex', gap: 12, alignItems: 'center', padding: 14, cursor: 'pointer',
-                border: '1px solid var(--border-color)', borderRadius: 0,
-                background: c.unread > 0 ? 'rgba(32,190,255,0.06)' : 'var(--bg-secondary)',
+                border: '1px solid var(--border-color)', borderRadius: 12,
+                background: c.unread > 0 ? 'rgba(255,214,10,0.06)' : 'var(--bg-secondary)',
               }}
             >
               <Avatar name={c.partner.name} avatarUrl={c.partner.avatarUrl} size={44} />
@@ -126,8 +126,8 @@ function ConversationList({ onUnreadChange }) {
               </div>
               {c.unread > 0 && (
                 <span style={{
-                  background: 'var(--accent-lime)', color: '#fff', fontSize: 11, fontWeight: 700,
-                  padding: '2px 8px', borderRadius: 0, flexShrink: 0,
+                  background: 'var(--accent-lime)', color: 'var(--on-accent)', fontSize: 11, fontWeight: 700,
+                  padding: '2px 8px', borderRadius: 12, flexShrink: 0,
                 }}>
                   {c.unread}
                 </span>
@@ -202,7 +202,7 @@ function Thread({ userId, user, onUnreadChange }) {
         <button
           onClick={() => navigate('/messages')}
           style={{
-            border: '1px solid var(--border-color)', borderRadius: 0, background: 'transparent',
+            border: '1px solid var(--border-color)', borderRadius: 12, background: 'transparent',
             color: 'var(--text-secondary)', fontSize: 12, fontWeight: 600, padding: '6px 12px',
             cursor: 'pointer', outline: 'none', flexShrink: 0,
           }}
@@ -241,8 +241,8 @@ function Thread({ userId, user, onUnreadChange }) {
           <div key={m.id} style={{
             alignSelf: m.isMine ? 'flex-end' : 'flex-start',
             maxWidth: '72%',
-            border: '1px solid var(--border-color)', borderRadius: 0,
-            background: m.isMine ? 'rgba(32,190,255,0.10)' : 'var(--bg-secondary)',
+            border: '1px solid var(--border-color)', borderRadius: 12,
+            background: m.isMine ? 'rgba(255,214,10,0.10)' : 'var(--bg-secondary)',
             padding: '9px 12px',
           }}>
             <div style={{
@@ -274,7 +274,7 @@ function Thread({ userId, user, onUnreadChange }) {
           {sending ? '...' : 'Отправить'}
         </Btn>
       </div>
-      {error && <div style={{ color: '#ff3333', fontSize: 12, marginTop: 8 }}>{error}</div>}
+      {error && <div style={{ color: 'var(--danger)', fontSize: 12, marginTop: 8 }}>{error}</div>}
     </section>
   )
 }

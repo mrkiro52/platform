@@ -26,7 +26,7 @@ const TRAININGS = [
 const cardStyle = {
   background: 'var(--bg-secondary)',
   border: '1px solid var(--border-color)',
-  borderRadius: 0,
+  borderRadius: 12,
   padding: 'clamp(16px, 3vw, 24px)',
   cursor: 'pointer',
   transition: 'border-color 0.2s',
@@ -61,12 +61,12 @@ export default function TrainingsPage() {
             key={t.id}
             style={cardStyle}
             onClick={() => navigate(`/trainings/${t.id}`)}
-            onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(32,190,255,0.4)' }}
+            onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(255,214,10,0.4)' }}
             onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--border-color)' }}
           >
             <span style={{
-              display: 'inline-block', background: 'rgba(32,190,255,0.1)', border: '1px solid rgba(32,190,255,0.25)',
-              color: 'var(--accent-lime)', borderRadius: 0, padding: '3px 10px', fontSize: 11, fontWeight: 700,
+              display: 'inline-block', background: 'rgba(255,214,10,0.1)', border: '1px solid rgba(255,214,10,0.25)',
+              color: 'var(--accent-lime)', borderRadius: 12, padding: '3px 10px', fontSize: 11, fontWeight: 700,
               marginBottom: 12,
             }}>{t.tag}</span>
             <h2 style={{ fontSize: 18, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 6 }}>{t.title}</h2>

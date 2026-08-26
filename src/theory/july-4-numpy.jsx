@@ -1,7 +1,7 @@
 import { TheoryTable, TheoryCode, TheoryExample } from './components/TheoryTable'
 import VideoPlayer from '../components/VideoPlayer'
 
-const C = { text: 'var(--text-primary)', sub: 'var(--text-secondary)', lime: '#20beff', green: '#4ade80', border: '#2a2a3a' }
+const C = { text: 'var(--text-primary)', sub: 'var(--text-secondary)', lime: '#FFD60A', green: '#4ade80', border: '#2a2a3a' }
 
 function Fig({ children, caption }) {
   return (
@@ -85,7 +85,7 @@ c = a + b                                    # array([5, 7, 9])`} />
             <text x="450" y="20" fill={C.text} fontSize="12" fontWeight="700" textAnchor="middle">ndarray</text>
             {[0,1,2,3].map(i=>(
               <g key={i}>
-                <rect x={350+i*55} y="60" width="53" height="30" rx="0" fill="rgba(32,190,255,0.12)" stroke={C.lime} />
+                <rect x={350+i*55} y="60" width="53" height="30" rx="0" fill="rgba(255,214,10,0.12)" stroke={C.lime} />
                 <text x={376+i*55} y="80" fill={C.text} fontSize="12" textAnchor="middle">{i+1}</text>
               </g>
             ))}
@@ -145,7 +145,7 @@ a.reshape(-1)    # "вытянуть" в одномерный; -1 = "посчи�
           <svg viewBox="0 0 520 200" width="100%" style={{ maxWidth: 520 }} xmlns="http://www.w3.org/2000/svg">
             {[[1,2,3],[4,5,6]].map((row,r)=>row.map((v,c)=>(
               <g key={`${r}-${c}`}>
-                <rect x={140+c*70} y={40+r*55} width="60" height="48" rx="5" fill="rgba(32,190,255,0.1)" stroke={C.border} />
+                <rect x={140+c*70} y={40+r*55} width="60" height="48" rx="5" fill="rgba(255,214,10,0.1)" stroke={C.border} />
                 <text x={170+c*70} y={69+r*55} fill={C.text} fontSize="15" textAnchor="middle">{v}</text>
               </g>
             )))}
@@ -195,7 +195,7 @@ a[(a > 2) & (a < 9)]   # [8 3 5]`} />
           <svg viewBox="0 0 560 150" width="100%" style={{ maxWidth: 560 }} xmlns="http://www.w3.org/2000/svg">
             {[2,8,3,9,5].map((v,i)=>(
               <g key={i}>
-                <rect x={40+i*70} y="20" width="55" height="30" rx="4" fill="rgba(32,190,255,0.1)" stroke={C.border} />
+                <rect x={40+i*70} y="20" width="55" height="30" rx="4" fill="rgba(255,214,10,0.1)" stroke={C.border} />
                 <text x={67+i*70} y="40" fill={C.text} fontSize="13" textAnchor="middle">{v}</text>
                 <rect x={40+i*70} y="60" width="55" height="26" rx="4" fill={v>5?'rgba(74,222,128,0.2)':'#242b3a'} stroke={v>5?C.green:C.border} />
                 <text x={67+i*70} y="78" fill={v>5?C.green:C.sub} fontSize="10" textAnchor="middle">{v>5?'True':'False'}</text>
@@ -231,7 +231,7 @@ a * b       # [4 10 18] — поэлементно (НЕ матричное ум
           <svg viewBox="0 0 560 170" width="100%" style={{ maxWidth: 560 }} xmlns="http://www.w3.org/2000/svg">
             {[[1,2,3],[4,5,6]].map((row,r)=>row.map((v,c)=>(
               <g key={`m${r}-${c}`}>
-                <rect x={30+c*45} y={40+r*45} width="40" height="38" rx="4" fill="rgba(32,190,255,0.1)" stroke={C.border} />
+                <rect x={30+c*45} y={40+r*45} width="40" height="38" rx="4" fill="rgba(255,214,10,0.1)" stroke={C.border} />
                 <text x={50+c*45} y={64+r*45} fill={C.text} fontSize="13" textAnchor="middle">{v}</text>
               </g>
             )))}

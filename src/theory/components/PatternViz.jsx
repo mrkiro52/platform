@@ -42,7 +42,7 @@ export function PrefixSumViz() {
         {nums.map((v, i) => (
           <div key={i} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
             <span style={C.label}>{i}</span>
-            <div style={C.box(i >= lo && i <= hi ? 'rgba(32,190,255,0.18)' : 'var(--bg-tertiary)', i >= lo && i <= hi ? LIME : 'var(--border-color)', i >= lo && i <= hi ? LIME : 'var(--text-primary)')}>{v}</div>
+            <div style={C.box(i >= lo && i <= hi ? 'rgba(255,214,10,0.18)' : 'var(--bg-tertiary)', i >= lo && i <= hi ? LIME : 'var(--border-color)', i >= lo && i <= hi ? LIME : 'var(--text-primary)')}>{v}</div>
           </div>
         ))}
         <span style={{ color: 'var(--text-tertiary)', fontSize: 18 }}>→</span>
@@ -127,7 +127,7 @@ export function SlidingWindowViz() {
           <div key={i} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
             <span style={C.label}>{i}</span>
             <div style={C.box(
-              i >= winStart && i < winStart + k ? 'rgba(32,190,255,0.18)' : 'var(--bg-tertiary)',
+              i >= winStart && i < winStart + k ? 'rgba(255,214,10,0.18)' : 'var(--bg-tertiary)',
               i >= winStart && i < winStart + k ? LIME : 'var(--border-color)',
               i >= winStart && i < winStart + k ? LIME : 'var(--text-primary)'
             )}>{v}</div>
@@ -142,7 +142,7 @@ export function SlidingWindowViz() {
       <div style={{ ...C.row, gap: 6 }}>
         {allSums.map((s, i) => (
           <div key={i} style={C.box(
-            i === winStart ? 'rgba(32,190,255,0.18)' : s === maxSum ? 'rgba(63,185,80,0.12)' : 'var(--bg-primary)',
+            i === winStart ? 'rgba(255,214,10,0.18)' : s === maxSum ? 'rgba(63,185,80,0.12)' : 'var(--bg-primary)',
             i === winStart ? LIME : s === maxSum ? '#3fb950' : 'var(--border-color)',
             i === winStart ? LIME : s === maxSum ? '#3fb950' : 'var(--text-tertiary)'
           )}>{s}</div>
@@ -218,7 +218,7 @@ export function InPlaceReversalViz() {
           <div key={i} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
             <span style={C.label}>{i}</span>
             <div style={C.box(
-              i >= m && i <= n ? (done ? 'rgba(63,185,80,0.15)' : 'rgba(32,190,255,0.15)') : 'var(--bg-tertiary)',
+              i >= m && i <= n ? (done ? 'rgba(63,185,80,0.15)' : 'rgba(255,214,10,0.15)') : 'var(--bg-tertiary)',
               i >= m && i <= n ? (done ? '#3fb950' : LIME) : 'var(--border-color)',
               i >= m && i <= n ? (done ? '#3fb950' : LIME) : 'var(--text-primary)'
             )}>{v}</div>
@@ -261,7 +261,7 @@ export function MonotonicStackViz() {
         {arr.map((v, i) => (
           <div key={i} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
             <div style={C.box(
-              i === cur.current ? 'rgba(32,190,255,0.18)' : cur.stack.includes(i) ? 'rgba(88,166,255,0.12)' : 'var(--bg-tertiary)',
+              i === cur.current ? 'rgba(255,214,10,0.18)' : cur.stack.includes(i) ? 'rgba(88,166,255,0.12)' : 'var(--bg-tertiary)',
               i === cur.current ? LIME : cur.stack.includes(i) ? '#58a6ff' : 'var(--border-color)',
             )}>{v}</div>
           </div>
@@ -311,7 +311,7 @@ export function TopKViz() {
       <div style={{ ...C.row, marginBottom: 10 }}>
         <span style={{ ...C.label, marginRight: 4 }}>Min-heap (размер k):</span>
         {cur.heap.map((v, i) => (
-          <div key={i} style={C.box(i === 0 ? 'rgba(248,81,73,0.15)' : 'rgba(32,190,255,0.1)', i === 0 ? '#f85149' : LIME, i === 0 ? '#f85149' : LIME)}>
+          <div key={i} style={C.box(i === 0 ? 'rgba(248,81,73,0.15)' : 'rgba(255,214,10,0.1)', i === 0 ? '#f85149' : LIME, i === 0 ? '#f85149' : LIME)}>
             {v}
           </div>
         ))}
@@ -391,7 +391,7 @@ export function BinarySearchViz() {
             <span style={{ ...C.label, color: i === cur.mid ? LIME : 'transparent' }}>mid</span>
             <div style={C.box(
               cur.found && i === cur.mid ? 'rgba(63,185,80,0.2)' :
-              i === cur.mid ? 'rgba(32,190,255,0.2)' :
+              i === cur.mid ? 'rgba(255,214,10,0.2)' :
               i >= cur.lo && i <= cur.hi ? 'rgba(88,166,255,0.08)' : 'var(--bg-primary)',
               cur.found && i === cur.mid ? '#3fb950' : i === cur.mid ? LIME : i >= cur.lo && i <= cur.hi ? '#58a6ff' : 'var(--border-color)',
             )}>{v}</div>
@@ -464,7 +464,7 @@ export function TreeTraversalViz() {
             <div key={n.id} style={{
               position: 'absolute', left: `${n.x}%`, top: `${n.y}%`, transform: 'translate(-50%,-50%)',
               ...C.box(
-                isActive ? 'rgba(32,190,255,0.25)' : isDone ? 'rgba(63,185,80,0.15)' : 'var(--bg-tertiary)',
+                isActive ? 'rgba(255,214,10,0.25)' : isDone ? 'rgba(63,185,80,0.15)' : 'var(--bg-tertiary)',
                 isActive ? LIME : isDone ? '#3fb950' : 'var(--border-color)',
                 isActive ? LIME : isDone ? '#3fb950' : 'var(--text-primary)'
               ),
@@ -517,7 +517,7 @@ export function DFSViz() {
           <div key={n.id} style={{
             position: 'absolute', left: `${n.x}%`, top: `${n.y}%`, transform: 'translate(-50%,-50%)',
             ...C.box(
-              visited.has(n.id) ? dfsOrder.indexOf(n.id)===step ? 'rgba(32,190,255,0.25)' : 'rgba(63,185,80,0.15)' : 'var(--bg-tertiary)',
+              visited.has(n.id) ? dfsOrder.indexOf(n.id)===step ? 'rgba(255,214,10,0.25)' : 'rgba(63,185,80,0.15)' : 'var(--bg-tertiary)',
               visited.has(n.id) ? dfsOrder.indexOf(n.id)===step ? LIME : '#3fb950' : 'var(--border-color)',
             ),
             minWidth: 32, height: 32,
@@ -582,7 +582,7 @@ export function MatrixTraversalViz() {
   const result = [[2,2,2],[2,2,0],[2,0,1]]
   const [done, setDone] = useState(false)
   const grid = done ? result : orig
-  const colors = { 0: 'var(--bg-primary)', 1: 'rgba(88,166,255,0.2)', 2: 'rgba(32,190,255,0.2)' }
+  const colors = { 0: 'var(--bg-primary)', 1: 'rgba(88,166,255,0.2)', 2: 'rgba(255,214,10,0.2)' }
   const borders = { 0: 'var(--border-color)', 1: '#58a6ff', 2: LIME }
   const textColors = { 0: 'var(--text-tertiary)', 1: '#58a6ff', 2: LIME }
   return (
@@ -623,7 +623,7 @@ export function BacktrackingViz() {
         {[0,1,2].map(depth => (
           <div key={depth} style={{ ...C.row, paddingLeft: depth * 20 }}>
             <span style={C.label}>глубина {depth}:</span>
-            <div style={C.box('rgba(32,190,255,0.18)', LIME, LIME)}>{cur[depth]}</div>
+            <div style={C.box('rgba(255,214,10,0.18)', LIME, LIME)}>{cur[depth]}</div>
             <span style={{ ...C.label, color: 'var(--text-secondary)' }}>
               {depth === 0 ? `← выбор 1-го из [1,2,3]` : depth === 1 ? `← из оставшихся` : `← последний`}
             </span>
@@ -664,7 +664,7 @@ export function DPViz() {
           <div key={i} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
             <span style={C.label}>dp[{i}]</span>
             <div style={C.box(
-              i <= step + 1 ? i === step + 1 ? 'rgba(32,190,255,0.25)' : 'rgba(63,185,80,0.12)' : 'var(--bg-primary)',
+              i <= step + 1 ? i === step + 1 ? 'rgba(255,214,10,0.25)' : 'rgba(63,185,80,0.12)' : 'var(--bg-primary)',
               i <= step + 1 ? i === step + 1 ? LIME : '#3fb950' : 'var(--border-color)',
               i <= step + 1 ? i === step + 1 ? LIME : '#3fb950' : 'var(--text-tertiary)'
             )}>{i <= step + 1 ? v : '?'}</div>

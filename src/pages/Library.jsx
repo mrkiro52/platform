@@ -20,7 +20,7 @@ const JULY_TRACKS_DAY2 = [
 ]
 
 const JULY_TRACKS_DAY3 = [
-  { name: 'Все треки', id: 109, lesson: 'Нарешиваем LeetCode', color: { bg:'rgba(32,190,255,0.12)', border:'rgba(32,190,255,0.3)', text:'#20beff' }, showQuestions: false, showHomework: true },
+  { name: 'Все треки', id: 109, lesson: 'Нарешиваем LeetCode', color: { bg:'rgba(255,214,10,0.12)', border:'rgba(255,214,10,0.3)', text:'#FFD60A' }, showQuestions: false, showHomework: true },
 ]
 
 const JULY_TRACKS_DAY4 = [
@@ -46,7 +46,7 @@ const JULY_TRACKS_DAY6 = [
 ]
 
 const JULY_TRACKS_DAY7 = [
-  { name: 'Все треки', id: 124, lesson: 'Вспоминаем структуры данных и алгоритмы', color: { bg:'rgba(32,190,255,0.12)', border:'rgba(32,190,255,0.3)', text:'#20beff' }, showQuestions: false, showHomework: false },
+  { name: 'Все треки', id: 124, lesson: 'Вспоминаем структуры данных и алгоритмы', color: { bg:'rgba(255,214,10,0.12)', border:'rgba(255,214,10,0.3)', text:'#FFD60A' }, showQuestions: false, showHomework: false },
 ]
 
 const JULY_TRACKS_DAY8 = [
@@ -64,15 +64,15 @@ const JULY_TRACKS_DAY9 = [
 ]
 
 const JULY_TRACKS_DAY10 = [
-  { name: 'Все треки', id: 133, lesson: 'Нарешиваем LeetCode', color: { bg:'rgba(32,190,255,0.12)', border:'rgba(32,190,255,0.3)', text:'#20beff' }, showQuestions: false, showHomework: false },
+  { name: 'Все треки', id: 133, lesson: 'Нарешиваем LeetCode', color: { bg:'rgba(255,214,10,0.12)', border:'rgba(255,214,10,0.3)', text:'#FFD60A' }, showQuestions: false, showHomework: false },
 ]
 
 const JULY_TRACKS_DAY11 = [
-  { name: 'Все треки', id: 134, lesson: 'Делаем пет-проект', color: { bg:'rgba(32,190,255,0.12)', border:'rgba(32,190,255,0.3)', text:'#20beff' }, showQuestions: false, showHomework: false },
+  { name: 'Все треки', id: 134, lesson: 'Делаем пет-проект', color: { bg:'rgba(255,214,10,0.12)', border:'rgba(255,214,10,0.3)', text:'#FFD60A' }, showQuestions: false, showHomework: false },
 ]
 
 const JULY_TRACKS_DAY12 = [
-  { name: 'Все треки', id: 135, lesson: 'Делаем пет-проект', color: { bg:'rgba(32,190,255,0.12)', border:'rgba(32,190,255,0.3)', text:'#20beff' }, showQuestions: false, showHomework: false },
+  { name: 'Все треки', id: 135, lesson: 'Делаем пет-проект', color: { bg:'rgba(255,214,10,0.12)', border:'rgba(255,214,10,0.3)', text:'#FFD60A' }, showQuestions: false, showHomework: false },
 ]
 
 const JULY_TRACKS_DAY13 = [
@@ -103,7 +103,7 @@ const JULY_TRACKS_DAY16 = [
 ]
 
 const JULY_TRACKS_DAY17 = [
-  { name: 'Все треки', id: 151, lesson: 'Нарешиваем LeetCode', color: { bg:'rgba(32,190,255,0.12)', border:'rgba(32,190,255,0.3)', text:'#20beff' }, showQuestions: false, showHomework: false },
+  { name: 'Все треки', id: 151, lesson: 'Нарешиваем LeetCode', color: { bg:'rgba(255,214,10,0.12)', border:'rgba(255,214,10,0.3)', text:'#FFD60A' }, showQuestions: false, showHomework: false },
 ]
 
 const JULY_TRACKS_DAY18 = [
@@ -129,15 +129,15 @@ const JULY_TRACKS_DAY23 = [
 ]
 
 const JULY_TRACKS_DAY24 = [
-  { name: 'Все треки', id: 159, lesson: 'Insider Show 3', color: { bg:'rgba(32,190,255,0.12)', border:'rgba(32,190,255,0.3)', text:'#20beff' }, showQuestions: false, showHomework: false },
+  { name: 'Все треки', id: 159, lesson: 'Insider Show 3', color: { bg:'rgba(255,214,10,0.12)', border:'rgba(255,214,10,0.3)', text:'#FFD60A' }, showQuestions: false, showHomework: false },
 ]
 
 const JULY_TRACKS_DAY26 = [
-  { name: 'Все треки', id: 160, lesson: 'Пет-проект и портфолио', color: { bg:'rgba(32,190,255,0.12)', border:'rgba(32,190,255,0.3)', text:'#20beff' }, showQuestions: false, showHomework: false },
+  { name: 'Все треки', id: 160, lesson: 'Пет-проект и портфолио', color: { bg:'rgba(255,214,10,0.12)', border:'rgba(255,214,10,0.3)', text:'#FFD60A' }, showQuestions: false, showHomework: false },
 ]
 
 const JULY_TRACKS_DAY27 = [
-  { name: 'Все треки', id: 161, lesson: 'Пет-проект и портфолио', color: { bg:'rgba(32,190,255,0.12)', border:'rgba(32,190,255,0.3)', text:'#20beff' }, showQuestions: false, showHomework: false },
+  { name: 'Все треки', id: 161, lesson: 'Пет-проект и портфолио', color: { bg:'rgba(255,214,10,0.12)', border:'rgba(255,214,10,0.3)', text:'#FFD60A' }, showQuestions: false, showHomework: false },
 ]
 
 const JULY_TRACKS_DAY28 = [
@@ -157,7 +157,7 @@ const JULY_TRACKS_DAY30 = [
 ]
 
 const JULY_TRACKS_DAY31 = [
-  { name: 'Все треки', id: 169, lesson: 'Нарешиваем LeetCode', color: { bg:'rgba(32,190,255,0.12)', border:'rgba(32,190,255,0.3)', text:'#20beff' }, showQuestions: false, showHomework: false },
+  { name: 'Все треки', id: 169, lesson: 'Нарешиваем LeetCode', color: { bg:'rgba(255,214,10,0.12)', border:'rgba(255,214,10,0.3)', text:'#FFD60A' }, showQuestions: false, showHomework: false },
 ]
 
 const JULY_DAYS = [
@@ -194,11 +194,11 @@ const JULY_DAYS = [
 
 // Карьера. Занятия идут для всех треков сразу, поэтому name у трека пустой.
 const AUGUST_TRACKS_DAY1 = [
-  { name: '', id: 170, lesson: 'Резюме: шаблон, ред- и грин-флаги', color: { bg:'rgba(32,190,255,0.12)', border:'rgba(32,190,255,0.3)', text:'#20beff' }, showQuestions: false, showHomework: false },
+  { name: '', id: 170, lesson: 'Резюме: шаблон, ред- и грин-флаги', color: { bg:'rgba(255,214,10,0.12)', border:'rgba(255,214,10,0.3)', text:'#FFD60A' }, showQuestions: false, showHomework: false },
 ]
 
 const AUGUST_TRACKS_DAY11 = [
-  { name: '', id: 171, lesson: 'Самопрезентация на собеседовании', color: { bg:'rgba(32,190,255,0.12)', border:'rgba(32,190,255,0.3)', text:'#20beff' }, showQuestions: false, showHomework: false },
+  { name: '', id: 171, lesson: 'Самопрезентация на собеседовании', color: { bg:'rgba(255,214,10,0.12)', border:'rgba(255,214,10,0.3)', text:'#FFD60A' }, showQuestions: false, showHomework: false },
 ]
 
 const AUGUST_DAYS = [

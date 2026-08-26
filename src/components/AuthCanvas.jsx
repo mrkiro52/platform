@@ -32,7 +32,7 @@ export default function AuthCanvas() {
       particles.forEach(p => {
         ctx.beginPath()
         ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2)
-        ctx.fillStyle = `rgba(32,190,255,${p.o})`
+        ctx.fillStyle = `rgba(255,214,10,${p.o})`
         ctx.fill()
         p.x += p.vx; p.y += p.vy
         if (p.x < -5) p.x = canvas.width + 5

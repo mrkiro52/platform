@@ -37,8 +37,8 @@ const Code = ({ code, lang = 'python' }) => {
 
 const Note = ({ children }) => (
   <div style={{
-    background: 'rgba(32,190,255,0.05)',
-    border: '1px solid rgba(32,190,255,0.18)',
+    background: 'rgba(255,214,10,0.05)',
+    border: '1px solid rgba(255,214,10,0.18)',
     borderRadius: 8,
     padding: '12px 16px',
     margin: '14px 0',
@@ -121,7 +121,7 @@ const DataTable = ({ caption, headers, rows, highlightCols = [], highlightRows =
               <th key={j} style={{
                 padding: '8px 14px',
                 textAlign: 'left',
-                background: highlightCols.includes(j) ? 'rgba(32,190,255,0.18)' : 'var(--bg-secondary)',
+                background: highlightCols.includes(j) ? 'rgba(255,214,10,0.18)' : 'var(--bg-secondary)',
                 color: highlightCols.includes(j) ? 'var(--accent-lime)' : 'var(--text-secondary)',
                 borderBottom: '2px solid var(--border-color)',
                 fontFamily: 'monospace',
@@ -133,7 +133,7 @@ const DataTable = ({ caption, headers, rows, highlightCols = [], highlightRows =
         </thead>
         <tbody>
           {rows.map((row, i) => (
-            <tr key={i} style={{ background: highlightRows.includes(i) ? 'rgba(32,190,255,0.08)' : 'transparent' }}>
+            <tr key={i} style={{ background: highlightRows.includes(i) ? 'rgba(255,214,10,0.08)' : 'transparent' }}>
               {row.map((cell, j) => (
                 <td key={j} style={{
                   padding: '7px 14px',
@@ -237,7 +237,7 @@ export default function PandasLikbez({ onBack }) {
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 16, flexWrap: 'wrap' }}>
           <div style={{
-            background: 'rgba(32,190,255,0.1)', border: '1px solid rgba(32,190,255,0.25)',
+            background: 'rgba(255,214,10,0.1)', border: '1px solid rgba(255,214,10,0.25)',
             borderRadius: 8, padding: '6px 14px', color: 'var(--accent-lime)',
             fontSize: 12, fontWeight: 700, letterSpacing: 1,
           }}>PYTHON</div>
@@ -554,7 +554,7 @@ df.memory_usage(deep=True)  # память в байтах`} />
       <P>Самая важная тема в pandas. Нужно чётко понимать разницу между <code style={{ fontFamily: 'monospace', color: 'var(--accent-lime)' }}>loc</code> и <code style={{ fontFamily: 'monospace', color: 'var(--accent-lime)' }}>iloc</code>.</P>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 16, margin: '16px 0' }}>
-        <div style={{ background: 'var(--bg-secondary)', border: '1px solid rgba(32,190,255,0.2)', borderRadius: 8, padding: 16 }}>
+        <div style={{ background: 'var(--bg-secondary)', border: '1px solid rgba(255,214,10,0.2)', borderRadius: 8, padding: 16 }}>
           <div style={{ color: 'var(--accent-lime)', fontFamily: 'monospace', fontWeight: 700, marginBottom: 8 }}>df.loc[ ]</div>
           <p style={{ color: 'var(--text-secondary)', fontSize: 13, marginBottom: 8 }}>Выборка по <strong>меткам</strong> (именам строк и столбцов). Конечный индекс <strong>включается</strong>.</p>
           <Code code={`df.loc[0]          # строка 0
@@ -991,7 +991,7 @@ pd.merge(df1, df2, on='id', suffixes=('_left', '_right'))`} />
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 12, margin: '16px 0' }}>
         {[
-          { label: 'LEFT', color: 'rgba(32,190,255,0.15)', desc: 'Все строки левого + совпадения правого' },
+          { label: 'LEFT', color: 'rgba(255,214,10,0.15)', desc: 'Все строки левого + совпадения правого' },
           { label: 'INNER', color: 'rgba(100,200,255,0.12)', desc: 'Только строки с совпадением в обоих' },
           { label: 'RIGHT', color: 'rgba(255,100,100,0.12)', desc: 'Все строки правого + совпадения левого' },
           { label: 'OUTER', color: 'rgba(200,100,255,0.12)', desc: 'Все строки обоих, NaN где нет совпадения' },
@@ -1317,7 +1317,7 @@ def optimize_dtypes(df):
 
       {/* Финальный блок */}
       <div style={{
-        background: 'var(--bg-secondary)', border: '1px solid rgba(32,190,255,0.15)',
+        background: 'var(--bg-secondary)', border: '1px solid rgba(255,214,10,0.15)',
         borderRadius: 10, padding: 'clamp(16px, 3vw, 24px)', margin: '40px 0 20px',
         textAlign: 'center',
       }}>

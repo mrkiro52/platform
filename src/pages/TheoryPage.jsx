@@ -330,7 +330,7 @@ function scrollToId(e, id) {
 
 const pillStyle = {
   display: 'inline-flex', alignItems: 'center', gap: 6,
-  background: 'rgba(32,190,255,0.1)', border: '1px solid rgba(32,190,255,0.4)',
+  background: 'rgba(255,214,10,0.1)', border: '1px solid rgba(255,214,10,0.4)',
   color: 'var(--accent-lime)', fontWeight: 700, fontSize: 13.5,
   padding: '8px 16px', borderRadius: 8, cursor: 'pointer',
   textDecoration: 'none', whiteSpace: 'nowrap', transition: 'background 0.15s, border-color 0.15s',
@@ -341,7 +341,7 @@ const pillStyle = {
 // а не отдельным блоком над ним.
 function QuickLinks({ recordingMats, hasQuestions, hasHomework }) {
   const hover = (e, on) => {
-    e.currentTarget.style.background = on ? 'rgba(32,190,255,0.2)' : 'rgba(32,190,255,0.1)'
+    e.currentTarget.style.background = on ? 'rgba(255,214,10,0.2)' : 'rgba(255,214,10,0.1)'
   }
   return (
     <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, margin: '20px 0 24px' }}>

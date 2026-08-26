@@ -64,7 +64,7 @@ export function DbTable({ name, columns, rows, highlightRows = [], highlightCols
               {columns.map((c, j) => (
                 <th key={j} style={{
                   padding: '8px 14px', textAlign: 'left', whiteSpace: 'nowrap',
-                  background: highlightCols.includes(j) ? 'rgba(32,190,255,0.18)' : 'var(--bg-secondary)',
+                  background: highlightCols.includes(j) ? 'rgba(255,214,10,0.18)' : 'var(--bg-secondary)',
                   color: highlightCols.includes(j) ? 'var(--accent-lime)' : 'var(--text-secondary)',
                   borderBottom: '2px solid var(--border-color)', fontFamily: 'monospace', fontWeight: 700
                 }}>{c}</th>
@@ -74,7 +74,7 @@ export function DbTable({ name, columns, rows, highlightRows = [], highlightCols
           <tbody>
             {rows.map((row, i) => (
               <tr key={i} style={{
-                background: highlightRows.includes(i) ? 'rgba(32,190,255,0.10)' : 'transparent',
+                background: highlightRows.includes(i) ? 'rgba(255,214,10,0.10)' : 'transparent',
               }}>
                 {row.map((cell, j) => (
                   <td key={j} style={{

@@ -17,7 +17,7 @@ const Ul = ({ items }) => (
 )
 
 const Note = ({ children }) => (
-  <div style={{ background: 'rgba(32,190,255,0.05)', border: '1px solid rgba(32,190,255,0.18)', borderRadius: 8, padding: '12px 16px', margin: '14px 0', color: 'var(--text-secondary)', fontSize: 13.5, lineHeight: 1.7 }}>
+  <div style={{ background: 'rgba(255,214,10,0.05)', border: '1px solid rgba(255,214,10,0.18)', borderRadius: 8, padding: '12px 16px', margin: '14px 0', color: 'var(--text-secondary)', fontSize: 13.5, lineHeight: 1.7 }}>
     <span style={{ color: 'var(--accent-lime)', fontWeight: 700, marginRight: 6 }}>💡</span>{children}
   </div>
 )
@@ -212,7 +212,7 @@ function GradientDescentViz() {
     <VizBox title="Градиентный спуск по шагам">
       <svg viewBox={`0 0 ${W} ${H}`} style={{ width: '100%', maxWidth: 460, background: 'var(--bg-tertiary)', borderRadius: 8, display: 'block' }}>
         <line x1={pad} y1={H - pad} x2={W - pad} y2={H - pad} stroke="var(--border-color)" strokeWidth="1.5" />
-        <line x1={sx(3)} y1={pad} x2={sx(3)} y2={H - pad} stroke="rgba(32,190,255,0.25)" strokeWidth="1" strokeDasharray="4 3" />
+        <line x1={sx(3)} y1={pad} x2={sx(3)} y2={H - pad} stroke="rgba(255,214,10,0.25)" strokeWidth="1" strokeDasharray="4 3" />
         <text x={sx(3)} y={H - pad + 16} fill="var(--accent-lime)" fontSize="10" textAnchor="middle">минимум w*=3</text>
         {/* loss curve */}
         <path d={path} fill="none" stroke="#60a5fa" strokeWidth="2.5" />
@@ -330,7 +330,7 @@ function RocViz() {
       <div style={{ display: 'flex', gap: 18, flexWrap: 'wrap', alignItems: 'center' }}>
         <svg viewBox={`0 0 ${W} ${H}`} style={{ width: '100%', maxWidth: 300, background: 'var(--bg-tertiary)', borderRadius: 8 }}>
           {/* AUC area */}
-          <path d={area} fill="rgba(32,190,255,0.1)" />
+          <path d={area} fill="rgba(255,214,10,0.1)" />
           {/* diagonal random */}
           <line x1={sx(0)} y1={sy(0)} x2={sx(1)} y2={sy(1)} stroke="var(--text-tertiary)" strokeWidth="1.5" strokeDasharray="5 4" />
           <text x={sx(0.62)} y={sy(0.5)} fill="var(--text-tertiary)" fontSize="10" transform={`rotate(-32 ${sx(0.62)} ${sy(0.5)})`}>случайный (AUC=0.5)</text>

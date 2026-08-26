@@ -48,7 +48,7 @@ export default function Progress() {
             </div>
           </div>
           <div style={{ display:'grid', gridTemplateColumns:'repeat(12,1fr)', gap:4, marginTop:14 }}>
-            <div style={{ height:28, borderRadius:4, background:'rgba(32,190,255,0.7)' }} title="Нед. 1 — в процессе" />
+            <div style={{ height:28, borderRadius:4, background:'rgba(255,214,10,0.7)' }} title="Нед. 1 — в процессе" />
             {Array.from({ length: 11 }).map((_, i) => (
               <div key={i} style={{ height:28, borderRadius:4, background:'var(--border-color)' }} />
             ))}

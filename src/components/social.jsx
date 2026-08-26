@@ -98,7 +98,7 @@ export function AutoTextarea({ value, onChange, placeholder, minHeight = 0, maxH
       style={{
         minHeight, height: minHeight || undefined,
         resize: 'none', overflowY: 'hidden', border: '1px solid var(--border-color)',
-        borderRadius: 0, background: 'var(--bg-tertiary)', color: 'var(--text-primary)',
+        borderRadius: 12, background: 'var(--bg-tertiary)', color: 'var(--text-primary)',
         fontFamily: 'var(--font-inter)', outline: 'none',
         whiteSpace: 'pre-wrap', overflowWrap: 'break-word', wordBreak: 'break-word',
         ...style,
@@ -123,7 +123,7 @@ export function Avatar({ name, avatarUrl, size = 40, userId, clickable = false }
   return (
     <div onClick={onClick} style={{
       ...common,
-      background: 'rgba(32,190,255,0.10)', border: '2px solid rgba(32,190,255,0.4)',
+      background: 'rgba(255,214,10,0.10)', border: '2px solid rgba(255,214,10,0.4)',
       color: 'var(--accent-lime)', fontWeight: 700, fontSize: size * 0.38,
       display: 'flex', alignItems: 'center', justifyContent: 'center',
     }}>
@@ -149,9 +149,9 @@ export function UserName({ id, name, size = 13.5, bold = true }) {
 
 export function Btn({ children, onClick, variant = 'primary', disabled, style, className }) {
   const palette = {
-    primary: { background: 'var(--accent-lime)', color: '#fff', border: 'none' },
+    primary: { background: 'var(--accent-lime)', color: 'var(--on-accent)', border: 'none' },
     ghost: { background: 'transparent', color: 'var(--text-secondary)', border: '1px solid var(--border-color)' },
-    active: { background: 'rgba(32,190,255,0.12)', color: 'var(--accent-lime)', border: '1px solid var(--accent-lime)' },
+    active: { background: 'rgba(255,214,10,0.12)', color: 'var(--accent-lime)', border: '1px solid var(--accent-lime)' },
   }[variant]
 
   return (
@@ -160,7 +160,7 @@ export function Btn({ children, onClick, variant = 'primary', disabled, style, c
       disabled={disabled}
       className={className}
       style={{
-        padding: '8px 18px', fontSize: 13, fontWeight: 600, borderRadius: 0, outline: 'none',
+        padding: '8px 18px', fontSize: 13, fontWeight: 600, borderRadius: 12, outline: 'none',
         cursor: disabled ? 'not-allowed' : 'pointer', opacity: disabled ? 0.5 : 1,
         display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
         ...palette, ...style,
@@ -178,7 +178,7 @@ export function UserRow({ user, onOpenChat }) {
       onClick={() => navigate(`/u/${user.id}`)}
       style={{
         display: 'flex', gap: 12, alignItems: 'center', padding: 14, cursor: 'pointer',
-        border: '1px solid var(--border-color)', borderRadius: 0, background: 'var(--bg-secondary)',
+        border: '1px solid var(--border-color)', borderRadius: 12, background: 'var(--bg-secondary)',
       }}
     >
       <Avatar name={user.name} avatarUrl={user.avatarUrl} size={44} />

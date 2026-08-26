@@ -46,7 +46,7 @@ const Code = ({ code, lang = 'sql' }) => {
 }
 
 const Note = ({ children }) => (
-  <div style={{ background: 'rgba(32,190,255,0.05)', border: '1px solid rgba(32,190,255,0.18)', borderRadius: 8, padding: '12px 16px', margin: '14px 0', color: 'var(--text-secondary)', fontSize: 13.5, lineHeight: 1.7 }}>
+  <div style={{ background: 'rgba(255,214,10,0.05)', border: '1px solid rgba(255,214,10,0.18)', borderRadius: 8, padding: '12px 16px', margin: '14px 0', color: 'var(--text-secondary)', fontSize: 13.5, lineHeight: 1.7 }}>
     {children}
   </div>
 )
@@ -1695,7 +1695,7 @@ docker run --rm -it --entrypoint sh <image>   # зайти внутрь в об�
       <div style={{ marginTop: 60, padding: 24, background: 'var(--bg-secondary)', border: '1px solid var(--border-color)', borderRadius: 12, textAlign: 'center' }}>
         <P style={{ fontSize: 14, margin: 0 }}>
           Все новости, разборы и объявления — в канале{' '}
-          <a href="https://t.me/kiro_team" target="_blank" rel="noopener noreferrer" style={{ color: '#1668c4', textDecoration: 'underline', textUnderlineOffset: 2, fontWeight: 600 }}>
+          <a href="https://t.me/kiro_team" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-lime)', textDecoration: 'underline', textUnderlineOffset: 2, fontWeight: 600 }}>
             t.me/kiro_team
           </a>.
         </P>
