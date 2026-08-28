@@ -14,6 +14,9 @@ function userResponse(user) {
     points: user.points, streak: user.streak,
     completedTasks: user.completed_tasks, totalTasks: 15,
     currentWeek: user.current_week, startDate: '2026-06-01',
+    // В SQLite booleans хранятся как 0/1 — наружу отдаём настоящие true/false
+    isSummerCamp2026: !!user.is_summer_camp_2026,
+    isAutumnCamp2026: !!user.is_autumn_camp_2026,
   }
 }
 

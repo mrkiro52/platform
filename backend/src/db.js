@@ -617,6 +617,29 @@ function migrate() {
       console.error('❌ Migration 17 failed (вероятно есть дубли nickname в текущих данных):', err.message)
     }
   }
+
+  // Migration 18: признаки участия в лагерях 2026.
+  // Строго additive: ALTER TABLE ADD COLUMN не переписывает существующие
+  // строки — логины, пароли и остальные поля остаются нетронутыми, а всем
+  // текущим пользователям новые колонки проставляются в 0 (false) из DEFAULT.
+  // Каждая колонка добавляется отдельно, чтобы повторный запуск на частично
+  // применённой схеме не ронял миграцию целиком.
+  if (schemaVersion < 18) {
+    const addColumn = (name) => {
+      const exists = db.prepare('PRAGMA table_info(users)').all().some(c => c.name === name)
+      if (exists) return
+      db.prepare(`ALTER TABLE users ADD COLUMN ${name} INTEGER NOT NULL DEFAULT 0`).run()
+    }
+    try {
+      addColumn('is_summer_camp_2026')
+      addColumn('is_autumn_camp_2026')
+      db.pragma('user_version = 18')
+      const total = db.prepare('SELECT COUNT(*) AS c FROM users').get().c
+      console.log(`✅ Migration 18 completed: added is_summer_camp_2026 / is_autumn_camp_2026 (false у всех ${total} пользователей)`)
+    } catch (err) {
+      console.error('❌ Migration 18 failed:', err.message)
+    }
+  }
 }
 
 migrate()

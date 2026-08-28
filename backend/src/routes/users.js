@@ -18,9 +18,13 @@ const upload = multer({
 
 // GET /api/users/me — current user's own profile
 router.get('/me', verifyToken, (req, res) => {
-  const user = db.prepare('SELECT id, name, nickname, email, track, plan, bio, position, birthday, avatar_url FROM users WHERE id = ?').get(req.user.id)
+  const user = db.prepare('SELECT id, name, nickname, email, track, plan, bio, position, birthday, avatar_url, is_summer_camp_2026, is_autumn_camp_2026 FROM users WHERE id = ?').get(req.user.id)
   if (!user) return res.status(404).json({ message: 'Пользователь не найден' })
-  res.json(user)
+  res.json({
+    ...user,
+    isSummerCamp2026: !!user.is_summer_camp_2026,
+    isAutumnCamp2026: !!user.is_autumn_camp_2026,
+  })
 })
 
 // POST /api/users/me/avatar — upload/replace profile picture (stored in S3)
