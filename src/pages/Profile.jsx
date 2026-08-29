@@ -43,6 +43,7 @@ export default function Profile({ user, onAvatarChange }) {
   const [nickname, setNickname] = useState('')
   const [password, setPassword] = useState('')
   const [bio, setBio] = useState('')
+  const [position, setPosition] = useState('')
   const [isSummerCamp2026, setIsSummerCamp2026] = useState(false)
   const [isAutumnCamp2026, setIsAutumnCamp2026] = useState(false)
   const [birthDay, setBirthDay] = useState('')
@@ -67,6 +68,7 @@ export default function Profile({ user, onAvatarChange }) {
       setEmail(p.email || '')
       setNickname(p.nickname || '')
       setBio(p.bio || '')
+      setPosition(p.position || '')
       setIsSummerCamp2026(!!p.isSummerCamp2026)
       setIsAutumnCamp2026(!!p.isAutumnCamp2026)
       setAvatarUrl(p.avatar_url || '')
@@ -121,7 +123,7 @@ export default function Profile({ user, onAvatarChange }) {
     setError('')
     try {
       const birthday = formatBirthday(birthDay, birthMonth, birthYear)
-      const payload = { name, email, nickname, bio, birthday }
+      const payload = { name, email, nickname, bio, birthday, position }
       if (password) payload.password = password
       await api.updateProfile(payload)
       setPassword('')
@@ -235,6 +237,10 @@ export default function Profile({ user, onAvatarChange }) {
                 <span className="pf-value">{bio || '—'}</span>
               </div>
               <div className="profile-field">
+                <span className="pf-label">Должность</span>
+                <span className="pf-value">{position || '—'}</span>
+              </div>
+              <div className="profile-field">
                 <span className="pf-label">Дата рождения</span>
                 <span className="pf-value">{formatBirthday(birthDay, birthMonth, birthYear) || '—'}</span>
               </div>
@@ -276,6 +282,10 @@ export default function Profile({ user, onAvatarChange }) {
                   onChange={e => setBio(e.target.value)}
                   placeholder="Пара строк о себе"
                 />
+              </div>
+              <div>
+                <span className="pf-label" style={{ display: 'block', marginBottom: 6 }}>Должность</span>
+                <input className="profile-field" style={fieldStyle} value={position} onChange={e => setPosition(e.target.value)} placeholder="Должность" />
               </div>
               <div>
                 <span className="pf-label" style={{ display: 'block', marginBottom: 6 }}>Дата рождения</span>
@@ -366,7 +376,7 @@ export default function Profile({ user, onAvatarChange }) {
         ) : myPosts.length === 0 ? (
           <p style={{ color: 'var(--text-tertiary)', fontSize: 13 }}>Ты пока ничего не публиковал на Стене.</p>
         ) : (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+          <div className="posts-grid">
             {myPosts.map(post => (
               <PostCard
                 key={post.id}

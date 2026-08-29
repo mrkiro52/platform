@@ -920,6 +920,8 @@ img { max-width: 100%; display: block; }
 .pf-label { font-size: 11px; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.04em; min-width: 120px; padding-top: 2px; }
 .pf-value { font-size: 13px; color: var(--text-primary); flex: 1; }
 
+.posts-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+
 /* ================================================================
    DASHBOARD
 ================================================================ */
@@ -1048,6 +1050,7 @@ img { max-width: 100%; display: block; }
   .progress-grid  { grid-template-columns: 1fr; }
   .profile-layout { grid-template-columns: 1fr; }
   .dash-grid      { grid-template-columns: 1fr; }
+  .posts-grid     { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 768px) {

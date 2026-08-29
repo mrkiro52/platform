@@ -55,11 +55,9 @@ router.post('/me/avatar', verifyToken, (req, res) => {
   })
 })
 
-// PUT /api/users/me — update own profile (name, email, login, password, bio, birthday).
-// Поле "должность" продукт больше не редактирует — колонка position в БД
-// сохраняется как есть (не трогаем и не затираем её здесь).
+// PUT /api/users/me — update own profile (name, email, login, password, bio, birthday, position).
 router.put('/me', verifyToken, (req, res) => {
-  const { name, email, nickname, password, bio, birthday } = req.body
+  const { name, email, nickname, password, bio, birthday, position } = req.body
   if (!name || !email || !nickname) {
     return res.status(400).json({ message: 'Имя, почта и логин обязательны' })
   }
@@ -68,14 +66,14 @@ router.put('/me', verifyToken, (req, res) => {
     if (password) {
       db.prepare('UPDATE users SET password_hash=? WHERE id=?').run(bcrypt.hashSync(password, 10), req.user.id)
     }
-    db.prepare('UPDATE users SET name=?, email=?, nickname=?, bio=?, birthday=? WHERE id=?')
-      .run(name, email, nickname, bio ?? '', birthday ?? '', req.user.id)
+    db.prepare('UPDATE users SET name=?, email=?, nickname=?, bio=?, birthday=?, position=? WHERE id=?')
+      .run(name, email, nickname, bio ?? '', birthday ?? '', position ?? '', req.user.id)
   } catch (e) {
     if (e.message.includes('UNIQUE')) return res.status(409).json({ message: 'Такая почта уже используется другим пользователем' })
     throw e
   }
 
-  const user = db.prepare('SELECT id, name, nickname, email, track, plan, bio, birthday, avatar_url FROM users WHERE id = ?').get(req.user.id)
+  const user = db.prepare('SELECT id, name, nickname, email, track, plan, bio, birthday, position, avatar_url FROM users WHERE id = ?').get(req.user.id)
   res.json(user)
 })
 

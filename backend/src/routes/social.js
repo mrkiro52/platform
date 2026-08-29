@@ -8,7 +8,7 @@ const { notify } = require('../notify')
 // больше не используется (колонка в БД сохранена нетронутой ради истории
 // данных, просто больше не выбирается и не показывается).
 const PUBLIC_FIELDS = `
-  users.id, users.name, users.bio, users.track,
+  users.id, users.name, users.bio, users.track, users.position,
   users.avatar_url, users.created_at,
   users.is_summer_camp_2026, users.is_autumn_camp_2026
 `
@@ -27,6 +27,7 @@ function withCounts(user, currentUserId) {
     name: user.name,
     bio: user.bio || '',
     track: user.track || '',
+    position: user.position || '',
     avatarUrl: user.avatar_url || '',
     createdAt: user.created_at,
     isSummerCamp2026: !!user.is_summer_camp_2026,

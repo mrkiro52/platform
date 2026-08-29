@@ -194,58 +194,6 @@ export default function Links({ onNavigate }) {
           </div>
         </>
       )}
-
-      <div
-        style={{
-          marginTop: 32,
-          padding: '16px',
-          background: 'rgba(255,214,10,0.05)',
-          borderRadius: '8px',
-          fontSize: 13,
-          color: 'var(--text-secondary)',
-          lineHeight: 1.6,
-        }}
-      >
-        <strong>Где найти другие материалы:</strong>
-        <ul style={{ marginTop: 8 }}>
-          <li>
-            Домашнее задание — в{' '}
-            <button
-              onClick={() => onNavigate('tasks')}
-              style={{
-                background: 'none',
-                border: 'none',
-                color: 'var(--accent-lime)',
-                fontWeight: 700,
-                cursor: 'pointer',
-                textDecoration: 'underline',
-                padding: 0,
-                font: 'inherit',
-              }}
-            >
-              Заданиях
-            </button>
-          </li>
-          <li style={{ marginTop: 4 }}>
-            Материалы по дням лагеря — в{' '}
-            <button
-              onClick={() => onNavigate('library')}
-              style={{
-                background: 'none',
-                border: 'none',
-                color: 'var(--accent-lime)',
-                fontWeight: 700,
-                cursor: 'pointer',
-                textDecoration: 'underline',
-                padding: 0,
-                font: 'inherit',
-              }}
-            >
-              Библиотеке знаний
-            </button>
-          </li>
-        </ul>
-      </div>
     </section>
   )
 }

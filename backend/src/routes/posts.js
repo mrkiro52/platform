@@ -21,7 +21,8 @@ const upload = multer({
 const SELECT_POST_BASE = `
   SELECT
     posts.id, posts.text, posts.image_url, posts.created_at,
-    users.id AS user_id, users.name AS user_name, users.avatar_url AS user_avatar_url
+    users.id AS user_id, users.name AS user_name, users.avatar_url AS user_avatar_url,
+    users.position AS user_position
   FROM posts
   JOIN users ON users.id = posts.user_id
 `
@@ -32,7 +33,8 @@ const SELECT_ONE = `${SELECT_POST_BASE} WHERE posts.id = ?`
 const SELECT_COMMENTS = `
   SELECT
     post_comments.id, post_comments.post_id, post_comments.text, post_comments.created_at,
-    users.id AS user_id, users.name AS user_name, users.avatar_url AS user_avatar_url
+    users.id AS user_id, users.name AS user_name, users.avatar_url AS user_avatar_url,
+    users.position AS user_position
   FROM post_comments
   JOIN users ON users.id = post_comments.user_id
   ORDER BY post_comments.created_at ASC, post_comments.id ASC
@@ -47,7 +49,7 @@ function mapComment(row) {
     id: row.id,
     text: row.text,
     createdAt: row.created_at,
-    author: { id: row.user_id, name: row.user_name, avatarUrl: row.user_avatar_url || '' },
+    author: { id: row.user_id, name: row.user_name, avatarUrl: row.user_avatar_url || '', position: row.user_position || '' },
   }
 }
 
@@ -97,6 +99,7 @@ function mapRow(row) {
       id: row.user_id,
       name: row.user_name,
       avatarUrl: row.user_avatar_url || '',
+      position: row.user_position || '',
     },
   }
 }

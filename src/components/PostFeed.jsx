@@ -194,6 +194,9 @@ export function PostCard({ post, user, avatarUrl, onReact, onComment, onDelete, 
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ display: 'flex', gap: 8, alignItems: 'baseline' }}>
                     <UserName id={c.author.id} name={c.author.name} size={12.5} />
+                    {c.author.position && (
+                      <span style={{ fontSize: 11, color: 'var(--text-tertiary)' }}>{c.author.position}</span>
+                    )}
                     <span style={{ fontSize: 11, color: 'var(--text-tertiary)' }}>{formatDate(c.createdAt)}</span>
                     {canDelete && onDeleteComment && (
                       <button

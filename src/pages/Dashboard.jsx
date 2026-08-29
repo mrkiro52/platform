@@ -302,7 +302,7 @@ export default function Dashboard({ user, onOpenDay, onNavigate }) {
         <p className="page-subtitle" style={{ textTransform:'capitalize' }}>{dateLabel}</p>
       </div>
 
-      {loading ? <SkeletonCampProgress /> : <CampProgress />}
+      {user?.isSummerCamp2026 && (loading ? <SkeletonCampProgress /> : <CampProgress />)}
 
       <div className="dash-grid">
         {/* LEFT */}

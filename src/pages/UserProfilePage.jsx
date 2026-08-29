@@ -107,6 +107,11 @@ export default function UserProfilePage({ user, avatarUrl }) {
             <div style={{ fontSize: 13, color: 'var(--text-secondary)', marginTop: 4 }}>
               {profile.track || 'Участник лагеря'}
             </div>
+            {profile.position && (
+              <div style={{ fontSize: 12.5, color: 'var(--text-tertiary)', marginTop: 2 }}>
+                {profile.position}
+              </div>
+            )}
             {profile.bio && (
               <p style={{
                 margin: '10px 0 0', fontSize: 13.5, color: 'var(--text-secondary)', lineHeight: 1.6,
@@ -171,7 +176,7 @@ export default function UserProfilePage({ user, avatarUrl }) {
             {profile.isMe ? 'Ты пока ничего не публиковал.' : 'Пользователь пока ничего не публиковал.'}
           </p>
         ) : (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+          <div className="posts-grid">
             {posts.map(post => (
               <PostCard
                 key={post.id}
