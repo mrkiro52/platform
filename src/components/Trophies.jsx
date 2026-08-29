@@ -30,7 +30,7 @@ const TROPHY_DEFS = [
 
 function ShareIcon() {
   return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ pointerEvents: 'none' }}>
       <path d="M12 16V4" />
       <path d="M7 9l5-5 5 5" />
       <path d="M5 14v4a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4" />
@@ -193,7 +193,7 @@ export default function Trophies({ profile }) {
                   onClick={() => setSharing(t)}
                   title="Поделиться"
                   style={{
-                    position: 'absolute', top: 8, right: 8, width: 28, height: 28, border: 'none',
+                    position: 'absolute', top: 8, right: 8, zIndex: 2, width: 28, height: 28, border: 'none',
                     background: 'transparent', cursor: 'pointer', display: 'flex', alignItems: 'center',
                     justifyContent: 'center', padding: 0, filter: 'drop-shadow(0 1px 3px rgba(0,0,0,0.8))',
                   }}
