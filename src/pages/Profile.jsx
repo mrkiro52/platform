@@ -348,7 +348,7 @@ export default function Profile({ user, onAvatarChange }) {
 
           <div className="profile-details">
             <div className="profile-section-h">Трофеи</div>
-            <Trophies profile={{ isSummerCamp2026, isAutumnCamp2026 }} />
+            <Trophies profile={{ isSummerCamp2026, isAutumnCamp2026, displayName: nickname }} />
           </div>
         </div>
       </div>
