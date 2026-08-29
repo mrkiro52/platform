@@ -159,7 +159,7 @@ export default function AutumnCampPage() {
 
       <div className="widget" style={{ marginBottom: 16 }}>
         <div className="widget-header">
-          <span className="widget-title">📚 Материалы и задания</span>
+          <span className="widget-title">Материалы и задания</span>
         </div>
         <p style={{ fontSize: 13.5, color: 'var(--text-secondary)', lineHeight: 1.6, margin: 0 }}>
           Прямо здесь, на платформе, ты будешь получать конспекты, видеолекции, ссылки на полезные внешние
@@ -169,7 +169,7 @@ export default function AutumnCampPage() {
 
       <div className="widget">
         <div className="widget-header">
-          <span className="widget-title">✅ Как сдавать домашку</span>
+          <span className="widget-title">Как сдавать домашку</span>
         </div>
         <p style={{ fontSize: 13.5, color: 'var(--text-secondary)', lineHeight: 1.6, margin: 0 }}>
           Готовое решение скидывай в личные сообщения Ханилю в Telegram —{' '}
