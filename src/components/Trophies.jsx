@@ -77,7 +77,7 @@ export default function Trophies({ profile }) {
             </div>
             {locked && (
               <div style={{ fontSize: 10.5, color: 'var(--text-tertiary)', marginTop: 6 }}>
-                Откроется 30.11.2026
+                Выдается 30.11.2026
               </div>
             )}
           </div>

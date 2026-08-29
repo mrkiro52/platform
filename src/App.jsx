@@ -4,6 +4,7 @@ import LoginPage from './pages/Login'
 import RegisterPage from './pages/Register'
 import Landing from './pages/Landing'
 import AppShell from './AppShell'
+import { api } from './api'
 
 function isTokenValid(token) {
   if (!token) return false
@@ -82,6 +83,26 @@ export default function App() {
       document.removeEventListener('visibilitychange', handleVisibilityChange)
     }
   }, [])
+
+  // Флаги участия в лагерях (и прочие производные поля) кэшируются в
+  // localStorage на момент входа. Если админ проставил их позже, у уже
+  // залогиненного пользователя они останутся устаревшими до перезахода —
+  // поэтому на каждой загрузке приложения подтягиваем их свежими с бэкенда.
+  useEffect(() => {
+    if (!user) return
+    api.profile().then(p => {
+      setUser(prev => {
+        if (!prev) return prev
+        const updated = {
+          ...prev,
+          isSummerCamp2026: !!p.isSummerCamp2026,
+          isAutumnCamp2026: !!p.isAutumnCamp2026,
+        }
+        localStorage.setItem('kiro_user', JSON.stringify(updated))
+        return updated
+      })
+    }).catch(() => {})
+  }, [user?.id])
 
   const navigate = useNavigate()
 
