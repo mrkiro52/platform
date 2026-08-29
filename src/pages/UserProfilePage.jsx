@@ -3,11 +3,13 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { api } from '../api'
 import { Avatar, Btn, UserRow, formatDate } from '../components/social'
 import { PostCard, usePostActions } from '../components/PostFeed'
+import Trophies from '../components/Trophies'
 
 const TABS = [
   { key: 'posts',     label: 'Посты' },
   { key: 'followers', label: 'Подписчики' },
   { key: 'following', label: 'Подписки' },
+  { key: 'trophies',  label: 'Трофеи' },
 ]
 
 function Stat({ value, label, onClick, active }) {
@@ -101,11 +103,6 @@ export default function UserProfilePage({ user, avatarUrl }) {
               <h1 style={{ margin: 0, fontSize: 22, fontWeight: 700, color: 'var(--text-primary)' }}>
                 {profile.name}
               </h1>
-              {profile.rank !== undefined && (
-                <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--accent-lime)', background: 'rgba(255,214,10,0.1)', padding: '4px 10px', borderRadius: 4 }}>
-                  Ранг {profile.rank}
-                </span>
-              )}
             </div>
             <div style={{ fontSize: 13, color: 'var(--text-secondary)', marginTop: 4 }}>
               {profile.track || 'Участник лагеря'}
@@ -166,7 +163,9 @@ export default function UserProfilePage({ user, avatarUrl }) {
         ))}
       </div>
 
-      {tab === 'posts' ? (
+      {tab === 'trophies' ? (
+        <Trophies profile={profile} />
+      ) : tab === 'posts' ? (
         posts.length === 0 ? (
           <p style={{ color: 'var(--text-tertiary)', fontSize: 13 }}>
             {profile.isMe ? 'Ты пока ничего не публиковал.' : 'Пользователь пока ничего не публиковал.'}

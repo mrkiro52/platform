@@ -9,7 +9,8 @@ const { notify } = require('../notify')
 // данных, просто больше не выбирается и не показывается).
 const PUBLIC_FIELDS = `
   users.id, users.name, users.bio, users.track,
-  users.avatar_url, users.created_at
+  users.avatar_url, users.created_at,
+  users.is_summer_camp_2026, users.is_autumn_camp_2026
 `
 
 function withCounts(user, currentUserId) {
@@ -28,6 +29,8 @@ function withCounts(user, currentUserId) {
     track: user.track || '',
     avatarUrl: user.avatar_url || '',
     createdAt: user.created_at,
+    isSummerCamp2026: !!user.is_summer_camp_2026,
+    isAutumnCamp2026: !!user.is_autumn_camp_2026,
     stats: { posts, followers, following },
     isFollowing,
     isMe: user.id === currentUserId,

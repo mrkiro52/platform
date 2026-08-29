@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { api } from '../api'
 import { PostCard, usePostActions } from '../components/PostFeed'
+import Trophies from '../components/Trophies'
 
 function getInitials(name) {
   return name.split(' ').map(p => p[0] || '').join('').toUpperCase().slice(0, 2)
@@ -42,7 +43,8 @@ export default function Profile({ user, onAvatarChange }) {
   const [nickname, setNickname] = useState('')
   const [password, setPassword] = useState('')
   const [bio, setBio] = useState('')
-  const [rank, setRank] = useState(0)
+  const [isSummerCamp2026, setIsSummerCamp2026] = useState(false)
+  const [isAutumnCamp2026, setIsAutumnCamp2026] = useState(false)
   const [birthDay, setBirthDay] = useState('')
   const [birthMonth, setBirthMonth] = useState('')
   const [birthYear, setBirthYear] = useState('')
@@ -57,6 +59,7 @@ export default function Profile({ user, onAvatarChange }) {
   const [myPosts, setMyPosts] = useState([])
   const [postsLoading, setPostsLoading] = useState(true)
   const [editingProfile, setEditingProfile] = useState(false)
+  const [activeTab, setActiveTab] = useState('info')
 
   useEffect(() => {
     api.profile().then(p => {
@@ -64,7 +67,8 @@ export default function Profile({ user, onAvatarChange }) {
       setEmail(p.email || '')
       setNickname(p.nickname || '')
       setBio(p.bio || '')
-      setRank(p.rank ?? 0)
+      setIsSummerCamp2026(!!p.isSummerCamp2026)
+      setIsAutumnCamp2026(!!p.isAutumnCamp2026)
       setAvatarUrl(p.avatar_url || '')
       onAvatarChange?.(p.avatar_url || '')
       const parsed = parseBirthday(p.birthday)
@@ -117,7 +121,7 @@ export default function Profile({ user, onAvatarChange }) {
     setError('')
     try {
       const birthday = formatBirthday(birthDay, birthMonth, birthYear)
-      const payload = { name, email, nickname, bio, birthday, rank }
+      const payload = { name, email, nickname, bio, birthday }
       if (password) payload.password = password
       await api.updateProfile(payload)
       setPassword('')
@@ -173,22 +177,68 @@ export default function Profile({ user, onAvatarChange }) {
         </div>
 
         <div className="profile-details">
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
-            <div className="profile-section-h">Информация профиля</div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 22, marginBottom: 16, borderBottom: '1px solid var(--border-color)' }}>
             <button
-              onClick={() => setEditingProfile(!editingProfile)}
+              onClick={() => setActiveTab('info')}
               style={{
-                background: 'transparent', border: 'none', fontSize: 20, cursor: 'pointer',
-                color: 'var(--accent-lime)', padding: '4px', display: 'flex', alignItems: 'center',
+                background: 'transparent', border: 'none', cursor: 'pointer', fontFamily: 'var(--font-syne)',
+                fontSize: 13, fontWeight: 700, padding: '0 0 12px',
+                color: activeTab === 'info' ? 'var(--text-primary)' : 'var(--text-tertiary)',
+                borderBottom: activeTab === 'info' ? '2px solid var(--accent-lime)' : '2px solid transparent',
               }}
-              title={editingProfile ? 'Закрыть редактирование' : 'Редактировать профиль'}
             >
-              ✎
+              Информация профиля
             </button>
+            <button
+              onClick={() => setActiveTab('trophies')}
+              style={{
+                background: 'transparent', border: 'none', cursor: 'pointer', fontFamily: 'var(--font-syne)',
+                fontSize: 13, fontWeight: 700, padding: '0 0 12px',
+                color: activeTab === 'trophies' ? 'var(--text-primary)' : 'var(--text-tertiary)',
+                borderBottom: activeTab === 'trophies' ? '2px solid var(--accent-lime)' : '2px solid transparent',
+              }}
+            >
+              Трофеи
+            </button>
+            {activeTab === 'info' && (
+              <button
+                onClick={() => setEditingProfile(!editingProfile)}
+                style={{
+                  background: 'transparent', border: 'none', fontSize: 18, cursor: 'pointer',
+                  color: 'var(--accent-lime)', padding: '0 0 10px', marginLeft: 'auto', display: 'flex', alignItems: 'center',
+                }}
+                title={editingProfile ? 'Закрыть редактирование' : 'Редактировать профиль'}
+              >
+                ✎
+              </button>
+            )}
           </div>
 
-          {!editingProfile ? (
-            <p style={{ color: 'var(--text-secondary)', fontSize: 13 }}>Нажми на карандаш для редактирования</p>
+          {activeTab === 'trophies' ? (
+            <Trophies profile={{ isSummerCamp2026, isAutumnCamp2026 }} />
+          ) : !editingProfile ? (
+            <div>
+              <div className="profile-field">
+                <span className="pf-label">Имя</span>
+                <span className="pf-value">{name || '—'}</span>
+              </div>
+              <div className="profile-field">
+                <span className="pf-label">Почта</span>
+                <span className="pf-value">{email || '—'}</span>
+              </div>
+              <div className="profile-field">
+                <span className="pf-label">Логин</span>
+                <span className="pf-value">{nickname || '—'}</span>
+              </div>
+              <div className="profile-field">
+                <span className="pf-label">О себе</span>
+                <span className="pf-value">{bio || '—'}</span>
+              </div>
+              <div className="profile-field">
+                <span className="pf-label">Дата рождения</span>
+                <span className="pf-value">{formatBirthday(birthDay, birthMonth, birthYear) || '—'}</span>
+              </div>
+            </div>
           ) : loading ? (
             <p style={{ color: 'var(--text-secondary)', fontSize: 13 }}>Загрузка...</p>
           ) : (
@@ -225,19 +275,6 @@ export default function Profile({ user, onAvatarChange }) {
                   value={bio}
                   onChange={e => setBio(e.target.value)}
                   placeholder="Пара строк о себе"
-                />
-              </div>
-              <div>
-                <span className="pf-label" style={{ display: 'block', marginBottom: 6 }}>Ранг</span>
-                <input
-                  className="profile-field"
-                  style={{ ...smallFieldStyle, width: 100 }}
-                  value={rank}
-                  onChange={e => setRank(Math.max(0, parseInt(e.target.value) || 0))}
-                  placeholder="Ранг"
-                  inputMode="numeric"
-                  min="0"
-                  type="number"
                 />
               </div>
               <div>
