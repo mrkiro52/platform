@@ -449,6 +449,40 @@ img { max-width: 100%; display: block; }
   font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: var(--radius-pill); min-width: 18px; text-align: center;
 }
 
+.nav-divider { height: 1px; background: var(--border-color); margin: 4px 10px 8px; flex-shrink: 0; }
+
+.nav-item--autumn {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, rgba(255,140,66,0.22), rgba(255,193,7,0.10));
+  border: 1px solid rgba(255,140,66,0.4);
+  color: #FFB870;
+  font-family: var(--font-syne);
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.nav-item--autumn::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(120deg, transparent 0%, rgba(255,255,255,0.16) 45%, transparent 60%);
+  transform: translateX(-120%);
+  transition: transform 0.6s ease;
+  pointer-events: none;
+}
+.nav-item--autumn:hover::before { transform: translateX(120%); }
+.nav-item--autumn:hover {
+  background: linear-gradient(135deg, rgba(255,140,66,0.32), rgba(255,193,7,0.18));
+  color: #FFC98A;
+  border-color: rgba(255,140,66,0.6);
+}
+.nav-item--autumn.active {
+  background: linear-gradient(135deg, rgba(255,140,66,0.38), rgba(255,193,7,0.22));
+  color: #FFD08A;
+  box-shadow: 0 0 0 1px rgba(255,140,66,0.55) inset, 0 0 18px rgba(255,140,66,0.22);
+}
+
 .sidebar-footer { padding: 10px; border-top: 1px solid var(--border-color); flex-shrink: 0; }
 .nav-item--logout { color: var(--text-tertiary); }
 .nav-item--logout:hover { color: var(--danger); background: rgba(225,75,75,0.06); }
@@ -922,6 +956,10 @@ img { max-width: 100%; display: block; }
 
 .posts-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
 
+.profile-info-trophies { display: grid; grid-template-columns: 1fr 320px; gap: 20px; align-items: start; }
+
+.install-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+
 /* ================================================================
    DASHBOARD
 ================================================================ */
@@ -1054,6 +1092,9 @@ img { max-width: 100%; display: block; }
 }
 
 @media (max-width: 768px) {
+  .profile-info-trophies { grid-template-columns: 1fr; }
+  .install-grid           { grid-template-columns: 1fr; }
+
   /* Sidebar — slide in/out overlay */
   .sidebar            { transform: translateX(calc(-1 * var(--sidebar-width))); }
   .sidebar.open       { transform: translateX(0); box-shadow: var(--shadow-hover); }

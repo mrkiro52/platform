@@ -74,6 +74,7 @@ export default function Sidebar({ user, avatarUrl, onLogout, onClose, badges = {
     if (path === '/likebezy') return location.pathname.startsWith('/likebezy')
     if (path === '/trainings') return location.pathname.startsWith('/trainings')
     if (path === '/messages') return location.pathname.startsWith('/messages')
+    if (path === '/autumn-camp') return location.pathname.startsWith('/autumn-camp')
     return location.pathname === path
   }
 
@@ -102,6 +103,18 @@ export default function Sidebar({ user, avatarUrl, onLogout, onClose, badges = {
       </div>
 
       <nav className="sidebar-nav">
+        {user?.isAutumnCamp2026 && (
+          <>
+            <button
+              className={`nav-item nav-item--autumn${isActive('/autumn-camp') ? ' active' : ''}`}
+              onClick={() => handleNav('/autumn-camp')}
+            >
+              <span className="nav-icon">🍂</span>
+              AUTUMN CAMP
+            </button>
+            <div className="nav-divider" />
+          </>
+        )}
         {NAV_ITEMS.map(item => (
           <button
             key={item.path}

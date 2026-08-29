@@ -9,7 +9,6 @@ const TABS = [
   { key: 'posts',     label: 'Посты' },
   { key: 'followers', label: 'Подписчики' },
   { key: 'following', label: 'Подписки' },
-  { key: 'trophies',  label: 'Трофеи' },
 ]
 
 function Stat({ value, label, onClick, active }) {
@@ -91,10 +90,11 @@ export default function UserProfilePage({ user, avatarUrl }) {
 
   return (
     <section className="page active">
+      <div className="profile-info-trophies" style={{ marginBottom: 20 }}>
       {/* Шапка профиля */}
       <div style={{
         border: '1px solid var(--border-color)', borderRadius: 12, background: 'var(--bg-secondary)',
-        padding: 20, marginBottom: 20,
+        padding: 20,
       }}>
         <div style={{ display: 'flex', gap: 18, alignItems: 'flex-start', flexWrap: 'wrap' }}>
           <Avatar name={profile.name} avatarUrl={profile.avatarUrl} size={84} />
@@ -150,6 +150,12 @@ export default function UserProfilePage({ user, avatarUrl }) {
         </div>
       </div>
 
+      <div className="profile-details">
+        <div className="profile-section-h">Трофеи</div>
+        <Trophies profile={profile} />
+      </div>
+      </div>
+
       {/* Вкладки */}
       <div style={{ display: 'flex', marginBottom: 18, borderBottom: '1px solid var(--border-color)' }}>
         {TABS.map(t => (
@@ -168,9 +174,7 @@ export default function UserProfilePage({ user, avatarUrl }) {
         ))}
       </div>
 
-      {tab === 'trophies' ? (
-        <Trophies profile={profile} />
-      ) : tab === 'posts' ? (
+      {tab === 'posts' ? (
         posts.length === 0 ? (
           <p style={{ color: 'var(--text-tertiary)', fontSize: 13 }}>
             {profile.isMe ? 'Ты пока ничего не публиковал.' : 'Пользователь пока ничего не публиковал.'}

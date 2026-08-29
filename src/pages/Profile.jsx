@@ -60,7 +60,6 @@ export default function Profile({ user, onAvatarChange }) {
   const [myPosts, setMyPosts] = useState([])
   const [postsLoading, setPostsLoading] = useState(true)
   const [editingProfile, setEditingProfile] = useState(false)
-  const [activeTab, setActiveTab] = useState('info')
 
   useEffect(() => {
     api.profile().then(p => {
@@ -178,194 +177,179 @@ export default function Profile({ user, onAvatarChange }) {
           {avatarError && <div style={{ fontSize: 12, color: 'var(--danger)', marginTop: 8 }}>{avatarError}</div>}
         </div>
 
-        <div className="profile-details">
-          <div style={{ display: 'flex', alignItems: 'center', gap: 22, marginBottom: 16, borderBottom: '1px solid var(--border-color)' }}>
-            <button
-              onClick={() => setActiveTab('info')}
-              style={{
-                background: 'transparent', border: 'none', cursor: 'pointer', fontFamily: 'var(--font-syne)',
-                fontSize: 13, fontWeight: 700, padding: '0 0 12px',
-                color: activeTab === 'info' ? 'var(--text-primary)' : 'var(--text-tertiary)',
-                borderBottom: activeTab === 'info' ? '2px solid var(--accent-lime)' : '2px solid transparent',
-              }}
-            >
-              Информация профиля
-            </button>
-            <button
-              onClick={() => setActiveTab('trophies')}
-              style={{
-                background: 'transparent', border: 'none', cursor: 'pointer', fontFamily: 'var(--font-syne)',
-                fontSize: 13, fontWeight: 700, padding: '0 0 12px',
-                color: activeTab === 'trophies' ? 'var(--text-primary)' : 'var(--text-tertiary)',
-                borderBottom: activeTab === 'trophies' ? '2px solid var(--accent-lime)' : '2px solid transparent',
-              }}
-            >
-              Трофеи
-            </button>
-            {activeTab === 'info' && (
+        <div className="profile-info-trophies">
+          <div className="profile-details">
+            <div style={{
+              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+              marginBottom: 14, paddingBottom: 10, borderBottom: '1px solid var(--border-color)',
+            }}>
+              <div className="profile-section-h" style={{ marginBottom: 0, paddingBottom: 0, border: 'none' }}>Информация профиля</div>
               <button
                 onClick={() => setEditingProfile(!editingProfile)}
                 style={{
                   background: 'transparent', border: 'none', fontSize: 18, cursor: 'pointer',
-                  color: 'var(--accent-lime)', padding: '0 0 10px', marginLeft: 'auto', display: 'flex', alignItems: 'center',
+                  color: 'var(--accent-lime)', padding: '4px', display: 'flex', alignItems: 'center',
                 }}
                 title={editingProfile ? 'Закрыть редактирование' : 'Редактировать профиль'}
               >
                 ✎
               </button>
+            </div>
+
+            {!editingProfile ? (
+              <div>
+                <div className="profile-field">
+                  <span className="pf-label">Имя</span>
+                  <span className="pf-value">{name || '—'}</span>
+                </div>
+                <div className="profile-field">
+                  <span className="pf-label">Почта</span>
+                  <span className="pf-value">{email || '—'}</span>
+                </div>
+                <div className="profile-field">
+                  <span className="pf-label">Логин</span>
+                  <span className="pf-value">{nickname || '—'}</span>
+                </div>
+                <div className="profile-field">
+                  <span className="pf-label">О себе</span>
+                  <span className="pf-value">{bio || '—'}</span>
+                </div>
+                <div className="profile-field">
+                  <span className="pf-label">Должность</span>
+                  <span className="pf-value">{position || '—'}</span>
+                </div>
+                <div className="profile-field">
+                  <span className="pf-label">Дата рождения</span>
+                  <span className="pf-value">{formatBirthday(birthDay, birthMonth, birthYear) || '—'}</span>
+                </div>
+              </div>
+            ) : loading ? (
+              <p style={{ color: 'var(--text-secondary)', fontSize: 13 }}>Загрузка...</p>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+                <div>
+                  <span className="pf-label" style={{ display: 'block', marginBottom: 6 }}>Имя</span>
+                  <input className="profile-field" style={fieldStyle} value={name} onChange={e => setName(e.target.value)} placeholder="Имя" />
+                </div>
+                <div>
+                  <span className="pf-label" style={{ display: 'block', marginBottom: 6 }}>Почта</span>
+                  <input className="profile-field" style={fieldStyle} value={email} onChange={e => setEmail(e.target.value)} placeholder="email@example.com" type="email" />
+                </div>
+                <div>
+                  <span className="pf-label" style={{ display: 'block', marginBottom: 6 }}>Логин (для входа)</span>
+                  <input className="profile-field" style={fieldStyle} value={nickname} onChange={e => setNickname(e.target.value)} placeholder="Логин" />
+                </div>
+                <div>
+                  <span className="pf-label" style={{ display: 'block', marginBottom: 6 }}>Новый пароль</span>
+                  <input
+                    className="profile-field"
+                    style={fieldStyle}
+                    value={password}
+                    onChange={e => setPassword(e.target.value)}
+                    placeholder="Оставь пустым, чтобы не менять"
+                    type="password"
+                    autoComplete="new-password"
+                  />
+                </div>
+                <div>
+                  <span className="pf-label" style={{ display: 'block', marginBottom: 6 }}>О себе</span>
+                  <textarea
+                    className="profile-field"
+                    style={{ ...fieldStyle, minHeight: 90, resize: 'vertical' }}
+                    value={bio}
+                    onChange={e => setBio(e.target.value)}
+                    placeholder="Пара строк о себе"
+                  />
+                </div>
+                <div>
+                  <span className="pf-label" style={{ display: 'block', marginBottom: 6 }}>Должность</span>
+                  <input className="profile-field" style={fieldStyle} value={position} onChange={e => setPosition(e.target.value)} placeholder="Должность" />
+                </div>
+                <div>
+                  <span className="pf-label" style={{ display: 'block', marginBottom: 6 }}>Дата рождения</span>
+                  <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                    <input
+                      className="profile-field"
+                      style={smallFieldStyle}
+                      value={birthDay}
+                      onChange={e => setBirthDay(digitsOnly(e.target.value, 2))}
+                      placeholder="ДД"
+                      inputMode="numeric"
+                    />
+                    <span style={{ color: 'var(--text-tertiary)' }}>.</span>
+                    <input
+                      className="profile-field"
+                      style={smallFieldStyle}
+                      value={birthMonth}
+                      onChange={e => setBirthMonth(digitsOnly(e.target.value, 2))}
+                      placeholder="ММ"
+                      inputMode="numeric"
+                    />
+                    <span style={{ color: 'var(--text-tertiary)' }}>.</span>
+                    <input
+                      className="profile-field"
+                      style={yearFieldStyle}
+                      value={birthYear}
+                      onChange={e => setBirthYear(digitsOnly(e.target.value, 4))}
+                      placeholder="ГГГГ"
+                      inputMode="numeric"
+                    />
+                  </div>
+                </div>
+
+                {error && <div style={{ color: 'var(--danger)', fontSize: 13 }}>{error}</div>}
+
+                {confirmOpen ? (
+                  <div style={{
+                    border: '1px solid var(--border-color)', background: 'var(--bg-tertiary)',
+                    padding: '12px 14px', display: 'flex', flexDirection: 'column', gap: 10,
+                  }}>
+                    <span style={{ fontSize: 13, color: 'var(--text-primary)' }}>Подтвердить изменение данных профиля?</span>
+                    <div style={{ display: 'flex', gap: 10 }}>
+                      <button
+                        onClick={handleConfirmSave}
+                        style={{
+                          background: 'var(--accent-lime)', color: 'var(--on-accent)', border: 'none', borderRadius: 12,
+                          padding: '8px 20px', fontSize: 13, fontWeight: 600, cursor: 'pointer',
+                        }}
+                      >
+                        Подтвердить
+                      </button>
+                      <button
+                        onClick={() => setConfirmOpen(false)}
+                        style={{
+                          background: 'transparent', color: 'var(--text-secondary)', border: '1px solid var(--border-color)',
+                          borderRadius: 12, padding: '8px 20px', fontSize: 13, fontWeight: 600, cursor: 'pointer',
+                        }}
+                      >
+                        Отменить
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                    <button
+                      onClick={requestSave}
+                      disabled={saving}
+                      style={{
+                        background: 'var(--accent-lime)', color: 'var(--on-accent)', border: 'none', borderRadius: 12,
+                        padding: '10px 24px', fontSize: 14, fontWeight: 600, cursor: saving ? 'not-allowed' : 'pointer',
+                        opacity: saving ? 0.6 : 1,
+                      }}
+                    >
+                      {saving ? 'Сохранение...' : 'Сохранить'}
+                    </button>
+                    {saved && <span style={{ color: 'var(--accent-lime)', fontSize: 13, fontWeight: 600 }}>Сохранено</span>}
+                  </div>
+                )}
+              </div>
             )}
           </div>
 
-          {activeTab === 'trophies' ? (
+          <div className="profile-details">
+            <div className="profile-section-h">Трофеи</div>
             <Trophies profile={{ isSummerCamp2026, isAutumnCamp2026 }} />
-          ) : !editingProfile ? (
-            <div>
-              <div className="profile-field">
-                <span className="pf-label">Имя</span>
-                <span className="pf-value">{name || '—'}</span>
-              </div>
-              <div className="profile-field">
-                <span className="pf-label">Почта</span>
-                <span className="pf-value">{email || '—'}</span>
-              </div>
-              <div className="profile-field">
-                <span className="pf-label">Логин</span>
-                <span className="pf-value">{nickname || '—'}</span>
-              </div>
-              <div className="profile-field">
-                <span className="pf-label">О себе</span>
-                <span className="pf-value">{bio || '—'}</span>
-              </div>
-              <div className="profile-field">
-                <span className="pf-label">Должность</span>
-                <span className="pf-value">{position || '—'}</span>
-              </div>
-              <div className="profile-field">
-                <span className="pf-label">Дата рождения</span>
-                <span className="pf-value">{formatBirthday(birthDay, birthMonth, birthYear) || '—'}</span>
-              </div>
-            </div>
-          ) : loading ? (
-            <p style={{ color: 'var(--text-secondary)', fontSize: 13 }}>Загрузка...</p>
-          ) : (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-              <div>
-                <span className="pf-label" style={{ display: 'block', marginBottom: 6 }}>Имя</span>
-                <input className="profile-field" style={fieldStyle} value={name} onChange={e => setName(e.target.value)} placeholder="Имя" />
-              </div>
-              <div>
-                <span className="pf-label" style={{ display: 'block', marginBottom: 6 }}>Почта</span>
-                <input className="profile-field" style={fieldStyle} value={email} onChange={e => setEmail(e.target.value)} placeholder="email@example.com" type="email" />
-              </div>
-              <div>
-                <span className="pf-label" style={{ display: 'block', marginBottom: 6 }}>Логин (для входа)</span>
-                <input className="profile-field" style={fieldStyle} value={nickname} onChange={e => setNickname(e.target.value)} placeholder="Логин" />
-              </div>
-              <div>
-                <span className="pf-label" style={{ display: 'block', marginBottom: 6 }}>Новый пароль</span>
-                <input
-                  className="profile-field"
-                  style={fieldStyle}
-                  value={password}
-                  onChange={e => setPassword(e.target.value)}
-                  placeholder="Оставь пустым, чтобы не менять"
-                  type="password"
-                  autoComplete="new-password"
-                />
-              </div>
-              <div>
-                <span className="pf-label" style={{ display: 'block', marginBottom: 6 }}>О себе</span>
-                <textarea
-                  className="profile-field"
-                  style={{ ...fieldStyle, minHeight: 90, resize: 'vertical' }}
-                  value={bio}
-                  onChange={e => setBio(e.target.value)}
-                  placeholder="Пара строк о себе"
-                />
-              </div>
-              <div>
-                <span className="pf-label" style={{ display: 'block', marginBottom: 6 }}>Должность</span>
-                <input className="profile-field" style={fieldStyle} value={position} onChange={e => setPosition(e.target.value)} placeholder="Должность" />
-              </div>
-              <div>
-                <span className="pf-label" style={{ display: 'block', marginBottom: 6 }}>Дата рождения</span>
-                <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-                  <input
-                    className="profile-field"
-                    style={smallFieldStyle}
-                    value={birthDay}
-                    onChange={e => setBirthDay(digitsOnly(e.target.value, 2))}
-                    placeholder="ДД"
-                    inputMode="numeric"
-                  />
-                  <span style={{ color: 'var(--text-tertiary)' }}>.</span>
-                  <input
-                    className="profile-field"
-                    style={smallFieldStyle}
-                    value={birthMonth}
-                    onChange={e => setBirthMonth(digitsOnly(e.target.value, 2))}
-                    placeholder="ММ"
-                    inputMode="numeric"
-                  />
-                  <span style={{ color: 'var(--text-tertiary)' }}>.</span>
-                  <input
-                    className="profile-field"
-                    style={yearFieldStyle}
-                    value={birthYear}
-                    onChange={e => setBirthYear(digitsOnly(e.target.value, 4))}
-                    placeholder="ГГГГ"
-                    inputMode="numeric"
-                  />
-                </div>
-              </div>
-
-              {error && <div style={{ color: 'var(--danger)', fontSize: 13 }}>{error}</div>}
-
-              {confirmOpen ? (
-                <div style={{
-                  border: '1px solid var(--border-color)', background: 'var(--bg-tertiary)',
-                  padding: '12px 14px', display: 'flex', flexDirection: 'column', gap: 10,
-                }}>
-                  <span style={{ fontSize: 13, color: 'var(--text-primary)' }}>Подтвердить изменение данных профиля?</span>
-                  <div style={{ display: 'flex', gap: 10 }}>
-                    <button
-                      onClick={handleConfirmSave}
-                      style={{
-                        background: 'var(--accent-lime)', color: 'var(--on-accent)', border: 'none', borderRadius: 12,
-                        padding: '8px 20px', fontSize: 13, fontWeight: 600, cursor: 'pointer',
-                      }}
-                    >
-                      Подтвердить
-                    </button>
-                    <button
-                      onClick={() => setConfirmOpen(false)}
-                      style={{
-                        background: 'transparent', color: 'var(--text-secondary)', border: '1px solid var(--border-color)',
-                        borderRadius: 12, padding: '8px 20px', fontSize: 13, fontWeight: 600, cursor: 'pointer',
-                      }}
-                    >
-                      Отменить
-                    </button>
-                  </div>
-                </div>
-              ) : (
-                <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                  <button
-                    onClick={requestSave}
-                    disabled={saving}
-                    style={{
-                      background: 'var(--accent-lime)', color: 'var(--on-accent)', border: 'none', borderRadius: 12,
-                      padding: '10px 24px', fontSize: 14, fontWeight: 600, cursor: saving ? 'not-allowed' : 'pointer',
-                      opacity: saving ? 0.6 : 1,
-                    }}
-                  >
-                    {saving ? 'Сохранение...' : 'Сохранить'}
-                  </button>
-                  {saved && <span style={{ color: 'var(--accent-lime)', fontSize: 13, fontWeight: 600 }}>Сохранено</span>}
-                </div>
-              )}
-            </div>
-          )}
+          </div>
         </div>
       </div>
 
