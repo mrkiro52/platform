@@ -6,6 +6,7 @@ import trophyAutumn2026 from '../assets/trophy-autumn-camp-2026.webp'
 const AUTUMN_2026_UNLOCK_AT = new Date(2026, 10, 30, 23, 59, 59)
 
 const SHARE_CAPTION = 'Получил новый трофей от KIRO TEAM'
+const SHARE_URL = 'kirocamp.ru'
 
 // Реестр трофеев: каждый — картинка + условие получения по полю профиля.
 // unlockAt (опционально) — до этой даты трофей показывается серым с замком,
@@ -53,7 +54,7 @@ async function saveTrophyImage(trophy, displayName) {
   const W = 900
   const imgH = Math.round(W / (img.naturalWidth / img.naturalHeight))
   const topH = 130
-  const bottomH = 90
+  const bottomH = 130
   const H = topH + imgH + bottomH
 
   const canvas = document.createElement('canvas')
@@ -82,7 +83,11 @@ async function saveTrophyImage(trophy, displayName) {
 
   ctx.font = '700 24px Manrope, sans-serif'
   ctx.fillStyle = '#F6F6F4'
-  ctx.fillText(SHARE_CAPTION, W / 2, topH + imgH + bottomH / 2)
+  ctx.fillText(SHARE_CAPTION, W / 2, topH + imgH + 45)
+
+  ctx.font = '600 19px Manrope, sans-serif'
+  ctx.fillStyle = '#8B8B96'
+  ctx.fillText(SHARE_URL, W / 2, topH + imgH + 88)
 
   const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'))
   const url = URL.createObjectURL(blob)
@@ -130,6 +135,9 @@ function ShareModal({ trophy, displayName, onClose }) {
         />
         <div style={{ fontFamily: 'var(--font-inter)', fontSize: 14, fontWeight: 700, color: 'var(--text-primary)', marginTop: 14 }}>
           {SHARE_CAPTION}
+        </div>
+        <div style={{ fontFamily: 'var(--font-inter)', fontSize: 12, fontWeight: 600, color: 'var(--text-tertiary)', marginTop: 4 }}>
+          {SHARE_URL}
         </div>
 
         <div style={{ display: 'flex', gap: 10, marginTop: 20 }}>
