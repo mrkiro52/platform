@@ -185,7 +185,7 @@ export default function Trophies({ profile }) {
 
   return (
     <>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', gap: 16 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(120px, 1fr))', gap: 16 }}>
         {earned.map(t => {
           const locked = t.unlockAt && Date.now() < t.unlockAt.getTime()
           return (
