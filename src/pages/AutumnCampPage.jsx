@@ -281,7 +281,7 @@ function WeekMaterials({ openWeeks, toggleWeek }) {
                   <div className={`collapse-wrap${isOpen ? ' open' : ''}`}>
                     <div className="collapse-inner">
                       <p style={{ margin: '0 14px 14px', fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.6 }}>
-                        Материалы этой недели появятся здесь ближе к дате — конспекты, видео и домашнее задание.
+                        Материалы этой недели скоро появятся здесь — конспекты, видео, тесты и домашнее задание.
                       </p>
                     </div>
                   </div>

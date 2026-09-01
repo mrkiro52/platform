@@ -243,8 +243,8 @@ function seed() {
   // Demo user
   const hash = bcrypt.hashSync('demo1234', 10)
   const userRes = db.prepare(`
-    INSERT INTO users (nickname, name, email, password_hash, track, plan, tariff, points, streak, completed_tasks, current_week)
-    VALUES ('demo', 'Demo User', 'demo@kiro.camp', ?, 'Frontend', 'С ментором', 49900, 840, 4, 5, 1)
+    INSERT INTO users (nickname, name, email, password_hash, points, streak, completed_tasks, current_week)
+    VALUES ('demo', 'Demo User', 'demo@kiro.camp', ?, 840, 4, 5, 1)
   `).run(hash)
 
   // Assign all tasks to demo user

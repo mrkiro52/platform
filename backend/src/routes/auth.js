@@ -10,7 +10,6 @@ function makeToken(payload) {
 function userResponse(user) {
   return {
     id: user.id, email: user.email, name: user.name, nickname: user.nickname,
-    track: user.track, plan: user.plan, tariff: user.tariff,
     points: user.points, streak: user.streak,
     completedTasks: user.completed_tasks, totalTasks: 15,
     currentWeek: user.current_week, startDate: '2026-06-01',
@@ -91,8 +90,8 @@ router.post('/register', registerRateLimit, (req, res) => {
   let result
   try {
     result = db.prepare(`
-      INSERT INTO users (nickname, name, email, password_hash, track, plan, tariff, points, streak, completed_tasks, current_week, role)
-      VALUES (?, ?, ?, ?, 'Frontend', 'С ментором', 49900, 0, 0, 0, 1, 'user')
+      INSERT INTO users (nickname, name, email, password_hash, points, streak, completed_tasks, current_week, role)
+      VALUES (?, ?, ?, ?, 0, 0, 0, 1, 'user')
     `).run(trimmedNickname, trimmedNickname, placeholderEmail, passwordHash)
   } catch (err) {
     // Гонка запросов или совпадение по email — не раскрываем детали клиенту

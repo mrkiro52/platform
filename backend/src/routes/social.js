@@ -4,11 +4,11 @@ const { verifyToken } = require('../middleware/auth')
 const { notify } = require('../notify')
 
 // Публичные поля профиля. Намеренно НЕ отдаём email и nickname в листингах —
-// nickname используется как логин при входе. Поле "должность" в продукте
-// больше не используется (колонка в БД сохранена нетронутой ради истории
-// данных, просто больше не выбирается и не показывается).
+// nickname используется как логин при входе. Поля "трек", "план" и "тариф"
+// в продукте больше не используются (колонки в БД сохранены нетронутыми
+// ради истории данных, просто больше не выбираются и не показываются).
 const PUBLIC_FIELDS = `
-  users.id, users.name, users.bio, users.track, users.position,
+  users.id, users.name, users.bio, users.position,
   users.avatar_url, users.created_at,
   users.is_summer_camp_2026, users.is_autumn_camp_2026
 `
@@ -26,7 +26,6 @@ function withCounts(user, currentUserId) {
     id: user.id,
     name: user.name,
     bio: user.bio || '',
-    track: user.track || '',
     position: user.position || '',
     avatarUrl: user.avatar_url || '',
     createdAt: user.created_at,

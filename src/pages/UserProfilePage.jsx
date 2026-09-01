@@ -105,7 +105,7 @@ export default function UserProfilePage({ user, avatarUrl }) {
               </h1>
             </div>
             <div style={{ fontSize: 13, color: 'var(--text-secondary)', marginTop: 4 }}>
-              {profile.track || 'Участник лагеря'}
+              Участник лагеря
             </div>
             {profile.position && (
               <div style={{ fontSize: 12.5, color: 'var(--text-tertiary)', marginTop: 2 }}>

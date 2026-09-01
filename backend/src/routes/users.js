@@ -18,7 +18,7 @@ const upload = multer({
 
 // GET /api/users/me — current user's own profile
 router.get('/me', verifyToken, (req, res) => {
-  const user = db.prepare('SELECT id, name, nickname, email, track, plan, bio, position, birthday, avatar_url, is_summer_camp_2026, is_autumn_camp_2026 FROM users WHERE id = ?').get(req.user.id)
+  const user = db.prepare('SELECT id, name, nickname, email, bio, position, birthday, avatar_url, is_summer_camp_2026, is_autumn_camp_2026 FROM users WHERE id = ?').get(req.user.id)
   if (!user) return res.status(404).json({ message: 'Пользователь не найден' })
   res.json({
     ...user,
@@ -47,7 +47,7 @@ router.post('/me/avatar', verifyToken, (req, res) => {
       const oldKey = keyFromUrl(prev?.avatar_url)
       if (oldKey) deleteAvatar(oldKey).catch(() => {})
 
-      const user = db.prepare('SELECT id, name, nickname, email, track, plan, bio, position, birthday, avatar_url FROM users WHERE id = ?').get(req.user.id)
+      const user = db.prepare('SELECT id, name, nickname, email, bio, position, birthday, avatar_url FROM users WHERE id = ?').get(req.user.id)
       res.json(user)
     } catch (e) {
       res.status(500).json({ message: 'Не удалось загрузить изображение' })
@@ -73,7 +73,7 @@ router.put('/me', verifyToken, (req, res) => {
     throw e
   }
 
-  const user = db.prepare('SELECT id, name, nickname, email, track, plan, bio, birthday, position, avatar_url FROM users WHERE id = ?').get(req.user.id)
+  const user = db.prepare('SELECT id, name, nickname, email, bio, birthday, position, avatar_url FROM users WHERE id = ?').get(req.user.id)
   res.json(user)
 })
 
@@ -92,8 +92,8 @@ router.post('/', requireAdmin, (req, res) => {
   const hash = bcrypt.hashSync(password, 10)
   try {
     const r = db.prepare(`
-      INSERT INTO users (nickname, name, email, password_hash, track, plan, tariff)
-      VALUES (?, ?, ?, ?, 'Frontend', 'С ментором', 49900)
+      INSERT INTO users (nickname, name, email, password_hash)
+      VALUES (?, ?, ?, ?)
     `).run(login, login, login, hash)
     const tasks = db.prepare('SELECT id FROM tasks').all()
     const ins = db.prepare('INSERT OR IGNORE INTO user_tasks (user_id, task_id, status) VALUES (?, ?, ?)')

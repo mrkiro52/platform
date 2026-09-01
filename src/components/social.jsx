@@ -185,7 +185,7 @@ export function UserRow({ user, onOpenChat }) {
       <div style={{ flex: 1, minWidth: 0 }}>
         <div style={{ fontWeight: 600, fontSize: 14, color: 'var(--text-primary)' }}>{user.name}</div>
         <div style={{ fontSize: 12, color: 'var(--text-tertiary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-          {user.track || 'Участник лагеря'}
+          Участник лагеря
         </div>
         <div style={{ fontSize: 11.5, color: 'var(--text-tertiary)', marginTop: 2 }}>
           Подписчиков: {user.stats?.followers ?? 0} · Постов: {user.stats?.posts ?? 0}
