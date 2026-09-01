@@ -55,19 +55,3 @@ export function SkeletonMessageRow() {
     </div>
   )
 }
-
-export function SkeletonCampProgress() {
-  return (
-    <div style={{ marginBottom: 24 }}>
-      {[1, 2, 3].map(i => (
-        <div key={i} style={{ marginBottom: 16 }}>
-          <div style={{ display: 'flex', gap: 10, marginBottom: 8 }}>
-            <div className="skeleton skeleton-block" style={{ width: '80px' }} />
-            <div className="skeleton skeleton-block" style={{ flex: 1 }} />
-          </div>
-          <div className="skeleton skeleton-block" style={{ height: 8 }} />
-        </div>
-      ))}
-    </div>
-  )
-}

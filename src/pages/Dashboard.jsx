@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { LIBRARY, HW_LINKS } from '../data'
 import { api } from '../api'
-import { SkeletonNewsCard, SkeletonCampProgress, SkeletonEventCard } from '../components/Skeleton'
+import { SkeletonNewsCard, SkeletonEventCard } from '../components/Skeleton'
 
 const RU_MONTHS  = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря']
 const RU_WEEKDAY = ['воскресенье','понедельник','вторник','среда','четверг','пятница','суббота']
@@ -193,44 +193,6 @@ function JuneChecklist({ user }) {
   )
 }
 
-function CampProgress() {
-  const today = new Date()
-  today.setHours(0, 0, 0, 0)
-  const months = [
-    { label:'Июнь',   total:30, start: new Date(2026, 5, 1) },
-    { label:'Июль',   total:31, start: new Date(2026, 6, 1) },
-    { label:'Август', total:31, start: new Date(2026, 7, 1) },
-  ]
-  return (
-    <div className="camp-progress">
-      {months.map(m => {
-        let done = 0
-        const segs = Array.from({ length: m.total }, (_, i) => {
-          const d = new Date(m.start)
-          d.setDate(d.getDate() + i)
-          const isToday = d.getTime() === today.getTime()
-          const isPast  = d < today
-          if (isToday || isPast) done++
-          return { isToday, isPast }
-        })
-        return (
-          <div key={m.label} className="camp-month-bar">
-            <div className="camp-month-head">
-              <span className="camp-month-name">{m.label}</span>
-              <span className="camp-month-pct">{done}/{m.total} · {Math.round(done/m.total*100)}%</span>
-            </div>
-            <div className="camp-segs">
-              {segs.map((s, i) => (
-                <div key={i} className={`camp-seg${s.isToday ? ' s-today' : s.isPast ? ' s-past' : ''}`} />
-              ))}
-            </div>
-          </div>
-        )
-      })}
-    </div>
-  )
-}
-
 function fmt(s) {
   const h = Math.floor(s/3600), m = Math.floor((s%3600)/60), sec = s%60
   return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`
@@ -301,8 +263,6 @@ export default function Dashboard({ user, onOpenDay, onNavigate }) {
         <h1 className="page-title">Дэшборд</h1>
         <p className="page-subtitle" style={{ textTransform:'capitalize' }}>{dateLabel}</p>
       </div>
-
-      {user?.isSummerCamp2026 && (loading ? <SkeletonCampProgress /> : <CampProgress />)}
 
       <div className="dash-grid">
         {/* LEFT */}

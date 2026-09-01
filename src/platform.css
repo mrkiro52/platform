@@ -690,16 +690,6 @@ img { max-width: 100%; display: block; }
 .hw-link-btn:hover { background: rgba(255,214,10,0.16); }
 .hw-link-locked { font-size: 12px; color: var(--text-tertiary); }
 
-/* ── Camp progress bar ──────────────────────────────────────── */
-.camp-progress { display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px; }
-.camp-month-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
-.camp-month-name { font-family: var(--font-syne); font-size: 11px; font-weight: 700; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.06em; }
-.camp-month-pct  { font-size: 11px; color: var(--accent-lime); font-family: var(--font-syne); font-weight: 700; }
-.camp-segs { display: flex; gap: 2px; }
-.camp-seg  { height: 5px; flex: 1; border-radius: 1px; background: var(--border-color); }
-.camp-seg.s-past  { background: rgba(255,214,10,0.4); }
-.camp-seg.s-today { background: var(--accent-lime); }
-
 /* ================================================================
    LIBRARY
 ================================================================ */
