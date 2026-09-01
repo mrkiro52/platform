@@ -191,9 +191,10 @@ export default function Trophies({ profile }) {
           return (
             <div
               key={t.key}
+              onClick={locked ? undefined : () => setSharing(t)}
               style={{
                 position: 'relative', background: 'var(--bg-tertiary)', border: '1px solid var(--border-color)',
-                borderRadius: 12, padding: 14, textAlign: 'center',
+                borderRadius: 12, padding: 14, textAlign: 'center', cursor: locked ? 'default' : 'pointer',
               }}
             >
               {!locked && (
