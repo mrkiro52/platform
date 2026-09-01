@@ -69,6 +69,19 @@ const AUTUMN_MONTHS = [
   { label: 'Ноябрь',   total: 30, start: new Date(2026, 10, 1) },
 ]
 
+// Групповые созвоны — каждую пятницу осени; дни считаются по дню недели,
+// а не захардкожены, чтобы не разъехаться при правках дат месяцев выше.
+function fridaysOf(month) {
+  const days = []
+  for (let d = 1; d <= month.total; d++) {
+    const dt = new Date(month.start)
+    dt.setDate(d)
+    if (dt.getDay() === 5) days.push(d)
+  }
+  return days
+}
+const CALL_MONTHS = AUTUMN_MONTHS.map(m => ({ label: m.label, fridays: fridaysOf(m) }))
+
 function InstallCard({ title, blocks }) {
   return (
     <div>
@@ -101,7 +114,7 @@ function ChevronIcon({ open }) {
     <svg
       width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
       strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
-      style={{ transform: open ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.3s ease', pointerEvents: 'none' }}
+      style={{ transform: open ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.3s ease', pointerEvents: 'none', flexShrink: 0 }}
     >
       <path d="M6 9l6 6 6-6" />
     </svg>
@@ -113,7 +126,7 @@ function AutumnProgress() {
   today.setHours(0, 0, 0, 0)
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 22 }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
       {AUTUMN_MONTHS.map(m => {
         let done = 0
         const days = Array.from({ length: m.total }, (_, i) => {
@@ -126,29 +139,72 @@ function AutumnProgress() {
         })
         const pct = Math.round((done / m.total) * 100)
         return (
-          <div key={m.label}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-              <span style={{
+          <div key={m.label} style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+            <div style={{ flexShrink: 0, width: 84 }}>
+              <div style={{
                 fontFamily: 'var(--font-syne)', fontSize: 12, fontWeight: 700, color: 'var(--text-primary)',
                 textTransform: 'uppercase', letterSpacing: '0.05em',
               }}>
                 {m.label}
-              </span>
-              <span style={{ fontFamily: 'var(--font-syne)', fontSize: 11.5, fontWeight: 700, color: '#FFB870' }}>
+              </div>
+              <div style={{ fontFamily: 'var(--font-syne)', fontSize: 10.5, fontWeight: 700, color: '#FFB870', marginTop: 2 }}>
                 {done}/{m.total} · {pct}%
-              </span>
+              </div>
             </div>
-            <div className="autumn-days-grid">
-              {days.map((d, i) => (
-                <div key={i} className={`autumn-day${d.isToday ? ' d-today' : d.isPast ? ' d-past' : ''}`} />
-              ))}
-            </div>
-            <div className="autumn-bar-mobile">
-              <div className="autumn-bar-fill" style={{ width: `${pct}%` }} />
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div className="autumn-days-grid">
+                {days.map((d, i) => (
+                  <div key={i} className={`autumn-day${d.isToday ? ' d-today' : d.isPast ? ' d-past' : ''}`} />
+                ))}
+              </div>
+              <div className="autumn-bar-mobile">
+                <div className="autumn-bar-fill" style={{ width: `${pct}%` }} />
+              </div>
             </div>
           </div>
         )
       })}
+    </div>
+  )
+}
+
+function GroupCalls() {
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+      {CALL_MONTHS.map(m => (
+        <div key={m.label}>
+          <div style={{
+            fontFamily: 'var(--font-syne)', fontSize: 12, fontWeight: 700, color: 'var(--text-primary)',
+            textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 10,
+          }}>
+            {m.label}
+          </div>
+          <div className="calls-grid" style={{ '--calls-count': m.fridays.length }}>
+            {m.fridays.map(day => (
+              <div
+                key={day}
+                style={{
+                  background: 'var(--bg-tertiary)', border: '1px solid var(--border-color)',
+                  borderRadius: 'var(--radius-md)', padding: '14px 12px', textAlign: 'center',
+                }}
+              >
+                <div style={{ fontFamily: 'var(--font-syne)', fontSize: 20, fontWeight: 800, color: '#FFB870' }}>
+                  {day}
+                </div>
+                <div style={{ fontSize: 10.5, color: 'var(--text-tertiary)', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: 8 }}>
+                  {m.label.toLowerCase()}
+                </div>
+                <div style={{ fontFamily: 'var(--font-syne)', fontSize: 12, fontWeight: 700, color: 'var(--text-primary)' }}>
+                  Групповой созвон
+                </div>
+                <div style={{ fontSize: 11, color: 'var(--text-secondary)', marginTop: 4 }}>
+                  Тема: будет скоро
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      ))}
     </div>
   )
 }
@@ -158,40 +214,15 @@ export default function AutumnCampPage() {
 
   return (
     <section className="page active">
-      <div style={{
-        background: 'linear-gradient(135deg, rgba(255,140,66,0.16), rgba(255,193,7,0.06))',
-        border: '1px solid rgba(255,140,66,0.35)', borderRadius: 'var(--radius-lg)',
-        padding: '28px 26px', marginBottom: 28,
-      }}>
-        <div style={{
-          display: 'inline-block', fontFamily: 'var(--font-syne)', fontSize: 11, fontWeight: 700,
-          letterSpacing: '0.08em', textTransform: 'uppercase', color: '#FFB870',
-          background: 'rgba(255,140,66,0.15)', border: '1px solid rgba(255,140,66,0.4)',
-          borderRadius: 'var(--radius-pill)', padding: '4px 12px', marginBottom: 14,
-        }}>
-          🍂 Autumn Camp 2026
+      <div className="autumn-hero">
+        <div className="autumn-hero-left">
+          <span className="autumn-hero-badge">🍂 Autumn Camp 2026</span>
+          <span className="autumn-hero-title">Онбординг участника</span>
         </div>
-        <h1 style={{ margin: '0 0 8px', fontFamily: 'var(--font-syne)', fontSize: 26, fontWeight: 700, color: 'var(--text-primary)' }}>
-          Онбординг участника
-        </h1>
-        <p style={{ margin: 0, fontSize: 14, color: 'var(--text-secondary)', maxWidth: 640, lineHeight: 1.6 }}>
-          Что подготовить перед стартом лагеря и как будет устроено обучение — коротко и по делу.
-        </p>
-
-        <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 18 }}>
-          <button
-            onClick={() => setOpen(o => !o)}
-            style={{
-              display: 'flex', alignItems: 'center', gap: 8, background: 'rgba(255,140,66,0.14)',
-              border: '1px solid rgba(255,140,66,0.4)', color: '#FFB870', borderRadius: 'var(--radius-pill)',
-              padding: '8px 16px', fontSize: 12.5, fontWeight: 700, fontFamily: 'var(--font-syne)',
-              cursor: 'pointer', transition: 'background 0.2s ease, border-color 0.2s ease',
-            }}
-          >
-            {open ? 'Свернуть' : 'Раскрыть онбординг'}
-            <ChevronIcon open={open} />
-          </button>
-        </div>
+        <button className="autumn-hero-toggle" onClick={() => setOpen(o => !o)}>
+          {open ? 'Свернуть онбординг' : 'Раскрыть онбординг'}
+          <ChevronIcon open={open} />
+        </button>
       </div>
 
       <div className={`collapse-wrap${open ? ' open' : ''}`}>
@@ -202,7 +233,7 @@ export default function AutumnCampPage() {
 
           <div className="widget" style={{ marginBottom: 16 }}>
             <div className="widget-header">
-              <span className="widget-title">📓 Заведи дневник лагеря</span>
+              <span className="widget-title">Заведи дневник лагеря</span>
             </div>
             <p style={{ fontSize: 13.5, color: 'var(--text-secondary)', lineHeight: 1.6, margin: '0 0 10px' }}>
               Записывай, что прошёл, что понял, какие вопросы остались — это сильно помогает не растерять прогресс
@@ -218,7 +249,7 @@ export default function AutumnCampPage() {
 
           <div className="widget" style={{ marginBottom: 28 }}>
             <div className="widget-header">
-              <span className="widget-title">🛠 Установи нужное ПО</span>
+              <span className="widget-title">Установи нужное ПО</span>
             </div>
             <p style={{ fontSize: 13.5, color: 'var(--text-secondary)', lineHeight: 1.6, margin: '0 0 18px' }}>
               Понадобятся VS Code, Git и Docker. Инструкции под свою систему — ниже.
@@ -270,8 +301,15 @@ export default function AutumnCampPage() {
       <h2 style={{ marginTop: 0, marginBottom: 16, fontSize: 16, fontWeight: 700, color: 'var(--text-primary)' }}>
         Прогресс лагеря
       </h2>
-      <div className="widget">
+      <div className="widget" style={{ marginBottom: 28 }}>
         <AutumnProgress />
+      </div>
+
+      <h2 style={{ marginTop: 0, marginBottom: 16, fontSize: 16, fontWeight: 700, color: 'var(--text-primary)' }}>
+        Групповые созвоны
+      </h2>
+      <div className="widget">
+        <GroupCalls />
       </div>
     </section>
   )
