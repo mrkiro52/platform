@@ -82,6 +82,42 @@ function fridaysOf(month) {
 }
 const CALL_MONTHS = AUTUMN_MONTHS.map(m => ({ label: m.label, fridays: fridaysOf(m) }))
 
+// Онбординг и созвоны раскрыты по умолчанию только 1–2 сентября — потом сворачиваются
+function isSept1or2() {
+  const today = new Date()
+  const from = new Date(2026, 8, 1, 0, 0, 0)
+  const to = new Date(2026, 8, 2, 23, 59, 59)
+  return today >= from && today <= to
+}
+
+// Недели лагеря по месяцам — границы заданы явно (не через равные интервалы),
+// т.к. должны совпадать с реальным расписанием, а не просто делить месяц на 5.
+const WEEKS_DATA = [
+  { label: 'Сентябрь', genitive: 'сентября', monthIdx: 8, weeks: [
+    { start: 1, end: 6 }, { start: 7, end: 13 }, { start: 14, end: 20 }, { start: 21, end: 27 }, { start: 28, end: 30 },
+  ] },
+  { label: 'Октябрь', genitive: 'октября', monthIdx: 9, weeks: [
+    { start: 1, end: 4 }, { start: 5, end: 11 }, { start: 12, end: 18 }, { start: 19, end: 25 }, { start: 26, end: 31 },
+  ] },
+  { label: 'Ноябрь', genitive: 'ноября', monthIdx: 10, weeks: [
+    { start: 1, end: 1 }, { start: 2, end: 8 }, { start: 9, end: 15 }, { start: 16, end: 22 }, { start: 23, end: 29 },
+  ] },
+]
+
+function weekKey(monthLabel, week) {
+  return `${monthLabel}-${week.start}`
+}
+
+function currentWeekKey() {
+  const today = new Date()
+  if (today.getFullYear() !== 2026) return null
+  const month = WEEKS_DATA.find(m => m.monthIdx === today.getMonth())
+  if (!month) return null
+  const day = today.getDate()
+  const week = month.weeks.find(w => day >= w.start && day <= w.end)
+  return week ? weekKey(month.label, week) : null
+}
+
 function InstallCard({ title, blocks }) {
   return (
     <div>
@@ -209,8 +245,68 @@ function GroupCalls() {
   )
 }
 
+function WeekMaterials({ openWeeks, toggleWeek }) {
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 22 }}>
+      {WEEKS_DATA.map(month => (
+        <div key={month.label}>
+          <div style={{
+            fontFamily: 'var(--font-syne)', fontSize: 12, fontWeight: 700, color: 'var(--text-primary)',
+            textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 10,
+          }}>
+            {month.label}
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            {month.weeks.map((w, i) => {
+              const key = weekKey(month.label, w)
+              const isOpen = openWeeks.has(key)
+              const rangeText = w.start === w.end ? `${w.start} ${month.genitive}` : `${w.start}–${w.end} ${month.genitive}`
+              return (
+                <div key={key} style={{ background: 'var(--bg-tertiary)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-md)', overflow: 'hidden' }}>
+                  <button
+                    onClick={() => toggleWeek(key)}
+                    style={{
+                      width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                      background: 'transparent', border: 'none', padding: '12px 14px', cursor: 'pointer', textAlign: 'left',
+                    }}
+                  >
+                    <span style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
+                      <span style={{ fontFamily: 'var(--font-syne)', fontSize: 13, fontWeight: 700, color: 'var(--text-primary)' }}>
+                        Неделя {i + 1}
+                      </span>
+                      <span style={{ fontSize: 12, color: 'var(--text-tertiary)' }}>{rangeText}</span>
+                    </span>
+                    <ChevronIcon open={isOpen} />
+                  </button>
+                  <div className={`collapse-wrap${isOpen ? ' open' : ''}`}>
+                    <div className="collapse-inner">
+                      <p style={{ margin: '0 14px 14px', fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.6 }}>
+                        Материалы этой недели появятся здесь ближе к дате — конспекты, видео и домашнее задание.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        </div>
+      ))}
+    </div>
+  )
+}
+
 export default function AutumnCampPage() {
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState(isSept1or2)
+  const [callsOpen, setCallsOpen] = useState(isSept1or2)
+  const [openWeeks, setOpenWeeks] = useState(() => {
+    const key = currentWeekKey()
+    return new Set(key ? [key] : [])
+  })
+  const toggleWeek = key => setOpenWeeks(prev => {
+    const next = new Set(prev)
+    next.has(key) ? next.delete(key) : next.add(key)
+    return next
+  })
 
   return (
     <section className="page active">
@@ -219,8 +315,8 @@ export default function AutumnCampPage() {
           <span className="autumn-hero-badge">🍂 Autumn Camp 2026</span>
           <span className="autumn-hero-title">Онбординг участника</span>
         </div>
-        <button className="autumn-hero-toggle" onClick={() => setOpen(o => !o)}>
-          {open ? 'Свернуть онбординг' : 'Раскрыть онбординг'}
+        <button className="autumn-toggle-btn" onClick={() => setOpen(o => !o)}>
+          {open ? 'Свернуть' : 'Открыть'}
           <ChevronIcon open={open} />
         </button>
       </div>
@@ -305,11 +401,28 @@ export default function AutumnCampPage() {
         <AutumnProgress />
       </div>
 
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
+        <h2 style={{ margin: 0, fontSize: 16, fontWeight: 700, color: 'var(--text-primary)' }}>
+          Групповые созвоны
+        </h2>
+        <button className="autumn-toggle-btn" onClick={() => setCallsOpen(o => !o)}>
+          {callsOpen ? 'Свернуть' : 'Открыть'}
+          <ChevronIcon open={callsOpen} />
+        </button>
+      </div>
+      <div className={`collapse-wrap${callsOpen ? ' open' : ''}`} style={{ marginBottom: 28 }}>
+        <div className="collapse-inner">
+          <div className="widget">
+            <GroupCalls />
+          </div>
+        </div>
+      </div>
+
       <h2 style={{ marginTop: 0, marginBottom: 16, fontSize: 16, fontWeight: 700, color: 'var(--text-primary)' }}>
-        Групповые созвоны
+        Материалы по неделям
       </h2>
       <div className="widget">
-        <GroupCalls />
+        <WeekMaterials openWeeks={openWeeks} toggleWeek={toggleWeek} />
       </div>
     </section>
   )
