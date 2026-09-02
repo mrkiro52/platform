@@ -71,8 +71,9 @@ const AUTUMN_MONTHS = [
   { label: 'Ноябрь',   total: 30, start: new Date(2026, 10, 1) },
 ]
 
-// Групповые созвоны — каждую пятницу осени; дни считаются по дню недели,
-// а не захардкожены, чтобы не разъехаться при правках дат месяцев выше.
+// Групповые созвоны. По умолчанию — каждая пятница месяца (дни считаются по
+// дню недели, чтобы не разъехаться при правках дат месяцев выше). Для
+// сентября даты и темы заданы явно — сдвинуты на день позже пятницы.
 function fridaysOf(month) {
   const days = []
   for (let d = 1; d <= month.total; d++) {
@@ -82,7 +83,20 @@ function fridaysOf(month) {
   }
   return days
 }
-const CALL_MONTHS = AUTUMN_MONTHS.map(m => ({ label: m.label, fridays: fridaysOf(m) }))
+
+const SEPTEMBER_CALLS = [
+  { day: 5, topic: 'Python: вопросы с собеседований от новичка до про' },
+  { day: 12, topic: 'Полный гайд по алгоритмам' },
+  { day: 19, topic: 'Полный гайд по структурам данных' },
+  { day: 26, topic: 'Полный гайд по базам данных и SQL' },
+]
+
+const CALL_MONTHS = AUTUMN_MONTHS.map(m => ({
+  label: m.label,
+  calls: m.label === 'Сентябрь'
+    ? SEPTEMBER_CALLS
+    : fridaysOf(m).map(day => ({ day, topic: null })),
+}))
 
 // Онбординг и созвоны раскрыты по умолчанию только 1–2 сентября — потом сворачиваются
 function isSept1or2() {
@@ -189,17 +203,17 @@ function GroupCalls() {
           }}>
             {m.label}
           </div>
-          <div className="calls-grid" style={{ '--calls-count': m.fridays.length }}>
-            {m.fridays.map(day => (
+          <div className="calls-grid" style={{ '--calls-count': m.calls.length }}>
+            {m.calls.map(call => (
               <div
-                key={day}
+                key={call.day}
                 style={{
                   background: 'var(--bg-tertiary)', border: '1px solid var(--border-color)',
                   borderRadius: 'var(--radius-md)', padding: '14px 12px', textAlign: 'center',
                 }}
               >
                 <div style={{ fontFamily: 'var(--font-syne)', fontSize: 20, fontWeight: 800, color: '#FFB870' }}>
-                  {day}
+                  {call.day}
                 </div>
                 <div style={{ fontSize: 10.5, color: 'var(--text-tertiary)', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: 8 }}>
                   {m.label.toLowerCase()}
@@ -208,7 +222,7 @@ function GroupCalls() {
                   Групповой созвон
                 </div>
                 <div style={{ fontSize: 11, color: 'var(--text-secondary)', marginTop: 4 }}>
-                  Тема: будет скоро
+                  Тема: {call.topic || 'будет скоро'}
                 </div>
               </div>
             ))}
