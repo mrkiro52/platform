@@ -73,9 +73,22 @@ function buildHtml(answers, participant) {
 </html>`
 }
 
+function ChevronIcon({ open }) {
+  return (
+    <svg
+      width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
+      style={{ transform: open ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.3s ease', pointerEvents: 'none' }}
+    >
+      <path d="M6 9l6 6 6-6" />
+    </svg>
+  )
+}
+
 export default function LevelTest({ participant }) {
   const [answers, setAnswers] = useState(loadAnswers)
   const [finished, setFinished] = useState(false)
+  const [showTest, setShowTest] = useState(false)
 
   useEffect(() => {
     try {
@@ -110,10 +123,21 @@ export default function LevelTest({ participant }) {
             {answeredCount} / {LEVEL_TEST_TOTAL}
           </span>
         </div>
-        <p style={{ margin: 0, fontSize: 13.5, color: 'var(--text-secondary)', lineHeight: 1.6 }}>
+        <p style={{ margin: '0 0 16px', fontSize: 13.5, color: 'var(--text-secondary)', lineHeight: 1.6 }}>
           {LEVEL_TEST_INTRO}
         </p>
+        <button
+          onClick={() => setShowTest(s => !s)}
+          className="autumn-toggle-btn"
+          style={{ width: 'auto', padding: '9px 18px' }}
+        >
+          {showTest ? 'Свернуть тест' : 'Показать тест'}
+          <ChevronIcon open={showTest} />
+        </button>
       </div>
+
+      <div className={`collapse-wrap${showTest ? ' open' : ''}`}>
+      <div className="collapse-inner">
 
       {LEVEL_TEST_SECTIONS.map(section => (
         <div key={section.id} className="widget" style={{ marginBottom: 16 }}>
@@ -172,6 +196,9 @@ export default function LevelTest({ participant }) {
             ? 'Файл скачан — отправь его Ханилю в Telegram.'
             : `Отвечено ${answeredCount} из ${LEVEL_TEST_TOTAL}. Скачается HTML-файл с вопросами и твоими ответами.`}
         </span>
+      </div>
+
+      </div>
       </div>
     </div>
   )
