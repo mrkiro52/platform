@@ -1,5 +1,10 @@
 import { useState, useEffect } from 'react'
 import { WEEK1_CHAPTERS, WEEK1_TITLE } from '../data/week1Materials'
+import MultiPartVideo, { PYTHON_BASICS_PARTS } from './MultiPartVideo'
+
+const VIDEO_SETS = {
+  'python-basics': PYTHON_BASICS_PARTS,
+}
 
 const VISITED_KEY = 'kiro_week1_visited'
 
@@ -85,6 +90,37 @@ function Block({ block }) {
       }}>
         {renderInline(v)}
       </div>
+    )
+  }
+
+  if (t === 'video') {
+    const parts = VIDEO_SETS[v]
+    if (!parts) return null
+    return (
+      <div style={{ marginBottom: 14 }}>
+        <MultiPartVideo parts={parts} />
+      </div>
+    )
+  }
+
+  if (t === 'link') {
+    return (
+      <a
+        href={block.href}
+        target="_blank"
+        rel="noopener"
+        style={{
+          display: 'block', margin: '0 0 14px', padding: '14px 16px', borderRadius: 'var(--radius-md)',
+          background: 'rgba(255,214,10,0.06)', border: '1px solid rgba(255,214,10,0.3)', textDecoration: 'none',
+        }}
+      >
+        <div style={{ fontFamily: 'var(--font-syne)', fontSize: 13.5, fontWeight: 700, color: 'var(--accent-lime)', marginBottom: 4 }}>
+          {block.title} →
+        </div>
+        <div style={{ fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.6 }}>
+          {block.text}
+        </div>
+      </a>
     )
   }
 
@@ -305,6 +341,7 @@ export default function WeekMaterials() {
         </div>
         <p style={{ margin: '0 0 14px', fontSize: 13, color: 'var(--text-tertiary)', lineHeight: 1.6 }}>
           Ответь на них сам, а потом открой ответ и сравни — так сразу видно, что усвоилось, а что стоит перечитать.
+          По клику на вопрос показывается ответ, по клику ещё раз — скрывается обратно.
         </p>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
           {chapter.selfCheck.map((item, i) => (
