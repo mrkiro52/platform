@@ -1,6 +1,7 @@
 import { useParams, useNavigate } from 'react-router-dom'
 import { findAutumnWeek } from '../data/autumnWeeks'
 import LevelTest from '../components/LevelTest'
+import WeekMaterials from '../components/WeekMaterials'
 
 export default function AutumnWeekPage({ user }) {
   const { week: slug } = useParams()
@@ -36,7 +37,12 @@ export default function AutumnWeekPage({ user }) {
       </div>
 
       {week.number === 1 ? (
-        <LevelTest participant={user?.nickname || user?.name} />
+        <>
+          <LevelTest participant={user?.nickname || user?.name} />
+          <div style={{ marginTop: 28 }}>
+            <WeekMaterials />
+          </div>
+        </>
       ) : (
         <div className="widget">
           <p style={{ margin: 0, fontSize: 13.5, color: 'var(--text-secondary)', lineHeight: 1.6 }}>

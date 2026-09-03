@@ -985,6 +985,30 @@ img { max-width: 100%; display: block; }
   .autumn-toggle-btn { width: 100%; }
 }
 
+/* Материалы недели: пагинация квадратиками + карточки внутри главы */
+.material-pager { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
+.material-dot {
+  width: 38px; height: 38px; flex-shrink: 0; border-radius: 10px; cursor: pointer;
+  background: var(--bg-tertiary); border: 1px solid var(--border-color);
+  color: var(--text-tertiary); font-family: var(--font-syne); font-size: 12.5px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+.material-dot:hover { border-color: rgba(255,140,66,0.5); color: #FFB870; }
+.material-dot.is-visited {
+  background: rgba(255,140,66,0.16); border-color: rgba(255,140,66,0.35); color: rgba(255,184,112,0.75);
+}
+.material-dot.is-active {
+  background: var(--accent-lime); border-color: var(--accent-lime); color: var(--on-accent);
+  box-shadow: 0 0 14px rgba(255,214,10,0.25);
+}
+
+.material-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; margin-bottom: 14px; }
+@media (max-width: 480px) {
+  .material-cards { grid-template-columns: 1fr; }
+  .material-dot { width: 34px; height: 34px; font-size: 12px; }
+}
+
 /* Групповые созвоны: карточки равной ширины в пределах одного месяца */
 .calls-grid { display: grid; grid-template-columns: repeat(var(--calls-count, 1), 1fr); gap: 10px; }
 @media (max-width: 768px) { .calls-grid { grid-template-columns: repeat(2, 1fr); } }
