@@ -273,6 +273,82 @@ function Quiz({ quiz, chapterId }) {
   )
 }
 
+function HintButton({ hint }) {
+  const [open, setOpen] = useState(false)
+  return (
+    <div style={{ marginTop: 8 }}>
+      <button
+        onClick={() => setOpen(o => !o)}
+        style={{
+          background: 'transparent', border: '1px solid rgba(255,140,66,0.4)', color: '#FFB870',
+          borderRadius: 'var(--radius-pill)', padding: '5px 14px', fontSize: 12, fontWeight: 700,
+          cursor: 'pointer', fontFamily: 'var(--font-syne)',
+        }}
+      >
+        {open ? 'Скрыть подсказку' : 'Подсказка'}
+      </button>
+      <div className={`collapse-wrap${open ? ' open' : ''}`}>
+        <div className="collapse-inner">
+          <p style={{ margin: '8px 0 0', fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.6, fontStyle: 'italic' }}>
+            {renderInline(hint)}
+          </p>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function Homework({ homework, weekNumber }) {
+  return (
+    <div className="widget" style={{ marginBottom: 16, border: '1px solid rgba(255,140,66,0.3)' }}>
+      <div style={{
+        fontFamily: 'var(--font-syne)', fontSize: 15, fontWeight: 700, color: '#FFB870', marginBottom: 14,
+      }}>
+        Домашнее задание — неделя {weekNumber} — номер {homework.number}
+      </div>
+
+      {homework.kind === 'simple' ? (
+        <p style={{ margin: 0, fontSize: 13.5, color: 'var(--text-secondary)', lineHeight: 1.7 }}>
+          {renderInline(homework.text)}
+        </p>
+      ) : (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+          {homework.tasks.map((task, i) => (
+            <div key={i} style={{
+              background: 'var(--bg-tertiary)', border: '1px solid var(--border-color)',
+              borderRadius: 'var(--radius-md)', padding: 14,
+            }}>
+              <div style={{ display: 'flex', gap: 8, alignItems: 'baseline', marginBottom: 4 }}>
+                <span style={{ fontFamily: 'var(--font-syne)', fontSize: 13, fontWeight: 700, color: 'var(--text-primary)' }}>
+                  Задача {i + 1}
+                </span>
+                <span style={{ fontSize: 10.5, color: 'var(--text-tertiary)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                  {i < 3 ? 'базовый уровень' : 'средний уровень'}
+                </span>
+              </div>
+              <p style={{ margin: 0, fontSize: 13.5, color: 'var(--text-secondary)', lineHeight: 1.6 }}>
+                {renderInline(task.text)}
+              </p>
+              <HintButton hint={task.hint} />
+            </div>
+          ))}
+        </div>
+      )}
+
+      <p style={{
+        margin: '16px 0 0', paddingTop: 14, borderTop: '1px solid var(--border-color)',
+        fontSize: 13, color: 'var(--text-tertiary)', lineHeight: 1.6,
+      }}>
+        Готовое решение присылай в личные сообщения Ханилю в Telegram —{' '}
+        <a href="https://t.me/x_tap" target="_blank" rel="noopener" style={{ color: 'var(--accent-lime)', fontWeight: 600 }}>
+          t.me/x_tap
+        </a>
+        . Формат любой, какой удобен: файлом или текстом. Подпиши, что это домашнее задание недели {weekNumber}, номер {homework.number}.
+      </p>
+    </div>
+  )
+}
+
 export default function WeekMaterials() {
   const [active, setActive] = useState(0)
   const [visited, setVisited] = useState(loadVisited)
@@ -353,6 +429,10 @@ export default function WeekMaterials() {
       <div style={{ marginBottom: 16 }}>
         <Quiz quiz={chapter.quiz} chapterId={chapter.id} />
       </div>
+
+      {chapter.homework && (
+        <Homework homework={chapter.homework} weekNumber={1} />
+      )}
 
       {/* Навигация по главам */}
       <div className="widget" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap' }}>
