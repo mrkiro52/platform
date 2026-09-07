@@ -1009,6 +1009,31 @@ img { max-width: 100%; display: block; }
   .material-dot { width: 34px; height: 34px; font-size: 12px; }
 }
 
+/* Неделя 2: выбор уровня программы */
+.week-levels { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.week-level-card {
+  display: flex; flex-direction: column; gap: 6px; text-align: left;
+  background: var(--bg-tertiary); border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg); padding: 16px; cursor: pointer;
+  font-family: inherit; transition: border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
+}
+.week-level-card:hover { border-color: rgba(255,140,66,0.5); background: rgba(255,140,66,0.06); transform: translateY(-2px); }
+.week-level-card.is-active { border-color: rgba(255,140,66,0.7); background: rgba(255,140,66,0.1); }
+.week-level-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 2px; }
+.week-level-num {
+  font-family: var(--font-syne); font-size: 10.5px; font-weight: 700;
+  letter-spacing: 0.06em; text-transform: uppercase; color: #FFB870;
+}
+.week-level-title { font-family: var(--font-syne); font-size: 16px; font-weight: 700; color: var(--text-primary); }
+.week-level-subtitle { font-size: 12px; color: var(--text-tertiary); }
+.week-level-goal { margin-top: 6px; font-size: 13px; font-weight: 600; color: var(--text-primary); line-height: 1.5; }
+.week-level-detail { font-size: 12.5px; color: var(--text-secondary); line-height: 1.55; }
+.week-level-count {
+  margin-top: auto; padding-top: 10px; font-size: 11.5px; font-weight: 700;
+  font-family: var(--font-syne); color: var(--text-tertiary);
+}
+@media (max-width: 768px) { .week-levels { grid-template-columns: 1fr; } }
+
 /* Групповые созвоны: карточки равной ширины в пределах одного месяца */
 .calls-grid { display: grid; grid-template-columns: repeat(var(--calls-count, 1), 1fr); gap: 10px; }
 @media (max-width: 768px) { .calls-grid { grid-template-columns: repeat(2, 1fr); } }

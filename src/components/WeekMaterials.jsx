@@ -1,19 +1,42 @@
 import { useState, useEffect } from 'react'
-import { WEEK1_CHAPTERS, WEEK1_TITLE } from '../data/week1Materials'
 import MultiPartVideo, { PYTHON_BASICS_PARTS } from './MultiPartVideo'
 
 const VIDEO_SETS = {
   'python-basics': PYTHON_BASICS_PARTS,
 }
 
-const VISITED_KEY = 'kiro_week1_visited'
-
-function loadVisited() {
+function loadVisited(storageKey) {
   try {
-    return new Set(JSON.parse(localStorage.getItem(VISITED_KEY)) || [])
+    return new Set(JSON.parse(localStorage.getItem(storageKey)) || [])
   } catch {
     return new Set()
   }
+}
+
+// Метка сложности главы: три кружка
+const DIFFICULTY = {
+  easy:   { label: 'лёгкая',  dots: ['#3FB950', '#3a3a44', '#3a3a44'] },
+  medium: { label: 'средняя', dots: ['#FFD60A', '#FFD60A', '#3a3a44'] },
+  hard:   { label: 'сложная', dots: ['#FF5F5F', '#FF5F5F', '#FF5F5F'] },
+}
+
+function DifficultyBadge({ level, showLabel = true }) {
+  const cfg = DIFFICULTY[level]
+  if (!cfg) return null
+  return (
+    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, flexShrink: 0 }} title={`Сложность: ${cfg.label}`}>
+      <span style={{ display: 'inline-flex', gap: 3 }}>
+        {cfg.dots.map((color, i) => (
+          <span key={i} style={{ width: 8, height: 8, borderRadius: '50%', background: color, display: 'block' }} />
+        ))}
+      </span>
+      {showLabel && (
+        <span style={{ fontSize: 11, color: 'var(--text-tertiary)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+          {cfg.label}
+        </span>
+      )}
+    </span>
+  )
 }
 
 // Инлайн-разметка внутри текста: **жирный** и `код`
@@ -298,7 +321,7 @@ function HintButton({ hint }) {
   )
 }
 
-function Homework({ homework, weekNumber }) {
+function Homework({ homework, weekNumber, submitFormat = 'free' }) {
   return (
     <div className="widget" style={{ marginBottom: 16, border: '1px solid rgba(255,140,66,0.3)' }}>
       <div style={{
@@ -343,46 +366,64 @@ function Homework({ homework, weekNumber }) {
         <a href="https://t.me/x_tap" target="_blank" rel="noopener" style={{ color: 'var(--accent-lime)', fontWeight: 600 }}>
           t.me/x_tap
         </a>
-        . Формат любой, какой удобен: файлом или текстом. Подпиши, что это домашнее задание недели {weekNumber}, номер {homework.number}.
+        {submitFormat === 'zip' ? (
+          <>
+            . По этой главе собери отдельный <b>.zip</b>-архив с пятью файлами <b>.py</b> — по одному на каждую
+            задачу: <code>task1.py</code>, <code>task2.py</code>, <code>task3.py</code>, <code>task4.py</code>,{' '}
+            <code>task5.py</code>. В названии архива укажи, что это неделя {weekNumber}, номер {homework.number}.
+          </>
+        ) : (
+          <>. Формат любой, какой удобен: файлом или текстом. Подпиши, что это домашнее задание недели {weekNumber}, номер {homework.number}.</>
+        )}
       </p>
     </div>
   )
 }
 
-export default function WeekMaterials() {
+export default function WeekMaterials({
+  chapters,
+  title,
+  storageKey,
+  weekNumber = 1,
+  submitFormat = 'free',
+}) {
   const [active, setActive] = useState(0)
-  const [visited, setVisited] = useState(loadVisited)
+  const [visited, setVisited] = useState(() => loadVisited(storageKey))
 
-  const chapter = WEEK1_CHAPTERS[active]
+  const safeIndex = Math.min(active, chapters.length - 1)
+  const chapter = chapters[safeIndex]
 
   // Отмечаем главу посещённой при заходе на неё
   useEffect(() => {
+    if (!chapter) return
     setVisited(prev => {
       if (prev.has(chapter.id)) return prev
       const next = new Set(prev)
       next.add(chapter.id)
       try {
-        localStorage.setItem(VISITED_KEY, JSON.stringify([...next]))
+        localStorage.setItem(storageKey, JSON.stringify([...next]))
       } catch { /* приватный режим — прогресс просто не сохранится */ }
       return next
     })
-  }, [chapter.id])
+  }, [chapter?.id, storageKey])
 
   const go = index => {
     setActive(index)
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
+  if (!chapter) return null
+
   return (
     <div>
       <h2 style={{ marginTop: 0, marginBottom: 14, fontSize: 16, fontWeight: 700, color: 'var(--text-primary)' }}>
-        {WEEK1_TITLE}
+        {title}
       </h2>
 
       {/* Пагинация */}
       <div className="material-pager">
-        {WEEK1_CHAPTERS.map((ch, i) => {
-          const isActive = i === active
+        {chapters.map((ch, i) => {
+          const isActive = i === safeIndex
           const isVisited = visited.has(ch.id)
           return (
             <button
@@ -399,10 +440,16 @@ export default function WeekMaterials() {
 
       <div className="widget" style={{ marginBottom: 16 }}>
         <div style={{
-          fontFamily: 'var(--font-syne)', fontSize: 11, fontWeight: 700, color: '#FFB870',
-          textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 6,
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12,
+          flexWrap: 'wrap', marginBottom: 6,
         }}>
-          Глава {active + 1} из {WEEK1_CHAPTERS.length}
+          <div style={{
+            fontFamily: 'var(--font-syne)', fontSize: 11, fontWeight: 700, color: '#FFB870',
+            textTransform: 'uppercase', letterSpacing: '0.06em',
+          }}>
+            Глава {safeIndex + 1} из {chapters.length}
+          </div>
+          <DifficultyBadge level={chapter.difficulty} />
         </div>
         <h3 style={{ margin: '0 0 18px', fontFamily: 'var(--font-syne)', fontSize: 19, fontWeight: 700, color: 'var(--text-primary)' }}>
           {chapter.title}
@@ -431,37 +478,37 @@ export default function WeekMaterials() {
       </div>
 
       {chapter.homework && (
-        <Homework homework={chapter.homework} weekNumber={1} />
+        <Homework homework={chapter.homework} weekNumber={weekNumber} submitFormat={submitFormat} />
       )}
 
       {/* Навигация по главам */}
       <div className="widget" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap' }}>
         <button
-          onClick={() => go(active - 1)}
-          disabled={active === 0}
+          onClick={() => go(safeIndex - 1)}
+          disabled={safeIndex === 0}
           style={{
             background: 'transparent', border: '1px solid var(--border-color)',
-            color: active === 0 ? 'var(--text-tertiary)' : 'var(--text-secondary)',
+            color: safeIndex === 0 ? 'var(--text-tertiary)' : 'var(--text-secondary)',
             borderRadius: 12, padding: '10px 20px', fontSize: 13.5, fontWeight: 700,
-            cursor: active === 0 ? 'not-allowed' : 'pointer', opacity: active === 0 ? 0.5 : 1,
+            cursor: safeIndex === 0 ? 'not-allowed' : 'pointer', opacity: safeIndex === 0 ? 0.5 : 1,
           }}
         >
           ← Назад
         </button>
 
         <span style={{ fontSize: 12.5, color: 'var(--text-tertiary)' }}>
-          Пройдено {visited.size} из {WEEK1_CHAPTERS.length}
+          Пройдено {chapters.filter(c => visited.has(c.id)).length} из {chapters.length}
         </span>
 
-        {active < WEEK1_CHAPTERS.length - 1 ? (
+        {safeIndex < chapters.length - 1 ? (
           <button
-            onClick={() => go(active + 1)}
+            onClick={() => go(safeIndex + 1)}
             style={{
               background: 'var(--accent-lime)', color: 'var(--on-accent)', border: 'none',
               borderRadius: 12, padding: '10px 22px', fontSize: 13.5, fontWeight: 700, cursor: 'pointer',
             }}
           >
-            {WEEK1_CHAPTERS[active + 1].short} →
+            {chapters[safeIndex + 1].short} →
           </button>
         ) : (
           <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--success)' }}>
