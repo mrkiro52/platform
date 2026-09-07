@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import MultiPartVideo, { PYTHON_BASICS_PARTS } from './MultiPartVideo'
 import AlgoViz from './AlgoViz'
+import VideoPlayer from './VideoPlayer'
 
 const VIDEO_SETS = {
   'python-basics': PYTHON_BASICS_PARTS,
@@ -109,7 +110,7 @@ function Block({ block }) {
     return (
       <div style={{
         margin: '0 0 14px', padding: '12px 14px', borderRadius: 10,
-        background: 'rgba(255,140,66,0.08)', borderLeft: '3px solid rgba(255,140,66,0.6)',
+        background: 'rgba(255,140,66,0.08)', border: '1px solid rgba(255,140,66,0.22)',
         fontSize: 13.5, color: 'var(--text-secondary)', lineHeight: 1.7,
       }}>
         {renderInline(v)}
@@ -123,6 +124,14 @@ function Block({ block }) {
     return (
       <div style={{ marginBottom: 14 }}>
         <MultiPartVideo parts={parts} />
+      </div>
+    )
+  }
+
+  if (t === 'mp4') {
+    return (
+      <div style={{ marginBottom: 14 }}>
+        <VideoPlayer src={block.src} />
       </div>
     )
   }
