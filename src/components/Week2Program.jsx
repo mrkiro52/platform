@@ -95,7 +95,7 @@ export default function Week2Program() {
   return (
     <>
       <div className="widget" style={{ marginBottom: 16 }}>
-        <div className="widget-header">
+        <div className="widget-header" style={{ flexWrap: 'wrap', gap: 10 }}>
           <span className="widget-title">Твой уровень</span>
           <button
             type="button"
@@ -130,7 +130,8 @@ export default function Week2Program() {
         title={WEEK2_TITLE}
         storageKey="kiro_week2_visited"
         weekNumber={2}
-        submitFormat="zip"
+        submitFormat={chosen.id === 1 ? 'notebook' : 'zip'}
+        showCode={chosen.id !== 1}
       />
     </>
   )

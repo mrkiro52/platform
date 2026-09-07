@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import MultiPartVideo, { PYTHON_BASICS_PARTS } from './MultiPartVideo'
+import AlgoViz from './AlgoViz'
 
 const VIDEO_SETS = {
   'python-basics': PYTHON_BASICS_PARTS,
@@ -145,6 +146,10 @@ function Block({ block }) {
         </div>
       </a>
     )
+  }
+
+  if (t === 'viz') {
+    return <AlgoViz block={block} />
   }
 
   if (t === 'cards') {
@@ -366,7 +371,12 @@ function Homework({ homework, weekNumber, submitFormat = 'free' }) {
         <a href="https://t.me/x_tap" target="_blank" rel="noopener" style={{ color: 'var(--accent-lime)', fontWeight: 600 }}>
           t.me/x_tap
         </a>
-        {submitFormat === 'zip' ? (
+        {submitFormat === 'notebook' ? (
+          <>
+            . Решай в тетради от руки, а потом сфотографируй страницы и пришли фото. Ничего писать
+            на компьютере не нужно. Подпиши, что это неделя {weekNumber}, номер {homework.number}.
+          </>
+        ) : submitFormat === 'zip' ? (
           <>
             . По этой главе собери отдельный <b>.zip</b>-архив с пятью файлами <b>.py</b> — по одному на каждую
             задачу: <code>task1.py</code>, <code>task2.py</code>, <code>task3.py</code>, <code>task4.py</code>,{' '}
@@ -386,6 +396,7 @@ export default function WeekMaterials({
   storageKey,
   weekNumber = 1,
   submitFormat = 'free',
+  showCode = true,
 }) {
   const [active, setActive] = useState(0)
   const [visited, setVisited] = useState(() => loadVisited(storageKey))
@@ -455,7 +466,9 @@ export default function WeekMaterials({
           {chapter.title}
         </h3>
 
-        {chapter.blocks.map((block, i) => <Block key={i} block={block} />)}
+        {chapter.blocks
+          .filter(block => showCode || !block.codeOnly)
+          .map((block, i) => <Block key={i} block={block} />)}
       </div>
 
       <div className="widget" style={{ marginBottom: 16 }}>
@@ -467,18 +480,22 @@ export default function WeekMaterials({
           По клику на вопрос показывается ответ, по клику ещё раз — скрывается обратно.
         </p>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-          {chapter.selfCheck.map((item, i) => (
+          {(showCode ? chapter.selfCheck : (chapter.selfCheckPaper || chapter.selfCheck)).map((item, i) => (
             <SelfCheckItem key={`${chapter.id}-${i}`} item={item} index={i} />
           ))}
         </div>
       </div>
 
       <div style={{ marginBottom: 16 }}>
-        <Quiz quiz={chapter.quiz} chapterId={chapter.id} />
+        <Quiz quiz={showCode ? chapter.quiz : (chapter.quizPaper || chapter.quiz)} chapterId={chapter.id} />
       </div>
 
       {chapter.homework && (
-        <Homework homework={chapter.homework} weekNumber={weekNumber} submitFormat={submitFormat} />
+        <Homework
+          homework={submitFormat === 'notebook' && chapter.homeworkPaper ? chapter.homeworkPaper : chapter.homework}
+          weekNumber={weekNumber}
+          submitFormat={submitFormat}
+        />
       )}
 
       {/* Навигация по главам */}
