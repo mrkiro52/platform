@@ -1032,6 +1032,56 @@ img { max-width: 100%; display: block; }
   background: rgba(255,140,66,0.08); border: 1px solid rgba(255,140,66,0.3);
   font-size: 13px; color: var(--text-secondary); line-height: 1.6;
 }
+
+/* Статус запроса: пока идёт бронирование — спиннер, после успеха — галочка.
+   Человек не должен гадать, поймалось ли нажатие. */
+.call-status {
+  display: flex; align-items: center; gap: 9px;
+  margin-bottom: 14px; padding: 10px 14px; border-radius: var(--radius-md);
+  font-size: 13px; line-height: 1.5; font-weight: 600;
+}
+.call-status.is-busy {
+  background: rgba(255,214,10,0.08); border: 1px solid rgba(255,214,10,0.3);
+  color: var(--accent-lime);
+}
+.call-status.is-success {
+  background: var(--success-dim); border: 1px solid rgba(63,185,80,0.4);
+  color: #7EE787; animation: slideUp 0.25s ease;
+}
+.call-status-check {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 18px; height: 18px; border-radius: 50%; flex-shrink: 0;
+  background: rgba(63,185,80,0.25); font-size: 11px; font-weight: 700;
+}
+
+.call-spinner {
+  display: inline-block; width: 13px; height: 13px; flex-shrink: 0;
+  border: 2px solid currentColor; border-right-color: transparent;
+  border-radius: 50%; animation: callSpin 0.7s linear infinite;
+}
+@keyframes callSpin { to { transform: rotate(360deg); } }
+
+/* Слот, по которому идёт запрос — подсвечен, остальные приглушены,
+   чтобы было видно, куда именно нажали. */
+.call-slot-btn.is-pending {
+  background: rgba(255,214,10,0.10); border-color: rgba(255,214,10,0.55);
+  color: var(--accent-lime); cursor: progress;
+}
+.call-slot-btn.is-pending .call-slot-note {
+  display: inline-flex; align-items: center; gap: 6px; color: var(--accent-lime);
+}
+.call-slot-btn.is-dimmed { opacity: 0.4; cursor: default; }
+.call-slot-btn.is-just-done { animation: callPop 0.45s ease; }
+@keyframes callPop {
+  0%   { transform: scale(1);    box-shadow: 0 0 0 0 rgba(63,185,80,0.5); }
+  45%  { transform: scale(1.04); box-shadow: 0 0 0 7px rgba(63,185,80,0); }
+  100% { transform: scale(1);    box-shadow: 0 0 0 0 rgba(63,185,80,0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .call-spinner { animation-duration: 1.6s; }
+  .call-slot-btn.is-just-done { animation: none; }
+}
 .call-empty-note { font-size: 13px; color: var(--text-tertiary); }
 
 .call-day-block { border-top: 1px solid var(--border-color); padding-top: 12px; margin-top: 12px; }

@@ -14,18 +14,38 @@ function humanDate(iso) {
   return `${d.getDate()} ${MONTHS[d.getMonth()]}, ${WEEKDAYS[d.getDay()]}`
 }
 
-function Slot({ slot, busy, onBook, onCancel }) {
+function Spinner() {
+  return <span className="call-spinner" aria-hidden="true" />
+}
+
+function Slot({ slot, pending, justDone, dimmed, onBook, onCancel }) {
+  // Слот, по которому прямо сейчас идёт запрос: спиннер и подпись,
+  // чтобы человек видел, что нажатие поймано и что-то происходит.
+  if (pending) {
+    return (
+      <span className="call-slot-btn is-pending" aria-busy="true">
+        <span className="call-slot-time">{slotLabel(slot.hour)}</span>
+        <span className="call-slot-note">
+          <Spinner />
+          {pending === 'cancel' ? 'отменяем…' : 'бронируем…'}
+        </span>
+      </span>
+    )
+  }
+
   if (slot.mine) {
     return (
       <button
         type="button"
-        className="call-slot-btn is-mine"
-        disabled={busy}
+        className={`call-slot-btn is-mine${justDone ? ' is-just-done' : ''}${dimmed ? ' is-dimmed' : ''}`}
+        disabled={dimmed}
         onClick={() => onCancel(slot.id)}
         title="Нажми, чтобы отменить свою запись"
       >
         <span className="call-slot-time">{slotLabel(slot.hour)}</span>
-        <span className="call-slot-note">твоя запись — отменить</span>
+        <span className="call-slot-note">
+          {justDone ? '✓ забронировано' : 'твоя запись — отменить'}
+        </span>
       </button>
     )
   }
@@ -42,8 +62,8 @@ function Slot({ slot, busy, onBook, onCancel }) {
   return (
     <button
       type="button"
-      className="call-slot-btn"
-      disabled={busy}
+      className={`call-slot-btn${dimmed ? ' is-dimmed' : ''}`}
+      disabled={dimmed}
       onClick={() => onBook(slot.id)}
     >
       <span className="call-slot-time">{slotLabel(slot.hour)}</span>
@@ -53,17 +73,40 @@ function Slot({ slot, busy, onBook, onCancel }) {
 }
 
 function Session({ session, onReplace }) {
-  const [busy, setBusy] = useState(false)
+  // pending — по какому слоту идёт запрос и какой именно ('book' | 'cancel').
+  // success — подтверждение после удачного ответа, само гаснет через 6 секунд.
+  const [pending, setPending] = useState(null)
+  const [success, setSuccess] = useState(null)
   const [warning, setWarning] = useState('')
 
+  const busy = pending !== null
   const mySlot = session.days.flatMap(d => d.slots.map(s => ({ ...s, date: d.date }))).find(s => s.mine)
 
+  // Подтверждение не висит вечно — но и не исчезает раньше, чем его прочитают.
+  useEffect(() => {
+    if (!success) return
+    const timer = setTimeout(() => setSuccess(null), 6000)
+    return () => clearTimeout(timer)
+  }, [success])
+
   const book = async (slotId) => {
-    setBusy(true)
+    setPending({ id: slotId, kind: 'book' })
     setWarning('')
+    setSuccess(null)
     try {
       const res = await api.bookSlot(slotId)
-      if (res.session) onReplace(res.session)
+      if (res.session) {
+        onReplace(res.session)
+        const booked = res.session.days
+          .flatMap(d => d.slots.map(x => ({ ...x, date: d.date })))
+          .find(x => x.mine)
+        setSuccess({
+          id: slotId,
+          text: booked
+            ? `Готово, ты записан: ${humanDate(booked.date)}, ${slotLabel(booked.hour)}`
+            : 'Готово, запись сохранена',
+        })
+      }
     } catch (err) {
       // 409 — слот успели занять, пока студент выбирал. Сервер отдаёт
       // свежий набор, поэтому сетка перерисовывается сразу с предупреждением.
@@ -78,20 +121,24 @@ function Session({ session, onReplace }) {
         setWarning(err.message || 'Не получилось записаться, попробуй ещё раз')
       }
     } finally {
-      setBusy(false)
+      setPending(null)
     }
   }
 
   const cancel = async (slotId) => {
-    setBusy(true)
+    setPending({ id: slotId, kind: 'cancel' })
     setWarning('')
+    setSuccess(null)
     try {
       const res = await api.cancelSlot(slotId)
-      if (res.session) onReplace(res.session)
+      if (res.session) {
+        onReplace(res.session)
+        setSuccess({ id: null, text: 'Запись отменена — слот снова свободен' })
+      }
     } catch (err) {
       setWarning(err.message || 'Не получилось отменить запись')
     } finally {
-      setBusy(false)
+      setPending(null)
     }
   }
 
@@ -113,6 +160,20 @@ function Session({ session, onReplace }) {
         {mySlot && <span className="badge badge--green">записан</span>}
       </div>
 
+      {busy && (
+        <div className="call-status is-busy" role="status">
+          <Spinner />
+          {pending.kind === 'cancel' ? 'Отменяем запись…' : 'Бронируем слот…'}
+        </div>
+      )}
+
+      {success && !busy && (
+        <div className="call-status is-success" role="status">
+          <span className="call-status-check" aria-hidden="true">✓</span>
+          {success.text}
+        </div>
+      )}
+
       {warning && <div className="call-warning">{warning}</div>}
 
       {session.days.length === 0 ? (
@@ -123,7 +184,15 @@ function Session({ session, onReplace }) {
             <div className="call-day-title">{humanDate(day.date)}</div>
             <div className="call-slots">
               {day.slots.map(slot => (
-                <Slot key={slot.id} slot={slot} busy={busy} onBook={book} onCancel={cancel} />
+                <Slot
+                  key={slot.id}
+                  slot={slot}
+                  pending={pending && pending.id === slot.id ? pending.kind : null}
+                  justDone={!!success && success.id !== null && slot.mine}
+                  dimmed={busy && (!pending || pending.id !== slot.id)}
+                  onBook={book}
+                  onCancel={cancel}
+                />
               ))}
             </div>
           </div>
