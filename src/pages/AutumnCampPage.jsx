@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { AUTUMN_WEEK_MONTHS, currentAutumnWeek } from '../data/autumnWeeks'
+import CallBooking from '../components/CallBooking'
 
 const OS_INSTALL = {
   vscode: [
@@ -286,6 +287,7 @@ function WeekMaterials({ onOpenWeek, currentSlug }) {
 }
 
 export default function AutumnCampPage() {
+  const [bookingOpen, setBookingOpen] = useState(true)
   const navigate = useNavigate()
   const [open, setOpen] = useState(isSept1or2)
   const [callsOpen, setCallsOpen] = useState(isSept1or2)
@@ -384,7 +386,7 @@ export default function AutumnCampPage() {
         <AutumnProgress />
       </div>
 
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
+      <div className="autumn-section-head">
         <h2 style={{ margin: 0, fontSize: 16, fontWeight: 700, color: 'var(--text-primary)' }}>
           Групповые созвоны
         </h2>
@@ -397,6 +399,23 @@ export default function AutumnCampPage() {
         <div className="collapse-inner">
           <div className="widget">
             <GroupCalls />
+          </div>
+        </div>
+      </div>
+
+      <div className="autumn-section-head">
+        <h2 style={{ margin: 0, fontSize: 16, fontWeight: 700, color: 'var(--text-primary)' }}>
+          Запись на созвон
+        </h2>
+        <button className="autumn-toggle-btn" onClick={() => setBookingOpen(o => !o)}>
+          {bookingOpen ? 'Свернуть' : 'Открыть'}
+          <ChevronIcon open={bookingOpen} />
+        </button>
+      </div>
+      <div className={`collapse-wrap${bookingOpen ? ' open' : ''}`} style={{ marginBottom: 28 }}>
+        <div className="collapse-inner">
+          <div className="widget">
+            <CallBooking />
           </div>
         </div>
       </div>

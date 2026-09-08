@@ -174,6 +174,53 @@ textarea::placeholder{color:var(--text3)}
 .indiv-popup-btns{display:flex;gap:10px;justify-content:center}
 .indiv-popup-btns .btn-lime{width:auto}
 
+/* ─── СОЗВОНЫ ────────────────────────────── */
+.call-session{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-md);padding:18px;margin-bottom:14px}
+.call-session-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:16px}
+.call-session-title{font-family:var(--font-syne);font-size:15px;font-weight:700;color:var(--text)}
+.call-session-meta{font-size:12px;color:var(--text3);margin-top:3px}
+
+/* переключатель открыт/закрыт */
+.switch{display:inline-flex;align-items:center;gap:9px;cursor:pointer;flex-shrink:0}
+.switch input{position:absolute;opacity:0;width:0;height:0}
+.switch-track{width:42px;height:24px;border-radius:var(--r-pill);background:var(--bg3);border:1px solid var(--border);position:relative;transition:background .2s,border-color .2s;flex-shrink:0}
+.switch-knob{position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:var(--text3);transition:transform .2s,background .2s}
+.switch input:checked + .switch-track{background:rgba(255,214,10,.2);border-color:var(--lime)}
+.switch input:checked + .switch-track .switch-knob{transform:translateX(18px);background:var(--lime)}
+.switch-label{font-size:12px;font-weight:600;color:var(--text2)}
+.switch input:checked ~ .switch-label{color:var(--lime)}
+
+.call-days-label{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px}
+.call-day-picker{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:18px}
+.call-day{position:relative;width:36px;height:36px;border-radius:var(--r-sm);border:1px solid var(--border);background:var(--bg3);color:var(--text2);font-size:12.5px;font-weight:600;font-family:var(--font-inter);cursor:pointer;transition:border-color .15s,background .15s,color .15s}
+.call-day:hover{border-color:rgba(255,214,10,.5);color:var(--text)}
+.call-day.on{background:rgba(255,214,10,.12);border-color:var(--lime);color:var(--lime)}
+.call-day i{position:absolute;top:-5px;right:-5px;background:var(--lime);color:var(--on-accent);font-style:normal;font-size:9px;font-weight:700;border-radius:var(--r-pill);min-width:15px;height:15px;line-height:15px;padding:0 3px}
+
+.call-day-row{border-top:1px solid var(--border);padding-top:14px;margin-bottom:14px}
+.call-day-name{display:flex;align-items:center;gap:10px;font-size:13px;font-weight:700;color:var(--text);margin-bottom:9px}
+.call-day-all{font-size:11px;font-weight:600;color:var(--text3);background:none;border:none;cursor:pointer;padding:0;transition:color .15s}
+.call-day-all:hover{color:var(--lime)}
+.call-slot-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:6px}
+.call-slot{position:relative;padding:8px 6px;border-radius:var(--r-sm);border:1px solid var(--border);background:var(--bg3);color:var(--text2);font-size:11.5px;font-weight:600;font-family:var(--font-mono);cursor:pointer;transition:border-color .15s,background .15s,color .15s}
+.call-slot:hover:not(:disabled){border-color:rgba(255,214,10,.5);color:var(--text)}
+.call-slot.on{background:rgba(255,214,10,.12);border-color:var(--lime);color:var(--lime)}
+.call-slot.locked{cursor:not-allowed;background:rgba(63,185,80,.1);border-color:rgba(63,185,80,.4);color:var(--green)}
+.call-slot i{display:block;font-style:normal;font-size:10px;font-weight:500;margin-top:2px;opacity:.85;font-family:var(--font-inter)}
+.call-session-actions{display:flex;gap:10px;justify-content:flex-end;border-top:1px solid var(--border);padding-top:14px}
+.call-empty{padding:22px;text-align:center;color:var(--text3);font-size:13px}
+
+/* календарь созвонов */
+.call-cal-day{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-md);padding:18px;margin-bottom:14px}
+.call-cal-date{font-family:var(--font-syne);font-size:14px;font-weight:700;color:var(--text);margin-bottom:12px}
+.call-cal-slots{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px}
+.call-cal-slot{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r-sm);padding:12px}
+.call-cal-slot.booked{background:rgba(255,214,10,.07);border-color:rgba(255,214,10,.32)}
+.call-cal-time{font-family:var(--font-mono);font-size:12.5px;font-weight:600;color:var(--text2)}
+.call-cal-who{font-family:var(--font-syne);font-size:13px;font-weight:700;color:var(--text3);margin-top:5px}
+.call-cal-slot.booked .call-cal-who{color:var(--lime)}
+.call-cal-sess{font-size:11px;color:var(--text3);margin-top:3px}
+
 @media(max-width:768px){
   .sidebar{transform:translateX(calc(-1 * var(--sw)))}
   .sidebar.open{transform:translateX(0);box-shadow:var(--shadow-hover)}
@@ -186,6 +233,8 @@ textarea::placeholder{color:var(--text3)}
   .indiv-week-labels{padding-left:126px}
   .table-wrap{overflow-x:auto}
   #toast{left:16px;right:16px;bottom:16px}
+  .call-slot-grid{grid-template-columns:repeat(auto-fill,minmax(104px,1fr))}
+  .call-cal-slots{grid-template-columns:repeat(auto-fill,minmax(140px,1fr))}
 }
 </style>
 </head>
@@ -222,6 +271,8 @@ textarea::placeholder{color:var(--text3)}
       <button class="nav-item"        onclick="goto('links')">   <span class="nav-icon">🔗</span>Полезные ссылки</button>
       <button class="nav-item"        onclick="goto('announces')"><span class="nav-icon">📣</span>Объявления</button>
       <button class="nav-item"        onclick="goto('individs')"> <span class="nav-icon">🎯</span>Индивы</button>
+      <button class="nav-item"        onclick="goto('calls')">    <span class="nav-icon">🗓</span>Созвоны</button>
+      <button class="nav-item"        onclick="goto('callcal')">  <span class="nav-icon">📆</span>Календарь созвонов</button>
     </nav>
     <div class="sb-foot">
       <button class="nav-item" onclick="logout()"><span class="nav-icon">⇥</span>Выйти</button>
@@ -317,6 +368,29 @@ textarea::placeholder{color:var(--text3)}
       <div id="individs-list"></div>
     </div>
 
+    <!-- ── WEEKLY CALLS ── -->
+    <div id="sec-calls" class="section">
+      <div class="section-header">
+        <div>
+          <div class="section-title">Созвоны</div>
+          <div class="section-sub">12 наборов — по 4 на сентябрь, октябрь и ноябрь. Открытый набор виден участникам осеннего лагеря</div>
+        </div>
+      </div>
+      <div id="calls-list"></div>
+    </div>
+
+    <!-- ── CALLS CALENDAR ── -->
+    <div id="sec-callcal" class="section">
+      <div class="section-header">
+        <div>
+          <div class="section-title">Календарь созвонов</div>
+          <div class="section-sub">Все выставленные слоты по дням — с никами тех, кто записался</div>
+        </div>
+        <button class="btn-lime" style="width:auto" onclick="loadCallCalendar()">Обновить</button>
+      </div>
+      <div id="callcal-list"></div>
+    </div>
+
   </div><!-- /content -->
 </div><!-- /app -->
 
@@ -401,7 +475,7 @@ function toast(msg, type='ok') {
 }
 
 // ── Navigation ────────────────────────────────────────────────────────────
-const LOADERS = { dashboard:loadDashboard, users:loadUsers, schedule:loadSchedule, library:loadLibrary, links:loadLinks, announces:loadAnnounces }
+const LOADERS = { dashboard:loadDashboard, users:loadUsers, schedule:loadSchedule, library:loadLibrary, links:loadLinks, announces:loadAnnounces, calls:loadCalls, callcal:loadCallCalendar }
 function goto(sec) {
   document.querySelectorAll('.section').forEach(s => s.classList.remove('active'))
   document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'))
@@ -1035,6 +1109,229 @@ document.getElementById('indiv-popup').addEventListener('click', e => {
 LOADERS['individs'] = loadIndivids
 
 // ── Utils ─────────────────────────────────────────────────────────────────
+// ══════════════ СОЗВОНЫ ══════════════════════════════════════════════════
+// Слоты часовые: 08:00–09:00 … 22:00–23:00
+const CALL_HOURS = Array.from({ length: 15 }, (_, i) => i + 8)
+const MONTH_DAYS = { 9: 30, 10: 31, 11: 30 }
+const WD = ['вс', 'пн', 'вт', 'ср', 'чт', 'пт', 'сб']
+
+let CALLS = []            // наборы, как пришли с сервера
+let callDraft = {}        // id набора -> { 'YYYY-MM-DD': Set(часы) } — несохранённые правки
+
+function pad(n) { return String(n).padStart(2, '0') }
+function slotLabel(h) { return `${pad(h)}:00–${pad(h + 1)}:00` }
+function dateKey(month, day) { return `2026-${pad(month)}-${pad(day)}` }
+function humanDate(iso) {
+  const d = new Date(iso + 'T00:00:00')
+  const months = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря']
+  return `${d.getDate()} ${months[d.getMonth()]}, ${WD[d.getDay()]}`
+}
+
+// Черновик собирается из того, что уже сохранено на сервере
+function draftFrom(session) {
+  const draft = {}
+  for (const day of session.days) draft[day.date] = new Set(day.slots.map(s => s.hour))
+  return draft
+}
+
+// Занятые слоты нельзя снять — иначе бронь студента исчезнет молча
+function bookedHours(session, date) {
+  const day = session.days.find(d => d.date === date)
+  return new Set((day ? day.slots : []).filter(s => s.taken).map(s => s.hour))
+}
+
+async function loadCalls() {
+  CALLS = await req('/api/calls/admin/sessions')
+  callDraft = {}
+  for (const s of CALLS) callDraft[s.id] = draftFrom(s)
+  renderCalls()
+}
+
+function renderCalls() {
+  document.getElementById('calls-list').innerHTML = CALLS.map(renderCallSession).join('')
+}
+
+function renderCallSession(session) {
+  const draft = callDraft[session.id] || {}
+  const dates = Object.keys(draft).sort()
+  const totalSlots = dates.reduce((sum, d) => sum + draft[d].size, 0)
+  const booked = session.days.flatMap(d => d.slots).filter(s => s.taken).length
+
+  return `
+    <div class="call-session">
+      <div class="call-session-head">
+        <div>
+          <div class="call-session-title">${esc(session.title)}</div>
+          <div class="call-session-meta">
+            ${totalSlots} ${plural(totalSlots, 'слот', 'слота', 'слотов')} в ${dates.length} ${plural(dates.length, 'день', 'дня', 'дней')}
+            ${booked ? ` · <span style="color:var(--lime)">${booked} ${plural(booked, 'бронь', 'брони', 'броней')}</span>` : ''}
+          </div>
+        </div>
+        <label class="switch">
+          <input type="checkbox" ${session.isOpen ? 'checked' : ''} onchange="toggleCallSession(${session.id}, this.checked)"/>
+          <span class="switch-track"><span class="switch-knob"></span></span>
+          <span class="switch-label">${session.isOpen ? 'Открыт' : 'Закрыт'}</span>
+        </label>
+      </div>
+
+      <div class="call-days">
+        <div class="call-days-label">Дни месяца — нажми, чтобы добавить или убрать</div>
+        <div class="call-day-picker">
+          ${Array.from({ length: MONTH_DAYS[session.month] }, (_, i) => i + 1).map(day => {
+            const key = dateKey(session.month, day)
+            const on = !!draft[key]
+            const has = on ? draft[key].size : 0
+            return `<button class="call-day${on ? ' on' : ''}" onclick="toggleCallDay(${session.id}, '${key}')" title="${humanDate(key)}">
+              ${day}${has ? `<i>${has}</i>` : ''}
+            </button>`
+          }).join('')}
+        </div>
+      </div>
+
+      ${dates.length ? dates.map(date => renderCallDaySlots(session, date)).join('') : '<div class="call-empty">Дни не выбраны</div>'}
+
+      <div class="call-session-actions">
+        <button class="btn-ghost" onclick="loadCalls()">Сбросить</button>
+        <button class="btn-lime" style="width:auto" onclick="saveCallSlots(${session.id})">Сохранить слоты</button>
+      </div>
+    </div>`
+}
+
+function renderCallDaySlots(session, date) {
+  const chosen = callDraft[session.id][date]
+  const locked = bookedHours(session, date)
+  const dayInfo = session.days.find(d => d.date === date)
+
+  return `
+    <div class="call-day-row">
+      <div class="call-day-name">
+        ${humanDate(date)}
+        <button class="call-day-all" onclick="toggleAllHours(${session.id}, '${date}')">все / ничего</button>
+      </div>
+      <div class="call-slot-grid">
+        ${CALL_HOURS.map(h => {
+          const on = chosen.has(h)
+          const isLocked = locked.has(h)
+          const who = isLocked && dayInfo ? (dayInfo.slots.find(s => s.hour === h) || {}).nickname : null
+          return `<button class="call-slot${on ? ' on' : ''}${isLocked ? ' locked' : ''}"
+                    ${isLocked ? 'disabled' : ''}
+                    title="${isLocked ? 'Занято: ' + esc(who || '—') : slotLabel(h)}"
+                    onclick="toggleCallHour(${session.id}, '${date}', ${h})">
+            ${slotLabel(h)}${isLocked ? `<i>${esc(who || 'занято')}</i>` : ''}
+          </button>`
+        }).join('')}
+      </div>
+    </div>`
+}
+
+function toggleCallDay(sessionId, date) {
+  const draft = callDraft[sessionId]
+  const session = CALLS.find(s => s.id === sessionId)
+  if (draft[date]) {
+    const locked = bookedHours(session, date)
+    if (locked.size) return toast('В этот день есть брони — сначала сними их в календаре', 'err')
+    delete draft[date]
+  } else {
+    draft[date] = new Set()
+  }
+  renderCalls()
+}
+
+function toggleCallHour(sessionId, date, hour) {
+  const set = callDraft[sessionId][date]
+  if (set.has(hour)) set.delete(hour)
+  else set.add(hour)
+  renderCalls()
+}
+
+function toggleAllHours(sessionId, date) {
+  const set = callDraft[sessionId][date]
+  const locked = bookedHours(CALLS.find(s => s.id === sessionId), date)
+  if (set.size === CALL_HOURS.length) {
+    callDraft[sessionId][date] = new Set(locked)   // занятые оставляем
+  } else {
+    callDraft[sessionId][date] = new Set(CALL_HOURS)
+  }
+  renderCalls()
+}
+
+async function toggleCallSession(sessionId, isOpen) {
+  try {
+    await req(`/api/calls/admin/sessions/${sessionId}`, 'PATCH', { isOpen })
+    const session = CALLS.find(s => s.id === sessionId)
+    session.isOpen = isOpen
+    renderCalls()
+    toast(isOpen ? 'Набор открыт для записи' : 'Набор закрыт')
+  } catch (e) {
+    toast('Не удалось переключить: ' + e.message, 'err')
+    loadCalls()
+  }
+}
+
+async function saveCallSlots(sessionId) {
+  const draft = callDraft[sessionId]
+  const days = Object.keys(draft).sort().map(date => ({ date, hours: [...draft[date]].sort((a, b) => a - b) }))
+  try {
+    const res = await req(`/api/calls/admin/sessions/${sessionId}/slots`, 'PUT', { days })
+    const session = CALLS.find(s => s.id === sessionId)
+    session.days = res.days
+    callDraft[sessionId] = draftFrom(session)
+    renderCalls()
+    if (res.keptBooked && res.keptBooked.length) {
+      toast(`Сохранено. ${res.keptBooked.length} занятых слотов оставлены как есть`, 'err')
+    } else {
+      toast('Слоты сохранены')
+    }
+  } catch (e) {
+    toast('Не сохранилось: ' + e.message, 'err')
+  }
+}
+
+// ── Календарь созвонов ────────────────────────────────────────────────────
+async function loadCallCalendar() {
+  const days = await req('/api/calls/admin/calendar')
+  const el = document.getElementById('callcal-list')
+
+  if (!days.length) {
+    el.innerHTML = '<div class="call-empty">Слотов пока нет — выстави их в разделе «Созвоны»</div>'
+    return
+  }
+
+  el.innerHTML = days.map(day => `
+    <div class="call-cal-day">
+      <div class="call-cal-date">${humanDate(day.date)}</div>
+      <div class="call-cal-slots">
+        ${day.slots.map(s => `
+          <div class="call-cal-slot${s.nickname ? ' booked' : ''}">
+            <div class="call-cal-time">${slotLabel(s.hour)}</div>
+            <div class="call-cal-who">${s.nickname ? esc(s.nickname) : 'свободен'}</div>
+            <div class="call-cal-sess">${esc(s.sessionTitle)}</div>
+            ${s.nickname ? `<button class="btn-danger" style="margin-top:8px" onclick="freeCallSlot(${s.id})">Снять бронь</button>` : ''}
+          </div>`).join('')}
+      </div>
+    </div>`).join('')
+}
+
+async function freeCallSlot(slotId) {
+  if (!confirm('Снять бронь с этого слота?')) return
+  try {
+    await req(`/api/calls/admin/slots/${slotId}/booking`, 'DELETE')
+    toast('Бронь снята')
+    loadCallCalendar()
+  } catch (e) {
+    toast('Не удалось: ' + e.message, 'err')
+  }
+}
+
+function plural(n, one, few, many) {
+  const mod100 = n % 100
+  if (mod100 >= 11 && mod100 <= 14) return many
+  const mod10 = n % 10
+  if (mod10 === 1) return one
+  if (mod10 >= 2 && mod10 <= 4) return few
+  return many
+}
+
 function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;') }
 </script>
 </body>

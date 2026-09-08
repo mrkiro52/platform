@@ -640,6 +640,64 @@ function migrate() {
       console.error('❌ Migration 18 failed:', err.message)
     }
   }
+
+  // Migration 19: еженедельные созвоны осеннего лагеря.
+  // Два новых объекта, существующие таблицы не трогаются:
+  //   call_sessions — 12 наборов (сентябрь/октябрь/ноябрь по 4), у каждого
+  //                   свой признак «открыт для записи»;
+  //   call_slots    — часовые слоты внутри набора: дата + час начала и
+  //                   ссылка на забронировавшего пользователя (NULL = свободен).
+  // Уникальный индекс (session_id, date, hour) не даёт создать один и тот же
+  // слот дважды, а UNIQUE + условный UPDATE в роуте закрывают гонку, когда
+  // два студента жмут «Забронировать» одновременно.
+  if (schemaVersion < 19) {
+    try {
+      db.prepare(`
+        CREATE TABLE IF NOT EXISTS call_sessions (
+          id       INTEGER PRIMARY KEY AUTOINCREMENT,
+          month    INTEGER NOT NULL,
+          idx      INTEGER NOT NULL,
+          title    TEXT    NOT NULL DEFAULT '',
+          is_open  INTEGER NOT NULL DEFAULT 0,
+          UNIQUE(month, idx)
+        )
+      `).run()
+
+      db.prepare(`
+        CREATE TABLE IF NOT EXISTS call_slots (
+          id         INTEGER PRIMARY KEY AUTOINCREMENT,
+          session_id INTEGER NOT NULL,
+          date       TEXT    NOT NULL,
+          hour       INTEGER NOT NULL,
+          booked_by  INTEGER,
+          booked_at  TEXT,
+          UNIQUE(session_id, date, hour),
+          FOREIGN KEY (session_id) REFERENCES call_sessions(id) ON DELETE CASCADE
+        )
+      `).run()
+
+      db.prepare('CREATE INDEX IF NOT EXISTS idx_call_slots_session ON call_slots(session_id)').run()
+      db.prepare('CREATE INDEX IF NOT EXISTS idx_call_slots_booked ON call_slots(booked_by)').run()
+
+      // 12 наборов создаём сразу — админу остаётся только открыть нужный
+      // и проставить дни со слотами. INSERT OR IGNORE защищает от повтора.
+      const MONTHS = { 9: 'Сентябрь', 10: 'Октябрь', 11: 'Ноябрь' }
+      const insert = db.prepare(
+        'INSERT OR IGNORE INTO call_sessions (month, idx, title, is_open) VALUES (?, ?, ?, 0)'
+      )
+      for (const month of [9, 10, 11]) {
+        for (let idx = 1; idx <= 4; idx++) {
+          insert.run(month, idx, `${MONTHS[month]} — созвон ${idx}`)
+        }
+      }
+
+      db.pragma('user_version = 19')
+      const total = db.prepare('SELECT COUNT(*) AS c FROM call_sessions').get().c
+      console.log(`✅ Migration 19 completed: added call_sessions (${total} наборов) and call_slots`)
+    } catch (err) {
+      console.error('❌ Migration 19 failed:', err.message)
+    }
+  }
 }
 
 migrate()

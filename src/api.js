@@ -79,6 +79,11 @@ export const api = {
   unreadMessages:   ()            => req('/api/messages/unread-count'),
 
   notifications:      ()  => req('/api/notifications'),
+
+  // Еженедельные созвоны осеннего лагеря
+  openCalls:    ()       => req('/api/calls/open'),
+  bookSlot:     (slotId) => req(`/api/calls/slots/${slotId}/book`, { method: 'POST' }),
+  cancelSlot:   (slotId) => req(`/api/calls/slots/${slotId}/book`, { method: 'DELETE' }),
   unreadNotifications:()  => req('/api/notifications/unread-count'),
   readNotifications:  ()  => req('/api/notifications/read', { method: 'POST' }),
 }
