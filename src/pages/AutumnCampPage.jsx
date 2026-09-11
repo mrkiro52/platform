@@ -1,29 +1,8 @@
-import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { AUTUMN_WEEK_MONTHS, currentAutumnWeek } from '../data/autumnWeeks'
 import CallBooking from '../components/CallBooking'
 import HomeworkPicker from '../components/HomeworkPicker'
 import { AUTUMN_MONTHS, CALL_MONTHS } from '../data/autumnCalls'
-
-// Онбординг и созвоны раскрыты по умолчанию только 1–2 сентября — потом сворачиваются
-function isSept1or2() {
-  const today = new Date()
-  const from = new Date(2026, 8, 1, 0, 0, 0)
-  const to = new Date(2026, 8, 2, 23, 59, 59)
-  return today >= from && today <= to
-}
-
-function ChevronIcon({ open }) {
-  return (
-    <svg
-      width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-      strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
-      style={{ transform: open ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.3s ease', pointerEvents: 'none', flexShrink: 0 }}
-    >
-      <path d="M6 9l6 6 6-6" />
-    </svg>
-  )
-}
 
 function AutumnProgress() {
   const today = new Date()
@@ -85,38 +64,20 @@ function GroupCalls() {
           </div>
           <div className="calls-grid" style={{ '--calls-count': m.calls.length }}>
             {m.calls.map(call => (
-              <div
-                key={call.day}
-                style={{
-                  background: 'var(--bg-tertiary)', border: '1px solid var(--border-color)',
-                  borderRadius: 'var(--radius-md)', padding: '14px 12px', textAlign: 'center',
-                }}
-              >
-                <div style={{ fontFamily: 'var(--font-syne)', fontSize: 20, fontWeight: 800, color: '#FFB870' }}>
-                  {call.day}
+              <div key={call.day} className="call-card">
+                <div className="call-card-date">
+                  <span className="call-card-day">{call.day}</span>
+                  <span className="call-card-month">{m.label.toLowerCase()}</span>
                 </div>
-                <div style={{ fontSize: 10.5, color: 'var(--text-tertiary)', textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: 8 }}>
-                  {m.label.toLowerCase()}
+                <div className="call-card-body">
+                  <div className="call-card-title">Групповой созвон</div>
+                  <div className="call-card-topic">Тема: {call.topic || 'будет скоро'}</div>
+                  {call.video && (
+                    <a href={call.video} target="_blank" rel="noopener" className="call-card-video">
+                      Запись созвона →
+                    </a>
+                  )}
                 </div>
-                <div style={{ fontFamily: 'var(--font-syne)', fontSize: 12, fontWeight: 700, color: 'var(--text-primary)' }}>
-                  Групповой созвон
-                </div>
-                <div style={{ fontSize: 11, color: 'var(--text-secondary)', marginTop: 4 }}>
-                  Тема: {call.topic || 'будет скоро'}
-                </div>
-                {call.video && (
-                  <a
-                    href={call.video}
-                    target="_blank"
-                    rel="noopener"
-                    style={{
-                      display: 'inline-block', marginTop: 8, fontSize: 11, fontWeight: 700,
-                      color: 'var(--accent-lime)', textDecoration: 'underline', wordBreak: 'break-all',
-                    }}
-                  >
-                    Запись созвона →
-                  </a>
-                )}
               </div>
             ))}
           </div>
@@ -178,9 +139,7 @@ function WeekMaterials({ onOpenWeek, currentSlug }) {
 }
 
 export default function AutumnCampPage() {
-  const [bookingOpen, setBookingOpen] = useState(true)
   const navigate = useNavigate()
-  const [callsOpen, setCallsOpen] = useState(isSept1or2)
   const currentSlug = currentAutumnWeek()?.slug || null
 
   return (
@@ -207,40 +166,20 @@ export default function AutumnCampPage() {
         </div>
 
         <div>
-          <div className="autumn-section-head">
-            <h2 style={{ margin: 0, fontSize: 16, fontWeight: 700, color: 'var(--text-primary)' }}>
-              Групповые созвоны
-            </h2>
-            <button className="autumn-toggle-btn" onClick={() => setCallsOpen(o => !o)}>
-              {callsOpen ? 'Свернуть' : 'Открыть'}
-              <ChevronIcon open={callsOpen} />
-            </button>
-          </div>
-          <div className={`collapse-wrap${callsOpen ? ' open' : ''}`}>
-            <div className="collapse-inner">
-              <div className="widget">
-                <GroupCalls />
-              </div>
-            </div>
+          <h2 style={{ marginTop: 0, marginBottom: 16, fontSize: 16, fontWeight: 700, color: 'var(--text-primary)' }}>
+            Групповые созвоны
+          </h2>
+          <div className="widget">
+            <GroupCalls />
           </div>
         </div>
       </div>
 
-      <div className="autumn-section-head">
-        <h2 style={{ margin: 0, fontSize: 16, fontWeight: 700, color: 'var(--text-primary)' }}>
-          Запись на созвон
-        </h2>
-        <button className="autumn-toggle-btn" onClick={() => setBookingOpen(o => !o)}>
-          {bookingOpen ? 'Свернуть' : 'Открыть'}
-          <ChevronIcon open={bookingOpen} />
-        </button>
-      </div>
-      <div className={`collapse-wrap${bookingOpen ? ' open' : ''}`} style={{ marginBottom: 28 }}>
-        <div className="collapse-inner">
-          <div className="widget">
-            <CallBooking />
-          </div>
-        </div>
+      <h2 style={{ marginTop: 0, marginBottom: 16, fontSize: 16, fontWeight: 700, color: 'var(--text-primary)' }}>
+        Запись на созвон
+      </h2>
+      <div className="widget" style={{ marginBottom: 28 }}>
+        <CallBooking />
       </div>
 
       <h2 style={{ marginTop: 0, marginBottom: 16, fontSize: 16, fontWeight: 700, color: 'var(--text-primary)' }}>

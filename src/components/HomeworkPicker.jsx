@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useRef, useEffect } from 'react'
 import { AUTUMN_WEEK_MONTHS } from '../data/autumnWeeks'
 import { WEEK1_CHAPTERS } from '../data/week1Materials'
 import { WEEK2_LEVELS, chaptersForLevel } from '../data/week2Materials'
@@ -71,9 +71,30 @@ function WeekButton({ week, active, onSelect }) {
 export default function HomeworkPicker() {
   const [week, setWeek] = useState(null)
   const [level, setLevel] = useState(null)
+  const pickerRef = useRef(null)
+  const tasksRef = useRef(null)
+  const [pickerHeight, setPickerHeight] = useState(null)
 
   const showLevels = week === 'week2'
   const items = useMemo(() => homeworkFor(week, level), [week, level])
+
+  // Правая колонка ростом с левую: список недель задаёт высоту блока,
+  // задания внутри прокручиваются. Следим за реальной высотой, а не за
+  // константой — она меняется при смене ширины окна.
+  useEffect(() => {
+    const el = pickerRef.current
+    if (!el || typeof ResizeObserver === 'undefined') return
+    const observer = new ResizeObserver(() => setPickerHeight(el.offsetHeight))
+    observer.observe(el)
+    setPickerHeight(el.offsetHeight)
+    return () => observer.disconnect()
+  }, [])
+
+  // При смене недели или уровня список начинается сначала — иначе человек
+  // остаётся в середине прошлого задания и не видит, что он сменился.
+  useEffect(() => {
+    if (tasksRef.current) tasksRef.current.scrollTop = 0
+  }, [week, level])
 
   const selectWeek = (slug) => {
     setWeek(slug)
@@ -86,7 +107,7 @@ export default function HomeworkPicker() {
 
   return (
     <div className="hw-block">
-      <div className={`hw-picker${showLevels ? ' is-narrow' : ''}`}>
+      <div className={`hw-picker${showLevels ? ' is-narrow' : ''}`} ref={pickerRef}>
         {AUTUMN_WEEK_MONTHS.map(month => (
           <div key={month.label} className="hw-month">
             <div className="hw-month-label">{month.label}</div>
@@ -117,13 +138,14 @@ export default function HomeworkPicker() {
         </div>
       )}
 
-      <div className="hw-tasks">
+      <div
+        className="hw-tasks"
+        ref={tasksRef}
+        key={`${week || 'none'}-${level || 0}`}
+        style={pickerHeight ? { '--hw-height': `${pickerHeight}px` } : undefined}
+      >
         {!week && (
           <div className="hw-hint">Выбери неделю слева — здесь появятся условия всех задач.</div>
-        )}
-
-        {week === 'week2' && !level && (
-          <div className="hw-hint">Выбери уровень — задания у каждого свои.</div>
         )}
 
         {items.map(({ chapter, hw }) => (
