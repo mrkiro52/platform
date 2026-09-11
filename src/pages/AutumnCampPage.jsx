@@ -1,7 +1,9 @@
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { AUTUMN_WEEK_MONTHS, currentAutumnWeek } from '../data/autumnWeeks'
 import CallBooking from '../components/CallBooking'
 import HomeworkPicker from '../components/HomeworkPicker'
+import HomeworkReview from '../components/HomeworkReview'
 import { AUTUMN_MONTHS, CALL_MONTHS } from '../data/autumnCalls'
 
 function AutumnProgress() {
@@ -23,7 +25,7 @@ function AutumnProgress() {
         const pct = Math.round((done / m.total) * 100)
         return (
           <div key={m.label} style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-            <div style={{ flexShrink: 0, width: 84 }}>
+            <div style={{ flexShrink: 0, width: 76 }}>
               <div style={{
                 fontFamily: 'var(--font-syne)', fontSize: 12, fontWeight: 700, color: 'var(--text-primary)',
                 textTransform: 'uppercase', letterSpacing: '0.05em',
@@ -52,16 +54,27 @@ function AutumnProgress() {
 }
 
 function GroupCalls() {
+  // Месяц выбирается табом — показываем созвоны только выбранного,
+  // иначе в узкой колонке получается очень длинная лента.
+  const [month, setMonth] = useState(CALL_MONTHS[0].label)
+
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-      {CALL_MONTHS.map(m => (
-        <div key={m.label}>
-          <div style={{
-            fontFamily: 'var(--font-syne)', fontSize: 12, fontWeight: 700, color: 'var(--text-primary)',
-            textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 10,
-          }}>
+    <div>
+      <div className="calls-tabs">
+        {CALL_MONTHS.map(m => (
+          <button
+            key={m.label}
+            type="button"
+            className={`calls-tab${month === m.label ? ' is-active' : ''}`}
+            onClick={() => setMonth(m.label)}
+          >
             {m.label}
-          </div>
+          </button>
+        ))}
+      </div>
+
+      {CALL_MONTHS.filter(m => m.label === month).map(m => (
+        <div key={m.label}>
           <div className="calls-grid" style={{ '--calls-count': m.calls.length }}>
             {m.calls.map(call => (
               <div key={call.day} className="call-card">
@@ -182,11 +195,28 @@ export default function AutumnCampPage() {
         <CallBooking />
       </div>
 
-      <h2 style={{ marginTop: 0, marginBottom: 16, fontSize: 16, fontWeight: 700, color: 'var(--text-primary)' }}>
-        Домашние задания
-      </h2>
+      <div className="autumn-section-head">
+        <h2 style={{ margin: 0, fontSize: 16, fontWeight: 700, color: 'var(--text-primary)' }}>
+          Домашние задания
+        </h2>
+        <a
+          href="/autumn-camp/upload-homework"
+          target="_blank"
+          rel="noopener"
+          className="hw-submit-btn"
+        >
+          Сдать дз
+        </a>
+      </div>
       <div className="widget" style={{ marginBottom: 28 }}>
         <HomeworkPicker />
+      </div>
+
+      <h2 style={{ marginTop: 0, marginBottom: 16, fontSize: 16, fontWeight: 700, color: 'var(--text-primary)' }}>
+        Проверка домашних заданий
+      </h2>
+      <div className="widget" style={{ marginBottom: 28 }}>
+        <HomeworkReview />
       </div>
 
       <h2 style={{ marginTop: 0, marginBottom: 16, fontSize: 16, fontWeight: 700, color: 'var(--text-primary)' }}>

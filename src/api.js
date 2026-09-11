@@ -83,6 +83,10 @@ export const api = {
   // Еженедельные созвоны осеннего лагеря
   openCalls:    ()       => req('/api/calls/open'),
   myCalls:      ()       => req('/api/calls/my'),
+
+  // Домашние задания осеннего лагеря
+  myHomework:   ()        => req('/api/homework/mine'),
+  saveHomework: (payload) => req('/api/homework/task', { method: 'PUT', body: JSON.stringify(payload) }),
   bookSlot:     (slotId) => req(`/api/calls/slots/${slotId}/book`, { method: 'POST' }),
   cancelSlot:   (slotId) => req(`/api/calls/slots/${slotId}/book`, { method: 'DELETE' }),
   unreadNotifications:()  => req('/api/notifications/unread-count'),

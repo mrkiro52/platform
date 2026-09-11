@@ -1018,6 +1018,133 @@ img { max-width: 100%; display: block; }
 }
 @media (max-width: 768px) { .autumn-section-head { flex-wrap: wrap; } }
 
+/* Табы месяцев в созвонах */
+.calls-tabs { display: flex; gap: 6px; margin-bottom: 16px; flex-wrap: wrap; }
+.calls-tab {
+  padding: 7px 16px; border-radius: var(--radius-pill);
+  background: var(--bg-tertiary); border: 1px solid var(--border-color);
+  color: var(--text-secondary); font-size: 12.5px; font-weight: 600; cursor: pointer;
+  font-family: var(--font-inter); transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+.calls-tab:hover { border-color: rgba(255,140,66,0.5); color: var(--text-primary); }
+.calls-tab.is-active { background: rgba(255,140,66,0.14); border-color: rgba(255,140,66,0.6); color: #FFB870; }
+
+/* Кнопка сдачи ДЗ рядом с заголовком — по высоте со строкой заголовка */
+.hw-submit-btn {
+  display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0;
+  height: 26px; padding: 0 18px; border-radius: var(--radius-pill);
+  background: var(--accent-ink); color: var(--on-accent);
+  font-family: var(--font-syne); font-size: 12.5px; font-weight: 700; white-space: nowrap;
+  transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+}
+.hw-submit-btn:hover { background: var(--accent-soft); transform: translateY(-1px); box-shadow: var(--shadow-md); }
+
+/* ── Страница сдачи домашнего задания ── */
+.hwup-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.hwup-chip {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 8px 14px; border-radius: var(--radius-pill);
+  background: var(--bg-tertiary); border: 1px solid var(--border-color);
+  color: var(--text-secondary); font-family: var(--font-inter); font-size: 12.5px; font-weight: 600;
+  cursor: pointer; transition: background 0.15s, border-color 0.15s, color 0.15s; text-align: left;
+}
+.hwup-chip:hover:not(:disabled) { border-color: rgba(255,140,66,0.5); color: var(--text-primary); }
+.hwup-chip.is-active { background: rgba(255,140,66,0.14); border-color: rgba(255,140,66,0.65); color: #FFB870; }
+.hwup-chip.is-locked { cursor: not-allowed; color: var(--text-tertiary); background: rgba(255,255,255,0.02); }
+
+.hwup-tasks { display: flex; flex-direction: column; gap: 16px; }
+.hwup-task {
+  background: var(--bg-tertiary); border: 1px solid var(--border-color);
+  border-radius: var(--radius-md); padding: 16px;
+}
+.hwup-task-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 8px; }
+.hwup-task-num {
+  font-family: var(--font-syne); font-size: 12px; font-weight: 700; color: var(--text-primary);
+  text-transform: uppercase; letter-spacing: 0.04em;
+}
+.hwup-task-text { margin: 0 0 14px; font-size: 13.5px; color: var(--text-secondary); line-height: 1.65; }
+
+.hwup-status {
+  font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em;
+  padding: 3px 10px; border-radius: var(--radius-pill); white-space: nowrap;
+}
+.hwup-status.is-submitted { background: rgba(139,139,150,0.16); color: var(--text-tertiary); }
+.hwup-status.is-approved  { background: var(--success-dim);      color: #7EE787; }
+.hwup-status.is-rework    { background: rgba(255,214,10,0.14);   color: var(--accent-lime); }
+
+.hwup-input {
+  width: 100%; min-height: 160px; resize: vertical;
+  background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: var(--radius-sm);
+  padding: 12px 14px; color: var(--text-primary);
+  font-family: var(--font-mono); font-size: 12.5px; line-height: 1.6; outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s; tab-size: 4;
+}
+.hwup-input:focus { border-color: var(--accent-lime); box-shadow: 0 0 0 3px rgba(255,214,10,0.14); }
+.hwup-input::placeholder { color: var(--text-tertiary); }
+
+/* Сохранённое решение: переносы строк и отступы кода сохраняются как есть */
+.hwup-solution {
+  margin: 0; padding: 12px 14px; border-radius: var(--radius-sm);
+  background: var(--bg-primary); border: 1px solid var(--border-color);
+  font-family: var(--font-mono); font-size: 12.5px; line-height: 1.6; color: var(--text-primary);
+  white-space: pre-wrap; word-break: break-word; overflow-x: auto; tab-size: 4;
+}
+.hwup-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 12px; flex-wrap: wrap; }
+.hwup-btn { font-size: 13px; padding: 9px 20px; }
+.hwup-error { margin-top: 8px; font-size: 12.5px; color: var(--danger); }
+
+.hwup-comment {
+  margin-bottom: 14px; padding: 11px 14px; border-radius: var(--radius-sm);
+  background: rgba(255,214,10,0.08); border: 1px solid rgba(255,214,10,0.3);
+}
+.hwup-comment-label {
+  font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em;
+  color: var(--accent-lime); margin-bottom: 5px;
+}
+.hwup-comment-text { font-size: 13px; color: var(--text-secondary); line-height: 1.6; white-space: pre-wrap; }
+
+/* ── Проверка домашних заданий: квадратики по задачам ── */
+.hwrev { display: flex; flex-direction: column; gap: 22px; }
+.hwrev-legend { display: flex; flex-wrap: wrap; gap: 16px; }
+.hwrev-legend-item { display: inline-flex; align-items: center; gap: 7px; font-size: 12px; color: var(--text-tertiary); }
+
+.hwrev-week-head { display: flex; align-items: baseline; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; }
+.hwrev-week-name { font-family: var(--font-syne); font-size: 13px; font-weight: 700; color: var(--text-primary); }
+.hwrev-week-level {
+  font-size: 10.5px; font-weight: 700; color: #FFB870; text-transform: uppercase; letter-spacing: 0.04em;
+  background: rgba(255,140,66,0.12); border-radius: var(--radius-pill); padding: 2px 9px;
+}
+.hwrev-rows { display: flex; flex-direction: column; gap: 6px; }
+.hwrev-row {
+  display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap;
+  padding: 9px 12px; border-radius: var(--radius-sm);
+  background: var(--bg-tertiary); border: 1px solid var(--border-color);
+}
+.hwrev-row-name { font-size: 12.5px; color: var(--text-secondary); min-width: 0; }
+.hwrev-row-name b { color: var(--text-primary); font-family: var(--font-syne); font-size: 12px; margin-right: 6px; }
+.hwrev-squares { display: flex; gap: 6px; flex-shrink: 0; }
+
+.hwrev-sq {
+  width: 24px; height: 24px; border-radius: 6px; flex-shrink: 0;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-family: var(--font-mono); font-size: 11px; font-weight: 600;
+  border: 1px solid var(--border-color); background: transparent; color: transparent;
+  transition: transform 0.15s, border-color 0.15s, background 0.15s;
+}
+.hwrev-sq.is-clickable { cursor: pointer; }
+.hwrev-sq.is-clickable:hover { transform: translateY(-2px); border-color: rgba(255,140,66,0.6); }
+.hwrev-sq.is-empty     { background: transparent;                border-color: var(--border-color); }
+.hwrev-sq.is-submitted { background: rgba(139,139,150,0.28);     border-color: rgba(139,139,150,0.45); color: var(--text-secondary); }
+.hwrev-sq.is-rework    { background: rgba(255,214,10,0.55);      border-color: rgba(255,214,10,0.8);   color: #2a2400; }
+.hwrev-sq.is-approved  { background: rgba(63,185,80,0.65);       border-color: rgba(63,185,80,0.85);   color: #06260f; }
+.hwrev-legend .hwrev-sq { width: 16px; height: 16px; }
+
+@media (max-width: 560px) {
+  .hwrev-row { flex-direction: column; align-items: flex-start; gap: 8px; }
+  .hwup-actions { justify-content: stretch; }
+  .hwup-actions > * { flex: 1; }
+}
+
 /* Карточка группового созвона: слева дата, справа тема */
 .call-card {
   display: flex; align-items: flex-start; gap: 18px;
@@ -1155,10 +1282,12 @@ img { max-width: 100%; display: block; }
      (max-content), всю оставшуюся ширину забирают созвоны. */
   .autumn-half-row  { grid-template-columns: max-content minmax(0, 1fr); align-items: start; gap: 20px; }
   .autumn-months-row { grid-template-columns: repeat(3, 1fr); gap: 18px; align-items: start; }
-  .autumn-half-row .autumn-days-grid { flex-wrap: nowrap; gap: 4px; }
-  .autumn-half-row .autumn-day { width: 15px; height: 15px; }
-  /* Карточка созвона горизонтальная, поэтому в узкой колонке идёт по одной в ряд */
-  .autumn-half-row .calls-grid { grid-template-columns: 1fr; }
+  /* Квадраты в паре мельче: 31 штука в ряд должна уместиться так, чтобы
+     созвонам рядом осталось место на две карточки в ряд */
+  .autumn-half-row .autumn-days-grid { flex-wrap: nowrap; gap: 3px; }
+  .autumn-half-row .autumn-day { width: 12px; height: 12px; border-radius: 4px; }
+  /* Созвоны идут по два в ряд даже в узкой колонке */
+  .autumn-half-row .calls-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
 /* Календарь недели на дэшборде: семь дней во всю ширину, компактный.

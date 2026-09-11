@@ -25,6 +25,7 @@ app.use('/api/social',        require('./src/routes/social'))
 app.use('/api/messages',      require('./src/routes/messages'))
 app.use('/api/notifications', require('./src/routes/notifications'))
 app.use('/api/calls',         require('./src/routes/calls'))
+app.use('/api/homework',      require('./src/routes/homework'))
 
 // ── Admin Panel ──────────────────────────────────────────────────────────────
 app.use('/admin', express.static(path.join(__dirname, 'admin')))

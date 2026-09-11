@@ -221,6 +221,27 @@ textarea::placeholder{color:var(--text3)}
 .call-cal-slot.booked .call-cal-who{color:var(--lime)}
 .call-cal-sess{font-size:11px;color:var(--text3);margin-top:3px}
 
+/* ─── ДОМАШНИЕ ЗАДАНИЯ ───────────────────── */
+.hw-student-head{display:flex;align-items:center;gap:16px;margin-bottom:22px;flex-wrap:wrap}
+.hw-student-name{font-family:var(--font-syne);font-size:17px;font-weight:700;color:var(--text)}
+.hw-student-sub{font-size:12.5px;color:var(--text3);margin-top:2px}
+.hw-week-block{margin-bottom:26px}
+.hw-week-title{font-family:var(--font-syne);font-size:15px;font-weight:700;color:var(--lime);margin-bottom:12px}
+.hw-num-block{margin-bottom:18px}
+.hw-num-title{font-size:12.5px;font-weight:700;color:var(--text2);margin-bottom:8px}
+.hw-sub{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-md);padding:16px;margin-bottom:10px}
+.hw-sub-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+.hw-sub-num{font-family:var(--font-syne);font-size:12.5px;font-weight:700;color:var(--text)}
+.hw-sub-code{
+  margin:0;padding:12px 14px;border-radius:var(--r-sm);background:var(--bg);border:1px solid var(--border);
+  font-family:var(--font-mono);font-size:12.5px;line-height:1.6;color:var(--text);
+  white-space:pre-wrap;word-break:break-word;max-height:340px;overflow:auto;
+}
+.hw-sub-comment{margin-top:10px;padding:10px 13px;border-radius:var(--r-sm);background:rgba(255,214,10,.08);border:1px solid rgba(255,214,10,.3);font-size:12.5px;color:var(--text2);line-height:1.6;white-space:pre-wrap}
+.hw-sub-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:12px;flex-wrap:wrap}
+.hw-sub-rework{margin-top:12px}
+.hw-sub-rework textarea{min-height:80px}
+
 @media(max-width:768px){
   .sidebar{transform:translateX(calc(-1 * var(--sw)))}
   .sidebar.open{transform:translateX(0);box-shadow:var(--shadow-hover)}
@@ -273,6 +294,7 @@ textarea::placeholder{color:var(--text3)}
       <button class="nav-item"        onclick="goto('individs')"> <span class="nav-icon">🎯</span>Индивы</button>
       <button class="nav-item"        onclick="goto('calls')">    <span class="nav-icon">🗓</span>Созвоны</button>
       <button class="nav-item"        onclick="goto('callcal')">  <span class="nav-icon">📆</span>Календарь созвонов</button>
+      <button class="nav-item"        onclick="goto('homework')"><span class="nav-icon">📝</span>Домашние задания</button>
     </nav>
     <div class="sb-foot">
       <button class="nav-item" onclick="logout()"><span class="nav-icon">⇥</span>Выйти</button>
@@ -391,6 +413,18 @@ textarea::placeholder{color:var(--text3)}
       <div id="callcal-list"></div>
     </div>
 
+    <!-- ── HOMEWORK ── -->
+    <div id="sec-homework" class="section">
+      <div class="section-header">
+        <div>
+          <div class="section-title">Домашние задания</div>
+          <div class="section-sub">Решения участников осеннего лагеря — можно принять работу или вернуть с правками</div>
+        </div>
+        <button class="btn-lime" style="width:auto" onclick="loadHomework()">Обновить</button>
+      </div>
+      <div id="hw-body"></div>
+    </div>
+
   </div><!-- /content -->
 </div><!-- /app -->
 
@@ -475,7 +509,7 @@ function toast(msg, type='ok') {
 }
 
 // ── Navigation ────────────────────────────────────────────────────────────
-const LOADERS = { dashboard:loadDashboard, users:loadUsers, schedule:loadSchedule, library:loadLibrary, links:loadLinks, announces:loadAnnounces, calls:loadCalls, callcal:loadCallCalendar }
+const LOADERS = { dashboard:loadDashboard, users:loadUsers, schedule:loadSchedule, library:loadLibrary, links:loadLinks, announces:loadAnnounces, calls:loadCalls, callcal:loadCallCalendar, homework:loadHomework }
 function goto(sec) {
   document.querySelectorAll('.section').forEach(s => s.classList.remove('active'))
   document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'))
@@ -1330,6 +1364,154 @@ function plural(n, one, few, many) {
   if (mod10 === 1) return one
   if (mod10 >= 2 && mod10 <= 4) return few
   return many
+}
+
+// ══════════════ ДОМАШНИЕ ЗАДАНИЯ ═════════════════════════════════════════
+let HW_STUDENTS = []
+let HW_CURRENT = null     // { user, submissions } — открытый студент
+
+const HW_STATUS = {
+  submitted: { label: 'на проверке', badge: 'badge-gray' },
+  approved:  { label: 'принято',     badge: 'badge-green' },
+  rework:    { label: 'нужны правки', badge: 'badge-orange' },
+}
+
+async function loadHomework() {
+  HW_STUDENTS = await req('/api/homework/admin/students')
+  HW_CURRENT = null
+  renderHomeworkList()
+}
+
+function renderHomeworkList() {
+  const el = document.getElementById('hw-body')
+
+  if (!HW_STUDENTS.length) {
+    el.innerHTML = '<div class="call-empty">Участников осеннего лагеря пока нет</div>'
+    return
+  }
+
+  el.innerHTML = `
+    <div class="table-wrap">
+      <table class="tbl">
+        <thead><tr><th>Логин</th><th>Имя</th><th>Сдано</th><th>На проверке</th><th>Принято</th><th>Правки</th><th></th></tr></thead>
+        <tbody>
+          ${HW_STUDENTS.map(s => `
+            <tr>
+              <td><b>${esc(s.nickname || '—')}</b></td>
+              <td>${esc(s.name || '—')}</td>
+              <td>${s.total}</td>
+              <td>${s.pending ? `<span class="badge badge-gray">${s.pending}</span>` : '—'}</td>
+              <td>${s.approved ? `<span class="badge badge-green">${s.approved}</span>` : '—'}</td>
+              <td>${s.rework ? `<span class="badge badge-orange">${s.rework}</span>` : '—'}</td>
+              <td class="actions"><button class="btn-edit" onclick="openHomeworkStudent(${s.id})">Открыть</button></td>
+            </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>`
+}
+
+async function openHomeworkStudent(id) {
+  HW_CURRENT = await req(`/api/homework/admin/students/${id}`)
+  renderHomeworkStudent()
+}
+
+function renderHomeworkStudent() {
+  const { user, submissions } = HW_CURRENT
+  const el = document.getElementById('hw-body')
+
+  // Группируем по неделе, внутри — по номеру задания
+  const weeks = {}
+  for (const s of submissions) {
+    weeks[s.week] = weeks[s.week] || {}
+    weeks[s.week][s.hwNumber] = weeks[s.week][s.hwNumber] || []
+    weeks[s.week][s.hwNumber].push(s)
+  }
+
+  const weekNums = Object.keys(weeks).map(Number).sort((a, b) => a - b)
+
+  el.innerHTML = `
+    <div class="hw-student-head">
+      <button class="btn-ghost" onclick="loadHomework()">← Ко всем ученикам</button>
+      <div>
+        <div class="hw-student-name">${esc(user.nickname || '')}</div>
+        <div class="hw-student-sub">${esc(user.name || '')} · решений: ${submissions.length}</div>
+      </div>
+    </div>
+
+    ${weekNums.length === 0
+      ? '<div class="call-empty">Этот ученик ещё ничего не сдавал</div>'
+      : weekNums.map(week => `
+        <div class="hw-week-block">
+          <div class="hw-week-title">Неделя ${week}</div>
+          ${Object.keys(weeks[week]).map(Number).sort((a, b) => a - b).map(num => `
+            <div class="hw-num-block">
+              <div class="hw-num-title">Домашнее задание ${num}${weeks[week][num][0].level ? ` · уровень ${weeks[week][num][0].level}` : ''}</div>
+              ${weeks[week][num].sort((a, b) => a.taskIndex - b.taskIndex).map(renderSubmission).join('')}
+            </div>`).join('')}
+        </div>`).join('')}
+  `
+}
+
+function renderSubmission(s) {
+  const st = HW_STATUS[s.status] || HW_STATUS.submitted
+  return `
+    <div class="hw-sub" id="hw-sub-${s.id}">
+      <div class="hw-sub-head">
+        <span class="hw-sub-num">Задача ${s.taskIndex + 1}</span>
+        <span class="badge ${st.badge}">${st.label}</span>
+      </div>
+      <pre class="hw-sub-code">${esc(s.solution)}</pre>
+      ${s.comment ? `<div class="hw-sub-comment"><b>Правки:</b> ${esc(s.comment)}</div>` : ''}
+      <div class="hw-sub-actions">
+        <button class="btn-edit" onclick="approveSubmission(${s.id})">Подтвердить</button>
+        <button class="btn-danger" onclick="openReworkForm(${s.id})">Дать правки</button>
+      </div>
+      <div class="hw-sub-rework" id="hw-rework-${s.id}" hidden>
+        <textarea id="hw-rework-text-${s.id}" placeholder="Что нужно исправить"></textarea>
+        <div class="hw-sub-actions">
+          <button class="btn-ghost" onclick="closeReworkForm(${s.id})">Отмена</button>
+          <button class="btn-lime" style="width:auto" onclick="sendRework(${s.id})">Отправить правки</button>
+        </div>
+      </div>
+    </div>`
+}
+
+function openReworkForm(id) {
+  const box = document.getElementById(`hw-rework-${id}`)
+  box.hidden = false
+  document.getElementById(`hw-rework-text-${id}`).focus()
+}
+
+function closeReworkForm(id) {
+  document.getElementById(`hw-rework-${id}`).hidden = true
+}
+
+async function approveSubmission(id) {
+  try {
+    await req(`/api/homework/admin/submissions/${id}`, 'PATCH', { status: 'approved' })
+    toast('Работа принята')
+    await refreshCurrentStudent()
+  } catch (e) {
+    toast('Не получилось: ' + e.message, 'err')
+  }
+}
+
+async function sendRework(id) {
+  const comment = document.getElementById(`hw-rework-text-${id}`).value.trim()
+  if (!comment) return toast('Напиши, что исправить', 'err')
+  try {
+    await req(`/api/homework/admin/submissions/${id}`, 'PATCH', { status: 'rework', comment })
+    toast('Правки отправлены')
+    await refreshCurrentStudent()
+  } catch (e) {
+    toast('Не получилось: ' + e.message, 'err')
+  }
+}
+
+async function refreshCurrentStudent() {
+  if (!HW_CURRENT) return
+  HW_CURRENT = await req(`/api/homework/admin/students/${HW_CURRENT.user.id}`)
+  renderHomeworkStudent()
 }
 
 function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;') }

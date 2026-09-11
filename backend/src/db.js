@@ -698,6 +698,43 @@ function migrate() {
       console.error('❌ Migration 19 failed:', err.message)
     }
   }
+
+  // Migration 20: сдача домашних заданий осеннего лагеря.
+  // Одна строка — одна задача одного студента. Пустые решения физически не
+  // храним: отсутствие строки означает «не сдано», строка появляется при
+  // первом сохранении. Так вместо ~29 000 пустых строк (152 студента на 190
+  // задач) в базе лежит только то, что реально написали.
+  // Уникальный индекс не даёт задвоить решение одной задачи.
+  if (schemaVersion < 20) {
+    try {
+      db.prepare(`
+        CREATE TABLE IF NOT EXISTS homework_submissions (
+          id           INTEGER PRIMARY KEY AUTOINCREMENT,
+          user_id      INTEGER NOT NULL,
+          week         INTEGER NOT NULL,
+          level        INTEGER,
+          chapter_id   TEXT    NOT NULL,
+          hw_number    INTEGER NOT NULL,
+          task_index   INTEGER NOT NULL,
+          solution     TEXT    NOT NULL DEFAULT '',
+          status       TEXT    NOT NULL DEFAULT 'submitted',
+          comment      TEXT,
+          submitted_at TEXT,
+          reviewed_at  TEXT,
+          UNIQUE(user_id, week, chapter_id, task_index),
+          FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+        )
+      `).run()
+
+      db.prepare('CREATE INDEX IF NOT EXISTS idx_hw_user ON homework_submissions(user_id)').run()
+      db.prepare('CREATE INDEX IF NOT EXISTS idx_hw_status ON homework_submissions(status)').run()
+
+      db.pragma('user_version = 20')
+      console.log('✅ Migration 20 completed: added homework_submissions')
+    } catch (err) {
+      console.error('❌ Migration 20 failed:', err.message)
+    }
+  }
 }
 
 migrate()
