@@ -14,6 +14,17 @@ function savedLevel() {
   }
 }
 
+// Галочка в кружке — раскрывает и сворачивает список заданий недели
+function ChevronCircle({ open }) {
+  return (
+    <span className={`hwrev-chev${open ? ' is-open' : ''}`} aria-hidden="true">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
+        <path d="M6 9l6 6 6-6" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    </span>
+  )
+}
+
 const LEGEND = [
   { cls: 'is-empty',     text: 'не сдано' },
   { cls: 'is-submitted', text: 'сдано, на проверке' },
@@ -24,6 +35,9 @@ const LEGEND = [
 export default function HomeworkReview() {
   const navigate = useNavigate()
   const [byKey, setByKey] = useState(null)
+  // Открыта всегда ровно одна неделя: клик по открытой её сворачивает,
+  // клик по другой — переключает на неё.
+  const [openWeek, setOpenWeek] = useState(OPEN_WEEKS[0])
   const level = savedLevel()
 
   useEffect(() => {
@@ -53,13 +67,22 @@ export default function HomeworkReview() {
 
       {OPEN_WEEKS.map(week => {
         const items = assignmentsOf(week, hasLevels(week) ? level : undefined)
+        const isOpen = openWeek === week
         return (
           <div key={week} className="hwrev-week">
-            <div className="hwrev-week-head">
+            <button
+              type="button"
+              className="hwrev-week-head"
+              onClick={() => setOpenWeek(prev => (prev === week ? null : week))}
+              aria-expanded={isOpen}
+            >
+              <ChevronCircle open={isOpen} />
               <span className="hwrev-week-name">{WEEK_TITLES[week]}</span>
               {hasLevels(week) && <span className="hwrev-week-level">уровень {level}</span>}
-            </div>
+            </button>
 
+            <div className={`collapse-wrap${isOpen ? ' open' : ''}`}>
+              <div className="collapse-inner">
             <div className="hwrev-rows">
               {items.map(item => (
                 <div key={item.chapterId} className="hwrev-row">
@@ -85,6 +108,8 @@ export default function HomeworkReview() {
                   </span>
                 </div>
               ))}
+            </div>
+              </div>
             </div>
           </div>
         )

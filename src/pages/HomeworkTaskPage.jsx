@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { api } from '../api'
-import { findTask, WEEK_TITLES } from '../data/homeworkCatalog'
+import { findTask, WEEK_TITLES, levelOfChapter } from '../data/homeworkCatalog'
 
 const STATUS = {
   submitted: { label: 'Сдано, ждёт проверки', className: 'is-submitted' },
@@ -37,6 +37,12 @@ export default function HomeworkTaskPage() {
   }
 
   const status = row ? STATUS[row.status] : null
+
+  // Переходим на форму сдачи с уже выбранными неделей, уровнем и главой,
+  // чтобы не искать ту же задачу заново.
+  const level = levelOfChapter(Number(week), chapterId)
+  const uploadHref = `/autumn-camp/upload-homework?week=${week}&chapter=${encodeURIComponent(chapterId)}`
+    + (level ? `&level=${level}` : '')
 
   return (
     <section className="page active">
@@ -86,7 +92,7 @@ export default function HomeworkTaskPage() {
         ) : (
           <p style={{ margin: 0, fontSize: 13.5, color: 'var(--text-tertiary)', lineHeight: 1.6 }}>
             Решение пока не сдано.{' '}
-            <a href="/autumn-camp/upload-homework" style={{ color: 'var(--accent-lime)', fontWeight: 600 }}>
+            <a href={uploadHref} style={{ color: 'var(--accent-lime)', fontWeight: 600 }}>
               Сдать задание →
             </a>
           </p>

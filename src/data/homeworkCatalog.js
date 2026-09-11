@@ -59,6 +59,16 @@ export function assignmentsOf(week, level) {
   }))
 }
 
+// Самый низкий уровень, в программу которого входит глава. Нужен, чтобы со
+// страницы задачи открыть форму сдачи с уже выбранным уровнем.
+export function levelOfChapter(week, chapterId) {
+  if (!hasLevels(week)) return null
+  for (const lvl of WEEK_LEVELS[week]) {
+    if (chaptersOf(week, lvl.id).some(c => c.id === chapterId)) return lvl.id
+  }
+  return null
+}
+
 // Одна задача по адресу из ссылки. Уровень неизвестен, поэтому для недели 2
 // ищем главу по всем уровням — состав третьего уровня включает остальные.
 export function findTask(week, chapterId, taskIndex) {

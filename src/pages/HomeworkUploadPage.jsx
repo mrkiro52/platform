@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, useCallback } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { api } from '../api'
 import { AUTUMN_WEEK_MONTHS } from '../data/autumnWeeks'
 import {
@@ -83,7 +83,7 @@ function TaskCard({ task, index, chapter, week, level, saved, onSaved }) {
             className="hwup-input"
             value={draft}
             onChange={e => setDraft(e.target.value)}
-            placeholder="Вставь сюда свой код"
+            placeholder="Вставь своё решение сюда"
             spellCheck={false}
           />
           {error && <div className="hwup-error">{error}</div>}
@@ -119,9 +119,17 @@ function TaskCard({ task, index, chapter, week, level, saved, onSaved }) {
 
 export default function HomeworkUploadPage() {
   const navigate = useNavigate()
-  const [week, setWeek] = useState(null)
-  const [level, setLevel] = useState(null)
-  const [chapterId, setChapterId] = useState(null)
+  const [params] = useSearchParams()
+
+  // Со страницы задачи сюда приходят с уже известными неделей, уровнем и
+  // главой — подставляем их сразу, чтобы не выбирать то же самое вручную.
+  const initialWeek = OPEN_WEEKS.includes(Number(params.get('week'))) ? Number(params.get('week')) : null
+  const initialLevel = Number(params.get('level')) || null
+  const initialChapter = params.get('chapter') || null
+
+  const [week, setWeek] = useState(initialWeek)
+  const [level, setLevel] = useState(initialLevel)
+  const [chapterId, setChapterId] = useState(initialChapter)
   const [saved, setSaved] = useState({})
   const [loadError, setLoadError] = useState('')
 
@@ -188,7 +196,7 @@ export default function HomeworkUploadPage() {
                   onClick={() => open && pickWeek(num)}
                   title={open ? undefined : 'Задания этой недели откроются позже'}
                 >
-                  {month.label.slice(0, 3).toLowerCase()} · неделя {w.indexInMonth}
+                  {month.label.toLowerCase()} · неделя {w.indexInMonth}
                   {!open && <LockIcon />}
                 </button>
               )
