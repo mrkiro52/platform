@@ -19,6 +19,7 @@ import Announcements from './pages/Announcements'
 import LikebezyPage from './pages/LikebezyPage'
 import AntiReels from './pages/AntiReels'
 import AutumnCampPage from './pages/AutumnCampPage'
+import AutumnOnboardingPage from './pages/AutumnOnboardingPage'
 import AutumnWeekPage from './pages/AutumnWeekPage'
 
 function TheoryRoute() {
@@ -128,6 +129,7 @@ export default function AppShell({ user, onLogout }) {
             <Route path="/likebezy/:id" element={<LikebezyPage />} />
             <Route path="/antireels" element={<AntiReels />} />
             <Route path="/autumn-camp" element={<AutumnCampPage />} />
+            <Route path="/autumn-camp/onboarding-autumn-2026" element={<AutumnOnboardingPage />} />
             <Route path="/autumn-camp/:week" element={<AutumnWeekPage user={user} />} />
             <Route path="/announcements" element={<AnnouncementsRoute />} />
             <Route path="*" element={<Navigate to="/dashboard" replace />} />

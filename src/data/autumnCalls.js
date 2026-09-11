@@ -24,7 +24,7 @@ function fridaysOf(month) {
 
 const SEPTEMBER_CALLS = [
   { day: 5, topic: 'Python: изучаем основы (для новичков)' },
-  { day: 6, topic: 'Python: вопросы с собеседований (для опытных)' },
+  { day: 6, topic: 'Python: вопросы с собеседований (для опытных)', video: 'https://youtu.be/Ul4Q3xftxjE' },
   { day: 12, topic: 'Полный гайд по алгоритмам' },
   { day: 19, topic: 'Полный гайд по структурам данных' },
   { day: 26, topic: 'Полный гайд по базам данных и SQL' },

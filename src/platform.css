@@ -1018,6 +1018,109 @@ img { max-width: 100%; display: block; }
 }
 @media (max-width: 768px) { .autumn-section-head { flex-wrap: wrap; } }
 
+/* Блок домашних заданий: слева выбор недели, справа условия задач.
+   При выборе второй недели левая колонка ужимается и между ней и задачами
+   выезжают три квадрата уровней. */
+.hw-block { display: flex; flex-direction: column; gap: 18px; }
+
+.hw-picker { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+.hw-month-label {
+  font-family: var(--font-syne); font-size: 11px; font-weight: 700; color: var(--text-tertiary);
+  text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px;
+}
+.hw-weeks { display: flex; flex-direction: column; gap: 6px; }
+
+.hw-week {
+  display: flex; align-items: center; gap: 8px; width: 100%; text-align: left;
+  background: var(--bg-tertiary); border: 1px solid var(--border-color);
+  border-radius: var(--radius-md); padding: 10px 12px; cursor: pointer;
+  font-family: var(--font-inter); transition: border-color 0.15s, background 0.15s;
+}
+.hw-week:hover:not(:disabled) { border-color: rgba(255,140,66,0.5); }
+.hw-week.is-active { border-color: rgba(255,140,66,0.7); background: rgba(255,140,66,0.10); }
+.hw-week-name { font-family: var(--font-syne); font-size: 13px; font-weight: 700; color: var(--text-primary); }
+.hw-week.is-active .hw-week-name { color: #FFB870; }
+.hw-week-range { font-size: 11.5px; color: var(--text-tertiary); }
+.hw-week-lock { margin-left: auto; color: var(--text-tertiary); display: flex; }
+
+/* Закрытые недели: серые и не реагируют на курсор */
+.hw-week.is-locked {
+  cursor: not-allowed; background: rgba(255,255,255,0.02); border-color: var(--border-color);
+}
+.hw-week.is-locked .hw-week-name { color: var(--text-tertiary); font-weight: 600; }
+.hw-week.is-locked .hw-week-range { color: #6b6b78; }
+
+/* Квадраты уровней — появляются по очереди */
+.hw-levels { display: flex; flex-direction: row; align-items: center; gap: 8px; flex-wrap: wrap; }
+.hw-levels-label {
+  font-family: var(--font-syne); font-size: 11px; font-weight: 700; color: var(--text-tertiary);
+  text-transform: uppercase; letter-spacing: 0.05em; width: 100%;
+}
+.hw-level {
+  width: 44px; height: 44px; flex-shrink: 0; border-radius: var(--radius-md);
+  background: var(--bg-tertiary); border: 1px solid var(--border-color);
+  color: var(--text-secondary); font-family: var(--font-syne); font-size: 15px; font-weight: 700;
+  cursor: pointer; transition: border-color 0.15s, background 0.15s, color 0.15s;
+  animation: hwLevelIn 0.32s ease backwards;
+  animation-delay: calc(var(--i) * 110ms);
+}
+.hw-level:hover { border-color: rgba(255,140,66,0.55); color: var(--text-primary); }
+.hw-level.is-active { background: rgba(255,140,66,0.14); border-color: rgba(255,140,66,0.7); color: #FFB870; }
+@keyframes hwLevelIn {
+  from { opacity: 0; transform: translateX(-10px) scale(0.9); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* Задачи */
+.hw-tasks { display: flex; flex-direction: column; gap: 18px; min-width: 0; }
+.hw-hint { font-size: 13px; color: var(--text-tertiary); line-height: 1.6; }
+.hw-group { display: flex; flex-direction: column; gap: 8px; }
+.hw-group-head { display: flex; flex-direction: column; gap: 2px; margin-bottom: 2px; }
+.hw-group-num { font-family: var(--font-syne); font-size: 13px; font-weight: 700; color: #FFB870; }
+.hw-group-chapter { font-size: 11.5px; color: var(--text-tertiary); }
+
+.hw-task {
+  background: var(--bg-tertiary); border: 1px solid var(--border-color);
+  border-radius: var(--radius-md); padding: 11px 13px;
+  animation: hwTaskIn 0.34s ease backwards;
+  animation-delay: calc(var(--i) * 55ms);
+}
+.hw-task-num {
+  font-family: var(--font-syne); font-size: 11px; font-weight: 700; color: var(--text-tertiary);
+  text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 3px;
+}
+.hw-task-text { font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
+@keyframes hwTaskIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hw-level, .hw-task { animation: none; }
+}
+
+/* На пк — две колонки; левая ужимается, когда выехали уровни */
+@media (min-width: 1101px) {
+  .hw-block { flex-direction: row; align-items: flex-start; gap: 20px; }
+  .hw-picker { flex: 0 0 50%; transition: flex-basis 0.35s ease; }
+  .hw-picker.is-narrow { flex-basis: 32%; }
+  .hw-levels { flex-direction: column; align-items: stretch; width: 44px; flex-shrink: 0; }
+  .hw-levels-label { width: auto; text-align: center; font-size: 9px; letter-spacing: 0.02em; }
+  .hw-tasks { flex: 1; max-height: 620px; overflow-y: auto; padding-right: 4px; }
+}
+
+/* Autumn Camp: на пк прогресс и созвоны идут парой, а месяцы материалов —
+   тремя колонками. Планшеты и мобилки остаются в столбик, как было. */
+.autumn-half-row { display: grid; grid-template-columns: 1fr; gap: 28px; margin-bottom: 28px; }
+.autumn-months-row { display: grid; grid-template-columns: 1fr; gap: 22px; }
+
+@media (min-width: 1101px) {
+  .autumn-half-row  { grid-template-columns: 1fr 1fr; align-items: start; gap: 20px; }
+  .autumn-months-row { grid-template-columns: repeat(3, 1fr); gap: 18px; align-items: start; }
+  /* В паре у созвонов месяцы тоже узкие — карточки дней переносим по две в ряд */
+  .autumn-half-row .calls-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
 /* Календарь недели на дэшборде: семь дней во всю ширину, компактный.
    Колонки равной ширины, поэтому строка не разъезжается при пустых днях. */
 .week-cal { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; }

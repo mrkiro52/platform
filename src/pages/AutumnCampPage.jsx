@@ -2,69 +2,8 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { AUTUMN_WEEK_MONTHS, currentAutumnWeek } from '../data/autumnWeeks'
 import CallBooking from '../components/CallBooking'
+import HomeworkPicker from '../components/HomeworkPicker'
 import { AUTUMN_MONTHS, CALL_MONTHS } from '../data/autumnCalls'
-
-const OS_INSTALL = {
-  vscode: [
-    {
-      os: 'Windows',
-      steps: 'Скачай установщик с официального сайта и запусти — мастер поставит всё сам.',
-      code: 'winget install -e --id Microsoft.VisualStudioCode',
-    },
-    {
-      os: 'macOS',
-      steps: 'Скачай .zip с сайта и перетащи VS Code в Applications, либо через Homebrew:',
-      code: 'brew install --cask visual-studio-code',
-    },
-    {
-      os: 'Linux',
-      steps: 'Скачай .deb/.rpm с сайта, либо поставь через snap:',
-      code: 'sudo snap install code --classic',
-    },
-  ],
-  git: [
-    {
-      os: 'Windows',
-      steps: 'Скачай Git for Windows — он же ставит Git Bash:',
-      code: 'winget install --id Git.Git -e',
-    },
-    {
-      os: 'macOS',
-      steps: 'Через Homebrew, либо командой ниже macOS сам предложит поставить Command Line Tools:',
-      code: 'brew install git',
-    },
-    {
-      os: 'Linux',
-      steps: 'Через пакетный менеджер дистрибутива:',
-      code: 'sudo apt install git   # Debian/Ubuntu\nsudo dnf install git   # Fedora',
-    },
-  ],
-  docker: [
-    {
-      os: 'Windows',
-      steps: 'Поставь Docker Desktop (нужен включённый WSL2) с официального сайта docker.com.',
-      code: '',
-    },
-    {
-      os: 'macOS',
-      steps: 'Docker Desktop с docker.com — выбери версию под свой чип (Intel или Apple Silicon).',
-      code: '',
-    },
-    {
-      os: 'Linux',
-      steps: 'Docker Engine напрямую по официальной инструкции docs.docker.com/engine/install, либо Docker Desktop for Linux.',
-      code: '',
-    },
-  ],
-}
-
-const VSCODE_EXTENSIONS = [
-  'Python (Microsoft) — если будешь писать на Python',
-  'ESLint + Prettier — Code formatter — для JS/TS',
-  'GitLens — история и блейм прямо в редакторе',
-  'Docker (Microsoft) — управление контейнерами из VS Code',
-  'Live Server — быстрый предпросмотр HTML-страниц',
-]
 
 // Онбординг и созвоны раскрыты по умолчанию только 1–2 сентября — потом сворачиваются
 function isSept1or2() {
@@ -72,33 +11,6 @@ function isSept1or2() {
   const from = new Date(2026, 8, 1, 0, 0, 0)
   const to = new Date(2026, 8, 2, 23, 59, 59)
   return today >= from && today <= to
-}
-
-function InstallCard({ title, blocks }) {
-  return (
-    <div>
-      <h4 style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-primary)', margin: '0 0 10px' }}>{title}</h4>
-      <div className="install-grid">
-        {blocks.map(b => (
-          <div key={b.os} style={{ background: 'var(--bg-tertiary)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-md)', padding: 14 }}>
-            <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--accent-lime)', marginBottom: 6, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-              {b.os}
-            </div>
-            <p style={{ fontSize: 12.5, color: 'var(--text-secondary)', lineHeight: 1.5, margin: '0 0 8px' }}>{b.steps}</p>
-            {b.code && (
-              <pre style={{
-                margin: 0, padding: '8px 10px', background: 'var(--bg-primary)', borderRadius: 8,
-                fontFamily: 'var(--font-mono)', fontSize: 11.5, color: 'var(--text-primary)',
-                overflowX: 'auto', whiteSpace: 'pre',
-              }}>
-                <code>{b.code}</code>
-              </pre>
-            )}
-          </div>
-        ))}
-      </div>
-    </div>
-  )
 }
 
 function ChevronIcon({ open }) {
@@ -192,6 +104,19 @@ function GroupCalls() {
                 <div style={{ fontSize: 11, color: 'var(--text-secondary)', marginTop: 4 }}>
                   Тема: {call.topic || 'будет скоро'}
                 </div>
+                {call.video && (
+                  <a
+                    href={call.video}
+                    target="_blank"
+                    rel="noopener"
+                    style={{
+                      display: 'inline-block', marginTop: 8, fontSize: 11, fontWeight: 700,
+                      color: 'var(--accent-lime)', textDecoration: 'underline', wordBreak: 'break-all',
+                    }}
+                  >
+                    Запись созвона →
+                  </a>
+                )}
               </div>
             ))}
           </div>
@@ -203,7 +128,7 @@ function GroupCalls() {
 
 function WeekMaterials({ onOpenWeek, currentSlug }) {
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 22 }}>
+    <div className="autumn-months-row">
       {AUTUMN_WEEK_MONTHS.map(month => (
         <div key={month.label}>
           <div style={{
@@ -255,7 +180,6 @@ function WeekMaterials({ onOpenWeek, currentSlug }) {
 export default function AutumnCampPage() {
   const [bookingOpen, setBookingOpen] = useState(true)
   const navigate = useNavigate()
-  const [open, setOpen] = useState(isSept1or2)
   const [callsOpen, setCallsOpen] = useState(isSept1or2)
   const currentSlug = currentAutumnWeek()?.slug || null
 
@@ -266,105 +190,38 @@ export default function AutumnCampPage() {
           <span className="autumn-hero-badge">🍂 Autumn Camp 2026</span>
           <span className="autumn-hero-title">Онбординг участника</span>
         </div>
-        <button className="autumn-toggle-btn" onClick={() => setOpen(o => !o)}>
-          {open ? 'Свернуть' : 'Открыть'}
-          <ChevronIcon open={open} />
+        <button className="autumn-toggle-btn" onClick={() => navigate('/autumn-camp/onboarding-autumn-2026')}>
+          Открыть
+          <span style={{ fontSize: 14, lineHeight: 1 }}>→</span>
         </button>
       </div>
 
-      <div className={`collapse-wrap${open ? ' open' : ''}`}>
-        <div className="collapse-inner">
+      <div className="autumn-half-row">
+        <div>
           <h2 style={{ marginTop: 0, marginBottom: 16, fontSize: 16, fontWeight: 700, color: 'var(--text-primary)' }}>
-            Перед стартом лагеря
+            Прогресс лагеря
           </h2>
-
-          <div className="widget" style={{ marginBottom: 16 }}>
-            <div className="widget-header">
-              <span className="widget-title">Заведи дневник лагеря</span>
-            </div>
-            <p style={{ fontSize: 13.5, color: 'var(--text-secondary)', lineHeight: 1.6, margin: '0 0 10px' }}>
-              Записывай, что прошёл, что понял, какие вопросы остались — это сильно помогает не растерять прогресс
-              за месяц лагеря. Формат — любой, какой удобнее:
-            </p>
-            <ul style={{ margin: 0, paddingLeft: 20, fontSize: 13.5, color: 'var(--text-secondary)', lineHeight: 1.8 }}>
-              <li>Папка с .docx-файлами — один файл на каждый день лагеря;</li>
-              <li>Страница в Notion с разделом на каждый день;</li>
-              <li>Обычная бумажная тетрадь;</li>
-              <li>Любой другой удобный тебе способ — главное, чтобы ты его реально вёл.</li>
-            </ul>
-          </div>
-
-          <div className="widget" style={{ marginBottom: 28 }}>
-            <div className="widget-header">
-              <span className="widget-title">Установи нужное ПО</span>
-            </div>
-            <p style={{ fontSize: 13.5, color: 'var(--text-secondary)', lineHeight: 1.6, margin: '0 0 18px' }}>
-              Понадобятся VS Code, Git и Docker. Инструкции под свою систему — ниже.
-            </p>
-
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 22 }}>
-              <InstallCard title="VS Code" blocks={OS_INSTALL.vscode} />
-              <InstallCard title="Git" blocks={OS_INSTALL.git} />
-              <InstallCard title="Docker" blocks={OS_INSTALL.docker} />
-            </div>
-
-            <h4 style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-primary)', margin: '20px 0 10px' }}>
-              Плагины VS Code, которые пригодятся
-            </h4>
-            <ul style={{ margin: 0, paddingLeft: 20, fontSize: 13.5, color: 'var(--text-secondary)', lineHeight: 1.8 }}>
-              {VSCODE_EXTENSIONS.map(ext => <li key={ext}>{ext}</li>)}
-            </ul>
-          </div>
-
-          <h2 style={{ marginTop: 0, marginBottom: 16, fontSize: 16, fontWeight: 700, color: 'var(--text-primary)' }}>
-            Как будет устроено обучение
-          </h2>
-
-          <div className="widget" style={{ marginBottom: 16 }}>
-            <div className="widget-header">
-              <span className="widget-title">Материалы и задания</span>
-            </div>
-            <p style={{ fontSize: 13.5, color: 'var(--text-secondary)', lineHeight: 1.6, margin: 0 }}>
-              Прямо здесь, на платформе, ты будешь получать конспекты, видеолекции, ссылки на полезные внешние
-              ресурсы и онлайн-тесты по темам. Вместе с материалами дня будут приходить и условия домашнего задания.
-            </p>
-          </div>
-
-          <div className="widget" style={{ marginBottom: 28 }}>
-            <div className="widget-header">
-              <span className="widget-title">Как сдавать домашку</span>
-            </div>
-            <p style={{ fontSize: 13.5, color: 'var(--text-secondary)', lineHeight: 1.6, margin: 0 }}>
-              Готовое решение скидывай в личные сообщения Ханилю в Telegram —{' '}
-              <a href="https://t.me/x_tap" target="_blank" rel="noopener" style={{ color: 'var(--accent-lime)', fontWeight: 600 }}>
-                t.me/x_tap
-              </a>
-              . Формат любой: файлом с кодом, документом или просто фотографией решения из тетради.
-            </p>
+          <div className="widget">
+            <AutumnProgress />
           </div>
         </div>
-      </div>
 
-      <h2 style={{ marginTop: 0, marginBottom: 16, fontSize: 16, fontWeight: 700, color: 'var(--text-primary)' }}>
-        Прогресс лагеря
-      </h2>
-      <div className="widget" style={{ marginBottom: 28 }}>
-        <AutumnProgress />
-      </div>
-
-      <div className="autumn-section-head">
-        <h2 style={{ margin: 0, fontSize: 16, fontWeight: 700, color: 'var(--text-primary)' }}>
-          Групповые созвоны
-        </h2>
-        <button className="autumn-toggle-btn" onClick={() => setCallsOpen(o => !o)}>
-          {callsOpen ? 'Свернуть' : 'Открыть'}
-          <ChevronIcon open={callsOpen} />
-        </button>
-      </div>
-      <div className={`collapse-wrap${callsOpen ? ' open' : ''}`} style={{ marginBottom: 28 }}>
-        <div className="collapse-inner">
-          <div className="widget">
-            <GroupCalls />
+        <div>
+          <div className="autumn-section-head">
+            <h2 style={{ margin: 0, fontSize: 16, fontWeight: 700, color: 'var(--text-primary)' }}>
+              Групповые созвоны
+            </h2>
+            <button className="autumn-toggle-btn" onClick={() => setCallsOpen(o => !o)}>
+              {callsOpen ? 'Свернуть' : 'Открыть'}
+              <ChevronIcon open={callsOpen} />
+            </button>
+          </div>
+          <div className={`collapse-wrap${callsOpen ? ' open' : ''}`}>
+            <div className="collapse-inner">
+              <div className="widget">
+                <GroupCalls />
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -384,6 +241,13 @@ export default function AutumnCampPage() {
             <CallBooking />
           </div>
         </div>
+      </div>
+
+      <h2 style={{ marginTop: 0, marginBottom: 16, fontSize: 16, fontWeight: 700, color: 'var(--text-primary)' }}>
+        Домашние задания
+      </h2>
+      <div className="widget" style={{ marginBottom: 28 }}>
+        <HomeworkPicker />
       </div>
 
       <h2 style={{ marginTop: 0, marginBottom: 16, fontSize: 16, fontWeight: 700, color: 'var(--text-primary)' }}>
