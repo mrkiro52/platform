@@ -3,8 +3,17 @@ const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const db = require('../db')
 
-function makeToken(payload) {
-  return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '24h' })
+// Сессия участника — две недели. При 24 часах людей выбрасывало на страницу
+// входа почти каждый день: токен протухал, следующий же запрос к API отдавал
+// 401, и фронтенд чистил сессию.
+const SESSION_TTL = '14d'
+
+// Админский токен — это по сути мастер-ключ ко всем аккаунтам, поэтому он
+// живёт заметно меньше пользовательского.
+const ADMIN_SESSION_TTL = '24h'
+
+function makeToken(payload, expiresIn = SESSION_TTL) {
+  return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn })
 }
 
 function userResponse(user) {
@@ -109,7 +118,7 @@ router.post('/admin-login', (req, res) => {
   if (username !== process.env.ADMIN_USERNAME || password !== process.env.ADMIN_PASSWORD) {
     return res.status(401).json({ message: 'Неверный логин или пароль' })
   }
-  const token = makeToken({ role: 'admin', username })
+  const token = makeToken({ role: 'admin', username }, ADMIN_SESSION_TTL)
   res.json({ token })
 })
 
