@@ -215,6 +215,30 @@ router.get('/open', requireAutumnCamp, (req, res) => {
   }
 })
 
+// GET /api/calls/my — свои брони по всем наборам, включая закрытые.
+// Отдельно от /open: календарь на дэшборде должен показывать запись даже
+// после того, как админ закрыл набор.
+router.get('/my', requireAutumnCamp, (req, res) => {
+  try {
+    const rows = db.prepare(`
+      SELECT s.id, s.date, s.hour, c.title AS session_title
+        FROM call_slots s
+        JOIN call_sessions c ON c.id = s.session_id
+       WHERE s.booked_by = ?
+       ORDER BY s.date, s.hour
+    `).all(req.student.id)
+
+    res.json(rows.map(r => ({
+      id: r.id,
+      date: r.date,
+      hour: r.hour,
+      sessionTitle: r.session_title,
+    })))
+  } catch (e) {
+    res.status(500).json({ message: e.message })
+  }
+})
+
 // POST /api/calls/slots/:id/book — забронировать слот.
 // Условие booked_by IS NULL прямо в UPDATE — если слот успели занять,
 // пока студент выбирал, запрос ничего не изменит и вернётся 409 со

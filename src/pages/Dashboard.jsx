@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { LIBRARY, HW_LINKS } from '../data'
 import { api } from '../api'
 import { SkeletonNewsCard, SkeletonEventCard } from '../components/Skeleton'
+import WeekCalendar from '../components/WeekCalendar'
 
 const RU_MONTHS  = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря']
 const RU_WEEKDAY = ['воскресенье','понедельник','вторник','среда','четверг','пятница','суббота']
@@ -263,6 +264,15 @@ export default function Dashboard({ user, onOpenDay, onNavigate }) {
         <h1 className="page-title">Дэшборд</h1>
         <p className="page-subtitle" style={{ textTransform:'capitalize' }}>{dateLabel}</p>
       </div>
+
+      {user?.isAutumnCamp2026 && (
+        <div className="widget" style={{ marginBottom: 20 }}>
+          <div className="widget-header">
+            <span className="widget-title">Ближайшая неделя</span>
+          </div>
+          <WeekCalendar />
+        </div>
+      )}
 
       <div className="dash-grid">
         {/* LEFT */}

@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { AUTUMN_WEEK_MONTHS, currentAutumnWeek } from '../data/autumnWeeks'
 import CallBooking from '../components/CallBooking'
+import { AUTUMN_MONTHS, CALL_MONTHS } from '../data/autumnCalls'
 
 const OS_INSTALL = {
   vscode: [
@@ -64,41 +65,6 @@ const VSCODE_EXTENSIONS = [
   'Docker (Microsoft) — управление контейнерами из VS Code',
   'Live Server — быстрый предпросмотр HTML-страниц',
 ]
-
-// Дни месяцев зафиксированы под 2026 год (осенний лагерь 2026)
-const AUTUMN_MONTHS = [
-  { label: 'Сентябрь', total: 30, start: new Date(2026, 8, 1) },
-  { label: 'Октябрь',  total: 31, start: new Date(2026, 9, 1) },
-  { label: 'Ноябрь',   total: 30, start: new Date(2026, 10, 1) },
-]
-
-// Групповые созвоны. По умолчанию — каждая пятница месяца (дни считаются по
-// дню недели, чтобы не разъехаться при правках дат месяцев выше). Для
-// сентября даты и темы заданы явно — сдвинуты на день позже пятницы.
-function fridaysOf(month) {
-  const days = []
-  for (let d = 1; d <= month.total; d++) {
-    const dt = new Date(month.start)
-    dt.setDate(d)
-    if (dt.getDay() === 5) days.push(d)
-  }
-  return days
-}
-
-const SEPTEMBER_CALLS = [
-  { day: 5, topic: 'Python: изучаем основы (для новичков)' },
-  { day: 6, topic: 'Python: вопросы с собеседований (для опытных)' },
-  { day: 12, topic: 'Полный гайд по алгоритмам' },
-  { day: 19, topic: 'Полный гайд по структурам данных' },
-  { day: 26, topic: 'Полный гайд по базам данных и SQL' },
-]
-
-const CALL_MONTHS = AUTUMN_MONTHS.map(m => ({
-  label: m.label,
-  calls: m.label === 'Сентябрь'
-    ? SEPTEMBER_CALLS
-    : fridaysOf(m).map(day => ({ day, topic: null })),
-}))
 
 // Онбординг и созвоны раскрыты по умолчанию только 1–2 сентября — потом сворачиваются
 function isSept1or2() {
