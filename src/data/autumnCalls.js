@@ -22,10 +22,15 @@ function fridaysOf(month) {
   return days
 }
 
+// videos — записи созвона. Их может быть несколько, если созвон разбит на части.
 const SEPTEMBER_CALLS = [
   { day: 5, topic: 'Python: изучаем основы (для новичков)' },
-  { day: 6, topic: 'Python: вопросы с собеседований (для опытных)', video: 'https://youtu.be/Ul4Q3xftxjE' },
-  { day: 12, topic: 'Полный гайд по алгоритмам' },
+  { day: 6, topic: 'Python: вопросы с собеседований (для опытных)', videos: ['https://youtu.be/Ul4Q3xftxjE'] },
+  {
+    day: 12,
+    topic: 'Полный гайд по алгоритмам',
+    videos: ['https://youtu.be/wd4dYSLWyLo', 'https://youtu.be/RqGcY_PVPiE'],
+  },
   { day: 19, topic: 'Полный гайд по структурам данных' },
   { day: 26, topic: 'Полный гайд по базам данных и SQL' },
 ]
