@@ -28,6 +28,7 @@ function mapRow(row) {
     chapterId: row.chapter_id,
     hwNumber: row.hw_number,
     taskIndex: row.task_index,
+    taskText: row.task_text || '',
     solution: row.solution,
     status: row.status,
     comment: row.comment || null,
@@ -55,7 +56,7 @@ router.get('/mine', requireAutumnCamp, (req, res) => {
 // прежний комментарий уже не про неё, и задача снова ждёт проверки.
 router.put('/task', requireAutumnCamp, (req, res) => {
   try {
-    const { week, level, chapterId, hwNumber, taskIndex, solution } = req.body
+    const { week, level, chapterId, hwNumber, taskIndex, solution, taskText } = req.body
 
     if (!Number.isInteger(week) || week < 1 || week > 15) {
       return res.status(400).json({ message: 'Некорректный номер недели' })
@@ -76,19 +77,21 @@ router.put('/task', requireAutumnCamp, (req, res) => {
     const now = new Date().toISOString()
     db.prepare(`
       INSERT INTO homework_submissions
-        (user_id, week, level, chapter_id, hw_number, task_index, solution, status, comment, submitted_at, reviewed_at)
-      VALUES (?, ?, ?, ?, ?, ?, ?, 'submitted', NULL, ?, NULL)
+        (user_id, week, level, chapter_id, hw_number, task_index, task_text, solution, status, comment, submitted_at, reviewed_at)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'submitted', NULL, ?, NULL)
       ON CONFLICT(user_id, week, chapter_id, task_index) DO UPDATE SET
         solution     = excluded.solution,
         level        = excluded.level,
         hw_number    = excluded.hw_number,
+        task_text    = CASE WHEN excluded.task_text != '' THEN excluded.task_text ELSE homework_submissions.task_text END,
         status       = 'submitted',
         comment      = NULL,
         submitted_at = excluded.submitted_at,
         reviewed_at  = NULL
     `).run(
       req.student.id, week, Number.isInteger(level) ? level : null,
-      chapterId, Number.isInteger(hwNumber) ? hwNumber : 0, taskIndex, solution, now
+      chapterId, Number.isInteger(hwNumber) ? hwNumber : 0, taskIndex,
+      typeof taskText === 'string' ? taskText : '', solution, now
     )
 
     const row = db.prepare(

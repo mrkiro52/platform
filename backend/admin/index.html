@@ -226,7 +226,27 @@ textarea::placeholder{color:var(--text3)}
 .hw-student-name{font-family:var(--font-syne);font-size:17px;font-weight:700;color:var(--text)}
 .hw-student-sub{font-size:12.5px;color:var(--text3);margin-top:2px}
 .hw-week-block{margin-bottom:26px}
-.hw-week-title{font-family:var(--font-syne);font-size:15px;font-weight:700;color:var(--lime);margin-bottom:12px}
+.hw-week-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:18px}
+.hw-week-tab{
+  position:relative;padding:9px 20px;border-radius:var(--r-pill);
+  background:var(--bg3);border:1px solid var(--border);color:var(--text2);
+  font-family:var(--font-inter);font-size:13px;font-weight:600;cursor:pointer;
+  transition:background .15s,border-color .15s,color .15s;
+}
+.hw-week-tab:hover{border-color:rgba(255,214,10,.5);color:var(--text)}
+.hw-week-tab.is-active{background:rgba(255,214,10,.14);border-color:rgba(255,214,10,.6);color:var(--lime)}
+/* Кружок в правом верхнем углу — сколько решений ждёт проверки */
+.hw-tab-badge{
+  position:absolute;top:-6px;right:-6px;min-width:19px;height:19px;padding:0 5px;
+  border-radius:var(--r-pill);background:var(--lime);color:var(--on-accent);
+  font-family:var(--font-syne);font-style:normal;font-size:10.5px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+}
+.hw-sub-task{
+  margin-bottom:10px;padding:10px 13px;border-radius:var(--r-sm);
+  background:var(--bg3);border:1px solid var(--border);
+  font-size:12.5px;color:var(--text2);line-height:1.6;
+}
 .hw-num-block{margin-bottom:18px}
 .hw-num-title{font-size:12.5px;font-weight:700;color:var(--text2);margin-bottom:8px}
 .hw-sub{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-md);padding:16px;margin-bottom:10px}
@@ -1369,6 +1389,7 @@ function plural(n, one, few, many) {
 // ══════════════ ДОМАШНИЕ ЗАДАНИЯ ═════════════════════════════════════════
 let HW_STUDENTS = []
 let HW_CURRENT = null     // { user, submissions } — открытый студент
+let HW_WEEK = null        // неделя, выбранная табом
 
 const HW_STATUS = {
   submitted: { label: 'на проверке', badge: 'badge-gray' },
@@ -1411,6 +1432,7 @@ function renderHomeworkList() {
 }
 
 async function openHomeworkStudent(id) {
+  HW_WEEK = null
   HW_CURRENT = await req(`/api/homework/admin/students/${id}`)
   renderHomeworkStudent()
 }
@@ -1429,6 +1451,13 @@ function renderHomeworkStudent() {
 
   const weekNums = Object.keys(weeks).map(Number).sort((a, b) => a - b)
 
+  // Показываем одну неделю за раз. Если выбранной больше нет в данных
+  // (например после обновления), встаём на первую доступную.
+  if (!weekNums.includes(HW_WEEK)) HW_WEEK = weekNums[0]
+
+  const pendingOf = (week) =>
+    Object.values(weeks[week]).flat().filter(s => s.status === 'submitted').length
+
   el.innerHTML = `
     <div class="hw-student-head">
       <button class="btn-ghost" onclick="loadHomework()">← Ко всем ученикам</button>
@@ -1440,16 +1469,50 @@ function renderHomeworkStudent() {
 
     ${weekNums.length === 0
       ? '<div class="call-empty">Этот ученик ещё ничего не сдавал</div>'
-      : weekNums.map(week => `
+      : `
+        <div class="hw-week-tabs">
+          ${weekNums.map(week => {
+            const pending = pendingOf(week)
+            return `<button class="hw-week-tab${week === HW_WEEK ? ' is-active' : ''}" onclick="selectHomeworkWeek(${week})">
+              Неделя ${week}
+              ${pending ? `<i class="hw-tab-badge">${pending}</i>` : ''}
+            </button>`
+          }).join('')}
+        </div>
+
         <div class="hw-week-block">
-          <div class="hw-week-title">Неделя ${week}</div>
-          ${Object.keys(weeks[week]).map(Number).sort((a, b) => a - b).map(num => `
+          ${Object.keys(weeks[HW_WEEK]).map(Number).sort((a, b) => a - b).map(num => `
             <div class="hw-num-block">
-              <div class="hw-num-title">Домашнее задание ${num}${weeks[week][num][0].level ? ` · уровень ${weeks[week][num][0].level}` : ''}</div>
-              ${weeks[week][num].sort((a, b) => a.taskIndex - b.taskIndex).map(renderSubmission).join('')}
+              <div class="hw-num-title">Домашнее задание ${num}${weeks[HW_WEEK][num][0].level ? ` · уровень ${weeks[HW_WEEK][num][0].level}` : ''}</div>
+              ${weeks[HW_WEEK][num].sort((a, b) => a.taskIndex - b.taskIndex).map(renderSubmission).join('')}
             </div>`).join('')}
-        </div>`).join('')}
+        </div>`}
   `
+}
+
+function selectHomeworkWeek(week) {
+  HW_WEEK = week
+  renderHomeworkStudent()
+}
+
+// Копирует условие и решение одним куском: условие, пустая строка, решение
+async function copySubmission(id) {
+  const s = (HW_CURRENT?.submissions || []).find(x => x.id === id)
+  if (!s) return
+  const text = `${s.taskText || '(условие не сохранено)'}\n\n${s.solution}`
+  try {
+    await navigator.clipboard.writeText(text)
+    toast('Скопировано')
+  } catch {
+    // Clipboard API недоступен вне https — падаем на старый способ
+    const ta = document.createElement('textarea')
+    ta.value = text
+    document.body.appendChild(ta)
+    ta.select()
+    document.execCommand('copy')
+    ta.remove()
+    toast('Скопировано')
+  }
 }
 
 function renderSubmission(s) {
@@ -1460,9 +1523,11 @@ function renderSubmission(s) {
         <span class="hw-sub-num">Задача ${s.taskIndex + 1}</span>
         <span class="badge ${st.badge}">${st.label}</span>
       </div>
+      <div class="hw-sub-task">${esc(s.taskText || 'Условие не сохранено — решение сдано до того, как условия начали сохраняться')}</div>
       <pre class="hw-sub-code">${esc(s.solution)}</pre>
       ${s.comment ? `<div class="hw-sub-comment"><b>Правки:</b> ${esc(s.comment)}</div>` : ''}
       <div class="hw-sub-actions">
+        <button class="btn-ghost" onclick="copySubmission(${s.id})">Скопировать</button>
         <button class="btn-edit" onclick="approveSubmission(${s.id})">Подтвердить</button>
         <button class="btn-danger" onclick="openReworkForm(${s.id})">Дать правки</button>
       </div>

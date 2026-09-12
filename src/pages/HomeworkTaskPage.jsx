@@ -13,6 +13,10 @@ export default function HomeworkTaskPage() {
   const { week, chapterId, taskIndex } = useParams()
   const navigate = useNavigate()
   const [row, setRow] = useState(undefined)   // undefined — ещё грузим
+  const [editing, setEditing] = useState(false)
+  const [draft, setDraft] = useState('')
+  const [busy, setBusy] = useState(false)
+  const [error, setError] = useState('')
 
   const task = findTask(week, chapterId, taskIndex)
 
@@ -36,13 +40,31 @@ export default function HomeworkTaskPage() {
     )
   }
 
+  const save = async () => {
+    if (!draft.trim()) { setError('Вставь решение — пустое поле не сохраняется'); return }
+    setBusy(true)
+    setError('')
+    try {
+      const saved = await api.saveHomework({
+        week: Number(week),
+        level: levelOfChapter(Number(week), chapterId),
+        chapterId,
+        hwNumber: task.hwNumber,
+        taskIndex: Number(taskIndex),
+        taskText: task.text,
+        solution: draft,
+      })
+      setRow(saved)
+      setEditing(false)
+    } catch (err) {
+      setError(err.message || 'Не удалось сохранить, попробуй ещё раз')
+    } finally {
+      setBusy(false)
+    }
+  }
+
   const status = row ? STATUS[row.status] : null
 
-  // Переходим на форму сдачи с уже выбранными неделей, уровнем и главой,
-  // чтобы не искать ту же задачу заново.
-  const level = levelOfChapter(Number(week), chapterId)
-  const uploadHref = `/autumn-camp/upload-homework?week=${week}&chapter=${encodeURIComponent(chapterId)}`
-    + (level ? `&level=${level}` : '')
 
   return (
     <section className="page active">
@@ -84,18 +106,64 @@ export default function HomeworkTaskPage() {
       )}
 
       <div className="widget">
-        <div className="widget-header"><span className="widget-title">Твоё решение</span></div>
+        <div className="widget-header">
+          <span className="widget-title">Твоё решение</span>
+          {row && !editing && (
+            <button type="button" className="btn-ghost" onClick={() => { setDraft(row.solution); setEditing(true) }}>
+              {row.status === 'rework' ? 'Исправить и сдать снова' : 'Изменить решение'}
+            </button>
+          )}
+        </div>
+
         {row === undefined ? (
           <p style={{ margin: 0, fontSize: 13.5, color: 'var(--text-tertiary)' }}>Загружаем…</p>
+        ) : editing ? (
+          <>
+            <textarea
+              className="hwup-input"
+              value={draft}
+              onChange={e => setDraft(e.target.value)}
+              placeholder="Вставь своё решение сюда"
+              spellCheck={false}
+            />
+            {error && <div className="hwup-error">{error}</div>}
+            <div className="hwup-actions">
+              {row && (
+                <button
+                  type="button"
+                  className="btn-ghost"
+                  disabled={busy}
+                  onClick={() => { setDraft(row.solution); setEditing(false); setError('') }}
+                >
+                  Отмена
+                </button>
+              )}
+              <button type="button" className="btn-primary hwup-btn" disabled={busy} onClick={save}>
+                {busy ? 'Сохраняем…' : row ? 'Сдать повторно' : 'Сдать задачу'}
+              </button>
+            </div>
+          </>
         ) : row ? (
           <pre className="hwup-solution">{row.solution}</pre>
         ) : (
-          <p style={{ margin: 0, fontSize: 13.5, color: 'var(--text-tertiary)', lineHeight: 1.6 }}>
-            Решение пока не сдано.{' '}
-            <a href={uploadHref} style={{ color: 'var(--accent-lime)', fontWeight: 600 }}>
-              Сдать задание →
-            </a>
-          </p>
+          <>
+            <p style={{ margin: '0 0 12px', fontSize: 13.5, color: 'var(--text-tertiary)', lineHeight: 1.6 }}>
+              Решение пока не сдано — вставь его прямо здесь.
+            </p>
+            <textarea
+              className="hwup-input"
+              value={draft}
+              onChange={e => setDraft(e.target.value)}
+              placeholder="Вставь своё решение сюда"
+              spellCheck={false}
+            />
+            {error && <div className="hwup-error">{error}</div>}
+            <div className="hwup-actions">
+              <button type="button" className="btn-primary hwup-btn" disabled={busy} onClick={save}>
+                {busy ? 'Сохраняем…' : 'Сдать задачу'}
+              </button>
+            </div>
+          </>
         )}
       </div>
     </section>

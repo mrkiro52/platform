@@ -48,6 +48,7 @@ function TaskCard({ task, index, chapter, week, level, saved, onSaved }) {
         chapterId: chapter.id,
         hwNumber: hwNumberOf(chapter, week, level),
         taskIndex: index,
+        taskText: task.text,   // условие едет вместе с решением — админке оно иначе недоступно
         solution: draft,
       })
       onSaved(row)

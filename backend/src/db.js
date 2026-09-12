@@ -735,6 +735,23 @@ function migrate() {
       console.error('❌ Migration 20 failed:', err.message)
     }
   }
+
+  // Migration 21: условие задачи рядом с решением.
+  // Тексты заданий лежат во фронтенде, админка их не видит — поэтому условие
+  // сохраняется вместе с решением. Побочная польза: проверяющий видит ровно
+  // ту формулировку, на которую отвечал студент, даже если её потом правили.
+  if (schemaVersion < 21) {
+    try {
+      const exists = db.prepare('PRAGMA table_info(homework_submissions)').all().some(c => c.name === 'task_text')
+      if (!exists) {
+        db.prepare("ALTER TABLE homework_submissions ADD COLUMN task_text TEXT NOT NULL DEFAULT ''").run()
+      }
+      db.pragma('user_version = 21')
+      console.log('✅ Migration 21 completed: added homework_submissions.task_text')
+    } catch (err) {
+      console.error('❌ Migration 21 failed:', err.message)
+    }
+  }
 }
 
 migrate()
