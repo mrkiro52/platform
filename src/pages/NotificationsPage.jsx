@@ -8,7 +8,13 @@ const TEXT = {
   reaction: 'отреагировал(а) на твой пост',
   comment:  'прокомментировал(а) твой пост',
   message:  'написал(а) тебе сообщение',
+  hw_approved: 'проверили твоё домашнее задание',
+  hw_rework:   'вернули домашнее задание с правками',
 }
+
+// Проверку домашки делает команда лагеря, а не другой участник, — у таких
+// уведомлений нет автора, поэтому подписываем их платформой.
+const SYSTEM_TYPES = ['hw_approved', 'hw_rework']
 
 export default function NotificationsPage({ onRead }) {
   const navigate = useNavigate()
@@ -24,7 +30,8 @@ export default function NotificationsPage({ onRead }) {
   }, [onRead])
 
   const openTarget = (n) => {
-    if (n.type === 'message' && n.actor) navigate(`/messages/${n.actor.id}`)
+    if (n.link) navigate(n.link)
+    else if (n.type === 'message' && n.actor) navigate(`/messages/${n.actor.id}`)
     else if (n.type === 'follow' && n.actor) navigate(`/u/${n.actor.id}`)
     else navigate('/wall')
   }
@@ -33,7 +40,7 @@ export default function NotificationsPage({ onRead }) {
     <section className="page active">
       <div className="page-header">
         <h1 className="page-title">Уведомления</h1>
-        <p className="page-subtitle">Реакции, комментарии, подписки и сообщения</p>
+        <p className="page-subtitle">Проверка домашних заданий, реакции, комментарии, подписки и сообщения</p>
       </div>
 
       {loading ? (
@@ -52,18 +59,31 @@ export default function NotificationsPage({ onRead }) {
                 background: n.readAt ? 'var(--bg-secondary)' : 'rgba(255,214,10,0.06)',
               }}
             >
-              <Avatar name={n.actor?.name} avatarUrl={n.actor?.avatarUrl} size={38}
-                userId={n.actor?.id} clickable />
+              {SYSTEM_TYPES.includes(n.type) ? (
+                <span style={{
+                  width: 38, height: 38, borderRadius: '50%', flexShrink: 0,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  background: n.type === 'hw_approved' ? 'rgba(63,185,80,0.15)' : 'rgba(255,214,10,0.14)',
+                  border: `1px solid ${n.type === 'hw_approved' ? 'rgba(63,185,80,0.45)' : 'rgba(255,214,10,0.4)'}`,
+                  fontSize: 16,
+                }}>
+                  {n.type === 'hw_approved' ? '✓' : '✎'}
+                </span>
+              ) : (
+                <Avatar name={n.actor?.name} avatarUrl={n.actor?.avatarUrl} size={38}
+                  userId={n.actor?.id} clickable />
+              )}
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ fontSize: 13.5, color: 'var(--text-primary)' }}>
-                  <span style={{ fontWeight: 600 }}>{n.actor?.name || 'Кто-то'}</span>
+                  <span style={{ fontWeight: 600 }}>
+                    {SYSTEM_TYPES.includes(n.type) ? 'KIRO TEAM' : (n.actor?.name || 'Кто-то')}
+                  </span>
                   {' '}
                   <span style={{ color: 'var(--text-secondary)' }}>{TEXT[n.type] || 'обновление'}</span>
                 </div>
                 {n.preview && (
                   <div style={{
-                    fontSize: 12, color: 'var(--text-tertiary)', marginTop: 2,
-                    overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+                    fontSize: 12, color: 'var(--text-tertiary)', marginTop: 2, lineHeight: 1.5,
                   }}>
                     {n.preview}
                   </div>

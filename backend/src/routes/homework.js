@@ -1,6 +1,8 @@
 const express = require('express')
 const { verifyToken, requireAdmin } = require('../middleware/auth')
 const db = require('../db')
+const { notify } = require('../notify')
+const conditions = require('../data/homework-conditions.json')
 
 const router = express.Router()
 
@@ -168,6 +170,18 @@ router.patch('/admin/submissions/:id', requireAdmin, (req, res) => {
 
     db.prepare('UPDATE homework_submissions SET status = ?, comment = ?, reviewed_at = ? WHERE id = ?')
       .run(status, status === 'rework' ? String(comment).trim() : null, new Date().toISOString(), row.id)
+
+    // Студент должен узнать о проверке, не проверяя страницу вручную
+    const chapter = conditions.chapterTitles[row.chapter_id] || 'без названия'
+    const where = `Домашнее задание ${row.hw_number} недели ${row.week}, глава «${chapter}», задача ${row.task_index + 1}`
+    notify({
+      userId: row.user_id,
+      type: status === 'approved' ? 'hw_approved' : 'hw_rework',
+      preview: status === 'approved'
+        ? `${where} — проверено и принято`
+        : `${where} — есть правки, посмотри комментарий и сдай снова`,
+      link: `/autumn-camp/homework/${row.week}/${row.chapter_id}/${row.task_index}`,
+    })
 
     res.json(mapRow(db.prepare('SELECT * FROM homework_submissions WHERE id = ?').get(row.id)))
   } catch (e) {

@@ -752,6 +752,52 @@ function migrate() {
       console.error('❌ Migration 21 failed:', err.message)
     }
   }
+
+  // Migration 22: ссылка в уведомлении.
+  // Раньше уведомление умело вести только на пост или в переписку. Проверка
+  // домашки ведёт на страницу задачи, поэтому адрес хранится прямо в строке.
+  if (schemaVersion < 22) {
+    try {
+      const exists = db.prepare('PRAGMA table_info(notifications)').all().some(c => c.name === 'link')
+      if (!exists) db.prepare('ALTER TABLE notifications ADD COLUMN link TEXT').run()
+      db.pragma('user_version = 22')
+      console.log('✅ Migration 22 completed: added notifications.link')
+    } catch (err) {
+      console.error('❌ Migration 22 failed:', err.message)
+    }
+  }
+
+  // Migration 23: условия для работ, сданных до миграции 21.
+  // Эти строки пришли, когда фронтенд ещё не отправлял условие, и в админке
+  // вместо задания была заглушка. Берём тексты из снимка и проставляем.
+  // Идемпотентно: трогаем только строки с пустым task_text.
+  if (schemaVersion < 23) {
+    try {
+      const conditions = require('./data/homework-conditions.json')
+      const rows = db.prepare("SELECT id, week, level, chapter_id, task_index FROM homework_submissions WHERE task_text = ''").all()
+      const update = db.prepare('UPDATE homework_submissions SET task_text = ? WHERE id = ?')
+
+      let filled = 0
+      const apply = db.transaction(() => {
+        for (const row of rows) {
+          // На первом уровне второй недели задания в тетради — у них свой набор
+          const paperKey = `2p:${row.chapter_id}:${row.task_index}`
+          const key = (row.week === 2 && row.level === 1 && conditions.tasks[paperKey])
+            ? paperKey
+            : `${row.week}:${row.chapter_id}:${row.task_index}`
+
+          const text = conditions.tasks[key]
+          if (text) { update.run(text, row.id); filled++ }
+        }
+      })
+      apply()
+
+      db.pragma('user_version = 23')
+      console.log(`✅ Migration 23 completed: filled task_text for ${filled} of ${rows.length} older submissions`)
+    } catch (err) {
+      console.error('❌ Migration 23 failed:', err.message)
+    }
+  }
 }
 
 migrate()

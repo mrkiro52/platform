@@ -14,7 +14,7 @@ router.get('/unread-count', verifyToken, (req, res) => {
 router.get('/', verifyToken, (req, res) => {
   const rows = db.prepare(`
     SELECT
-      n.id, n.type, n.post_id, n.preview, n.read_at, n.created_at,
+      n.id, n.type, n.post_id, n.preview, n.link, n.read_at, n.created_at,
       u.id AS actor_id, u.name AS actor_name, u.avatar_url AS actor_avatar
     FROM notifications n
     LEFT JOIN users u ON u.id = n.actor_id
@@ -28,6 +28,7 @@ router.get('/', verifyToken, (req, res) => {
     type: r.type,
     postId: r.post_id,
     preview: r.preview || '',
+    link: r.link || null,
     readAt: r.read_at,
     createdAt: r.created_at,
     actor: r.actor_id
