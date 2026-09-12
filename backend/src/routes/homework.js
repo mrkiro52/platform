@@ -1,5 +1,5 @@
 const express = require('express')
-const { verifyToken, requireAdmin } = require('../middleware/auth')
+const { verifyToken, requireHomeworkReview } = require('../middleware/auth')
 const db = require('../db')
 const { notify } = require('../notify')
 const conditions = require('../data/homework-conditions.json')
@@ -109,7 +109,7 @@ router.put('/task', requireAutumnCamp, (req, res) => {
 // ── Админ ───────────────────────────────────────────────────────────────────
 
 // GET /api/homework/admin/students — участники лагеря со сводкой по статусам
-router.get('/admin/students', requireAdmin, (req, res) => {
+router.get('/admin/students', requireHomeworkReview, (req, res) => {
   try {
     const rows = db.prepare(`
       SELECT u.id, u.nickname, u.name,
@@ -139,7 +139,7 @@ router.get('/admin/students', requireAdmin, (req, res) => {
 })
 
 // GET /api/homework/admin/students/:id — все решения одного студента
-router.get('/admin/students/:id', requireAdmin, (req, res) => {
+router.get('/admin/students/:id', requireHomeworkReview, (req, res) => {
   try {
     const user = db.prepare('SELECT id, nickname, name FROM users WHERE id = ?').get(req.params.id)
     if (!user) return res.status(404).json({ message: 'Студент не найден' })
@@ -155,7 +155,7 @@ router.get('/admin/students/:id', requireAdmin, (req, res) => {
 })
 
 // PATCH /api/homework/admin/submissions/:id — принять работу или вернуть с правками
-router.patch('/admin/submissions/:id', requireAdmin, (req, res) => {
+router.patch('/admin/submissions/:id', requireHomeworkReview, (req, res) => {
   try {
     const { status, comment } = req.body
     if (!STATUSES.includes(status)) {

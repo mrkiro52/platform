@@ -112,14 +112,29 @@ router.post('/register', registerRateLimit, (req, res) => {
   res.status(201).json({ token, user: userResponse(user) })
 })
 
+// Аккаунты админки. Полный доступ и проверяющий домашних заданий, которому
+// открыт только соответствующий раздел. Пароли живут в .env — в репозитории
+// их нет. Проверяющий не настроен, пока переменные не заданы.
+function adminAccounts() {
+  const list = []
+  if (process.env.ADMIN_USERNAME && process.env.ADMIN_PASSWORD) {
+    list.push({ username: process.env.ADMIN_USERNAME, password: process.env.ADMIN_PASSWORD, scope: 'full' })
+  }
+  if (process.env.REVIEWER_USERNAME && process.env.REVIEWER_PASSWORD) {
+    list.push({ username: process.env.REVIEWER_USERNAME, password: process.env.REVIEWER_PASSWORD, scope: 'homework' })
+  }
+  return list
+}
+
 // POST /api/auth/admin-login — admin login
 router.post('/admin-login', (req, res) => {
   const { username, password } = req.body
-  if (username !== process.env.ADMIN_USERNAME || password !== process.env.ADMIN_PASSWORD) {
+  const account = adminAccounts().find(a => a.username === username && a.password === password)
+  if (!account) {
     return res.status(401).json({ message: 'Неверный логин или пароль' })
   }
-  const token = makeToken({ role: 'admin', username }, ADMIN_SESSION_TTL)
-  res.json({ token })
+  const token = makeToken({ role: 'admin', username, scope: account.scope }, ADMIN_SESSION_TTL)
+  res.json({ token, scope: account.scope })
 })
 
 module.exports = router

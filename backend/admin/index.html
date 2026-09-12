@@ -242,6 +242,15 @@ textarea::placeholder{color:var(--text3)}
   font-family:var(--font-syne);font-style:normal;font-size:10.5px;font-weight:700;
   display:flex;align-items:center;justify-content:center;
 }
+/* Сортируемые заголовки: стрелка серая, у активного столбца белая */
+.tbl th.tbl-sort{cursor:pointer;user-select:none;white-space:nowrap;transition:color .15s}
+.tbl th.tbl-sort svg{vertical-align:-1px;margin-left:5px;color:var(--text3);transition:color .15s}
+.tbl th.tbl-sort:hover{color:var(--text2)}
+.tbl th.tbl-sort.is-active{color:var(--text)}
+.tbl th.tbl-sort.is-active svg{color:#fff}
+
+.confirm-text{font-size:13.5px;color:var(--text2);line-height:1.6;margin-bottom:4px}
+
 .hw-sub-task{
   margin-bottom:10px;padding:10px 13px;border-radius:var(--r-sm);
   background:var(--bg3);border:1px solid var(--border);
@@ -471,6 +480,8 @@ textarea::placeholder{color:var(--text3)}
 <script>
 const API = ''  // same origin; change to http://localhost:3001 if serving separately
 let TOKEN = localStorage.getItem('kiro_admin_token') || ''
+// 'full' — полный доступ, 'homework' — только проверка домашних заданий
+let SCOPE = localStorage.getItem('kiro_admin_scope') || 'full'
 let libDays = []  // cache for day selector in material form
 
 // ── Auth ──────────────────────────────────────────────────────────────────
@@ -482,10 +493,12 @@ async function adminLogin() {
   try {
     const data = await req('/api/auth/admin-login', 'POST', { username: u, password: p }, true)
     TOKEN = data.token
+    SCOPE = data.scope || 'full'
     localStorage.setItem('kiro_admin_token', TOKEN)
+    localStorage.setItem('kiro_admin_scope', SCOPE)
     document.getElementById('login-screen').style.display = 'none'
     document.getElementById('app').style.display = 'block'
-    loadDashboard()
+    applyScope()
   } catch {
     err.style.display = 'block'
   }
@@ -494,6 +507,7 @@ async function adminLogin() {
 function logout() {
   TOKEN = ''
   localStorage.removeItem('kiro_admin_token')
+  localStorage.removeItem('kiro_admin_scope')
   location.reload()
 }
 
@@ -501,7 +515,21 @@ function logout() {
 if (TOKEN) {
   document.getElementById('login-screen').style.display = 'none'
   document.getElementById('app').style.display = 'block'
-  loadDashboard()
+  applyScope()
+}
+
+// Проверяющему домашних заданий остальные разделы не показываем — сервер их
+// всё равно не отдаст, поэтому и в меню им делать нечего.
+function applyScope() {
+  if (SCOPE === 'homework') {
+    document.querySelectorAll('.sb-nav .nav-item').forEach(btn => {
+      if (!btn.getAttribute('onclick')?.includes("goto('homework')")) btn.remove()
+    })
+    document.querySelector('.sb-logo').innerHTML = 'KIRO <span>Проверка ДЗ</span>'
+    goto('homework')
+  } else {
+    loadDashboard()
+  }
 }
 
 for (const id of ['au', 'ap']) {
@@ -515,6 +543,12 @@ async function req(path, method='GET', body=null, noAuth=false) {
   if (body) opts.body = JSON.stringify(body)
   const res = await fetch(API + path, opts)
   const json = await res.json().catch(() => ({}))
+  // Токен протух — возвращаем на экран входа, иначе панель остаётся открытой
+  // и сыплет ошибками загрузки в каждом разделе.
+  if (res.status === 401 && !noAuth) {
+    logout()
+    throw new Error('Сессия истекла, войди заново')
+  }
   if (!res.ok) throw new Error(json.message || res.statusText)
   return json
 }
@@ -1403,6 +1437,15 @@ async function loadHomework() {
   renderHomeworkList()
 }
 
+// По какому столбцу отсортирован список. Сортировка всегда по убыванию —
+// сверху те, у кого работ больше.
+let HW_SORT = 'pending'
+
+function sortHomeworkBy(field) {
+  HW_SORT = field
+  renderHomeworkList()
+}
+
 function renderHomeworkList() {
   const el = document.getElementById('hw-body')
 
@@ -1411,17 +1454,37 @@ function renderHomeworkList() {
     return
   }
 
+  const rows = [...HW_STUDENTS].sort((a, b) =>
+    (b[HW_SORT] || 0) - (a[HW_SORT] || 0) || String(a.nickname).localeCompare(String(b.nickname))
+  )
+
+  const sortHead = (field, label) => `
+    <th class="tbl-sort${HW_SORT === field ? ' is-active' : ''}" onclick="sortHomeworkBy('${field}')" title="Сортировать по столбцу">
+      ${label}
+      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M12 5v14M5 12l7 7 7-7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </th>`
+
   el.innerHTML = `
     <div class="table-wrap">
       <table class="tbl">
-        <thead><tr><th>Логин</th><th>Имя</th><th>Сдано</th><th>На проверке</th><th>Принято</th><th>Правки</th><th></th></tr></thead>
+        <thead>
+          <tr>
+            <th>Логин</th><th>Имя</th><th>Сдано</th>
+            ${sortHead('pending', 'На проверке')}
+            ${sortHead('approved', 'Принято')}
+            ${sortHead('rework', 'Правки')}
+            <th></th>
+          </tr>
+        </thead>
         <tbody>
-          ${HW_STUDENTS.map(s => `
+          ${rows.map(s => `
             <tr>
               <td><b>${esc(s.nickname || '—')}</b></td>
               <td>${esc(s.name || '—')}</td>
               <td>${s.total}</td>
-              <td>${s.pending ? `<span class="badge badge-gray">${s.pending}</span>` : '—'}</td>
+              <td>${s.pending ? `<span class="badge badge-red">${s.pending}</span>` : '—'}</td>
               <td>${s.approved ? `<span class="badge badge-green">${s.approved}</span>` : '—'}</td>
               <td>${s.rework ? `<span class="badge badge-orange">${s.rework}</span>` : '—'}</td>
               <td class="actions"><button class="btn-edit" onclick="openHomeworkStudent(${s.id})">Открыть</button></td>
@@ -1528,8 +1591,9 @@ function renderSubmission(s) {
       ${s.comment ? `<div class="hw-sub-comment"><b>Правки:</b> ${esc(s.comment)}</div>` : ''}
       <div class="hw-sub-actions">
         <button class="btn-ghost" onclick="copySubmission(${s.id})">Скопировать</button>
-        <button class="btn-edit" onclick="approveSubmission(${s.id})">Подтвердить</button>
-        <button class="btn-danger" onclick="openReworkForm(${s.id})">Дать правки</button>
+        ${s.status === 'approved' ? '' : `
+          <button class="btn-edit" onclick="confirmApprove(${s.id})">Подтвердить</button>
+          <button class="btn-danger" onclick="openReworkForm(${s.id})">Дать правки</button>`}
       </div>
       <div class="hw-sub-rework" id="hw-rework-${s.id}" hidden>
         <textarea id="hw-rework-text-${s.id}" placeholder="Что нужно исправить"></textarea>
@@ -1549,6 +1613,25 @@ function openReworkForm(id) {
 
 function closeReworkForm(id) {
   document.getElementById(`hw-rework-${id}`).hidden = true
+}
+
+// Подтверждение необратимо для студента — спрашиваем, не промах ли это
+function confirmApprove(id) {
+  const s = (HW_CURRENT?.submissions || []).find(x => x.id === id)
+  if (!s) return
+  openModal(`
+    <div class="modal-head">
+      <div class="modal-title">Принять работу?</div>
+      <button class="modal-close" onclick="closeModal()">&times;</button>
+    </div>
+    <p class="confirm-text">
+      Домашнее задание ${s.hwNumber} недели ${s.week}, задача ${s.taskIndex + 1}.
+      Студент получит уведомление, что работа проверена и принята.
+    </p>
+    <div class="modal-actions">
+      <button class="btn-ghost" onclick="closeModal()">Отменить</button>
+      <button class="btn-lime" style="width:auto" onclick="closeModal(); approveSubmission(${id})">Подтвердить</button>
+    </div>`)
 }
 
 async function approveSubmission(id) {

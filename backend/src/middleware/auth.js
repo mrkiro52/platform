@@ -13,13 +13,30 @@ function verifyToken(req, res, next) {
   }
 }
 
+// Область доступа админского токена. Полный админ может всё; проверяющий
+// домашних заданий — только раздел с домашками. У токенов, выданных до
+// появления областей, поля scope нет — такие считаем полными.
+function scopeOf(user) {
+  return user.scope || 'full'
+}
+
 function requireAdmin(req, res, next) {
   verifyToken(req, res, () => {
-    if (req.user.role !== 'admin') {
+    if (req.user.role !== 'admin' || scopeOf(req.user) !== 'full') {
       return res.status(403).json({ message: 'Недостаточно прав' })
     }
     next()
   })
 }
 
-module.exports = { verifyToken, requireAdmin }
+// Доступ к проверке домашних заданий: полный админ или проверяющий
+function requireHomeworkReview(req, res, next) {
+  verifyToken(req, res, () => {
+    if (req.user.role !== 'admin' || !['full', 'homework'].includes(scopeOf(req.user))) {
+      return res.status(403).json({ message: 'Недостаточно прав' })
+    }
+    next()
+  })
+}
+
+module.exports = { verifyToken, requireAdmin, requireHomeworkReview, scopeOf }
