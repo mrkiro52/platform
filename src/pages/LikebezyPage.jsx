@@ -8,8 +8,21 @@ const PythonLikbez = lazy(() => import('./likebezy/PythonLikbez'))
 const PythonOopLikbez = lazy(() => import('./likebezy/PythonOopLikbez'))
 const ItCareer2026Likbez = lazy(() => import('./likebezy/ItCareer2026Likbez'))
 const BackendInterviewLikbez = lazy(() => import('./likebezy/BackendInterviewLikbez'))
+const AvitoMlTestLikbez = lazy(() => import('./likebezy/AvitoMlTestLikbez'))
 
 const LIKEBEZY = [
+  {
+    id: 'avito-ml-test',
+    title: 'Отборочный тест Avito ML Bootcamp',
+    subtitle: 'Разбор всех 23 заданий: правильные ответы и объяснения, почему именно они',
+    tag: 'ML',
+    level: 'Стажировка · отбор',
+    time: '~45 мин',
+    chapters: 7,
+    questions: 23,
+    topics: ['Python', 'Pandas', 'SQL и оконные функции', 'Утечки данных', 'Метрики и валидация', 'Задачи на код'],
+    component: AvitoMlTestLikbez,
+  },
   {
     id: 'it-career-2026',
     title: 'Как попасть в айти в 2026',
