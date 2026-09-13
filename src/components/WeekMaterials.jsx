@@ -380,7 +380,13 @@ function Homework({ homework, weekNumber, submitFormat = 'free' }) {
         <a href="https://t.me/x_tap" target="_blank" rel="noopener" style={{ color: 'var(--accent-lime)', fontWeight: 600 }}>
           t.me/x_tap
         </a>
-        {submitFormat === 'notebook' ? (
+        {submitFormat === 'platform' ? (
+          <>
+            {' '}— или, что удобнее, сдай прямо здесь: кнопка <b>«Сдать дз»</b> на странице
+            Autumn Camp открывает форму, где можно вставить решение каждой задачи и увидеть
+            проверку. Подпиши, что это неделя {weekNumber}, номер {homework.number}.
+          </>
+        ) : submitFormat === 'notebook' ? (
           <>
             . Решай в тетради от руки, а потом сфотографируй страницы и пришли фото. Ничего писать
             на компьютере не нужно. Подпиши, что это неделя {weekNumber}, номер {homework.number}.

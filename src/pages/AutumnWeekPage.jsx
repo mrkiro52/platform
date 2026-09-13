@@ -4,6 +4,7 @@ import LevelTest from '../components/LevelTest'
 import WeekMaterials from '../components/WeekMaterials'
 import { WEEK1_CHAPTERS, WEEK1_TITLE } from '../data/week1Materials'
 import Week2Program from '../components/Week2Program'
+import { WEEK3_CHAPTERS, WEEK3_TITLE, WEEK3_INTRO } from '../data/week3Materials'
 
 export default function AutumnWeekPage({ user }) {
   const { week: slug } = useParams()
@@ -52,6 +53,24 @@ export default function AutumnWeekPage({ user }) {
         </>
       ) : week.number === 2 ? (
         <Week2Program />
+      ) : week.number === 3 ? (
+        <>
+          <div className="widget" style={{ marginBottom: 16, border: '1px solid rgba(255,140,66,0.3)' }}>
+            <div className="widget-header">
+              <span className="widget-title">{WEEK3_INTRO.title}</span>
+            </div>
+            <p style={{ margin: 0, fontSize: 13.5, color: 'var(--text-secondary)', lineHeight: 1.7 }}>
+              {WEEK3_INTRO.text}
+            </p>
+          </div>
+          <WeekMaterials
+            chapters={WEEK3_CHAPTERS}
+            title={WEEK3_TITLE}
+            storageKey="kiro_week3_visited"
+            weekNumber={3}
+            submitFormat="platform"
+          />
+        </>
       ) : (
         <div className="widget">
           <p style={{ margin: 0, fontSize: 13.5, color: 'var(--text-secondary)', lineHeight: 1.6 }}>

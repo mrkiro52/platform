@@ -5,13 +5,15 @@
 
 import { WEEK1_CHAPTERS } from './week1Materials'
 import { WEEK2_LEVELS, chaptersForLevel } from './week2Materials'
+import { WEEK3_CHAPTERS } from './week3Materials'
 
-// Пока открыты только первые две недели
-export const OPEN_WEEKS = [1, 2]
+// Пока открыты только первые три недели
+export const OPEN_WEEKS = [1, 2, 3]
 
 export const WEEK_TITLES = {
   1: 'Неделя 1 — введение в IT и основы Python',
   2: 'Неделя 2 — алгоритмы',
+  3: 'Неделя 3 — структуры данных',
 }
 
 // Неделя 2 разбита на уровни, у каждого свой набор глав
@@ -25,6 +27,7 @@ export function hasLevels(week) {
 export function chaptersOf(week, level) {
   if (week === 1) return WEEK1_CHAPTERS
   if (week === 2) return chaptersForLevel(level || 1)
+  if (week === 3) return WEEK3_CHAPTERS
   return []
 }
 

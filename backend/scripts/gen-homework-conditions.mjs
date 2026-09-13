@@ -1,6 +1,7 @@
 import { writeFileSync } from 'fs'
 import { WEEK1_CHAPTERS } from '../../src/data/week1Materials.js'
 import { WEEK2_CHAPTERS } from '../../src/data/week2Materials.js'
+import { WEEK3_CHAPTERS } from '../../src/data/week3Materials.js'
 
 const tasks = {}
 const chapterTitles = {}
@@ -21,6 +22,11 @@ for (const ch of WEEK2_CHAPTERS) {
   addTasks('2', ch, ch.homework)
   // На первом уровне второй недели задания в тетради — набор другой
   if (ch.homeworkPaper) addTasks('2p', ch, ch.homeworkPaper)
+}
+
+for (const ch of WEEK3_CHAPTERS) {
+  chapterTitles[ch.id] = ch.title
+  addTasks('3', ch, ch.homework)
 }
 
 const out = {

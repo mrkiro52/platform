@@ -2,9 +2,10 @@ import { useState, useMemo, useRef, useEffect } from 'react'
 import { AUTUMN_WEEK_MONTHS } from '../data/autumnWeeks'
 import { WEEK1_CHAPTERS } from '../data/week1Materials'
 import { WEEK2_LEVELS, chaptersForLevel } from '../data/week2Materials'
+import { WEEK3_CHAPTERS } from '../data/week3Materials'
 
-// Открыты только первые две недели — остальные под замком до своего времени
-const UNLOCKED = new Set(['week1', 'week2'])
+// Открыты только первые три недели — остальные под замком до своего времени
+const UNLOCKED = new Set(['week1', 'week2', 'week3'])
 
 // Та же инлайн-разметка, что в материалах: **жирный** и `код`
 function renderInline(text) {
@@ -46,6 +47,9 @@ function homeworkFor(weekSlug, level) {
       chapter: ch.title,
       hw: level === 1 && ch.homeworkPaper ? ch.homeworkPaper : ch.homework,
     }))
+  }
+  if (weekSlug === 'week3') {
+    return WEEK3_CHAPTERS.map(ch => ({ chapter: ch.title, hw: ch.homework }))
   }
   return []
 }
