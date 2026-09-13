@@ -1497,6 +1497,7 @@ function renderHomeworkList() {
 async function openHomeworkStudent(id) {
   HW_WEEK = null
   HW_CURRENT = await req(`/api/homework/admin/students/${id}`)
+  freezeHomeworkOrder()
   renderHomeworkStudent()
 }
 
@@ -1544,10 +1545,10 @@ function renderHomeworkStudent() {
         </div>
 
         <div class="hw-week-block">
-          ${sortedAssignments(weeks[HW_WEEK]).map(num => `
+          ${sortedAssignments(weeks[HW_WEEK], HW_WEEK).map(num => `
             <div class="hw-num-block">
               <div class="hw-num-title">Домашнее задание ${num}${weeks[HW_WEEK][num][0].level ? ` · уровень ${weeks[HW_WEEK][num][0].level}` : ''}</div>
-              ${[...weeks[HW_WEEK][num]].sort(byReviewOrder).map(renderSubmission).join('')}
+              ${[...weeks[HW_WEEK][num]].sort((a, b) => rankOfSub(a) - rankOfSub(b) || a.taskIndex - b.taskIndex).map(renderSubmission).join('')}
             </div>`).join('')}
         </div>`}
   `
@@ -1561,11 +1562,55 @@ function byReviewOrder(a, b) {
   return (REVIEW_ORDER[a.status] ?? 3) - (REVIEW_ORDER[b.status] ?? 3) || a.taskIndex - b.taskIndex
 }
 
-// Задания с непроверенными задачами идут первыми — иначе в неделе из
-// девятнадцати заданий одно свежее теряется где-то в середине списка.
-function sortedAssignments(byNumber) {
-  const pending = num => byNumber[num].some(s => s.status === 'submitted')
-  return Object.keys(byNumber).map(Number).sort((a, b) => (pending(b) - pending(a)) || a - b)
+// Порядок считается один раз — при открытии ученика — и дальше не меняется.
+// Иначе подтверждённая задача прыгала бы вниз прямо под курсором, и следующая
+// в списке оказывалась не там, куда смотришь. Пересобирается при новом заходе.
+let HW_ORDER = null
+
+function freezeHomeworkOrder() {
+  const groups = {}
+  for (const s of HW_CURRENT.submissions) {
+    const key = `${s.week}:${s.hwNumber}`
+    ;(groups[key] = groups[key] || []).push(s)
+  }
+
+  const groupRank = {}
+  const subRank = {}
+  const byWeek = {}
+
+  for (const key of Object.keys(groups)) {
+    const week = key.split(':')[0]
+    ;(byWeek[week] = byWeek[week] || []).push(key)
+    // Внутри задания: сначала непроверенное, потом правки, потом принятое
+    ;[...groups[key]].sort(byReviewOrder).forEach((s, i) => { subRank[s.id] = i })
+  }
+
+  // Задания с непроверенными задачами идут первыми — иначе в неделе из
+  // девятнадцати заданий одно свежее теряется где-то в середине списка.
+  for (const week of Object.keys(byWeek)) {
+    byWeek[week]
+      .sort((a, b) => {
+        const pending = key => (groups[key].some(s => s.status === 'submitted') ? 0 : 1)
+        return pending(a) - pending(b) || Number(a.split(':')[1]) - Number(b.split(':')[1])
+      })
+      .forEach((key, i) => { groupRank[key] = i })
+  }
+
+  HW_ORDER = { groupRank, subRank }
+}
+
+// Новое, чего не было на момент открытия, встаёт в конец
+function rankOfGroup(week, num) {
+  return HW_ORDER?.groupRank[`${week}:${num}`] ?? Number.MAX_SAFE_INTEGER
+}
+
+function rankOfSub(s) {
+  return HW_ORDER?.subRank[s.id] ?? Number.MAX_SAFE_INTEGER
+}
+
+function sortedAssignments(byNumber, week) {
+  return Object.keys(byNumber).map(Number)
+    .sort((a, b) => rankOfGroup(week, a) - rankOfGroup(week, b) || a - b)
 }
 
 function selectHomeworkWeek(week) {
