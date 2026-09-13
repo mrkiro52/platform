@@ -1544,13 +1544,28 @@ function renderHomeworkStudent() {
         </div>
 
         <div class="hw-week-block">
-          ${Object.keys(weeks[HW_WEEK]).map(Number).sort((a, b) => a - b).map(num => `
+          ${sortedAssignments(weeks[HW_WEEK]).map(num => `
             <div class="hw-num-block">
               <div class="hw-num-title">Домашнее задание ${num}${weeks[HW_WEEK][num][0].level ? ` · уровень ${weeks[HW_WEEK][num][0].level}` : ''}</div>
-              ${weeks[HW_WEEK][num].sort((a, b) => a.taskIndex - b.taskIndex).map(renderSubmission).join('')}
+              ${[...weeks[HW_WEEK][num]].sort(byReviewOrder).map(renderSubmission).join('')}
             </div>`).join('')}
         </div>`}
   `
+}
+
+// Наверх — то, что ждёт нашего решения. Принятое уходит вниз: с ним уже
+// ничего не делают, а правки ждут студента, а не проверяющего.
+const REVIEW_ORDER = { submitted: 0, rework: 1, approved: 2 }
+
+function byReviewOrder(a, b) {
+  return (REVIEW_ORDER[a.status] ?? 3) - (REVIEW_ORDER[b.status] ?? 3) || a.taskIndex - b.taskIndex
+}
+
+// Задания с непроверенными задачами идут первыми — иначе в неделе из
+// девятнадцати заданий одно свежее теряется где-то в середине списка.
+function sortedAssignments(byNumber) {
+  const pending = num => byNumber[num].some(s => s.status === 'submitted')
+  return Object.keys(byNumber).map(Number).sort((a, b) => (pending(b) - pending(a)) || a - b)
 }
 
 function selectHomeworkWeek(week) {
