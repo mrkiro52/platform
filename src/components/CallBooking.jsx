@@ -148,7 +148,8 @@ function Session({ session, onReplace }) {
     <div className="call-session-card">
       <div className="call-session-top">
         <div>
-          <div className="call-session-name">{session.title}</div>
+          {/* Название набора («Сентябрь — созвон 1») — служебное, для админки.
+              Студенту важны дни и слоты, они и так видны ниже. */}
           <div className="call-session-hint">
             {mySlot
               ? `Ты записан: ${humanDate(mySlot.date)}, ${slotLabel(mySlot.hour)}`
