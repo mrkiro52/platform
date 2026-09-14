@@ -511,13 +511,6 @@ function logout() {
   location.reload()
 }
 
-// Auto-login if token exists
-if (TOKEN) {
-  document.getElementById('login-screen').style.display = 'none'
-  document.getElementById('app').style.display = 'block'
-  applyScope()
-}
-
 // Проверяющему домашних заданий остальные разделы не показываем — сервер их
 // всё равно не отдаст, поэтому и в меню им делать нечего.
 function applyScope() {
@@ -1723,6 +1716,17 @@ async function refreshCurrentStudent() {
 }
 
 function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;') }
+// ── Автовход ──────────────────────────────────────────────────────────────
+// Строго в конце скрипта: applyScope может позвать goto(), а тот обращается
+// к LOADERS — константе, объявленной ниже по файлу. Запусти это раньше, и
+// раздел откроется, но список останется пустым: обращение к ещё не
+// инициализированной const бросает ReferenceError до вызова загрузчика.
+if (TOKEN) {
+  document.getElementById('login-screen').style.display = 'none'
+  document.getElementById('app').style.display = 'block'
+  applyScope()
+}
+
 </script>
 </body>
 </html>
