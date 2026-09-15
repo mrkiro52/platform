@@ -798,6 +798,50 @@ function migrate() {
       console.error('❌ Migration 23 failed:', err.message)
     }
   }
+
+  // Migration 24: журнал проверок домашних заданий.
+  // В homework_submissions лежит только текущий статус и время последней
+  // проверки — по ним нельзя сказать, сколько работ проверили в конкретный
+  // день: повторная проверка затирает предыдущую. Поэтому каждое решение
+  // проверяющего дополнительно пишется отдельной строкой сюда.
+  // Существующие проверки переносим как есть: по одной записи на работу.
+  // История до этой миграции схлопнута — повторные проверки в ней не видны.
+  if (schemaVersion < 24) {
+    try {
+      db.prepare(`
+        CREATE TABLE IF NOT EXISTS homework_reviews (
+          id            INTEGER PRIMARY KEY AUTOINCREMENT,
+          submission_id INTEGER NOT NULL,
+          user_id       INTEGER NOT NULL,
+          reviewer      TEXT,
+          status        TEXT    NOT NULL,
+          reviewed_at   TEXT    NOT NULL,
+          FOREIGN KEY (submission_id) REFERENCES homework_submissions(id) ON DELETE CASCADE,
+          FOREIGN KEY (user_id)       REFERENCES users(id) ON DELETE CASCADE
+        )
+      `).run()
+
+      db.prepare('CREATE INDEX IF NOT EXISTS idx_hw_reviews_date ON homework_reviews(reviewed_at)').run()
+      db.prepare('CREATE INDEX IF NOT EXISTS idx_hw_reviews_user ON homework_reviews(user_id)').run()
+
+      const already = db.prepare('SELECT COUNT(*) AS c FROM homework_reviews').get().c
+      let moved = 0
+      if (already === 0) {
+        const info = db.prepare(`
+          INSERT INTO homework_reviews (submission_id, user_id, reviewer, status, reviewed_at)
+          SELECT id, user_id, NULL, status, reviewed_at
+            FROM homework_submissions
+           WHERE reviewed_at IS NOT NULL AND status IN ('approved', 'rework')
+        `).run()
+        moved = info.changes
+      }
+
+      db.pragma('user_version = 24')
+      console.log(`✅ Migration 24 completed: added homework_reviews (перенесено проверок: ${moved})`)
+    } catch (err) {
+      console.error('❌ Migration 24 failed:', err.message)
+    }
+  }
 }
 
 migrate()

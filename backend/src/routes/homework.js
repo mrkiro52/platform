@@ -154,6 +154,46 @@ router.get('/admin/students/:id', requireHomeworkReview, (req, res) => {
   }
 })
 
+// GET /api/homework/admin/analytics — сколько проверено по дням и по студентам.
+// Дни считаем по московскому времени: reviewed_at хранится в UTC, и без
+// сдвига ночные проверки уезжали бы во вчерашний день.
+router.get('/admin/analytics', requireHomeworkReview, (req, res) => {
+  try {
+    const rows = db.prepare(`
+      SELECT date(r.reviewed_at, '+3 hours') AS day,
+             u.id AS user_id, u.nickname, u.name,
+             SUM(CASE WHEN r.status = 'approved' THEN 1 ELSE 0 END) AS approved,
+             SUM(CASE WHEN r.status = 'rework'   THEN 1 ELSE 0 END) AS rework
+        FROM homework_reviews r
+        JOIN users u ON u.id = r.user_id
+       GROUP BY day, u.id
+       ORDER BY day DESC, approved DESC, u.nickname COLLATE NOCASE
+    `).all()
+
+    const byDay = new Map()
+    for (const row of rows) {
+      if (!byDay.has(row.day)) {
+        byDay.set(row.day, { date: row.day, approved: 0, rework: 0, total: 0, students: [] })
+      }
+      const day = byDay.get(row.day)
+      day.approved += row.approved
+      day.rework += row.rework
+      day.total += row.approved + row.rework
+      day.students.push({
+        id: row.user_id,
+        nickname: row.nickname,
+        name: row.name,
+        approved: row.approved,
+        rework: row.rework,
+      })
+    }
+
+    res.json([...byDay.values()])
+  } catch (e) {
+    res.status(500).json({ message: e.message })
+  }
+})
+
 // PATCH /api/homework/admin/submissions/:id — принять работу или вернуть с правками
 router.patch('/admin/submissions/:id', requireHomeworkReview, (req, res) => {
   try {
@@ -168,8 +208,17 @@ router.patch('/admin/submissions/:id', requireHomeworkReview, (req, res) => {
     const row = db.prepare('SELECT * FROM homework_submissions WHERE id = ?').get(req.params.id)
     if (!row) return res.status(404).json({ message: 'Решение не найдено' })
 
+    const reviewedAt = new Date().toISOString()
+
     db.prepare('UPDATE homework_submissions SET status = ?, comment = ?, reviewed_at = ? WHERE id = ?')
-      .run(status, status === 'rework' ? String(comment).trim() : null, new Date().toISOString(), row.id)
+      .run(status, status === 'rework' ? String(comment).trim() : null, reviewedAt, row.id)
+
+    // Отдельная запись в журнал: в самой работе хранится только последний
+    // статус, а для аналитики по дням нужна каждая проверка
+    db.prepare(`
+      INSERT INTO homework_reviews (submission_id, user_id, reviewer, status, reviewed_at)
+      VALUES (?, ?, ?, ?, ?)
+    `).run(row.id, row.user_id, req.user.username || null, status, reviewedAt)
 
     // Студент должен узнать о проверке, не проверяя страницу вручную
     const chapter = conditions.chapterTitles[row.chapter_id] || 'без названия'

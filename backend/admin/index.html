@@ -271,6 +271,12 @@ textarea::placeholder{color:var(--text3)}
 .hw-sub-rework{margin-top:12px}
 .hw-sub-rework textarea{min-height:80px}
 
+/* ─── АНАЛИТИКА ПРОВЕРКИ ДЗ ──────────────── */
+.hwstat-day{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-md);padding:18px;margin-bottom:14px}
+.hwstat-head{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:14px}
+.hwstat-date{font-family:var(--font-syne);font-size:15px;font-weight:700;color:var(--text)}
+.hwstat-totals{display:flex;gap:8px;flex-wrap:wrap}
+
 @media(max-width:768px){
   .sidebar{transform:translateX(calc(-1 * var(--sw)))}
   .sidebar.open{transform:translateX(0);box-shadow:var(--shadow-hover)}
@@ -324,6 +330,7 @@ textarea::placeholder{color:var(--text3)}
       <button class="nav-item"        onclick="goto('calls')">    <span class="nav-icon">🗓</span>Созвоны</button>
       <button class="nav-item"        onclick="goto('callcal')">  <span class="nav-icon">📆</span>Календарь созвонов</button>
       <button class="nav-item"        onclick="goto('homework')"><span class="nav-icon">📝</span>Домашние задания</button>
+      <button class="nav-item"        onclick="goto('hwstats')"> <span class="nav-icon">📊</span>Аналитика проверки ДЗ</button>
     </nav>
     <div class="sb-foot">
       <button class="nav-item" onclick="logout()"><span class="nav-icon">⇥</span>Выйти</button>
@@ -454,6 +461,18 @@ textarea::placeholder{color:var(--text3)}
       <div id="hw-body"></div>
     </div>
 
+    <!-- ── HOMEWORK STATS ── -->
+    <div id="sec-hwstats" class="section">
+      <div class="section-header">
+        <div>
+          <div class="section-title">Аналитика проверки ДЗ</div>
+          <div class="section-sub">Сколько работ проверено по дням — принято и отправлено на правки, с разбивкой по студентам</div>
+        </div>
+        <button class="btn-lime" style="width:auto" onclick="loadHomeworkStats()">Обновить</button>
+      </div>
+      <div id="hwstats-body"></div>
+    </div>
+
   </div><!-- /content -->
 </div><!-- /app -->
 
@@ -516,7 +535,9 @@ function logout() {
 function applyScope() {
   if (SCOPE === 'homework') {
     document.querySelectorAll('.sb-nav .nav-item').forEach(btn => {
-      if (!btn.getAttribute('onclick')?.includes("goto('homework')")) btn.remove()
+      const onclick = btn.getAttribute('onclick') || ''
+      const allowed = onclick.includes("goto('homework')") || onclick.includes("goto('hwstats')")
+      if (!allowed) btn.remove()
     })
     document.querySelector('.sb-logo').innerHTML = 'KIRO <span>Проверка ДЗ</span>'
     goto('homework')
@@ -556,7 +577,7 @@ function toast(msg, type='ok') {
 }
 
 // ── Navigation ────────────────────────────────────────────────────────────
-const LOADERS = { dashboard:loadDashboard, users:loadUsers, schedule:loadSchedule, library:loadLibrary, links:loadLinks, announces:loadAnnounces, calls:loadCalls, callcal:loadCallCalendar, homework:loadHomework }
+const LOADERS = { dashboard:loadDashboard, users:loadUsers, schedule:loadSchedule, library:loadLibrary, links:loadLinks, announces:loadAnnounces, calls:loadCalls, callcal:loadCallCalendar, homework:loadHomework, hwstats:loadHomeworkStats }
 function goto(sec) {
   document.querySelectorAll('.section').forEach(s => s.classList.remove('active'))
   document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'))
@@ -1713,6 +1734,65 @@ async function refreshCurrentStudent() {
   if (!HW_CURRENT) return
   HW_CURRENT = await req(`/api/homework/admin/students/${HW_CURRENT.user.id}`)
   renderHomeworkStudent()
+}
+
+// ══════════════ АНАЛИТИКА ПРОВЕРКИ ДЗ ════════════════════════════════════
+const RU_MONTH_GEN = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря']
+const RU_WEEKDAY = ['воскресенье','понедельник','вторник','среда','четверг','пятница','суббота']
+
+function humanDay(iso) {
+  const d = new Date(iso + 'T00:00:00')
+  return `${d.getDate()} ${RU_MONTH_GEN[d.getMonth()]}, ${RU_WEEKDAY[d.getDay()]}`
+}
+
+async function loadHomeworkStats() {
+  const days = await req('/api/homework/admin/analytics')
+  const el = document.getElementById('hwstats-body')
+
+  if (!days.length) {
+    el.innerHTML = '<div class="call-empty">Проверок пока не было — здесь появится статистика по дням</div>'
+    return
+  }
+
+  const totalChecked = days.reduce((sum, d) => sum + d.total, 0)
+  const totalOk = days.reduce((sum, d) => sum + d.approved, 0)
+  const totalFix = days.reduce((sum, d) => sum + d.rework, 0)
+
+  el.innerHTML = `
+    <div class="stats-row">
+      <div class="stat-card"><div class="stat-num">${totalChecked}</div><div class="stat-label">Всего проверено</div></div>
+      <div class="stat-card"><div class="stat-num" style="color:var(--green)">${totalOk}</div><div class="stat-label">Принято</div></div>
+      <div class="stat-card"><div class="stat-num" style="color:var(--orange)">${totalFix}</div><div class="stat-label">Отправлено на правки</div></div>
+      <div class="stat-card"><div class="stat-num">${days.length}</div><div class="stat-label">${plural(days.length, 'день', 'дня', 'дней')} с проверками</div></div>
+    </div>
+
+    ${days.map(day => `
+      <div class="hwstat-day">
+        <div class="hwstat-head">
+          <div class="hwstat-date">${humanDay(day.date)}</div>
+          <div class="hwstat-totals">
+            <span class="badge badge-gray">проверено ${day.total}</span>
+            <span class="badge badge-green">принято ${day.approved}</span>
+            <span class="badge badge-orange">правки ${day.rework}</span>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table class="tbl">
+            <thead><tr><th>Студент</th><th>Принято</th><th>Правки</th><th>Всего за день</th></tr></thead>
+            <tbody>
+              ${day.students.map(s => `
+                <tr>
+                  <td><b>${esc(s.nickname || '—')}</b>${s.name ? ` <span style="color:var(--text3)">${esc(s.name)}</span>` : ''}</td>
+                  <td>${s.approved ? `<span class="badge badge-green">${s.approved}</span>` : '—'}</td>
+                  <td>${s.rework ? `<span class="badge badge-orange">${s.rework}</span>` : '—'}</td>
+                  <td>${s.approved + s.rework}</td>
+                </tr>`).join('')}
+            </tbody>
+          </table>
+        </div>
+      </div>`).join('')}
+  `
 }
 
 function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;') }
