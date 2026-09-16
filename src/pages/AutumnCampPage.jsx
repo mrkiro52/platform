@@ -85,11 +85,18 @@ function GroupCalls() {
                 <div className="call-card-body">
                   <div className="call-card-title">Групповой созвон</div>
                   <div className="call-card-topic">Тема: {call.topic || 'будет скоро'}</div>
-                  {(call.videos || []).map((url, i, all) => (
-                    <a key={url} href={url} target="_blank" rel="noopener" className="call-card-video">
-                      {all.length > 1 ? `Запись — часть ${i + 1} →` : 'Запись созвона →'}
-                    </a>
-                  ))}
+                  {(call.videos || []).map((video, i, all) => {
+                    // Запись — либо просто ссылка, либо ссылка со своей подписью
+                    const url = typeof video === 'string' ? video : video.url
+                    const label = typeof video === 'string'
+                      ? (all.length > 1 ? `Запись — часть ${i + 1}` : 'Запись созвона')
+                      : video.label
+                    return (
+                      <a key={url} href={url} target="_blank" rel="noopener" className="call-card-video">
+                        {label} →
+                      </a>
+                    )
+                  })}
                 </div>
               </div>
             ))}
