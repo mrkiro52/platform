@@ -5,6 +5,27 @@ import CallBooking from '../components/CallBooking'
 import HomeworkPicker from '../components/HomeworkPicker'
 import HomeworkReview from '../components/HomeworkReview'
 import { AUTUMN_MONTHS, CALL_MONTHS } from '../data/autumnCalls'
+import { MATH_SESSIONS, nextMathSession, dayOf } from '../data/mathCourse'
+
+// Даты созвонов мини-курса кружками. Ближайший выделен, прошедшие и будущие —
+// приглушённые.
+function MathDates() {
+  const next = nextMathSession()
+
+  return (
+    <div className="math-dates">
+      {MATH_SESSIONS.map(session => (
+        <span
+          key={session.date}
+          className={`math-date${next && session.date === next.date ? ' is-next' : ''}`}
+          title={session.topic}
+        >
+          {dayOf(session.date)}
+        </span>
+      ))}
+    </div>
+  )
+}
 
 function AutumnProgress() {
   const today = new Date()
@@ -164,7 +185,7 @@ export default function AutumnCampPage() {
 
   return (
     <section className="page active">
-      <div className="autumn-hero">
+      <div className="autumn-hero is-dim">
         <div className="autumn-hero-left">
           <span className="autumn-hero-badge">🍂 Autumn Camp 2026</span>
           <span className="autumn-hero-title">Онбординг участника</span>
@@ -173,6 +194,20 @@ export default function AutumnCampPage() {
           Открыть
           <span style={{ fontSize: 14, lineHeight: 1 }}>→</span>
         </button>
+      </div>
+
+      <div className="autumn-hero">
+        <div className="autumn-hero-left">
+          <span className="autumn-hero-badge">🍂 Autumn Camp 2026</span>
+          <span className="autumn-hero-title">Мини-курс: математика</span>
+        </div>
+        <div className="autumn-hero-right">
+          <MathDates />
+          <button className="autumn-toggle-btn" onClick={() => navigate('/autumn-camp/math')}>
+            Открыть
+            <span style={{ fontSize: 14, lineHeight: 1 }}>→</span>
+          </button>
+        </div>
       </div>
 
       <div className="autumn-half-row">
