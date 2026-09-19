@@ -37,7 +37,7 @@ const SEPTEMBER_CALLS = [
       { url: 'https://youtu.be/_zH3bEamBuQ', label: 'Запись — Созвон 2' },
     ],
   },
-  { day: 19, topic: 'Полный гайд по структурам данных' },
+  { day: 19, topic: 'Полный гайд по структурам данных', videos: ['https://youtu.be/Ed_Q444YrNk'] },
   { day: 26, topic: 'Полный гайд по базам данных и SQL' },
 ]
 
