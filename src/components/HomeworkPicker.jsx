@@ -3,9 +3,10 @@ import { AUTUMN_WEEK_MONTHS } from '../data/autumnWeeks'
 import { WEEK1_CHAPTERS } from '../data/week1Materials'
 import { WEEK2_LEVELS, chaptersForLevel } from '../data/week2Materials'
 import { WEEK3_CHAPTERS } from '../data/week3Materials'
+import { chaptersOf } from '../data/homeworkCatalog'
 
 // Открыты только первые три недели — остальные под замком до своего времени
-const UNLOCKED = new Set(['week1', 'week2', 'week3'])
+const UNLOCKED = new Set(['week1', 'week2', 'week3', 'week4'])
 
 // Та же инлайн-разметка, что в материалах: **жирный** и `код`
 function renderInline(text) {
@@ -50,6 +51,9 @@ function homeworkFor(weekSlug, level) {
   }
   if (weekSlug === 'week3') {
     return WEEK3_CHAPTERS.map(ch => ({ chapter: ch.title, hw: ch.homework }))
+  }
+  if (weekSlug === 'week4') {
+    return chaptersOf(4).map(ch => ({ chapter: ch.title, hw: ch.homework }))
   }
   return []
 }

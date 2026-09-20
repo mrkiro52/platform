@@ -2,6 +2,7 @@ import { writeFileSync } from 'fs'
 import { WEEK1_CHAPTERS } from '../../src/data/week1Materials.js'
 import { WEEK2_CHAPTERS } from '../../src/data/week2Materials.js'
 import { WEEK3_CHAPTERS } from '../../src/data/week3Materials.js'
+import { SQL_TASKS } from '../../src/data/week4/sqlTasks.js'
 
 const tasks = {}
 const chapterTitles = {}
@@ -28,6 +29,10 @@ for (const ch of WEEK3_CHAPTERS) {
   chapterTitles[ch.id] = ch.title
   addTasks('3', ch, ch.homework)
 }
+
+// Неделя 4: через форму сдаётся только SQL-задание, остальное — онлайн-тесты
+chapterTitles['week4-sql-homework'] = 'Домашнее задание по SQL'
+SQL_TASKS.forEach((t, i) => { tasks[`4:week4-sql-homework:${i}`] = t.text })
 
 const out = {
   note: 'Снимок условий домашних заданий. Нужен бэкенду: он чинит старые записи без условия и подставляет название главы в уведомления. Живой источник — src/data/week*Materials.js, пересобрать: node scripts/gen-homework-conditions.mjs',

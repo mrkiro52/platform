@@ -66,7 +66,8 @@ router.put('/task', requireAutumnCamp, (req, res) => {
     if (typeof chapterId !== 'string' || !chapterId) {
       return res.status(400).json({ message: 'Не указана глава' })
     }
-    if (!Number.isInteger(taskIndex) || taskIndex < 0 || taskIndex > 4) {
+    // В неделях 1-3 по пять задач на главу, в SQL-задании четвёртой недели — десять
+    if (!Number.isInteger(taskIndex) || taskIndex < 0 || taskIndex > 9) {
       return res.status(400).json({ message: 'Некорректный номер задачи' })
     }
     if (typeof solution !== 'string') {

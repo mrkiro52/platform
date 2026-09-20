@@ -5,6 +5,7 @@ import WeekMaterials from '../components/WeekMaterials'
 import { WEEK1_CHAPTERS, WEEK1_TITLE } from '../data/week1Materials'
 import Week2Program from '../components/Week2Program'
 import { WEEK3_CHAPTERS, WEEK3_TITLE, WEEK3_INTRO } from '../data/week3Materials'
+import Week4Program from '../components/Week4Program'
 
 export default function AutumnWeekPage({ user }) {
   const { week: slug } = useParams()
@@ -53,6 +54,8 @@ export default function AutumnWeekPage({ user }) {
         </>
       ) : week.number === 2 ? (
         <Week2Program />
+      ) : week.number === 4 ? (
+        <Week4Program />
       ) : week.number === 3 ? (
         <>
           <div className="widget" style={{ marginBottom: 16, border: '1px solid rgba(255,140,66,0.3)' }}>

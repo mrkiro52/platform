@@ -6,14 +6,29 @@
 import { WEEK1_CHAPTERS } from './week1Materials'
 import { WEEK2_LEVELS, chaptersForLevel } from './week2Materials'
 import { WEEK3_CHAPTERS } from './week3Materials'
+import { SQL_TASKS } from './week4'
 
-// Пока открыты только первые три недели
-export const OPEN_WEEKS = [1, 2, 3]
+// Пока открыты только первые четыре недели
+export const OPEN_WEEKS = [1, 2, 3, 4]
 
 export const WEEK_TITLES = {
   1: 'Неделя 1 — введение в IT и основы Python',
   2: 'Неделя 2 — алгоритмы',
   3: 'Неделя 3 — структуры данных',
+  4: 'Неделя 4 — базы данных, SQL, Docker и Git',
+}
+
+// У четвёртой недели через форму сдаётся только SQL — остальные задания
+// это онлайн-тесты, результат по ним виден сразу и никуда не отправляется.
+const WEEK4_SQL_CHAPTER = {
+  id: 'week4-sql-homework',
+  title: 'Домашнее задание по SQL',
+  short: 'SQL — задачи',
+  homework: {
+    number: 1,
+    kind: 'tasks',
+    tasks: SQL_TASKS,
+  },
 }
 
 // Неделя 2 разбита на уровни, у каждого свой набор глав
@@ -28,6 +43,7 @@ export function chaptersOf(week, level) {
   if (week === 1) return WEEK1_CHAPTERS
   if (week === 2) return chaptersForLevel(level || 1)
   if (week === 3) return WEEK3_CHAPTERS
+  if (week === 4) return [WEEK4_SQL_CHAPTER]
   return []
 }
 
