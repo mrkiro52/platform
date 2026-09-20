@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo, useCallback } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { api } from '../api'
+import SqlDataset from '../components/SqlDataset'
 import { AUTUMN_WEEK_MONTHS } from '../data/autumnWeeks'
 import {
   OPEN_WEEKS, WEEK_TITLES, hasLevels, WEEK_LEVELS,
@@ -252,6 +253,15 @@ export default function HomeworkUploadPage() {
           <p style={{ margin: '0 0 18px', fontSize: 13, color: 'var(--text-tertiary)', lineHeight: 1.6 }}>
             {WEEK_TITLES[week]}. Каждая задача сдаётся отдельно — можно сдать одну и вернуться к остальным позже.
           </p>
+
+          {/* Задачи по SQL решаются по конкретному датасету — дублируем его
+              здесь, чтобы не держать открытой вторую вкладку с материалами. */}
+          {chapter.id === 'week4-sql-homework' && (
+            <div style={{ marginBottom: 22 }}>
+              <div className="w4-tasks-title" style={{ marginTop: 0 }}>Датасет, по которому решаются задачи</div>
+              <SqlDataset />
+            </div>
+          )}
 
           <div className="hwup-tasks">
             {tasks.map((task, i) => (

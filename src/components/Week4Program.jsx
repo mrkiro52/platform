@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import WeekMaterials from './WeekMaterials'
 import QuizRunner from './QuizRunner'
+import SqlDataset from './SqlDataset'
 import { WEEK4_TITLE, WEEK4_TOPICS, topicById } from '../data/week4'
 
 const TOPIC_KEY = 'kiro_week4_topic'
@@ -21,7 +22,6 @@ function TopicCard({ topic, active, onSelect }) {
       className={`w4-topic${active ? ' is-active' : ''}`}
       onClick={() => onSelect(topic.id)}
     >
-      <span className="w4-topic-icon" aria-hidden="true">{topic.icon}</span>
       <span className="w4-topic-title">{topic.title}</span>
       <span className="w4-topic-subtitle">{topic.subtitle}</span>
       <span className="w4-topic-for">
@@ -35,50 +35,24 @@ function TopicCard({ topic, active, onSelect }) {
 // Домашнее задание по SQL: датасет и список задач. Сдаётся через общую
 // форму «Сдать дз» — там запросы попадают на проверку в админку.
 function SqlHomework({ homework }) {
-  const { dataset, tasks } = homework
+  const { tasks } = homework
 
   return (
     <div className="w4-sql">
-      <p className="w4-sql-intro">{dataset.intro}</p>
+      <a
+        href="/autumn-camp/upload-homework?week=4&chapter=week4-sql-homework"
+        target="_blank"
+        rel="noopener"
+        className="w4-submit-link"
+      >
+        <span className="w4-submit-link-title">Страница сдачи домашнего задания →</span>
+        <span className="w4-submit-link-text">
+          Откроется форма с этими же десятью задачами: вставляешь запрос под каждой и сдаёшь.
+          Неделя и глава уже выбраны.
+        </span>
+      </a>
 
-      <div className="w4-tables">
-        {dataset.tables.map(table => (
-          <div key={table.name} className="w4-table">
-            <div className="w4-table-head">
-              <span className="w4-table-name">{table.name}</span>
-              <span className="w4-table-comment">{table.comment}</span>
-            </div>
-
-            <div className="w4-table-cols">
-              {table.columns.map(([name, type, note]) => (
-                <div key={name} className="w4-col">
-                  <span className="w4-col-name">{name}</span>
-                  <span className="w4-col-type">{type}</span>
-                  <span className="w4-col-note">{note}</span>
-                </div>
-              ))}
-            </div>
-
-            <div className="viz-grid-scroll">
-              <table className="viz-grid">
-                <thead>
-                  <tr>{table.sample.head.map(h => <th key={h}>{h}</th>)}</tr>
-                </thead>
-                <tbody>
-                  {table.sample.rows.map((row, i) => (
-                    <tr key={i}>{row.map((cell, j) => <td key={j}>{cell}</td>)}</tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      <div className="hwup-comment">
-        <div className="hwup-comment-label">Важно</div>
-        <div className="hwup-comment-text">{dataset.note}</div>
-      </div>
+      <SqlDataset />
 
       <div className="w4-tasks-title">Задачи — от простых к сложным</div>
       <div className="w4-tasks">
@@ -98,8 +72,8 @@ function SqlHomework({ homework }) {
       </div>
 
       <p className="w4-sql-submit">
-        Готовые запросы сдавай через кнопку <b>«Сдать дз»</b> на странице Autumn Camp: выбери
-        неделю 4 и главу «Домашнее задание по SQL», вставь по одному запросу на задачу.
+        Готовые запросы сдавай через кнопку <b>«Сдать дз»</b> на странице Autumn Camp или по ссылке
+        выше: выбери неделю 4 и главу «Домашнее задание по SQL», вставь по одному запросу на задачу.
         Проверяющий увидит их и пришлёт результат.
       </p>
     </div>
