@@ -88,6 +88,41 @@ export function levelOfChapter(week, chapterId) {
   return null
 }
 
+// Все задачи недели одной плоской последовательностью — по ней ходят
+// кнопки «предыдущая» и «следующая» на странице задачи. Для недели 2 берём
+// третий уровень: его программа включает главы остальных двух.
+function weekTaskSequence(week) {
+  const level = week === 2 ? 3 : undefined
+  return chaptersOf(week, level).flatMap(chapter =>
+    tasksOf(chapter, week, level).map((_, index) => ({
+      chapterId: chapter.id,
+      chapterTitle: chapter.title,
+      taskIndex: index,
+    }))
+  )
+}
+
+// Соседние задачи. Переход идёт сквозь главы: за последней задачей одной
+// главы следует первая задача следующей.
+export function neighbourTasks(week, chapterId, taskIndex) {
+  const weekNum = Number(week)
+  const sequence = weekTaskSequence(weekNum)
+  const position = sequence.findIndex(
+    t => t.chapterId === chapterId && t.taskIndex === Number(taskIndex)
+  )
+  if (position === -1) return { prev: null, next: null }
+
+  const linkOf = (item) =>
+    item ? { ...item, href: `/autumn-camp/homework/${weekNum}/${item.chapterId}/${item.taskIndex}` } : null
+
+  return {
+    prev: linkOf(sequence[position - 1] || null),
+    next: linkOf(sequence[position + 1] || null),
+    position: position + 1,
+    total: sequence.length,
+  }
+}
+
 // Одна задача по адресу из ссылки. Уровень неизвестен, поэтому для недели 2
 // ищем главу по всем уровням — состав третьего уровня включает остальные.
 export function findTask(week, chapterId, taskIndex) {

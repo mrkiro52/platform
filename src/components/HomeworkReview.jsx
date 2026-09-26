@@ -35,9 +35,10 @@ const LEGEND = [
 export default function HomeworkReview() {
   const navigate = useNavigate()
   const [byKey, setByKey] = useState(null)
-  // Открыта всегда ровно одна неделя: клик по открытой её сворачивает,
-  // клик по другой — переключает на неё.
-  const [openWeek, setOpenWeek] = useState(OPEN_WEEKS[0])
+  // Ни одна неделя не раскрыта по умолчанию — иначе первая всегда тянет
+  // вниз весь список. Открыта может быть только одна: клик по открытой
+  // сворачивает её, клик по другой — переключает.
+  const [openWeek, setOpenWeek] = useState(null)
   const level = savedLevel()
 
   useEffect(() => {

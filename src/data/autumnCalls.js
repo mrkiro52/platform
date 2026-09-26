@@ -38,7 +38,7 @@ const SEPTEMBER_CALLS = [
     ],
   },
   { day: 19, topic: 'Полный гайд по структурам данных', videos: ['https://youtu.be/Ed_Q444YrNk'] },
-  { day: 26, topic: 'Полный гайд по базам данных и SQL' },
+  { day: 26, topic: 'Полный гайд по базам данных и SQL', videos: ['https://youtu.be/aivBh533CBQ'] },
 ]
 
 export const CALL_MONTHS = AUTUMN_MONTHS.map(m => ({

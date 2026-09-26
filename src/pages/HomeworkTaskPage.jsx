@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { api } from '../api'
-import { findTask, WEEK_TITLES, levelOfChapter } from '../data/homeworkCatalog'
+import { findTask, WEEK_TITLES, levelOfChapter, neighbourTasks } from '../data/homeworkCatalog'
 
 const STATUS = {
   submitted: { label: 'Сдано, ждёт проверки', className: 'is-submitted' },
@@ -64,6 +64,7 @@ export default function HomeworkTaskPage() {
   }
 
   const status = row ? STATUS[row.status] : null
+  const { prev, next, position, total } = neighbourTasks(week, chapterId, taskIndex)
 
 
   return (
@@ -165,6 +166,23 @@ export default function HomeworkTaskPage() {
             </div>
           </>
         )}
+      </div>
+      <div className="task-nav">
+        {prev ? (
+          <button type="button" className="task-nav-btn" onClick={() => navigate(prev.href)}>
+            <span className="task-nav-dir">← Предыдущая задача</span>
+            <span className="task-nav-name">{prev.chapterTitle} · задача {prev.taskIndex + 1}</span>
+          </button>
+        ) : <span />}
+
+        {position && <span className="task-nav-counter">{position} из {total}</span>}
+
+        {next ? (
+          <button type="button" className="task-nav-btn is-next" onClick={() => navigate(next.href)}>
+            <span className="task-nav-dir">Следующая задача →</span>
+            <span className="task-nav-name">{next.chapterTitle} · задача {next.taskIndex + 1}</span>
+          </button>
+        ) : <span />}
       </div>
     </section>
   )
