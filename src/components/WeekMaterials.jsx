@@ -412,8 +412,14 @@ export default function WeekMaterials({
   weekNumber = 1,
   submitFormat = 'free',
   showCode = true,
+  initialChapterId = null,
 }) {
-  const [active, setActive] = useState(0)
+  // Переход со сводки 5-й недели: ?ch=<id> открывает нужную главу сразу
+  const [active, setActive] = useState(() => {
+    if (!initialChapterId) return 0
+    const i = chapters.findIndex(ch => ch.id === initialChapterId)
+    return i >= 0 ? i : 0
+  })
   const [visited, setVisited] = useState(() => loadVisited(storageKey))
 
   const safeIndex = Math.min(active, chapters.length - 1)

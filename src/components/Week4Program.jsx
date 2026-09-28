@@ -80,8 +80,8 @@ function SqlHomework({ homework }) {
   )
 }
 
-export default function Week4Program() {
-  const [topicId, setTopicId] = useState(savedTopic)
+export default function Week4Program({ initialTopic = null, initialChapterId = null }) {
+  const [topicId, setTopicId] = useState(() => (initialTopic && topicById(initialTopic) ? initialTopic : savedTopic()))
   const [tab, setTab] = useState('materials')
 
   useEffect(() => {
@@ -146,6 +146,7 @@ export default function Week4Program() {
           storageKey={`kiro_week4_visited_${topic.id}`}
           weekNumber={4}
           submitFormat="platform"
+          initialChapterId={topic.id === initialTopic ? initialChapterId : null}
         />
       ) : (
         <div className="widget">

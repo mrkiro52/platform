@@ -59,8 +59,8 @@ function LevelCard({ level, active, onSelect }) {
   )
 }
 
-export default function Week2Program() {
-  const [level, setLevel] = useState(() => loadLevel())
+export default function Week2Program({ initialLevel = null, initialChapterId = null }) {
+  const [level, setLevel] = useState(() => initialLevel || loadLevel())
 
   useEffect(() => {
     try {
@@ -132,6 +132,7 @@ export default function Week2Program() {
         weekNumber={2}
         submitFormat={chosen.id === 1 ? 'notebook' : 'zip'}
         showCode={chosen.id !== 1}
+        initialChapterId={initialChapterId}
       />
     </>
   )
