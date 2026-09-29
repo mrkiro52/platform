@@ -1,5 +1,5 @@
 import { useState, useMemo, useRef, useEffect } from 'react'
-import { AUTUMN_WEEK_MONTHS } from '../data/autumnWeeks'
+import { AUTUMN_WEEK_MONTHS, shortRange } from '../data/autumnWeeks'
 import { WEEK1_CHAPTERS } from '../data/week1Materials'
 import { WEEK2_LEVELS, chaptersForLevel } from '../data/week2Materials'
 import { WEEK3_CHAPTERS } from '../data/week3Materials'
@@ -58,20 +58,27 @@ function homeworkFor(weekSlug, level) {
   return []
 }
 
+// Плитка недели — та же, что в «Материалах по неделям», только с замком
+// вместо стрелки у закрытых недель
 function WeekButton({ week, active, onSelect }) {
   const unlocked = UNLOCKED.has(week.slug)
 
   return (
     <button
       type="button"
-      className={`hw-week${active ? ' is-active' : ''}${unlocked ? '' : ' is-locked'}`}
+      className={`wk${active ? ' is-active' : ''}${unlocked ? '' : ' is-locked'}`}
       disabled={!unlocked}
       onClick={() => unlocked && onSelect(week.slug)}
       title={unlocked ? undefined : 'Задания этой недели откроются позже'}
+      aria-pressed={unlocked ? active : undefined}
+      aria-label={`Неделя ${week.indexInMonth}, ${week.rangeText}${unlocked ? '' : ', откроется позже'}`}
     >
-      <span className="hw-week-name">Неделя {week.indexInMonth}</span>
-      <span className="hw-week-range">{week.rangeText}</span>
-      {!unlocked && <span className="hw-week-lock"><LockIcon /></span>}
+      <span className="wk-name"><span className="wk-word">Неделя </span>{week.indexInMonth}</span>
+      <span className="wk-range">
+        <span className="wk-range-full">{week.rangeText}</span>
+        <span className="wk-range-short">{shortRange(week)}</span>
+      </span>
+      {!unlocked && <span className="wk-lock"><LockIcon /></span>}
     </button>
   )
 }
@@ -79,24 +86,10 @@ function WeekButton({ week, active, onSelect }) {
 export default function HomeworkPicker() {
   const [week, setWeek] = useState(null)
   const [level, setLevel] = useState(null)
-  const pickerRef = useRef(null)
   const tasksRef = useRef(null)
-  const [pickerHeight, setPickerHeight] = useState(null)
 
   const showLevels = week === 'week2'
   const items = useMemo(() => homeworkFor(week, level), [week, level])
-
-  // Правая колонка ростом с левую: список недель задаёт высоту блока,
-  // задания внутри прокручиваются. Следим за реальной высотой, а не за
-  // константой — она меняется при смене ширины окна.
-  useEffect(() => {
-    const el = pickerRef.current
-    if (!el || typeof ResizeObserver === 'undefined') return
-    const observer = new ResizeObserver(() => setPickerHeight(el.offsetHeight))
-    observer.observe(el)
-    setPickerHeight(el.offsetHeight)
-    return () => observer.disconnect()
-  }, [])
 
   // При смене недели или уровня список начинается сначала — иначе человек
   // остаётся в середине прошлого задания и не видит, что он сменился.
@@ -115,11 +108,11 @@ export default function HomeworkPicker() {
 
   return (
     <div className="hw-block">
-      <div className={`hw-picker${showLevels ? ' is-narrow' : ''}`} ref={pickerRef}>
+      <div className="wk-grid">
         {AUTUMN_WEEK_MONTHS.map(month => (
-          <div key={month.label} className="hw-month">
-            <div className="hw-month-label">{month.label}</div>
-            <div className="hw-weeks">
+          <div key={month.label} className="wk-month">
+            <div className="wk-month-label">{month.label}</div>
+            <div className="wk-list">
               {month.weeks.map(w => (
                 <WeekButton key={w.slug} week={w} active={week === w.slug} onSelect={selectWeek} />
               ))}
@@ -150,10 +143,9 @@ export default function HomeworkPicker() {
         className="hw-tasks"
         ref={tasksRef}
         key={`${week || 'none'}-${level || 0}`}
-        style={pickerHeight ? { '--hw-height': `${pickerHeight}px` } : undefined}
       >
         {!week && (
-          <div className="hw-hint">Выбери неделю слева — здесь появятся условия всех задач.</div>
+          <div className="hw-hint">Выбери неделю — здесь появятся условия всех задач.</div>
         )}
 
         {items.map(({ chapter, hw }) => (

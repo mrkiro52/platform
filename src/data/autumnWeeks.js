@@ -42,6 +42,12 @@ export const AUTUMN_WEEK_MONTHS = MONTHS.map(month => ({
   weeks: AUTUMN_WEEKS.filter(w => w.monthIdx === month.monthIdx),
 }))
 
+// Диапазон дней без месяца — для плиток недель на узком экране,
+// где месяц уже подписан над рядом
+export function shortRange(week) {
+  return week.start === week.end ? String(week.start) : `${week.start}–${week.end}`
+}
+
 export function findAutumnWeek(slug) {
   return AUTUMN_WEEKS.find(w => w.slug === slug) || null
 }

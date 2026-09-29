@@ -1253,14 +1253,6 @@ img { max-width: 100%; display: block; }
   .material-dot { width: 34px; height: 34px; font-size: 12px; }
 }
 
-/* Заголовок секции лагеря с кнопкой справа. На узких экранах кнопка
-   растягивается на всю ширину (.autumn-toggle-btn), поэтому ряд должен
-   переноситься — иначе кнопка вылезает за край. */
-.autumn-section-head {
-  display: flex; align-items: center; justify-content: space-between;
-  gap: 12px; margin-bottom: 16px;
-}
-@media (max-width: 768px) { .autumn-section-head { flex-wrap: wrap; } }
 
 /* Табы месяцев в созвонах */
 .calls-tabs { display: flex; gap: 6px; margin-bottom: 16px; flex-wrap: wrap; }
@@ -1381,9 +1373,13 @@ img { max-width: 100%; display: block; }
 .hwrev-legend { display: flex; flex-wrap: wrap; gap: 16px; }
 .hwrev-legend-item { display: inline-flex; align-items: center; gap: 7px; font-size: 12px; color: var(--text-tertiary); }
 
+/* Кружок-стрелка, название, бейдж уровня. Длинное название переносится
+   внутри своей колонки — стрелка остаётся рядом с ним, а не уезжает на
+   отдельную строку. */
 .hwrev-week-head {
-  display: flex; align-items: center; gap: 10px; margin-bottom: 10px; flex-wrap: wrap;
-  width: 100%; background: none; border: none; padding: 0; cursor: pointer; text-align: left;
+  display: grid; grid-template-columns: 22px minmax(0, max-content) auto;
+  justify-content: start; align-items: center; column-gap: 10px; margin-bottom: 10px;
+  width: 100%; min-height: 32px; background: none; border: none; padding: 0; cursor: pointer; text-align: left;
   font-family: var(--font-inter);
 }
 .hwrev-chev {
@@ -1395,6 +1391,10 @@ img { max-width: 100%; display: block; }
 .hwrev-week-head:hover .hwrev-chev { border-color: rgba(255,140,66,0.6); color: #FFB870; }
 .hwrev-chev.is-open { transform: rotate(180deg); border-color: rgba(255,140,66,0.6); color: #FFB870; }
 .hwrev-week-name { font-family: var(--font-syne); font-size: 13px; font-weight: 700; color: var(--text-primary); }
+@container camp-block (max-width: 519px) {
+  .hwrev-week-head { grid-template-columns: 22px minmax(0, 1fr); row-gap: 5px; }
+  .hwrev-week-level { grid-column: 2; justify-self: start; }
+}
 .hwrev-week-level {
   font-size: 10.5px; font-weight: 700; color: #FFB870; text-transform: uppercase; letter-spacing: 0.04em;
   background: rgba(255,140,66,0.12); border-radius: var(--radius-pill); padding: 2px 9px;
@@ -1457,38 +1457,12 @@ img { max-width: 100%; display: block; }
    выезжают три квадрата уровней. */
 .hw-block { display: flex; flex-direction: column; gap: 18px; }
 
-.hw-picker { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
-.hw-month-label {
-  font-family: var(--font-syne); font-size: 11px; font-weight: 700; color: var(--text-tertiary);
-  text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px;
-}
-.hw-weeks { display: flex; flex-direction: column; gap: 6px; }
-
-.hw-week {
-  display: flex; align-items: center; gap: 8px; width: 100%; text-align: left;
-  background: var(--bg-tertiary); border: 1px solid var(--border-color);
-  border-radius: var(--radius-md); padding: 10px 12px; cursor: pointer;
-  font-family: var(--font-inter); transition: border-color 0.15s, background 0.15s;
-}
-.hw-week:hover:not(:disabled) { border-color: rgba(255,140,66,0.5); }
-.hw-week.is-active { border-color: rgba(255,140,66,0.7); background: rgba(255,140,66,0.10); }
-.hw-week-name { font-family: var(--font-syne); font-size: 13px; font-weight: 700; color: var(--text-primary); }
-.hw-week.is-active .hw-week-name { color: #FFB870; }
-.hw-week-range { font-size: 11.5px; color: var(--text-tertiary); }
-.hw-week-lock { margin-left: auto; color: var(--text-tertiary); display: flex; }
-
-/* Закрытые недели: серые и не реагируют на курсор */
-.hw-week.is-locked {
-  cursor: not-allowed; background: rgba(255,255,255,0.02); border-color: var(--border-color);
-}
-.hw-week.is-locked .hw-week-name { color: var(--text-tertiary); font-weight: 600; }
-.hw-week.is-locked .hw-week-range { color: #6b6b78; }
 
 /* Квадраты уровней — появляются по очереди */
-.hw-levels { display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap; }
+.hw-levels { display: flex; flex-direction: row; align-items: center; justify-content: flex-start; gap: 8px; flex-wrap: wrap; }
 .hw-levels-label {
   font-family: var(--font-syne); font-size: 11px; font-weight: 700; color: var(--text-tertiary);
-  text-transform: uppercase; letter-spacing: 0.05em; width: 100%; text-align: center;
+  text-transform: uppercase; letter-spacing: 0.05em; margin-right: 6px;
 }
 .hw-level {
   width: 44px; height: 44px; flex-shrink: 0; border-radius: var(--radius-md);
@@ -1533,49 +1507,7 @@ img { max-width: 100%; display: block; }
   .hw-level, .hw-task { animation: none; }
 }
 
-/* На пк — две колонки; левая ужимается, когда выехали уровни */
-@media (min-width: 1101px) {
-  .hw-block { flex-direction: row; align-items: flex-start; gap: 20px; }
-  .hw-picker { flex: 0 0 50%; transition: flex-basis 0.35s ease; }
-  .hw-picker.is-narrow { flex-basis: 32%; }
-  /* Колонка уровней центрируется по высоте списка недель */
-  .hw-levels {
-    flex-direction: column; align-items: center; justify-content: center;
-    width: 52px; flex-shrink: 0; height: var(--hw-height, auto); align-self: stretch;
-  }
-  .hw-levels-label { width: auto; font-size: 9px; letter-spacing: 0.02em; }
 
-  /* Правая колонка ровно по высоте левой, задания прокручиваются внутри */
-  .hw-tasks {
-    flex: 1; height: var(--hw-height, 620px); overflow-y: auto; padding-right: 10px;
-    scrollbar-width: thin; scrollbar-color: rgba(255,140,66,0.45) transparent;
-  }
-  .hw-tasks::-webkit-scrollbar { width: 8px; }
-  .hw-tasks::-webkit-scrollbar-track { background: var(--bg-tertiary); border-radius: var(--radius-pill); }
-  .hw-tasks::-webkit-scrollbar-thumb {
-    background: rgba(255,140,66,0.45); border-radius: var(--radius-pill);
-    border: 2px solid var(--bg-secondary); background-clip: padding-box;
-  }
-  .hw-tasks::-webkit-scrollbar-thumb:hover { background: rgba(255,140,66,0.7); background-clip: padding-box; }
-}
-
-/* Autumn Camp: на пк прогресс и созвоны идут парой, а месяцы материалов —
-   тремя колонками. Планшеты и мобилки остаются в столбик, как было. */
-.autumn-half-row { display: grid; grid-template-columns: 1fr; gap: 28px; margin-bottom: 28px; }
-.autumn-months-row { display: grid; grid-template-columns: 1fr; gap: 22px; }
-
-@media (min-width: 1101px) {
-  /* Прогресс занимает ровно столько, сколько нужно 31 квадрату в один ряд
-     (max-content), всю оставшуюся ширину забирают созвоны. */
-  .autumn-half-row  { grid-template-columns: max-content minmax(0, 1fr); align-items: start; gap: 20px; }
-  .autumn-months-row { grid-template-columns: repeat(3, 1fr); gap: 18px; align-items: start; }
-  /* Квадраты в паре мельче: 31 штука в ряд должна уместиться так, чтобы
-     созвонам рядом осталось место на две карточки в ряд */
-  .autumn-half-row .autumn-days-grid { flex-wrap: nowrap; gap: 3px; }
-  .autumn-half-row .autumn-day { width: 12px; height: 12px; border-radius: 4px; }
-  /* Созвоны идут по два в ряд даже в узкой колонке */
-  .autumn-half-row .calls-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-}
 
 /* Календарь недели на дэшборде: семь дней во всю ширину, компактный.
    Колонки равной ширины, поэтому строка не разъезжается при пустых днях. */
@@ -1842,25 +1774,7 @@ img { max-width: 100%; display: block; }
 }
 @media (max-width: 768px) { .week-levels { grid-template-columns: 1fr; } }
 
-/* Групповые созвоны: карточки равной ширины в пределах одного месяца */
-.calls-grid { display: grid; grid-template-columns: repeat(var(--calls-count, 1), 1fr); gap: 10px; }
-@media (max-width: 768px) { .calls-grid { grid-template-columns: repeat(2, 1fr); } }
-@media (max-width: 480px) { .calls-grid { grid-template-columns: 1fr; } }
 
-/* Помесячный прогресс осеннего лагеря: квадратики-дни на десктопе, полоска на мобиле */
-.autumn-days-grid { display: flex; flex-wrap: wrap; gap: 5px; }
-.autumn-day {
-  width: 18px; height: 18px; border-radius: 5px; flex-shrink: 0;
-  background: var(--bg-tertiary); border: 1px solid var(--border-color);
-}
-.autumn-day.d-past  { background: rgba(255,140,66,0.38); border-color: rgba(255,140,66,0.55); }
-.autumn-day.d-today { background: linear-gradient(135deg, #FF8C42, #FFC107); border-color: transparent; box-shadow: 0 0 0 2px rgba(255,140,66,0.35); }
-
-.autumn-bar-mobile {
-  display: none; height: 10px; border-radius: var(--radius-pill); overflow: hidden;
-  background: var(--bg-tertiary); border: 1px solid var(--border-color);
-}
-.autumn-bar-fill { height: 100%; border-radius: var(--radius-pill); background: linear-gradient(90deg, #FF8C42, #FFC107); transition: width 0.3s ease; }
 
 /* ================================================================
    DASHBOARD
@@ -1996,8 +1910,6 @@ img { max-width: 100%; display: block; }
 @media (max-width: 768px) {
   .profile-info-trophies { grid-template-columns: 1fr; }
   .install-grid           { grid-template-columns: 1fr; }
-  .autumn-days-grid       { display: none; }
-  .autumn-bar-mobile      { display: block; }
 
   /* Sidebar — slide in/out overlay */
   .sidebar            { transform: translateX(calc(-1 * var(--sidebar-width))); }
@@ -3398,4 +3310,175 @@ body.reels-lock {
   .math-section-title { font-size: 14.5px; gap: 9px; }
   .math-task { padding: 13px 14px; }
   .math-chat { padding: 12px 14px; }
+}
+
+/* ════════════════════════════════════════════════════════════════
+   AUTUMN CAMP — страница лагеря
+   Раскладка считается от ширины самой страницы и каждой секции
+   (container queries), а не от ширины окна: на планшете с открытым
+   меню контента меньше, чем на планшете без него, и медиазапросы
+   по окну тут промахиваются.
+════════════════════════════════════════════════════════════════ */
+.camp-page { container: camp / inline-size; }
+
+.camp-heroes { display: flex; flex-direction: column; gap: 12px; margin-bottom: 28px; }
+.camp-heroes .autumn-hero { margin-bottom: 0; }
+
+/* Одна лента: секции идут в порядке важности для студента */
+.camp-layout { display: flex; flex-direction: column; gap: 28px; }
+.camp-main, .camp-side { display: contents; }
+
+.camp-block.is-progress  { order: 1; }
+.camp-block.is-materials { order: 2; }
+.camp-block.is-homework  { order: 3; }
+.camp-block.is-review    { order: 4; }
+.camp-block.is-booking   { order: 5; }
+.camp-block.is-calls     { order: 6; }
+
+/* Широкий экран: слева учёба, справа календарь */
+@container camp (min-width: 1000px) {
+  .camp-layout {
+    display: grid; grid-template-columns: minmax(0, 1fr) minmax(320px, 360px);
+    gap: 24px; align-items: start;
+  }
+  .camp-main, .camp-side { display: flex; flex-direction: column; gap: 28px; min-width: 0; }
+}
+
+.camp-block { container: camp-block / inline-size; min-width: 0; }
+.camp-block-head {
+  display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap;
+  gap: 10px 12px; min-height: 28px; margin-bottom: 14px;
+}
+.camp-block-title { margin: 0; font-size: 16px; font-weight: 700; color: var(--text-primary); }
+
+/* Плашки на узком экране: название и кнопка в строку, даты курса ниже */
+@container camp (max-width: 699px) {
+  .camp-heroes .autumn-hero { padding: 12px 14px; gap: 12px 10px; }
+  .camp-heroes .autumn-hero-left { flex: 1; min-width: 0; }
+  /* Если название с кнопкой не влезают в строку (телефоны уже 400px),
+     название переносится, а не наезжает на кнопку */
+  .camp-heroes .autumn-hero-title { font-size: 13px; line-height: 1.3; text-wrap: balance; }
+  .camp-heroes .autumn-hero-right { display: contents; }
+  .camp-heroes .autumn-toggle-btn { width: auto; order: 2; padding: 7px 12px; gap: 6px; }
+  .camp-heroes .math-dates { order: 3; width: 100%; }
+}
+
+/* ── Прогресс: месяц и полоска ── */
+.camp-progress {
+  display: grid; grid-template-columns: max-content minmax(0, 1fr);
+  align-items: center; gap: 16px 16px;
+}
+.camp-progress-row { display: contents; }
+.camp-progress-month {
+  font-family: var(--font-syne); font-size: 12px; font-weight: 700; color: var(--text-primary);
+  text-transform: uppercase; letter-spacing: 0.05em;
+}
+.camp-progress-bar {
+  height: 10px; border-radius: var(--radius-pill); overflow: hidden;
+  background: var(--bg-tertiary); border: 1px solid var(--border-color);
+}
+.camp-progress-fill {
+  height: 100%; border-radius: var(--radius-pill);
+  background: linear-gradient(90deg, #FF8C42, #FFC107);
+  transition: width 0.3s ease;
+}
+
+/* ── Недели: общая сетка для материалов и домашних заданий ── */
+.wk-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.wk-month { min-width: 0; }
+.wk-month-label {
+  font-family: var(--font-syne); font-size: 11px; font-weight: 700; color: var(--text-tertiary);
+  text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px;
+}
+.wk-list { display: flex; flex-direction: column; gap: 6px; }
+
+.wk {
+  display: grid; grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-areas: "name now side" "range range side";
+  align-items: center; column-gap: 8px; row-gap: 2px;
+  width: 100%; min-height: 50px; padding: 8px 12px; text-align: left; cursor: pointer;
+  background: var(--bg-tertiary); border: 1px solid var(--border-color);
+  border-radius: var(--radius-md); font-family: var(--font-inter); color: inherit;
+  transition: border-color 0.15s, background 0.15s;
+}
+.wk:hover:not(:disabled) { border-color: rgba(255,140,66,0.5); }
+.wk:focus-visible { outline: 2px solid #FFB870; outline-offset: 2px; }
+
+.wk-name {
+  grid-area: name; white-space: nowrap;
+  font-family: var(--font-syne); font-size: 13px; font-weight: 700; color: var(--text-primary);
+}
+.wk-range {
+  grid-area: range; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  font-size: 11.5px; color: var(--text-tertiary);
+}
+.wk-range-short { display: none; }
+.wk-now {
+  grid-area: now; justify-self: start;
+  font-family: var(--font-syne); font-size: 9.5px; font-weight: 700; color: #FFB870;
+  text-transform: uppercase; letter-spacing: 0.03em;
+  background: rgba(255,140,66,0.15); border: 1px solid rgba(255,140,66,0.4);
+  border-radius: var(--radius-pill); padding: 2px 7px;
+}
+.wk-arrow { grid-area: side; color: #FFB870; font-size: 16px; line-height: 1; }
+.wk-lock  { grid-area: side; color: var(--text-tertiary); display: flex; }
+
+.wk.is-current { border-color: rgba(255,140,66,0.55); background: rgba(255,140,66,0.08); }
+.wk.is-active  { border-color: rgba(255,140,66,0.7);  background: rgba(255,140,66,0.10); }
+.wk.is-active .wk-name { color: #FFB870; }
+.wk.is-locked  { cursor: not-allowed; background: rgba(255,255,255,0.02); }
+.wk.is-locked .wk-name  { color: var(--text-tertiary); font-weight: 600; }
+.wk.is-locked .wk-range { color: #6b6b78; }
+
+/* Узкая секция: месяцы друг под другом, недели — ряд из пяти плиток */
+@container camp-block (max-width: 519px) {
+  .wk-grid { grid-template-columns: 1fr; gap: 14px; }
+  .wk-month-label { margin-bottom: 6px; }
+  .wk-list { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px; }
+  .wk {
+    position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 3px; min-height: 56px; padding: 8px 2px; text-align: center;
+  }
+  .wk-word, .wk-range-full, .wk-arrow, .wk-now { display: none; }
+  .wk-range-short { display: inline; }
+  .wk-name { font-size: 16px; line-height: 1; }
+  .wk-range { font-size: 10.5px; overflow: visible; }
+  .wk-lock { position: absolute; top: 4px; right: 4px; }
+  .wk-lock svg { width: 10px; height: 10px; }
+  /* Бейджа «Сейчас» тут нет места — текущую неделю выделяет заливка */
+  .wk.is-current { background: rgba(255,140,66,0.2); border-color: #FF8C42; }
+  .wk.is-current .wk-name { color: #FFB870; }
+}
+
+/* ── Домашние задания: недели сверху, задачи сразу под ними ── */
+.camp-page .hw-block { gap: 16px; }
+/* На широких мониторах строка условия иначе тянется на всю колонку */
+.camp-page .hw-task-text { max-width: 90ch; }
+/* С мышью список задач прокручивается внутри карточки, чтобы не растягивать
+   страницу на несколько экранов. На тач-экранах вложенная прокрутка мешает —
+   там список идёт в общей ленте. */
+@media (hover: hover) and (pointer: fine) {
+  .camp-page .hw-tasks {
+    max-height: 560px; overflow-y: auto; padding-right: 10px;
+    scrollbar-width: thin; scrollbar-color: rgba(255,140,66,0.45) transparent;
+  }
+  .camp-page .hw-tasks::-webkit-scrollbar { width: 8px; }
+  .camp-page .hw-tasks::-webkit-scrollbar-track { background: var(--bg-tertiary); border-radius: var(--radius-pill); }
+  .camp-page .hw-tasks::-webkit-scrollbar-thumb {
+    background: rgba(255,140,66,0.45); border-radius: var(--radius-pill);
+    border: 2px solid var(--bg-secondary); background-clip: padding-box;
+  }
+  .camp-page .hw-tasks::-webkit-scrollbar-thumb:hover { background: rgba(255,140,66,0.7); background-clip: padding-box; }
+}
+
+/* ── Групповые созвоны: столько карточек в ряд, сколько влезает ── */
+.calls-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 10px; }
+
+/* ── Тач-экраны: цели для пальца не меньше ~32–36 px ── */
+@media (pointer: coarse) {
+  .camp-page .hw-submit-btn { height: 34px; }
+  .camp-page .calls-tab     { min-height: 36px; }
+  .camp-page .hwrev-rows .hwrev-sq { width: 32px; height: 32px; font-size: 12px; }
+  /* В SQL-задании десять задач — на телефоне квадраты переносятся на вторую строку */
+  .camp-page .hwrev-squares { flex-wrap: wrap; }
 }
