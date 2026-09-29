@@ -16,6 +16,10 @@ export const MATH_SESSIONS = [
 
 export const MATH_TIME = '20:00 МСК'
 
+// Беседа курса: там же лежат записи созвонов, поэтому ссылка на запись
+// не откроется у того, кто в беседу не вступил.
+export const MATH_CHAT = 'https://t.me/+EpR0Sojtai45NTky'
+
 // Ближайший созвон — первый, который ещё не прошёл. Если курс закончился,
 // возвращаем null: подсвечивать в кружках больше нечего.
 export function nextMathSession() {

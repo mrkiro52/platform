@@ -21,6 +21,8 @@ import AntiReels from './pages/AntiReels'
 import AutumnCampPage from './pages/AutumnCampPage'
 import AutumnOnboardingPage from './pages/AutumnOnboardingPage'
 import MathCoursePage from './pages/MathCoursePage'
+import MathTheoryPage from './pages/MathTheoryPage'
+import MathHomeworkPage from './pages/MathHomeworkPage'
 import HomeworkUploadPage from './pages/HomeworkUploadPage'
 import HomeworkTaskPage from './pages/HomeworkTaskPage'
 import AutumnWeekPage from './pages/AutumnWeekPage'
@@ -134,6 +136,8 @@ export default function AppShell({ user, onLogout }) {
             <Route path="/autumn-camp" element={<AutumnCampPage />} />
             <Route path="/autumn-camp/onboarding-autumn-2026" element={<AutumnOnboardingPage />} />
             <Route path="/autumn-camp/math" element={<MathCoursePage />} />
+            <Route path="/autumn-camp/math/:day/theory" element={<MathTheoryPage />} />
+            <Route path="/autumn-camp/math/:day/homework" element={<MathHomeworkPage />} />
             <Route path="/autumn-camp/upload-homework" element={<HomeworkUploadPage />} />
             <Route path="/autumn-camp/homework/:week/:chapterId/:taskIndex" element={<HomeworkTaskPage />} />
             <Route path="/autumn-camp/:week" element={<AutumnWeekPage user={user} />} />

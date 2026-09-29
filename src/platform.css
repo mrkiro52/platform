@@ -3156,3 +3156,246 @@ body.reels-lock {
   .w5-item { flex-wrap: wrap; }
   .w5-open { margin-left: 32px; align-self: flex-start; }
 }
+
+/* ── Математика: формулы ──────────────────────────────────────────── */
+
+.mx {
+  font-family: 'Georgia', 'Times New Roman', serif;
+  font-style: italic;
+  white-space: nowrap;
+  line-height: 1;
+}
+
+.mx-display {
+  display: flex; justify-content: center;
+  margin: 18px 0; padding: 4px 0;
+  font-size: 16px; color: var(--text-primary);
+  overflow-x: auto; overflow-y: hidden;
+}
+.mx-display .mx { white-space: nowrap; }
+
+.mx-text { font-style: normal; font-family: var(--font-sans, inherit); }
+
+/* Дробь: числитель над знаменателем */
+.mx-frac {
+  display: inline-flex; flex-direction: column; align-items: center;
+  vertical-align: middle; margin: 0 0.22em;
+  font-size: 0.94em;
+}
+.mx-num { padding: 0 0.32em 0.12em; }
+.mx-den {
+  padding: 0.14em 0.32em 0;
+  border-top: 1px solid currentColor;
+}
+
+.mx-sqrt { display: inline-flex; align-items: stretch; vertical-align: middle; }
+.mx-sqrt-sign { font-size: 1.05em; line-height: 1; }
+.mx-sqrt-body {
+  border-top: 1px solid currentColor;
+  padding: 0.14em 0.16em 0 0.08em;
+}
+
+.mx-sup, .mx-sub { font-size: 0.68em; font-style: italic; }
+
+/* Система: фигурная скобка слева */
+.mx-cases { display: inline-flex; align-items: stretch; gap: 8px; }
+.mx-brace {
+  width: 9px; flex-shrink: 0;
+  border: 1.5px solid currentColor;
+  border-right: none;
+  border-radius: 7px 0 0 7px;
+}
+.mx-cases-lines { display: inline-flex; flex-direction: column; gap: 9px; justify-content: center; }
+.mx-cases-line { display: block; }
+
+/* ── Математика: страницы конспекта и домашнего задания ──────────── */
+
+.math-back {
+  background: transparent; border: none; color: #FFB870; cursor: pointer;
+  font-size: 12.5px; font-weight: 700; font-family: var(--font-syne);
+  padding: 0; margin-bottom: 14px;
+}
+
+.math-p {
+  margin: 0 0 12px; font-size: 13.5px;
+  color: var(--text-secondary); line-height: 1.75;
+}
+.math-p strong { color: var(--text-primary); font-weight: 700; }
+.math-p .mx { font-size: 14px; color: var(--text-primary); }
+
+.math-list { margin: 0 0 14px; padding-left: 20px; list-style: disc; }
+.math-list li::marker { color: rgba(255, 140, 66, 0.7); }
+.math-list li {
+  font-size: 13.5px; color: var(--text-secondary);
+  line-height: 1.75; margin-bottom: 7px;
+}
+.math-list li strong { color: var(--text-primary); }
+.math-list .mx { font-size: 14px; color: var(--text-primary); }
+
+.math-note {
+  margin: 16px 0; padding: 13px 15px;
+  border-radius: 10px;
+  background: rgba(255, 140, 66, 0.07);
+  border: 1px solid rgba(255, 140, 66, 0.2);
+}
+.math-note-label {
+  display: block; margin-bottom: 6px;
+  font-size: 10.5px; font-weight: 700; letter-spacing: 0.06em;
+  text-transform: uppercase; color: #FFB870;
+}
+.math-note .math-p { margin: 0; }
+
+.math-goals-label {
+  margin-top: 18px; margin-bottom: 9px;
+  font-size: 11px; font-weight: 700; letter-spacing: 0.06em;
+  text-transform: uppercase; color: var(--text-tertiary);
+}
+.math-goals { margin: 0; padding-left: 20px; list-style: disc; }
+.math-goals li::marker { color: rgba(255, 140, 66, 0.7); }
+.math-goals li {
+  font-size: 13px; color: var(--text-secondary);
+  line-height: 1.7; margin-bottom: 5px;
+}
+
+.math-toc { margin-bottom: 18px; }
+.math-toc-list { margin: 0; padding-left: 20px; list-style: decimal; }
+.math-toc-list li::marker { color: rgba(255, 140, 66, 0.7); font-weight: 700; }
+.math-toc-list li { margin-bottom: 7px; }
+.math-toc-list a {
+  font-size: 13px; color: var(--text-secondary); text-decoration: none;
+  transition: color 0.18s ease;
+}
+.math-toc-list a:hover { color: #FFB870; }
+
+.math-section { margin-bottom: 16px; scroll-margin-top: 20px; }
+
+.math-section-title {
+  display: flex; align-items: center; gap: 11px;
+  margin: 0 0 16px; font-family: var(--font-syne);
+  font-size: 15.5px; font-weight: 700; color: var(--text-primary);
+  line-height: 1.4;
+}
+.math-section-num {
+  width: 26px; height: 26px; flex-shrink: 0;
+  display: grid; place-items: center; border-radius: 8px;
+  background: rgba(255, 140, 66, 0.14);
+  color: #FFB870; font-family: var(--font-mono);
+  font-size: 12px; font-weight: 700;
+}
+
+/* Разобранная задача */
+.math-task {
+  margin-top: 16px; padding: 15px 16px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+.math-task.is-open { border-color: rgba(255, 140, 66, 0.28); }
+.math-task-head { margin-bottom: 8px; }
+.math-task-num {
+  font-family: var(--font-syne); font-size: 12px; font-weight: 700;
+  letter-spacing: 0.04em; text-transform: uppercase; color: #FFB870;
+}
+.math-task .math-p:last-of-type { margin-bottom: 0; }
+
+.math-task-toggle {
+  margin-top: 12px; padding: 7px 14px; border-radius: 8px; cursor: pointer;
+  font-family: var(--font-syne); font-size: 11.5px; font-weight: 700;
+  color: #FFB870; background: rgba(255, 140, 66, 0.08);
+  border: 1px solid rgba(255, 140, 66, 0.28);
+  transition: background 0.18s ease;
+}
+.math-task-toggle:hover { background: rgba(255, 140, 66, 0.18); }
+
+.math-task-solution {
+  display: grid; grid-template-rows: 0fr;
+  transition: grid-template-rows 0.3s ease;
+}
+.math-task.is-open .math-task-solution { grid-template-rows: 1fr; }
+.math-task-solution-inner { overflow: hidden; }
+.math-task.is-open .math-task-solution-inner { padding-top: 14px; }
+
+.math-solution-label {
+  display: block; margin-bottom: 8px;
+  font-size: 10.5px; font-weight: 700; letter-spacing: 0.06em;
+  text-transform: uppercase; color: var(--text-tertiary);
+}
+
+.math-outro { margin-top: 18px; }
+
+/* Домашнее задание */
+.math-hw-meta { margin-bottom: 10px; }
+.math-hw-count {
+  font-family: var(--font-mono); font-size: 11.5px;
+  color: #FFB870; letter-spacing: 0.03em;
+}
+.math-hw-part { margin-bottom: 16px; }
+.math-hw-hint {
+  margin: 0 0 14px; font-size: 12.5px;
+  color: var(--text-tertiary); line-height: 1.65;
+}
+.math-hw-list { list-style: none; margin: 0; padding: 0; }
+
+.math-hw-item {
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 10px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+.math-hw-item:first-child { border-top: none; }
+.math-hw-num {
+  flex-shrink: 0; padding-top: 3px; min-width: 22px;
+  font-family: var(--font-mono); font-size: 12px; font-weight: 700;
+  color: rgba(255, 140, 66, 0.75);
+}
+.math-hw-body { flex: 1; min-width: 0; }
+.math-hw-text {
+  display: block; font-size: 13.5px;
+  color: var(--text-secondary); line-height: 1.75; padding-top: 1px;
+}
+.math-hw-text .mx { font-size: 14px; color: var(--text-primary); }
+.math-hw-body .mx-display { margin: 4px 0; justify-content: flex-start; }
+
+/* Ссылка на беседу курса */
+.math-chat {
+  display: flex; align-items: flex-start; gap: 12px;
+  margin-top: 16px; padding: 14px 16px;
+  border-radius: 12px; text-decoration: none;
+  background: rgba(255, 140, 66, 0.07);
+  border: 1px solid rgba(255, 140, 66, 0.22);
+  transition: background 0.18s ease, border-color 0.18s ease;
+}
+.math-chat:hover {
+  background: rgba(255, 140, 66, 0.13);
+  border-color: rgba(255, 140, 66, 0.4);
+}
+.math-chat-icon {
+  width: 26px; height: 26px; flex-shrink: 0;
+  display: grid; place-items: center; border-radius: 8px;
+  background: rgba(255, 140, 66, 0.18);
+  color: #FFB870; font-size: 13px; font-weight: 700;
+}
+.math-chat-text { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.math-chat-title {
+  font-family: var(--font-syne); font-size: 13px; font-weight: 700;
+  color: var(--text-primary);
+}
+.math-chat-note { font-size: 11.5px; color: var(--text-tertiary); line-height: 1.55; }
+
+/* Активные ссылки на материалы занятия */
+.math-link {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 6px 12px; border-radius: 8px; text-decoration: none;
+  font-size: 11.5px; font-weight: 700; color: #FFB870;
+  background: rgba(255, 140, 66, 0.1);
+  border: 1px solid rgba(255, 140, 66, 0.3);
+  transition: background 0.18s ease;
+}
+.math-link:hover { background: rgba(255, 140, 66, 0.2); }
+.math-link.is-external::after { content: '↗'; font-size: 10px; opacity: 0.8; }
+
+@media (max-width: 768px) {
+  .mx-display { font-size: 14.5px; justify-content: flex-start; }
+  .math-section-title { font-size: 14.5px; gap: 9px; }
+  .math-task { padding: 13px 14px; }
+  .math-chat { padding: 12px 14px; }
+}

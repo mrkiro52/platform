@@ -1,7 +1,8 @@
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import {
-  MATH_COURSE_TITLE, MATH_SESSIONS, MATH_TIME, MATH_TEACHER, nextMathSession,
+  MATH_COURSE_TITLE, MATH_SESSIONS, MATH_TIME, MATH_TEACHER, MATH_CHAT, nextMathSession,
 } from '../data/mathCourse'
+import { materialsOf } from '../data/math'
 
 const MONTHS = ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня',
                 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря']
@@ -23,10 +24,13 @@ function Soon({ children }) {
 }
 
 function Session({ session, index, isNext }) {
+  const day = index + 1
+  const materials = materialsOf(day)
+
   return (
     <div className={`math-session${isNext ? ' is-next' : ''}`}>
       <div className="math-session-head">
-        <span className="math-session-num">Созвон {index + 1}</span>
+        <span className="math-session-num">Созвон {day}</span>
         {isNext && <span className="badge badge--lime">ближайший</span>}
       </div>
 
@@ -37,9 +41,26 @@ function Session({ session, index, isNext }) {
       </div>
 
       <div className="math-session-links">
-        <Soon>Конспект</Soon>
-        <Soon>Домашнее задание</Soon>
-        <Soon>Запись созвона</Soon>
+        {materials?.theory
+          ? <Link className="math-link" to={`/autumn-camp/math/day${day}/theory`}>Конспект</Link>
+          : <Soon>Конспект</Soon>}
+
+        {materials?.homework
+          ? <Link className="math-link" to={`/autumn-camp/math/day${day}/homework`}>Домашнее задание</Link>
+          : <Soon>Домашнее задание</Soon>}
+
+        {materials?.recording
+          ? (
+            <a
+              className="math-link is-external"
+              href={materials.recording}
+              target="_blank"
+              rel="noreferrer"
+            >
+              Запись созвона
+            </a>
+          )
+          : <Soon>Запись созвона</Soon>}
       </div>
     </div>
   )
@@ -66,6 +87,16 @@ export default function MathCoursePage() {
         <p className="page-subtitle">
           Восемь созвонов по четвергам, каждый в {MATH_TIME}. К каждому — конспект, домашнее задание и запись
         </p>
+
+        <a className="math-chat" href={MATH_CHAT} target="_blank" rel="noreferrer">
+          <span className="math-chat-icon" aria-hidden="true">↗</span>
+          <span className="math-chat-text">
+            <span className="math-chat-title">Беседа курса математики</span>
+            <span className="math-chat-note">
+              Записи созвонов лежат в этой беседе — ссылка на запись не откроется, если ты в ней не состоишь
+            </span>
+          </span>
+        </a>
       </div>
 
       <h2 style={{ marginTop: 0, marginBottom: 16, fontSize: 16, fontWeight: 700, color: 'var(--text-primary)' }}>
