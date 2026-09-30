@@ -16,7 +16,16 @@ const STATUS = {
   rework:    { label: 'Нужны правки',         className: 'is-rework' },
 }
 
+// Кнопки «Предыдущая / Следующая задача» меняют только адрес — без key
+// React оставил бы тот же экземпляр страницы, и черновик, режим
+// редактирования и загруженное решение переехали бы в соседнюю задачу.
+// key по задаче пересоздаёт страницу с чистым состоянием.
 export default function HomeworkTaskPage() {
+  const { week, chapterId, taskIndex } = useParams()
+  return <TaskView key={`${week}/${chapterId}/${taskIndex}`} />
+}
+
+function TaskView() {
   const { week, chapterId, taskIndex } = useParams()
   const navigate = useNavigate()
   const [row, setRow] = useState(undefined)   // undefined — ещё грузим

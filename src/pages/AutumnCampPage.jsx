@@ -2,7 +2,6 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { AUTUMN_WEEK_MONTHS, currentAutumnWeek, shortRange } from '../data/autumnWeeks'
 import CallBooking from '../components/CallBooking'
-import HomeworkPicker from '../components/HomeworkPicker'
 import HomeworkReview from '../components/HomeworkReview'
 import { AUTUMN_MONTHS, CALL_MONTHS } from '../data/autumnCalls'
 import { MATH_SESSIONS, nextMathSession, dayOf } from '../data/mathCourse'
@@ -216,25 +215,21 @@ export default function AutumnCampPage() {
         </div>
       </div>
 
-      {/* На широком экране — две колонки: слева учёба (материалы, задания,
-          проверка), справа календарь (прогресс, запись, созвоны). Уже —
+      {/* На широком экране — две колонки: слева учёба (материалы и проверка
+          заданий), справа календарь (прогресс, запись, созвоны). Уже —
           одна лента, порядок секций задаёт CSS. */}
       <div className="camp-layout">
         <div className="camp-main">
-          <Block slot="materials" title="Материалы по неделям">
-            <WeekMaterials onOpenWeek={slug => navigate(`/autumn-camp/${slug}`)} currentSlug={currentSlug} />
-          </Block>
-
           <Block
-            slot="homework"
-            title="Домашние задания"
+            slot="materials"
+            title="Материалы по неделям"
             action={(
               <a href="/autumn-camp/upload-homework" target="_blank" rel="noopener" className="hw-submit-btn">
                 Сдать дз
               </a>
             )}
           >
-            <HomeworkPicker />
+            <WeekMaterials onOpenWeek={slug => navigate(`/autumn-camp/${slug}`)} currentSlug={currentSlug} />
           </Block>
 
           <Block slot="review" title="Проверка домашних заданий">
