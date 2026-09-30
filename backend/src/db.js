@@ -842,6 +842,22 @@ function migrate() {
       console.error('❌ Migration 24 failed:', err.message)
     }
   }
+
+  // Migration 25: вид решения — текст или код на Python.
+  // Нужен, чтобы при повторном открытии задачи решение вернулось в тот же
+  // редактор, в котором его писали. Все прежние решения считаются текстом.
+  if (schemaVersion < 25) {
+    try {
+      const exists = db.prepare('PRAGMA table_info(homework_submissions)').all().some(c => c.name === 'solution_kind')
+      if (!exists) {
+        db.prepare("ALTER TABLE homework_submissions ADD COLUMN solution_kind TEXT NOT NULL DEFAULT 'text'").run()
+      }
+      db.pragma('user_version = 25')
+      console.log('✅ Migration 25 completed: added homework_submissions.solution_kind')
+    } catch (err) {
+      console.error('❌ Migration 25 failed:', err.message)
+    }
+  }
 }
 
 migrate()

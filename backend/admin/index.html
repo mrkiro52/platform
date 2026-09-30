@@ -261,6 +261,7 @@ textarea::placeholder{color:var(--text3)}
 .hw-sub{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-md);padding:16px;margin-bottom:10px}
 .hw-sub-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
 .hw-sub-num{font-family:var(--font-syne);font-size:12.5px;font-weight:700;color:var(--text)}
+.hw-sub-kind{margin-left:auto;margin-right:8px;font-family:var(--font-mono,monospace);font-size:11px;color:#FFB870;background:rgba(255,140,66,0.12);border-radius:999px;padding:2px 9px}
 .hw-sub-code{
   margin:0;padding:12px 14px;border-radius:var(--r-sm);background:var(--bg);border:1px solid var(--border);
   font-family:var(--font-mono);font-size:12.5px;line-height:1.6;color:var(--text);
@@ -1658,6 +1659,7 @@ function renderSubmission(s) {
     <div class="hw-sub" id="hw-sub-${s.id}">
       <div class="hw-sub-head">
         <span class="hw-sub-num">Задача ${s.taskIndex + 1}</span>
+        ${s.solutionKind === 'code' ? '<span class="hw-sub-kind">код · Python</span>' : ''}
         <span class="badge ${st.badge}">${st.label}</span>
       </div>
       <div class="hw-sub-task">${esc(s.taskText || 'Условие не сохранено — решение сдано до того, как условия начали сохраняться')}</div>

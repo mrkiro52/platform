@@ -2,6 +2,13 @@ import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { api } from '../api'
 import { findTask, WEEK_TITLES, levelOfChapter, neighbourTasks } from '../data/homeworkCatalog'
+import SolutionInput from '../components/SolutionInput'
+import InlineMarkup from '../components/InlineMarkup'
+import { usePythonState } from '../lib/python/runner'
+
+function lastKind() {
+  try { return localStorage.getItem('kiro_hw_last_kind') === 'code' ? 'code' : 'text' } catch { return 'text' }
+}
 
 const STATUS = {
   submitted: { label: 'Сдано, ждёт проверки', className: 'is-submitted' },
@@ -15,7 +22,11 @@ export default function HomeworkTaskPage() {
   const [row, setRow] = useState(undefined)   // undefined — ещё грузим
   const [editing, setEditing] = useState(false)
   const [draft, setDraft] = useState('')
+  const [kind, setKind] = useState(lastKind)
   const [busy, setBusy] = useState(false)
+  // Пока идёт запуск кода, отправка заблокирована — иначе можно отправить
+  // решение, результат которого ещё не видел
+  const { running: pythonBusy } = usePythonState()
   const [error, setError] = useState('')
 
   const task = findTask(week, chapterId, taskIndex)
@@ -40,7 +51,19 @@ export default function HomeworkTaskPage() {
     )
   }
 
+  const changeKind = (next) => {
+    setKind(next)
+    try { localStorage.setItem('kiro_hw_last_kind', next) } catch { /* приватный режим */ }
+  }
+
+  const startEditing = () => {
+    setDraft(row.solution)
+    setKind(row.solutionKind || 'text')
+    setEditing(true)
+  }
+
   const save = async () => {
+    if (pythonBusy || busy) return
     if (!draft.trim()) { setError('Вставь решение — пустое поле не сохраняется'); return }
     setBusy(true)
     setError('')
@@ -53,6 +76,7 @@ export default function HomeworkTaskPage() {
         taskIndex: Number(taskIndex),
         taskText: task.text,
         solution: draft,
+        solutionKind: kind,
       })
       setRow(saved)
       setEditing(false)
@@ -91,7 +115,7 @@ export default function HomeworkTaskPage() {
           <span className="widget-title">Условие</span>
           {status && <span className={`hwup-status ${status.className}`}>{status.label}</span>}
         </div>
-        <p style={{ margin: 0, fontSize: 14, color: 'var(--text-secondary)', lineHeight: 1.7 }}>{task.text}</p>
+        <p style={{ margin: 0, fontSize: 14, color: 'var(--text-secondary)', lineHeight: 1.7 }}><InlineMarkup text={task.text} /></p>
         {task.hint && (
           <p style={{ margin: '12px 0 0', fontSize: 13, color: 'var(--text-tertiary)', lineHeight: 1.6 }}>
             Подсказка: {task.hint}
@@ -110,7 +134,7 @@ export default function HomeworkTaskPage() {
         <div className="widget-header">
           <span className="widget-title">Твоё решение</span>
           {row && !editing && (
-            <button type="button" className="btn-ghost" onClick={() => { setDraft(row.solution); setEditing(true) }}>
+            <button type="button" className={row.status === 'rework' ? 'btn-primary hwup-btn' : 'btn-ghost'} onClick={startEditing}>
               {row.status === 'rework' ? 'Исправить и сдать снова' : 'Изменить решение'}
             </button>
           )}
@@ -120,48 +144,38 @@ export default function HomeworkTaskPage() {
           <p style={{ margin: 0, fontSize: 13.5, color: 'var(--text-tertiary)' }}>Загружаем…</p>
         ) : editing ? (
           <>
-            <textarea
-              className="hwup-input"
-              value={draft}
-              onChange={e => setDraft(e.target.value)}
-              placeholder="Вставь своё решение сюда"
-              spellCheck={false}
-            />
-            {error && <div className="hwup-error">{error}</div>}
+            <SolutionInput value={draft} onChange={setDraft} kind={kind} onKindChange={changeKind} />
+            {error && <div className="hwup-error" role="alert">{error}</div>}
             <div className="hwup-actions">
+              {pythonBusy && <span className="hwup-actions-hint">Идёт запуск кода — отправить можно будет после него</span>}
               {row && (
                 <button
                   type="button"
                   className="btn-ghost"
                   disabled={busy}
-                  onClick={() => { setDraft(row.solution); setEditing(false); setError('') }}
+                  onClick={() => { setDraft(row.solution); setKind(row.solutionKind || 'text'); setEditing(false); setError('') }}
                 >
                   Отмена
                 </button>
               )}
-              <button type="button" className="btn-primary hwup-btn" disabled={busy} onClick={save}>
-                {busy ? 'Сохраняем…' : row ? 'Сдать повторно' : 'Сдать задачу'}
+              <button type="button" className="btn-primary hwup-btn" disabled={busy || pythonBusy} onClick={save}>
+                {busy ? 'Отправляем…' : row ? 'Сдать повторно' : 'Сдать задачу'}
               </button>
             </div>
           </>
         ) : row ? (
-          <pre className="hwup-solution">{row.solution}</pre>
+          <SolutionInput value={row.solution} kind={row.solutionKind || 'text'} readOnly />
         ) : (
           <>
             <p style={{ margin: '0 0 12px', fontSize: 13.5, color: 'var(--text-tertiary)', lineHeight: 1.6 }}>
               Решение пока не сдано — вставь его прямо здесь.
             </p>
-            <textarea
-              className="hwup-input"
-              value={draft}
-              onChange={e => setDraft(e.target.value)}
-              placeholder="Вставь своё решение сюда"
-              spellCheck={false}
-            />
-            {error && <div className="hwup-error">{error}</div>}
+            <SolutionInput value={draft} onChange={setDraft} kind={kind} onKindChange={changeKind} />
+            {error && <div className="hwup-error" role="alert">{error}</div>}
             <div className="hwup-actions">
-              <button type="button" className="btn-primary hwup-btn" disabled={busy} onClick={save}>
-                {busy ? 'Сохраняем…' : 'Сдать задачу'}
+              {pythonBusy && <span className="hwup-actions-hint">Идёт запуск кода — отправить можно будет после него</span>}
+              <button type="button" className="btn-primary hwup-btn" disabled={busy || pythonBusy} onClick={save}>
+                {busy ? 'Отправляем…' : 'Сдать задачу'}
               </button>
             </div>
           </>

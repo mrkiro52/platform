@@ -1276,17 +1276,6 @@ img { max-width: 100%; display: block; }
 .hw-submit-btn:hover { background: var(--accent-soft); transform: translateY(-1px); box-shadow: var(--shadow-md); }
 
 /* ── Страница сдачи домашнего задания ── */
-.hwup-chips { display: flex; flex-wrap: wrap; gap: 8px; }
-.hwup-chip {
-  display: inline-flex; align-items: center; gap: 7px;
-  padding: 8px 14px; border-radius: var(--radius-pill);
-  background: var(--bg-tertiary); border: 1px solid var(--border-color);
-  color: var(--text-secondary); font-family: var(--font-inter); font-size: 12.5px; font-weight: 600;
-  cursor: pointer; transition: background 0.15s, border-color 0.15s, color 0.15s; text-align: left;
-}
-.hwup-chip:hover:not(:disabled) { border-color: rgba(255,140,66,0.5); color: var(--text-primary); }
-.hwup-chip.is-active { background: rgba(255,140,66,0.14); border-color: rgba(255,140,66,0.65); color: #FFB870; }
-.hwup-chip.is-locked { cursor: not-allowed; color: var(--text-tertiary); background: rgba(255,255,255,0.02); }
 
 .hwup-tasks { display: flex; flex-direction: column; gap: 16px; }
 .hwup-task {
@@ -1308,23 +1297,7 @@ img { max-width: 100%; display: block; }
 .hwup-status.is-approved  { background: var(--success-dim);      color: #7EE787; }
 .hwup-status.is-rework    { background: rgba(255,214,10,0.14);   color: var(--accent-lime); }
 
-.hwup-input {
-  width: 100%; min-height: 160px; resize: vertical;
-  background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: var(--radius-sm);
-  padding: 12px 14px; color: var(--text-primary);
-  font-family: var(--font-mono); font-size: 12.5px; line-height: 1.6; outline: none;
-  transition: border-color 0.2s, box-shadow 0.2s; tab-size: 4;
-}
-.hwup-input:focus { border-color: var(--accent-lime); box-shadow: 0 0 0 3px rgba(255,214,10,0.14); }
-.hwup-input::placeholder { color: var(--text-tertiary); }
 
-/* Сохранённое решение: переносы строк и отступы кода сохраняются как есть */
-.hwup-solution {
-  margin: 0; padding: 12px 14px; border-radius: var(--radius-sm);
-  background: var(--bg-primary); border: 1px solid var(--border-color);
-  font-family: var(--font-mono); font-size: 12.5px; line-height: 1.6; color: var(--text-primary);
-  white-space: pre-wrap; word-break: break-word; overflow-x: auto; tab-size: 4;
-}
 .hwup-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 12px; flex-wrap: wrap; }
 .hwup-btn { font-size: 13px; padding: 9px 20px; }
 .hwup-error { margin-top: 8px; font-size: 12.5px; color: var(--danger); }
@@ -1428,7 +1401,7 @@ img { max-width: 100%; display: block; }
 @media (max-width: 560px) {
   .hwrev-row { flex-direction: column; align-items: flex-start; gap: 8px; }
   .hwup-actions { justify-content: stretch; }
-  .hwup-actions > * { flex: 1; }
+  .hwup-actions > button { flex: 1; }
 }
 
 /* Карточка группового созвона: слева дата, справа тема */
@@ -3481,4 +3454,329 @@ body.reels-lock {
   .camp-page .hwrev-rows .hwrev-sq { width: 32px; height: 32px; font-size: 12px; }
   /* В SQL-задании десять задач — на телефоне квадраты переносятся на вторую строку */
   .camp-page .hwrev-squares { flex-wrap: wrap; }
+}
+
+.call-empty-link { color: #FFB870; font-weight: 600; text-decoration: underline; text-underline-offset: 2px; }
+.call-empty-link:hover { color: #FFD6A8; }
+
+/* ════════════════════════════════════════════════════════════════
+   СДАЧА ДОМАШНЕГО ЗАДАНИЯ
+   На широком экране — главы колонкой слева (прилипает при прокрутке),
+   задачи справа. Уже — одна колонка, список глав сворачивается в строку
+   с текущей главой, чтобы задачи были сразу под ней.
+════════════════════════════════════════════════════════════════ */
+.hwup-page { container: hwup / inline-size; }
+
+.hwup-back {
+  background: transparent; border: none; color: #FFB870; cursor: pointer;
+  font-size: 12.5px; font-weight: 700; font-family: var(--font-syne); padding: 0; margin-bottom: 14px;
+}
+.hwup-alert { margin-bottom: 16px; color: var(--danger); font-size: 13px; }
+
+/* ── Шаг 1: неделя и уровень ── */
+.hwup-picker { display: flex; flex-direction: column; gap: 16px; margin-bottom: 16px; }
+.hwup-step { display: flex; flex-direction: column; gap: 9px; min-width: 0; }
+.hwup-step-label {
+  font-family: var(--font-syne); font-size: 11px; font-weight: 700; color: var(--text-tertiary);
+  text-transform: uppercase; letter-spacing: 0.05em;
+}
+
+.hwup-weeks { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
+.hwup-week, .hwup-level {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 2px; min-width: 0;
+  padding: 10px 14px; border-radius: var(--radius-md); cursor: pointer; text-align: left;
+  background: var(--bg-tertiary); border: 1px solid var(--border-color);
+  font-family: var(--font-inter); transition: border-color 0.15s, background 0.15s;
+}
+.hwup-week:hover, .hwup-level:hover { border-color: rgba(255,140,66,0.5); }
+.hwup-week:focus-visible, .hwup-level:focus-visible, .hwup-chapter:focus-visible,
+.hwup-side-toggle:focus-visible, .solution-kind:focus-visible, .py-btn:focus-visible {
+  outline: 2px solid #FFB870; outline-offset: 2px;
+}
+.hwup-week.is-active, .hwup-level.is-active { background: rgba(255,140,66,0.12); border-color: rgba(255,140,66,0.7); }
+.hwup-week-name { font-family: var(--font-syne); font-size: 13px; font-weight: 700; color: var(--text-primary); }
+.hwup-week.is-active .hwup-week-name { color: #FFB870; }
+.hwup-week-range { font-size: 11.5px; color: var(--text-tertiary); }
+.hwup-locked {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 11.5px; color: var(--text-tertiary);
+}
+
+.hwup-levels { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.hwup-level { flex-direction: row; align-items: center; gap: 10px; }
+.hwup-level-num {
+  width: 26px; height: 26px; flex-shrink: 0; display: grid; place-items: center; border-radius: 8px;
+  background: rgba(255,255,255,0.05); font-family: var(--font-syne); font-size: 13px; font-weight: 700;
+  color: var(--text-secondary);
+}
+.hwup-level.is-active .hwup-level-num { background: #FF8C42; color: #1a0f05; }
+.hwup-level-title { font-size: 12.5px; color: var(--text-secondary); line-height: 1.35; min-width: 0; }
+
+.hwup-empty { font-size: 13.5px; color: var(--text-tertiary); line-height: 1.6; }
+.hwup-empty-inline { font-size: 13.5px; color: var(--text-tertiary); padding: 8px 0; }
+
+/* ── Раскладка: главы + задачи ── */
+.hwup-layout { display: flex; flex-direction: column; gap: 16px; }
+.hwup-side, .hwup-main { min-width: 0; }
+.hwup-main { scroll-margin-top: 16px; }
+.hwup-side-card { padding: 0; overflow: hidden; }
+
+.hwup-side-toggle {
+  width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  padding: 14px 16px; background: none; border: none; cursor: pointer; text-align: left;
+  font-family: var(--font-inter); color: inherit; min-height: 56px;
+}
+.hwup-side-toggle-text { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.hwup-side-current {
+  font-size: 13.5px; font-weight: 600; color: var(--text-primary);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.hwup-chev { color: #FFB870; flex-shrink: 0; transition: transform 0.25s ease; }
+.hwup-chev.is-open { transform: rotate(180deg); }
+.hwup-side-title { display: none; }
+
+.hwup-side-list { display: none; border-top: 1px solid var(--border-color); }
+.hwup-side-list.is-open { display: block; }
+
+.hwup-chapters { list-style: none; margin: 0; padding: 6px; display: flex; flex-direction: column; gap: 2px; }
+.hwup-chapter {
+  width: 100%; display: grid; grid-template-columns: auto minmax(0, 1fr); grid-template-areas: "num title" ". sq";
+  column-gap: 10px; row-gap: 5px; align-items: center;
+  padding: 9px 10px; border-radius: 10px; border: 1px solid transparent;
+  background: none; cursor: pointer; text-align: left; font-family: var(--font-inter); color: inherit;
+  transition: background 0.15s, border-color 0.15s;
+}
+.hwup-chapter:hover { background: rgba(255,255,255,0.03); }
+.hwup-chapter.is-active { background: rgba(255,140,66,0.10); border-color: rgba(255,140,66,0.45); }
+.hwup-chapter-num {
+  grid-area: num; font-family: var(--font-syne); font-size: 11.5px; font-weight: 700; color: #FFB870;
+  white-space: nowrap;
+}
+.hwup-chapter-title {
+  grid-area: title; font-size: 13px; color: var(--text-secondary); line-height: 1.35;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.hwup-chapter.is-active .hwup-chapter-title { color: var(--text-primary); font-weight: 600; }
+.hwup-chapter .hwup-squares { grid-area: sq; }
+
+/* Квадратики статусов — те же цвета, что в «Проверке ДЗ» */
+.hwup-squares { display: inline-flex; flex-wrap: wrap; gap: 3px; }
+.hwup-sq {
+  width: 9px; height: 9px; border-radius: 3px; flex-shrink: 0;
+  border: 1px solid rgba(255,255,255,0.45); background: transparent;
+}
+.hwup-sq.is-submitted { background: rgba(139,139,150,0.6); border-color: transparent; }
+.hwup-sq.is-rework    { background: rgba(255,214,10,0.85); border-color: transparent; }
+.hwup-sq.is-approved  { background: rgba(63,185,80,0.9);   border-color: transparent; }
+
+/* Широкий экран: список глав всегда открыт и прилипает при прокрутке */
+@container hwup (min-width: 860px) {
+  .hwup-layout { display: grid; grid-template-columns: 280px minmax(0, 1fr); gap: 16px; align-items: start; }
+  .hwup-side { position: sticky; top: 16px; }
+  .hwup-side-toggle { display: none; }
+  .hwup-side-title {
+    display: block; padding: 14px 16px 8px;
+    font-family: var(--font-syne); font-size: 11px; font-weight: 700; color: var(--text-tertiary);
+    text-transform: uppercase; letter-spacing: 0.05em;
+  }
+  .hwup-side-list, .hwup-side-list.is-open {
+    display: block; border-top: none; max-height: calc(100vh - 90px); overflow-y: auto;
+    scrollbar-width: thin; scrollbar-color: rgba(255,140,66,0.35) transparent;
+  }
+  .hwup-chapter { grid-template-areas: "num title" ". sq"; }
+}
+
+/* ── Карточка главы ── */
+.hwup-chapter-head {
+  display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+.hwup-chapter-kicker { font-size: 11.5px; color: var(--text-tertiary); margin-bottom: 5px; }
+.hwup-chapter-name {
+  margin: 0; font-family: var(--font-syne); font-size: 16px; font-weight: 700;
+  color: var(--text-primary); line-height: 1.35;
+}
+.hwup-progress { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; flex-shrink: 0; }
+.hwup-progress .hwup-sq { width: 12px; height: 12px; border-radius: 4px; }
+.hwup-progress-text { font-size: 11.5px; color: var(--text-tertiary); white-space: nowrap; }
+.hwup-progress-text .is-rework { color: var(--accent-lime); font-weight: 600; }
+.hwup-dataset { margin-bottom: 22px; }
+
+@container hwup (max-width: 559px) {
+  /* Вложенные карточки на телефоне съедают ширину — отступы поменьше */
+  .hwup-chapter-card { padding: 14px; }
+  .hwup-task { padding: 13px; }
+  .hwup-progress { align-items: flex-start; }
+  .hwup-levels { grid-template-columns: 1fr; }
+  .hwup-weeks { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+/* ── Задача ── */
+.hwup-task { scroll-margin-top: 16px; }
+.hwup-task.is-rework { border-color: rgba(255,214,10,0.35); }
+.hwup-status.is-sent { background: var(--success-dim); color: #7EE787; animation: hwupSent 0.35s ease; }
+@keyframes hwupSent { from { opacity: 0; transform: translateY(-3px); } to { opacity: 1; transform: none; } }
+
+.hwup-restored {
+  margin-bottom: 10px; padding: 8px 12px; border-radius: var(--radius-sm);
+  background: rgba(255,140,66,0.08); border: 1px solid rgba(255,140,66,0.25);
+  font-size: 12px; color: #FFB870;
+}
+.hwup-actions { align-items: center; }
+.hwup-actions-hint { margin-right: auto; font-size: 11.5px; color: var(--text-tertiary); }
+.hwup-btn:disabled { opacity: 0.55; cursor: not-allowed; transform: none; box-shadow: none; }
+
+@media (max-width: 560px) {
+  .hwup-actions-hint { flex-basis: 100%; margin-right: 0; }
+}
+
+/* ════════════════════════════════════════════════════════════════
+   ПОЛЕ РЕШЕНИЯ: «Текст / Код» + редактор Python с запуском
+════════════════════════════════════════════════════════════════ */
+.solution-input { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+
+.solution-kinds {
+  display: inline-flex; align-self: flex-start; padding: 3px; gap: 2px;
+  background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: var(--radius-pill);
+}
+.solution-kind {
+  padding: 6px 14px; min-height: 32px; border-radius: var(--radius-pill); border: none; cursor: pointer;
+  background: transparent; color: var(--text-tertiary);
+  font-family: var(--font-inter); font-size: 12.5px; font-weight: 600;
+  transition: background 0.15s, color 0.15s;
+}
+.solution-kind:hover { color: var(--text-primary); }
+.solution-kind.is-active { background: rgba(255,140,66,0.16); color: #FFB870; }
+
+.solution-text {
+  width: 100%; min-height: 130px; resize: none; overflow: hidden;
+  background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: var(--radius-sm);
+  padding: 12px 14px; color: var(--text-primary);
+  font-family: var(--font-inter); font-size: 13.5px; line-height: 1.65; outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.solution-text:focus { border-color: rgba(255,140,66,0.6); box-shadow: 0 0 0 3px rgba(255,140,66,0.12); }
+.solution-text::placeholder { color: var(--text-tertiary); }
+.solution-text.is-readonly {
+  margin: 0; min-height: 0; white-space: pre-wrap; word-break: break-word;
+}
+
+/* ── Редактор кода ── */
+.code-editor {
+  border: 1px solid var(--border-color); border-radius: var(--radius-sm);
+  background: var(--bg-primary); overflow: hidden;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.code-editor:focus-within { border-color: rgba(255,140,66,0.6); box-shadow: 0 0 0 3px rgba(255,140,66,0.12); }
+.code-editor.is-readonly:focus-within { box-shadow: none; }
+.code-editor-scroll {
+  display: flex; align-items: flex-start; max-height: 520px; overflow: auto;
+  scrollbar-width: thin; scrollbar-color: rgba(255,140,66,0.35) transparent;
+}
+.code-editor-gutter {
+  position: sticky; left: 0; z-index: 1; flex-shrink: 0;
+  display: flex; flex-direction: column; align-items: flex-end;
+  min-width: 42px; padding: 12px 10px 12px 8px;
+  background: var(--bg-secondary); border-right: 1px solid var(--border-color);
+  font-family: var(--font-mono); font-size: 13px; line-height: 1.6; color: var(--text-tertiary);
+  user-select: none; align-self: stretch;
+}
+.code-editor-input {
+  flex: 1; display: block; min-width: 0; resize: none; overflow: hidden;
+  padding: 12px 14px; margin: 0; border: none; outline: none; background: transparent;
+  font-family: var(--font-mono); font-size: 13px; line-height: 1.6; color: var(--text-primary);
+  white-space: pre; tab-size: 4; caret-color: #FFB870;
+}
+.code-editor-input::placeholder { color: var(--text-tertiary); }
+
+/* ── Панель запуска ── */
+.py-runner { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.py-toolbar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.py-btn {
+  display: inline-flex; align-items: center; gap: 7px; min-height: 34px;
+  padding: 7px 14px; border-radius: var(--radius-pill); cursor: pointer;
+  font-family: var(--font-syne); font-size: 12.5px; font-weight: 700;
+  border: 1px solid var(--border-color); background: var(--bg-tertiary); color: var(--text-secondary);
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+.py-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.py-btn-run { background: #3FB950; border-color: #3FB950; color: #04210b; }
+.py-btn-run:hover:not(:disabled) { background: #56d364; border-color: #56d364; }
+.py-btn-stop { background: rgba(255,95,95,0.14); border-color: rgba(255,95,95,0.55); color: #FF8A8A; }
+.py-btn-stop:hover { background: rgba(255,95,95,0.24); }
+.py-btn-ghost:hover:not(:disabled), .py-btn-ghost.is-on { border-color: rgba(255,140,66,0.5); color: #FFB870; }
+.py-note { margin-left: auto; font-size: 11px; color: var(--text-tertiary); white-space: nowrap; }
+.py-shortcut { font-family: var(--font-mono); }
+
+.py-stdin { display: flex; flex-direction: column; gap: 6px; }
+.py-stdin-label { font-size: 11.5px; color: var(--text-tertiary); }
+.py-stdin-label code { font-family: var(--font-mono); color: #FFB870; }
+.py-stdin-input {
+  width: 100%; resize: vertical; min-height: 64px;
+  background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: var(--radius-sm);
+  padding: 9px 12px; color: var(--text-primary); outline: none;
+  font-family: var(--font-mono); font-size: 13px; line-height: 1.55;
+}
+.py-stdin-input:focus { border-color: rgba(255,140,66,0.6); }
+
+.py-console {
+  border: 1px solid var(--border-color); border-radius: var(--radius-sm); overflow: hidden;
+  background: #0b0b0e;
+}
+.py-console.is-error { border-color: rgba(255,95,95,0.4); }
+.py-console.is-ok { border-color: rgba(63,185,80,0.4); }
+.py-console-head {
+  display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap;
+  padding: 8px 12px; border-bottom: 1px solid var(--border-color); background: var(--bg-secondary);
+}
+.py-console-title {
+  font-family: var(--font-syne); font-size: 11px; font-weight: 700; color: var(--text-tertiary);
+  text-transform: uppercase; letter-spacing: 0.05em;
+}
+.py-console-status {
+  display: inline-flex; align-items: center; gap: 7px; font-size: 12px; color: var(--text-secondary);
+  line-height: 1.45;
+}
+.py-console.is-ok .py-console-status { color: #7EE787; }
+.py-console.is-error .py-console-status { color: #FF8A8A; }
+.py-console.is-stopped .py-console-status { color: #FFB870; }
+.py-console-out {
+  margin: 0; padding: 10px 12px; max-height: 280px; overflow: auto;
+  font-family: var(--font-mono); font-size: 12.5px; line-height: 1.55; color: #E6E6EA;
+  white-space: pre-wrap; word-break: break-word;
+}
+.py-out-stderr, .py-out-error { color: #FF8A8A; }
+.py-out-error { display: block; margin-top: 4px; }
+.py-console-empty { padding: 10px 12px; font-size: 12.5px; color: var(--text-tertiary); font-style: italic; }
+.py-footnote { font-size: 11px; color: var(--text-tertiary); line-height: 1.5; }
+
+.py-spinner {
+  width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0;
+  border: 2px solid rgba(255,184,112,0.25); border-top-color: #FFB870;
+  animation: pySpin 0.7s linear infinite;
+}
+@keyframes pySpin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) {
+  .py-spinner { animation-duration: 2s; }
+  .hwup-status.is-sent { animation: none; }
+}
+
+/* На телефоне шрифт полей не меньше 16px — иначе iOS увеличивает страницу
+   при фокусе. Подсказку с сочетанием клавиш прячем: клавиатуры нет. */
+@media (pointer: coarse) {
+  .code-editor-input, .code-editor-gutter, .solution-text, .py-stdin-input { font-size: 16px; }
+  .py-shortcut { display: none; }
+  .py-btn { min-height: 40px; }
+}
+/* Узкий экран: кнопки делят строку поровну, подпись — отдельной строкой */
+@media (max-width: 480px) {
+  .py-toolbar .py-btn { flex: 1 1 auto; justify-content: center; padding: 7px 10px; }
+  .py-note { margin-left: 0; flex-basis: 100%; }
+}
+
+/* Разметка в условиях задач */
+.md-strong { color: var(--text-primary); font-weight: 700; }
+.md-code {
+  font-family: var(--font-mono); font-size: 0.92em; color: #FFB870;
+  background: rgba(255,140,66,0.10); padding: 1px 5px; border-radius: 4px;
 }

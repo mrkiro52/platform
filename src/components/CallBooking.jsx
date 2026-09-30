@@ -232,9 +232,16 @@ export default function CallBooking() {
 
   if (!sessions.length) {
     return (
-      <p style={{ margin: 0, fontSize: 13.5, color: 'var(--text-secondary)', lineHeight: 1.6 }}>
-        Сейчас нет открытых записей на созвон. Как только откроется ближайший — он появится здесь.
-      </p>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+        <p style={{ margin: 0, fontSize: 13.5, color: 'var(--text-secondary)', lineHeight: 1.6 }}>
+          Сейчас нет открытых записей на созвон. Как только откроется ближайший — он появится здесь.
+        </p>
+        <p style={{ margin: 0, fontSize: 13.5, color: 'var(--text-secondary)', lineHeight: 1.6 }}>
+          Если слотов нет, а тебе нужен созвон — напиши{' '}
+          <a href="https://t.me/x_tap" target="_blank" rel="noopener" className="call-empty-link">Ханилю в Telegram</a>
+          {' '}дату и время, в которое хочешь созвониться, и он поставит тебе созвон.
+        </p>
+      </div>
     )
   }
 

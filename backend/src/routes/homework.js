@@ -7,6 +7,7 @@ const conditions = require('../data/homework-conditions.json')
 const router = express.Router()
 
 const STATUSES = ['submitted', 'approved', 'rework']
+const SOLUTION_KINDS = ['text', 'code']
 
 // Условия задач живут во фронтенде — бэкенд хранит только решения и статусы,
 // поэтому здесь проверяется форма данных, а не их содержательная корректность.
@@ -32,6 +33,7 @@ function mapRow(row) {
     taskIndex: row.task_index,
     taskText: row.task_text || '',
     solution: row.solution,
+    solutionKind: row.solution_kind === 'code' ? 'code' : 'text',
     status: row.status,
     comment: row.comment || null,
     submittedAt: row.submitted_at || null,
@@ -58,7 +60,7 @@ router.get('/mine', requireAutumnCamp, (req, res) => {
 // прежний комментарий уже не про неё, и задача снова ждёт проверки.
 router.put('/task', requireAutumnCamp, (req, res) => {
   try {
-    const { week, level, chapterId, hwNumber, taskIndex, solution, taskText } = req.body
+    const { week, level, chapterId, hwNumber, taskIndex, solution, taskText, solutionKind } = req.body
 
     if (!Number.isInteger(week) || week < 1 || week > 15) {
       return res.status(400).json({ message: 'Некорректный номер недели' })
@@ -76,14 +78,17 @@ router.put('/task', requireAutumnCamp, (req, res) => {
     if (!solution.trim()) {
       return res.status(400).json({ message: 'Решение пустое — вставь код и попробуй ещё раз' })
     }
+    // Старые клиенты вид не присылают — для них это текст, как и раньше
+    const kind = SOLUTION_KINDS.includes(solutionKind) ? solutionKind : 'text'
 
     const now = new Date().toISOString()
     db.prepare(`
       INSERT INTO homework_submissions
-        (user_id, week, level, chapter_id, hw_number, task_index, task_text, solution, status, comment, submitted_at, reviewed_at)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'submitted', NULL, ?, NULL)
+        (user_id, week, level, chapter_id, hw_number, task_index, task_text, solution, solution_kind, status, comment, submitted_at, reviewed_at)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'submitted', NULL, ?, NULL)
       ON CONFLICT(user_id, week, chapter_id, task_index) DO UPDATE SET
-        solution     = excluded.solution,
+        solution      = excluded.solution,
+        solution_kind = excluded.solution_kind,
         level        = excluded.level,
         hw_number    = excluded.hw_number,
         task_text    = CASE WHEN excluded.task_text != '' THEN excluded.task_text ELSE homework_submissions.task_text END,
@@ -94,7 +99,7 @@ router.put('/task', requireAutumnCamp, (req, res) => {
     `).run(
       req.student.id, week, Number.isInteger(level) ? level : null,
       chapterId, Number.isInteger(hwNumber) ? hwNumber : 0, taskIndex,
-      typeof taskText === 'string' ? taskText : '', solution, now
+      typeof taskText === 'string' ? taskText : '', solution, kind, now
     )
 
     const row = db.prepare(
