@@ -133,6 +133,7 @@ export default function Week2Program({ initialLevel = null, initialChapterId = n
         submitFormat={chosen.id === 1 ? 'notebook' : 'zip'}
         showCode={chosen.id !== 1}
         initialChapterId={initialChapterId}
+        level={chosen.id}
       />
     </>
   )

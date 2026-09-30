@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 
 function getInitials(name) {
@@ -58,8 +58,37 @@ function BellIcon({ count, onClick }) {
   )
 }
 
-export default function Sidebar({ user, avatarUrl, onLogout, onClose, badges = {} }) {
+// Сворачивание работает только на компьютере: на телефоне сайдбар выезжает
+// поверх страницы, и сохранённое «свёрнуто» там не должно прятать меню.
+const DESKTOP = '(min-width: 769px)'
+function useIsDesktop() {
+  const [desktop, setDesktop] = useState(() => typeof window !== 'undefined' && window.matchMedia(DESKTOP).matches)
+  useEffect(() => {
+    const mq = window.matchMedia(DESKTOP)
+    const onChange = () => setDesktop(mq.matches)
+    mq.addEventListener('change', onChange)
+    return () => mq.removeEventListener('change', onChange)
+  }, [])
+  return desktop
+}
+
+// Две галочки «‹‹». При свёрнутом сайдбаре та же иконка разворачивается
+// на 180° и смотрит вправо — направление всегда показывает, что произойдёт.
+function CollapseIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M11 17l-5-5 5-5" />
+      <path d="M18 17l-5-5 5-5" />
+    </svg>
+  )
+}
+
+export default function Sidebar({
+  user, avatarUrl, onLogout, onClose, badges = {}, collapsed = false, onToggleCollapse,
+}) {
   const [confirmLogout, setConfirmLogout] = useState(false)
+  const isDesktop = useIsDesktop()
+  const hidden = collapsed && isDesktop
   const navigate = useNavigate()
   const location = useLocation()
   const initials = getInitials(user?.name || '')
@@ -81,11 +110,26 @@ export default function Sidebar({ user, avatarUrl, onLogout, onClose, badges = {
   return (
     <>
       <div className="sidebar-header">
-        <a className="sidebar-logo" href="#">
+        <a className="sidebar-logo" href="#" tabIndex={hidden ? -1 : undefined} aria-hidden={hidden || undefined}>
           <span className="sidebar-logo-platform" style={{color: '#FFD60A', fontWeight: 600, fontSize: 15, textTransform: 'uppercase'}}>kiro platform</span>
         </a>
+        <button
+          type="button"
+          className="sidebar-collapse-btn"
+          onClick={onToggleCollapse}
+          aria-label={collapsed ? 'Развернуть меню' : 'Свернуть меню'}
+          title={collapsed ? 'Развернуть меню' : 'Свернуть меню'}
+          aria-expanded={!collapsed}
+          aria-controls="sidebar-body"
+        >
+          <CollapseIcon />
+        </button>
         <button className="sidebar-close-btn" onClick={onClose}>&times;</button>
       </div>
+
+      {/* Всё, кроме шапки, при сворачивании прячется. inert убирает скрытые
+          пункты из обхода с клавиатуры и от скринридеров. */}
+      <div className="sidebar-body" id="sidebar-body" inert={hidden ? '' : undefined}>
 
       <div className="sidebar-user" style={{ cursor: 'pointer' }} onClick={() => handleNav('/profile')}>
         {avatarUrl ? (
@@ -142,6 +186,7 @@ export default function Sidebar({ user, avatarUrl, onLogout, onClose, badges = {
             Выйти
           </button>
         )}
+      </div>
       </div>
     </>
   )

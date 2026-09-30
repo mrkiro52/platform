@@ -53,6 +53,16 @@ function AnnouncementsRoute() {
 export default function AppShell({ user, onLogout }) {
   const navigate = useNavigate()
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  // Свёрнутый сайдбар на компьютере — выбор запоминается между визитами
+  const [collapsed, setCollapsed] = useState(() => {
+    try { return localStorage.getItem('kiro_sidebar_collapsed') === '1' } catch { return false }
+  })
+  const toggleCollapsed = useCallback(() => {
+    setCollapsed(prev => {
+      try { localStorage.setItem('kiro_sidebar_collapsed', prev ? '0' : '1') } catch { /* приватный режим */ }
+      return !prev
+    })
+  }, [])
   const [avatarUrl, setAvatarUrl] = useState('')
   const [badges, setBadges] = useState({ messages: 0, notifications: 0 })
 
@@ -86,13 +96,15 @@ export default function AppShell({ user, onLogout }) {
 
   return (
     <>
-      <aside id="sidebar" className={`sidebar${sidebarOpen ? ' open' : ''}`}>
+      <aside id="sidebar" className={`sidebar${sidebarOpen ? ' open' : ''}${collapsed ? ' is-collapsed' : ''}`}>
         <Sidebar
           user={user}
           avatarUrl={avatarUrl}
           onLogout={onLogout}
           onClose={() => setSidebarOpen(false)}
           badges={badges}
+          collapsed={collapsed}
+          onToggleCollapse={toggleCollapsed}
         />
       </aside>
 
@@ -100,7 +112,7 @@ export default function AppShell({ user, onLogout }) {
         <div className="sidebar-overlay active" onClick={() => setSidebarOpen(false)} />
       )}
 
-      <div className="app-content">
+      <div className={`app-content${collapsed ? ' is-sidebar-collapsed' : ''}`}>
         <TopBar
           user={user}
           onMenuClick={() => setSidebarOpen(true)}

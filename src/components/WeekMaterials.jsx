@@ -1,7 +1,10 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import MultiPartVideo, { PYTHON_BASICS_PARTS } from './MultiPartVideo'
 import AlgoViz from './AlgoViz'
 import VideoPlayer from './VideoPlayer'
+import {
+  useSplitScreen, SplitButton, HomeworkSplitPanel, submittableChapter, materialsScroller,
+} from './HomeworkSplit'
 
 const VIDEO_SETS = {
   'python-basics': PYTHON_BASICS_PARTS,
@@ -335,13 +338,14 @@ function HintButton({ hint }) {
   )
 }
 
-function Homework({ homework, weekNumber, submitFormat = 'free' }) {
+function Homework({ homework, weekNumber, submitFormat = 'free', action = null, anchorRef = null }) {
   return (
-    <div className="widget" style={{ marginBottom: 16, border: '1px solid rgba(255,140,66,0.3)' }}>
-      <div style={{
-        fontFamily: 'var(--font-syne)', fontSize: 15, fontWeight: 700, color: '#FFB870', marginBottom: 14,
-      }}>
-        Домашнее задание — неделя {weekNumber} — номер {homework.number}
+    <div ref={anchorRef} className="widget" style={{ marginBottom: 16, border: '1px solid rgba(255,140,66,0.3)' }}>
+      <div className="hw-block-head">
+        <div style={{ fontFamily: 'var(--font-syne)', fontSize: 15, fontWeight: 700, color: '#FFB870' }}>
+          Домашнее задание — неделя {weekNumber} — номер {homework.number}
+        </div>
+        {action}
       </div>
 
       {homework.kind === 'simple' ? (
@@ -413,6 +417,7 @@ export default function WeekMaterials({
   submitFormat = 'free',
   showCode = true,
   initialChapterId = null,
+  level = null,
 }) {
   // Переход со сводки 5-й недели: ?ch=<id> открывает нужную главу сразу
   const [active, setActive] = useState(() => {
@@ -439,15 +444,23 @@ export default function WeekMaterials({
     })
   }, [chapter?.id, storageKey])
 
+  // Сплит-экран с заданиями — только если в неделе есть что сдавать
+  const weekHasHomework = chapters.some(c => submittableChapter(weekNumber, level, c.id))
+  const [splitOpen, toggleSplit] = useSplitScreen(weekHasHomework)
+  const rootRef = useRef(null)
+  const hwRef = useRef(null)
+
   const go = index => {
     setActive(index)
-    window.scrollTo({ top: 0, behavior: 'smooth' })
+    materialsScroller(rootRef.current).scrollTo({ top: 0, behavior: 'smooth' })
   }
 
   if (!chapter) return null
 
+  const hwChapter = submittableChapter(weekNumber, level, chapter.id)
+
   return (
-    <div>
+    <div ref={rootRef}>
       <h2 style={{ marginTop: 0, marginBottom: 14, fontSize: 16, fontWeight: 700, color: 'var(--text-primary)' }}>
         {title}
       </h2>
@@ -516,6 +529,18 @@ export default function WeekMaterials({
           homework={submitFormat === 'notebook' && chapter.homeworkPaper ? chapter.homeworkPaper : chapter.homework}
           weekNumber={weekNumber}
           submitFormat={submitFormat}
+          anchorRef={hwRef}
+          action={hwChapter && <SplitButton open={splitOpen} onClick={() => toggleSplit(hwRef.current)} />}
+        />
+      )}
+
+      {splitOpen && (
+        <HomeworkSplitPanel
+          week={weekNumber}
+          level={level}
+          chapter={hwChapter}
+          chapterNumber={safeIndex + 1}
+          onClose={() => toggleSplit(hwRef.current)}
         />
       )}
 

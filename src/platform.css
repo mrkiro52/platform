@@ -34,6 +34,7 @@
   --border-color:   #26262E;
 
   --sidebar-width:  260px;
+  --sidebar-collapsed-width: 56px;
   --topbar-height:  60px;
 
   /* Типографика эталона */
@@ -488,6 +489,7 @@ img { max-width: 100%; display: block; }
 .nav-item--logout:hover { color: var(--danger); background: rgba(225,75,75,0.06); }
 
 .app-content { margin-left: var(--sidebar-width); flex: 1; display: flex; flex-direction: column; min-height: 100vh; min-width: 0; }
+.app-content { transition: margin-left 0.28s cubic-bezier(0.4, 0, 0.2, 1); }
 
 .top-bar {
   display: none; align-items: center; height: var(--topbar-height);
@@ -3779,4 +3781,206 @@ body.reels-lock {
 .md-code {
   font-family: var(--font-mono); font-size: 0.92em; color: #FFB870;
   background: rgba(255,140,66,0.10); padding: 1px 5px; border-radius: 4px;
+}
+
+/* ════════════════════════════════════════════════════════════════
+   СВОРАЧИВАЕМЫЙ САЙДБАР (компьютер)
+   Сайдбар сужается до полоски, в которой остаётся только кнопка
+   «развернуть». Кнопка стоит у правого края шапки — при сворачивании она
+   уезжает вместе с краем и остаётся на той же высоте.
+════════════════════════════════════════════════════════════════ */
+.sidebar {
+  transition: transform 0.3s ease, width 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow-x: hidden;
+}
+.sidebar-header { gap: 8px; transition: padding 0.28s cubic-bezier(0.4, 0, 0.2, 1), gap 0.28s cubic-bezier(0.4, 0, 0.2, 1); }
+.sidebar-logo {
+  flex: 1 1 auto; min-width: 0; overflow: hidden; white-space: nowrap;
+  transition: opacity 0.18s ease;
+}
+
+.sidebar-collapse-btn {
+  width: 32px; height: 32px; flex-shrink: 0; padding: 0; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  background: transparent; border: none; cursor: pointer;
+  color: var(--text-primary); opacity: 0.5;
+  transition: opacity 0.18s ease, background 0.18s ease;
+}
+.sidebar-collapse-btn:hover, .sidebar-collapse-btn:focus-visible { opacity: 1; background: rgba(255,255,255,0.05); }
+.sidebar-collapse-btn:focus-visible { outline: 2px solid var(--accent-lime); outline-offset: 1px; }
+.sidebar-collapse-btn svg { transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1); }
+
+/* Содержимое держит полную ширину и при сворачивании не переверстывается —
+   его просто закрывает сужающийся край, а сверху оно гаснет */
+.sidebar-body {
+  display: flex; flex-direction: column; flex: 1 0 auto;
+  width: var(--sidebar-width); min-width: var(--sidebar-width);
+  transition: opacity 0.2s ease 0.08s;
+}
+
+@media (min-width: 769px) {
+  .sidebar.is-collapsed { width: var(--sidebar-collapsed-width); overflow-y: hidden; }
+  /* gap: 0 — иначе после исчезнувшего логотипа остаётся промежуток и кнопка съезжает с центра */
+  .sidebar.is-collapsed .sidebar-header { padding-left: 12px; padding-right: 12px; gap: 0; }
+  .sidebar.is-collapsed .sidebar-logo { opacity: 0; pointer-events: none; }
+  .sidebar.is-collapsed .sidebar-collapse-btn svg { transform: rotate(180deg); }
+  .sidebar.is-collapsed .sidebar-body {
+    opacity: 0; pointer-events: none; transition: opacity 0.12s ease;
+  }
+  .app-content.is-sidebar-collapsed { margin-left: var(--sidebar-collapsed-width); }
+}
+
+/* На телефоне сайдбар и так выезжает поверх контента — там своя кнопка «×» */
+@media (max-width: 768px) {
+  .sidebar-collapse-btn { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sidebar, .app-content, .sidebar-header, .sidebar-body, .sidebar-collapse-btn svg { transition: none; }
+}
+
+/* ════════════════════════════════════════════════════════════════
+   СПЛИТ-ЭКРАН: материалы слева, задания справа
+   Включается классом split-screen на <body>. Страница перестаёт
+   прокручиваться целиком: pages-wrap становится ровно в высоту окна,
+   а каждая половина прокручивается внутри себя.
+════════════════════════════════════════════════════════════════ */
+/* Заголовок ДЗ и кнопка сплита — всегда в один ряд: в узкой половине
+   переносится заголовок, а кнопка остаётся в правом верхнем углу */
+.hw-block-head {
+  display: flex; align-items: flex-start; justify-content: space-between; gap: 12px;
+  margin-bottom: 14px;
+}
+.hw-block-head > :first-child { flex: 1; min-width: 0; line-height: 1.4; padding-top: 6px; }
+
+.split-toggle {
+  display: none; align-items: center; gap: 8px; flex-shrink: 0;
+  padding: 7px 14px; min-height: 34px; border-radius: var(--radius-pill); cursor: pointer;
+  font-family: var(--font-syne); font-size: 12.5px; font-weight: 700; white-space: nowrap;
+  color: #FFB870; background: rgba(255,140,66,0.12); border: 1px solid rgba(255,140,66,0.45);
+  transition: background 0.15s, border-color 0.15s;
+}
+.split-toggle:hover { background: rgba(255,140,66,0.22); border-color: rgba(255,140,66,0.7); }
+.split-toggle:focus-visible { outline: 2px solid #FFB870; outline-offset: 2px; }
+.split-toggle.is-open { color: var(--text-secondary); background: var(--bg-tertiary); border-color: var(--border-color); }
+
+/* Панель и ручка существуют только в сплите на широком экране */
+.split-pane, .split-handle { display: none; }
+
+@media (min-width: 1100px) {
+  .split-toggle { display: inline-flex; }
+
+  body.split-screen .pages-wrap {
+    display: grid;
+    grid-template-columns: minmax(0, var(--split-a, 1fr)) 14px minmax(0, var(--split-b, 1fr));
+    height: 100vh; padding: 0; overflow: hidden;
+  }
+  body.split-screen .pages-wrap > .page.active {
+    height: 100vh; min-width: 0; overflow-y: auto; overscroll-behavior: contain;
+    padding: 28px 18px 48px 28px;
+    scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.14) transparent;
+  }
+
+  body.split-screen .split-pane {
+    display: block; height: 100vh; min-width: 0; overflow-y: auto; overscroll-behavior: contain;
+    padding: 0 28px 48px 18px; container: split / inline-size;
+    scrollbar-width: thin; scrollbar-color: rgba(255,140,66,0.35) transparent;
+    animation: splitIn 0.28s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  @keyframes splitIn { from { opacity: 0; transform: translateX(16px); } to { opacity: 1; transform: none; } }
+
+  /* Ручка: тонкая линия, при наведении — заметная полоса с «хватом» */
+  body.split-screen .split-handle {
+    display: flex; align-items: center; justify-content: center;
+    height: 100vh; cursor: col-resize; touch-action: none; position: relative;
+    outline: none;
+  }
+  .split-handle::before {
+    content: ''; position: absolute; top: 0; bottom: 0; left: 50%; width: 1px;
+    background: var(--border-color); transition: background 0.15s, width 0.15s;
+    transform: translateX(-50%);
+  }
+  .split-handle:hover::before, .split-handle:focus-visible::before,
+  body.split-dragging .split-handle::before { width: 3px; background: rgba(255,140,66,0.7); }
+  .split-handle-grip {
+    position: relative; width: 6px; height: 36px; border-radius: 4px;
+    background: var(--bg-tertiary); border: 1px solid var(--border-color);
+    transition: background 0.15s, border-color 0.15s;
+  }
+  .split-handle:hover .split-handle-grip, .split-handle:focus-visible .split-handle-grip,
+  body.split-dragging .split-handle-grip { background: #FF8C42; border-color: #FF8C42; }
+
+  /* Пока тянут ручку: без выделения текста, и видео-iframe не перехватывают мышь */
+  body.split-dragging { cursor: col-resize; user-select: none; }
+  body.split-dragging iframe { pointer-events: none; }
+}
+
+/* Шапка панели прилипает к верху своей половины */
+.split-head {
+  position: sticky; top: 0; z-index: 3;
+  display: flex; align-items: flex-start; justify-content: space-between; gap: 14px;
+  margin: 0 -2px 16px; padding: 24px 2px 14px;
+  background: var(--bg-primary); border-bottom: 1px solid var(--border-color);
+}
+.split-head-main { min-width: 0; }
+.split-kicker {
+  font-family: var(--font-syne); font-size: 10.5px; font-weight: 700; color: #FFB870;
+  text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 5px;
+}
+.split-title {
+  margin: 0; font-family: var(--font-syne); font-size: 18px; font-weight: 700;
+  color: var(--text-primary); line-height: 1.3;
+}
+.split-subtitle { margin-top: 3px; font-size: 13px; color: var(--text-secondary); line-height: 1.45; }
+.split-head-side { display: flex; flex-direction: column; align-items: flex-end; gap: 9px; flex-shrink: 0; }
+.split-actions { display: flex; align-items: center; gap: 8px; }
+.split-link {
+  font-size: 12px; font-weight: 600; color: var(--text-tertiary); text-decoration: none;
+  padding: 6px 10px; border-radius: var(--radius-pill); border: 1px solid var(--border-color);
+  white-space: nowrap; transition: color 0.15s, border-color 0.15s;
+}
+.split-link:hover { color: #FFB870; border-color: rgba(255,140,66,0.45); }
+.split-close {
+  width: 32px; height: 32px; border-radius: 50%; cursor: pointer;
+  display: grid; place-items: center; flex-shrink: 0;
+  background: var(--bg-tertiary); border: 1px solid var(--border-color); color: var(--text-secondary);
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+}
+.split-close:hover { color: var(--text-primary); border-color: rgba(255,255,255,0.3); background: rgba(255,255,255,0.06); }
+.split-close:focus-visible, .split-link:focus-visible { outline: 2px solid #FFB870; outline-offset: 2px; }
+.split-progress { display: flex; align-items: center; gap: 8px; font-size: 11.5px; color: var(--text-tertiary); white-space: nowrap; }
+.split-progress .hwup-sq { width: 10px; height: 10px; }
+
+.split-empty {
+  display: flex; flex-direction: column; gap: 6px;
+  padding: 22px 18px; border-radius: var(--radius-md);
+  border: 1px dashed var(--border-color); color: var(--text-tertiary);
+  font-size: 13.5px; line-height: 1.6;
+}
+.split-empty b { color: var(--text-secondary); }
+
+/* Узкая половина: шапка перестраивается в столбик */
+@container split (max-width: 459px) {
+  .split-head { flex-direction: column; gap: 10px; }
+  .split-head-side { align-items: flex-start; width: 100%; flex-direction: row; justify-content: space-between; }
+}
+
+/* Подсказка к задаче в карточке сдачи */
+.hwup-hint { margin: -4px 0 14px; }
+.hwup-hint summary {
+  display: inline-flex; align-items: center; gap: 6px; cursor: pointer; list-style: none;
+  font-size: 12px; font-weight: 600; color: var(--text-tertiary);
+}
+.hwup-hint summary::-webkit-details-marker { display: none; }
+.hwup-hint summary::before { content: '💡'; font-size: 12px; }
+.hwup-hint summary:hover { color: #FFB870; }
+.hwup-hint[open] summary { color: #FFB870; }
+.hwup-hint p {
+  margin: 8px 0 0; padding: 9px 12px; border-radius: var(--radius-sm);
+  background: rgba(255,214,10,0.06); border: 1px solid rgba(255,214,10,0.2);
+  font-size: 12.5px; color: var(--text-secondary); line-height: 1.6;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.split-screen .split-pane { animation: none; }
 }
