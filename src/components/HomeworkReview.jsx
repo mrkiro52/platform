@@ -32,6 +32,53 @@ const LEGEND = [
   { cls: 'is-approved',  text: 'принято' },
 ]
 
+const STATUS_TEXT = {
+  empty: 'не сдано', submitted: 'на проверке', rework: 'нужны правки', approved: 'принято',
+}
+
+// Неделя таблицей: столбцы — домашние задания, строки — задачи. У ДЗ из
+// одной задачи заполнена только первая строка, у SQL-задания — десять.
+function WeekMatrix({ week, items, byKey, onOpen }) {
+  const rows = Math.max(1, ...items.map(it => it.tasks.length))
+
+  return (
+    <div className="hwrev-matrix-scroll">
+      <div className="hwrev-matrix" role="table" aria-label="Статусы задач по домашним заданиям" style={{ '--cols': items.length }}>
+        <div className="hwrev-mrow" role="row">
+          <span className="hwrev-corner" role="columnheader">ДЗ</span>
+          {items.map(it => (
+            <span key={it.chapterId} className="hwrev-col" role="columnheader" title={`ДЗ ${it.hwNumber}: ${it.chapterTitle}`}>
+              {it.hwNumber}
+            </span>
+          ))}
+        </div>
+
+        {Array.from({ length: rows }, (_, i) => (
+          <div key={i} className="hwrev-mrow" role="row">
+            <span className="hwrev-rowhead" role="rowheader">задача {i + 1}</span>
+            {items.map(it => {
+              if (i >= it.tasks.length) return <span key={it.chapterId} className="hwrev-cell" role="cell" />
+              const row = byKey[`${week}:${it.chapterId}:${i}`]
+              const state = row ? row.status : 'empty'
+              return (
+                <span key={it.chapterId} className="hwrev-cell" role="cell">
+                  <button
+                    type="button"
+                    className={`hwrev-sq is-${state} is-clickable`}
+                    title={`ДЗ ${it.hwNumber}, задача ${i + 1} — ${STATUS_TEXT[state]}\n${it.chapterTitle}`}
+                    aria-label={`ДЗ ${it.hwNumber}, задача ${i + 1}: ${STATUS_TEXT[state]}`}
+                    onClick={() => onOpen(it.chapterId, i)}
+                  />
+                </span>
+              )
+            })}
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 export default function HomeworkReview() {
   const navigate = useNavigate()
   const [byKey, setByKey] = useState(null)
@@ -65,6 +112,9 @@ export default function HomeworkReview() {
           </span>
         ))}
       </div>
+      <p className="hwrev-caption">
+        По горизонтали — номера ДЗ, по вертикали — задачи. Нажми на квадрат, чтобы открыть задачу.
+      </p>
 
       {OPEN_WEEKS.map(week => {
         const items = assignmentsOf(week, hasLevels(week) ? level : undefined)
@@ -83,33 +133,13 @@ export default function HomeworkReview() {
             </button>
 
             <div className={`collapse-wrap${isOpen ? ' open' : ''}`}>
-              <div className="collapse-inner">
-            <div className="hwrev-rows">
-              {items.map(item => (
-                <div key={item.chapterId} className="hwrev-row">
-                  <span className="hwrev-row-name">
-                    <b>ДЗ {item.hwNumber}</b> {item.chapterTitle}
-                  </span>
-                  <span className="hwrev-squares">
-                    {item.tasks.map((_, i) => {
-                      const row = byKey[`${week}:${item.chapterId}:${i}`]
-                      const state = row ? row.status : 'empty'
-                      return (
-                        <button
-                          key={i}
-                          type="button"
-                          className={`hwrev-sq is-${state} is-clickable`}
-                          title={`Задача ${i + 1}`}
-                          onClick={() => navigate(`/autumn-camp/homework/${week}/${item.chapterId}/${i}`)}
-                        >
-                          {i + 1}
-                        </button>
-                      )
-                    })}
-                  </span>
-                </div>
-              ))}
-            </div>
+              <div className="collapse-inner" inert={isOpen ? undefined : ''}>
+                <WeekMatrix
+                  week={week}
+                  items={items}
+                  byKey={byKey}
+                  onOpen={(chapterId, i) => navigate(`/autumn-camp/homework/${week}/${chapterId}/${i}`)}
+                />
               </div>
             </div>
           </div>

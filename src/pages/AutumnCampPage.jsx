@@ -63,10 +63,19 @@ function AutumnProgress() {
   )
 }
 
+// Таб, открытый по умолчанию: текущий месяц. До начала лагеря — первый,
+// после окончания — последний.
+function currentCallMonth(today = new Date()) {
+  const inCamp = CALL_MONTHS.find(m => m.monthIndex === today.getMonth() && today.getFullYear() === 2026)
+  if (inCamp) return inCamp.label
+  const beforeCamp = today < new Date(2026, CALL_MONTHS[0].monthIndex, 1)
+  return (beforeCamp ? CALL_MONTHS[0] : CALL_MONTHS[CALL_MONTHS.length - 1]).label
+}
+
 function GroupCalls() {
   // Месяц выбирается табом — показываем созвоны только выбранного,
   // иначе в узкой колонке получается очень длинная лента.
-  const [month, setMonth] = useState(CALL_MONTHS[0].label)
+  const [month, setMonth] = useState(currentCallMonth)
 
   return (
     <div>
@@ -172,30 +181,38 @@ export default function AutumnCampPage() {
 
   return (
     <section className="page active camp-page">
+      {/* Шапка лагеря: название, онбординг и мини-курс. На пк — три плашки
+          в ряд, уже — название с онбордингом в первой строке, курс под ними. */}
       <div className="camp-heroes">
-        <div className="autumn-hero is-dim">
-          <div className="autumn-hero-left">
-            <span className="autumn-hero-badge">🍂 Autumn Camp 2026</span>
-            <span className="autumn-hero-title">Онбординг участника</span>
-          </div>
-          <button className="autumn-toggle-btn" onClick={() => navigate('/autumn-camp/onboarding-autumn-2026')}>
+        <div className="camp-brand">
+          <span className="camp-brand-leaf" aria-hidden="true">🍂</span>
+          <h1 className="camp-brand-title">
+            Autumn Camp <span className="camp-brand-year">2026</span>
+          </h1>
+        </div>
+
+        <button
+          type="button"
+          className="camp-hero camp-hero-onboarding"
+          onClick={() => navigate('/autumn-camp/onboarding-autumn-2026')}
+          aria-label="Открыть онбординг участника"
+        >
+          <span className="camp-hero-title">Онбординг участника</span>
+          <span className="camp-hero-arrow" aria-hidden="true">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M5 12h14M13 6l6 6-6 6" />
+            </svg>
+          </span>
+        </button>
+
+        <div className="camp-hero camp-hero-math">
+          {/* «Мини-курс:» не рвётся по дефису — переносится только целым словом */}
+          <span className="camp-hero-title"><span className="nowrap">Мини-курс:</span> математика</span>
+          <MathDates />
+          <button className="autumn-toggle-btn camp-hero-open" onClick={() => navigate('/autumn-camp/math')}>
             Открыть
             <span style={{ fontSize: 14, lineHeight: 1 }}>→</span>
           </button>
-        </div>
-
-        <div className="autumn-hero">
-          <div className="autumn-hero-left">
-            <span className="autumn-hero-badge">🍂 Autumn Camp 2026</span>
-            <span className="autumn-hero-title">Мини-курс: математика</span>
-          </div>
-          <div className="autumn-hero-right">
-            <MathDates />
-            <button className="autumn-toggle-btn" onClick={() => navigate('/autumn-camp/math')}>
-              Открыть
-              <span style={{ fontSize: 14, lineHeight: 1 }}>→</span>
-            </button>
-          </div>
         </div>
       </div>
 

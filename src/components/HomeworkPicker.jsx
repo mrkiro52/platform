@@ -1,32 +1,13 @@
-import { useState, useMemo, useRef, useEffect } from 'react'
+import { useState, useMemo } from 'react'
 import { AUTUMN_WEEK_MONTHS, shortRange } from '../data/autumnWeeks'
-import { WEEK1_CHAPTERS } from '../data/week1Materials'
-import { WEEK2_LEVELS, chaptersForLevel } from '../data/week2Materials'
-import { WEEK3_CHAPTERS } from '../data/week3Materials'
-import { chaptersOf } from '../data/homeworkCatalog'
+import { WEEK2_LEVELS } from '../data/week2Materials'
+import { OPEN_WEEKS, hasLevels, chaptersOf, tasksOf, hwNumberOf } from '../data/homeworkCatalog'
+import InlineMarkup from './InlineMarkup'
 
-// Открыты только первые три недели — остальные под замком до своего времени
-const UNLOCKED = new Set(['week1', 'week2', 'week3', 'week4'])
-
-// Та же инлайн-разметка, что в материалах: **жирный** и `код`
-function renderInline(text) {
-  return String(text).split(/(\*\*[^*]+\*\*|`[^`]+`)/g).map((part, i) => {
-    if (part.startsWith('**') && part.endsWith('**')) {
-      return <strong key={i} style={{ color: 'var(--text-primary)' }}>{part.slice(2, -2)}</strong>
-    }
-    if (part.startsWith('`') && part.endsWith('`')) {
-      return (
-        <code key={i} style={{
-          fontFamily: 'var(--font-mono)', fontSize: '0.92em', color: '#FFB870',
-          background: 'rgba(255,140,66,0.10)', padding: '1px 5px', borderRadius: 4,
-        }}>
-          {part.slice(1, -1)}
-        </code>
-      )
-    }
-    return part
-  })
-}
+// Условия домашних заданий в три шага: неделя → номер ДЗ → его задачи.
+// Раньше при выборе недели выводились сразу все её задания подряд (19 ДЗ
+// по 5 задач) — это несколько экранов прокрутки. Теперь на экране только
+// одно ДЗ, а весь блок сворачивается обратно к плиткам недель.
 
 function LockIcon() {
   return (
@@ -37,31 +18,20 @@ function LockIcon() {
   )
 }
 
-// Задания недели: для первой берём все главы, для второй — только те,
-// что входят в выбранный уровень. На первом уровне задания в тетради.
-function homeworkFor(weekSlug, level) {
-  if (weekSlug === 'week1') {
-    return WEEK1_CHAPTERS.map(ch => ({ chapter: ch.title, hw: ch.homework }))
-  }
-  if (weekSlug === 'week2' && level) {
-    return chaptersForLevel(level).map(ch => ({
-      chapter: ch.title,
-      hw: level === 1 && ch.homeworkPaper ? ch.homeworkPaper : ch.homework,
-    }))
-  }
-  if (weekSlug === 'week3') {
-    return WEEK3_CHAPTERS.map(ch => ({ chapter: ch.title, hw: ch.homework }))
-  }
-  if (weekSlug === 'week4') {
-    return chaptersOf(4).map(ch => ({ chapter: ch.title, hw: ch.homework }))
-  }
-  return []
+function ChevronUp() {
+  return (
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M6 15l6-6 6 6" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  )
 }
+
+const weekNumberOf = (slug) => Number(String(slug).replace('week', ''))
 
 // Плитка недели — та же, что в «Материалах по неделям», только с замком
 // вместо стрелки у закрытых недель
 function WeekButton({ week, active, onSelect }) {
-  const unlocked = UNLOCKED.has(week.slug)
+  const unlocked = OPEN_WEEKS.includes(week.number)
 
   return (
     <button
@@ -84,27 +54,38 @@ function WeekButton({ week, active, onSelect }) {
 }
 
 export default function HomeworkPicker() {
-  const [week, setWeek] = useState(null)
+  const [week, setWeek] = useState(null)       // 'week1' …
   const [level, setLevel] = useState(null)
-  const tasksRef = useRef(null)
+  const [chapterId, setChapterId] = useState(null)
+  // Свёрнут блок или нет — отдельно от выбора: при сворачивании содержимое
+  // остаётся на месте и плавно уезжает, а при повторном раскрытии той же
+  // недели человек видит то ДЗ, на котором остановился
+  const [open, setOpen] = useState(false)
 
-  const showLevels = week === 'week2'
-  const items = useMemo(() => homeworkFor(week, level), [week, level])
+  const weekNum = week ? weekNumberOf(week) : null
+  const needsLevel = weekNum !== null && hasLevels(weekNum)
+  const chapters = useMemo(
+    () => (weekNum === null || (needsLevel && !level) ? [] : chaptersOf(weekNum, level)),
+    [weekNum, level, needsLevel]
+  )
+  const chapter = chapters.find(c => c.id === chapterId) || null
+  const tasks = chapter ? tasksOf(chapter, weekNum, level) : []
 
-  // При смене недели или уровня список начинается сначала — иначе человек
-  // остаётся в середине прошлого задания и не видит, что он сменился.
-  useEffect(() => {
-    if (tasksRef.current) tasksRef.current.scrollTop = 0
-  }, [week, level])
-
+  // Клик по открытой неделе сворачивает блок, по свёрнутой — раскрывает
+  // с прежним выбором, по другой — начинает выбор заново
   const selectWeek = (slug) => {
+    if (slug === week) { setOpen(o => !o); return }
     setWeek(slug)
-    setLevel(null)     // уровень выбирается заново под каждую неделю
+    setLevel(null)       // уровень выбирается заново под каждую неделю
+    setChapterId(null)
+    setOpen(true)
   }
+  const selectLevel = (id) => { setLevel(id); setChapterId(null) }
+  const collapse = () => setOpen(false)
 
-  // Сквозной счётчик задач — по нему считается задержка появления,
-  // чтобы плашки проявлялись одна за другой, а не все разом.
-  let taskIndex = -1
+  const uploadHref = chapter
+    ? `/autumn-camp/upload-homework?week=${weekNum}${needsLevel ? `&level=${level}` : ''}&chapter=${chapter.id}`
+    : null
 
   return (
     <div className="hw-block">
@@ -114,66 +95,109 @@ export default function HomeworkPicker() {
             <div className="wk-month-label">{month.label}</div>
             <div className="wk-list">
               {month.weeks.map(w => (
-                <WeekButton key={w.slug} week={w} active={week === w.slug} onSelect={selectWeek} />
+                <WeekButton key={w.slug} week={w} active={open && week === w.slug} onSelect={selectWeek} />
               ))}
             </div>
           </div>
         ))}
       </div>
 
-      {showLevels && (
-        <div className="hw-levels">
-          <div className="hw-levels-label">Уровень</div>
-          {WEEK2_LEVELS.map((lvl, i) => (
-            <button
-              key={lvl.id}
-              type="button"
-              className={`hw-level${level === lvl.id ? ' is-active' : ''}`}
-              style={{ '--i': i }}
-              onClick={() => setLevel(lvl.id)}
-              title={`Уровень ${lvl.id} — «${lvl.title}»`}
-            >
-              {lvl.id}
-            </button>
-          ))}
-        </div>
-      )}
+      {!open && <div className="hw-hint">Выбери неделю, затем номер домашнего задания — появятся его задачи.</div>}
 
-      <div
-        className="hw-tasks"
-        ref={tasksRef}
-        key={`${week || 'none'}-${level || 0}`}
-      >
-        {!week && (
-          <div className="hw-hint">Выбери неделю — здесь появятся условия всех задач.</div>
-        )}
+      {/* Всё, что ниже плиток, раскрывается и сворачивается одним блоком.
+          inert — свёрнутое не должно ловить фокус с клавиатуры. */}
+      <div className={`collapse-wrap${open ? ' open' : ''}`}>
+        <div className="collapse-inner" inert={open ? undefined : ''}>
+          {week && (
+            <div className="hw-detail">
+              <div className="hw-detail-bar">
+                <span className="hw-detail-week">Неделя {weekNum}</span>
+                <button type="button" className="hw-collapse" onClick={collapse}>
+                  <ChevronUp /> Свернуть
+                </button>
+              </div>
 
-        {items.map(({ chapter, hw }) => (
-          <div key={hw.number} className="hw-group">
-            <div className="hw-group-head">
-              <span className="hw-group-num">Домашнее задание {hw.number}</span>
-              <span className="hw-group-chapter">{chapter}</span>
-            </div>
-
-            {hw.kind === 'simple' ? (
-              (() => { taskIndex += 1; return (
-                <div className="hw-task" style={{ '--i': Math.min(taskIndex, 12) }}>
-                  <div className="hw-task-text">{renderInline(hw.text)}</div>
-                </div>
-              ) })()
-            ) : (
-              hw.tasks.map((task, i) => {
-                taskIndex += 1
-                return (
-                  <div key={i} className="hw-task" style={{ '--i': Math.min(taskIndex, 12) }}>
-                    <div className="hw-task-num">Задача {i + 1}</div>
-                    <div className="hw-task-text">{renderInline(task.text)}</div>
+              {needsLevel && (
+                <div className="hw-step">
+                  <span className="hw-step-label">Уровень</span>
+                  <div className="hw-levels">
+                    {WEEK2_LEVELS.map((lvl, i) => (
+                      <button
+                        key={lvl.id}
+                        type="button"
+                        className={`hw-level${level === lvl.id ? ' is-active' : ''}`}
+                        style={{ '--i': i }}
+                        onClick={() => selectLevel(lvl.id)}
+                        title={`Уровень ${lvl.id} — «${lvl.title}»`}
+                        aria-pressed={level === lvl.id}
+                      >
+                        {lvl.id}
+                      </button>
+                    ))}
                   </div>
-                )
-              })
-            )}
-          </div>
-        ))}
+                </div>
+              )}
+
+              {chapters.length > 0 && (
+                <div className="hw-step">
+                  <span className="hw-step-label">Домашнее задание</span>
+                  <div className="hw-numbers" role="radiogroup" aria-label="Номер домашнего задания">
+                    {chapters.map(c => {
+                      const num = hwNumberOf(c, weekNum, level)
+                      const active = c.id === chapterId
+                      return (
+                        <button
+                          key={c.id}
+                          type="button"
+                          role="radio"
+                          aria-checked={active}
+                          aria-label={`ДЗ ${num}: ${c.title}`}
+                          title={c.title}
+                          className={`hw-number${active ? ' is-active' : ''}`}
+                          onClick={() => setChapterId(active ? null : c.id)}
+                        >
+                          {num}
+                        </button>
+                      )
+                    })}
+                  </div>
+                </div>
+              )}
+
+              {needsLevel && !level && <div className="hw-hint">Выбери уровень — от него зависит набор заданий.</div>}
+              {chapters.length > 0 && !chapter && <div className="hw-hint">Выбери номер — покажем его задачи.</div>}
+
+              {chapter && (
+                <div className="hw-card" key={chapter.id}>
+                  <div className="hw-card-head">
+                    <div className="hw-card-titles">
+                      <span className="hw-group-num">Домашнее задание {hwNumberOf(chapter, weekNum, level)}</span>
+                      <span className="hw-card-chapter">{chapter.title}</span>
+                    </div>
+                    <a className="hw-card-submit" href={uploadHref} target="_blank" rel="noopener">
+                      Сдать ↗
+                    </a>
+                  </div>
+
+                  <div className="hw-tasks">
+                    {tasks.map((task, i) => (
+                      <div key={i} className="hw-task" style={{ '--i': i }}>
+                        {tasks.length > 1 && <div className="hw-task-num">Задача {i + 1}</div>}
+                        <div className="hw-task-text"><InlineMarkup text={task.text} /></div>
+                        {task.hint && (
+                          <details className="hwup-hint hw-task-hint">
+                            <summary>Подсказка</summary>
+                            <p><InlineMarkup text={task.hint} /></p>
+                          </details>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   )
