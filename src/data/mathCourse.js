@@ -5,7 +5,7 @@ export const MATH_COURSE_TITLE = 'Мини-курс: математика'
 
 export const MATH_SESSIONS = [
   { date: '2026-09-24', topic: 'Арифметика, проценты и алгебраические уравнения' },
-  { date: '2026-10-01', topic: 'Дискретная математика: математическая логика' },
+  { date: '2026-10-01', topic: 'Математическая логика, функции и производные' },
   { date: '2026-10-08', topic: 'Функции, графики и производные' },
   { date: '2026-10-15', topic: 'Линейная алгебра: векторы и матрицы' },
   { date: '2026-10-22', topic: 'Основы теории вероятностей' },
@@ -33,6 +33,10 @@ export function dayOf(iso) {
 }
 
 export const MATH_TEACHER = {
+  contacts: {
+    telegram: { handle: '@quantify_possibilities', url: 'https://t.me/quantify_possibilities' },
+    phone: { text: '+7 951 684 0975', href: 'tel:+79516840975' },
+  },
   name: 'Ватутин Александр Дмитриевич',
   year: 1997,
   role: 'Преподаватель математики осеннего онлайн IT-лагеря KIRO Autumn Camp 2026',

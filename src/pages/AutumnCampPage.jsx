@@ -5,6 +5,7 @@ import CallBooking from '../components/CallBooking'
 import HomeworkReview from '../components/HomeworkReview'
 import { AUTUMN_MONTHS, CALL_MONTHS } from '../data/autumnCalls'
 import { MATH_SESSIONS, nextMathSession, dayOf } from '../data/mathCourse'
+import { materialsOf } from '../data/math'
 
 // Даты созвонов мини-курса кружками. Ближайший выделен, прошедшие и будущие —
 // приглушённые.
@@ -17,7 +18,7 @@ function MathDates() {
         <span
           key={session.date}
           className={`math-date${next && session.date === next.date ? ' is-next' : ''}`}
-          title={session.topic}
+          title={materialsOf(MATH_SESSIONS.indexOf(session) + 1) ? session.topic : undefined}
         >
           {dayOf(session.date)}
         </span>

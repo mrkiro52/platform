@@ -14,6 +14,11 @@ function Task({ task, index }) {
         <span className="math-task-num">Задача {index + 1}</span>
       </div>
       <p className="math-p"><MathText>{task.statement}</MathText></p>
+      {task.statementList && (
+        <ol className="math-ol">
+          {task.statementList.map((item, i) => <li key={i}><MathText>{item}</MathText></li>)}
+        </ol>
+      )}
       {task.statementCases && <MathCases lines={task.statementCases} />}
 
       <button className="math-task-toggle" onClick={() => setOpen(o => !o)}>
@@ -78,6 +83,7 @@ export default function MathTheoryPage() {
         <ol className="math-toc-list">
           {theory.sections.map(s => (
             <li key={s.id}>
+              {s.part && <span className="math-toc-part">{s.part}</span>}
               <a href={`#${s.id}`}>{s.title}</a>
             </li>
           ))}
@@ -85,15 +91,19 @@ export default function MathTheoryPage() {
       </div>
 
       {theory.sections.map((section, i) => (
-        <div key={section.id} id={section.id} className="widget math-section">
-          <h2 className="math-section-title">
-            <span className="math-section-num">{i + 1}</span>
-            {section.title}
-          </h2>
+        <div key={section.id}>
+          {/* Заголовок части — когда занятие делится на самостоятельные блоки */}
+          {section.part && <div className="math-part">{section.part}</div>}
+          <div id={section.id} className="widget math-section">
+            <h2 className="math-section-title">
+              <span className="math-section-num">{i + 1}</span>
+              {section.title}
+            </h2>
 
-          <MathBlocks blocks={section.blocks} />
+            <MathBlocks blocks={section.blocks} />
 
-          {section.tasks.map((task, j) => <Task key={j} task={task} index={j} />)}
+            {section.tasks.map((task, j) => <Task key={j} task={task} index={j} />)}
+          </div>
         </div>
       ))}
 

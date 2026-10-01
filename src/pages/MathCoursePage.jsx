@@ -27,6 +27,28 @@ function Session({ session, index, isNext }) {
   const day = index + 1
   const materials = materialsOf(day)
 
+  // Занятия, к которым материалов ещё нет, закрыты размытием: тема и дата
+  // не читаются, поверх — пометка «скоро»
+  if (!materials) {
+    return (
+      <div className="math-session is-locked">
+        <div className="math-session-veil" aria-hidden="true" inert="">
+          <div className="math-session-head">
+            <span className="math-session-num">Созвон {day}</span>
+          </div>
+          <div className="math-session-topic">{session.topic}</div>
+          <div className="math-session-when">{humanDate(session.date)} · {MATH_TIME}</div>
+          <div className="math-session-links">
+            <span className="math-soon">Конспект</span>
+            <span className="math-soon">Домашнее задание</span>
+            <span className="math-soon">Запись созвона</span>
+          </div>
+        </div>
+        <span className="math-session-lock" role="img" aria-label={`Созвон ${day}: скоро`}>Скоро</span>
+      </div>
+    )
+  }
+
   return (
     <div className={`math-session${isNext ? ' is-next' : ''}`}>
       <div className="math-session-head">
@@ -41,15 +63,15 @@ function Session({ session, index, isNext }) {
       </div>
 
       <div className="math-session-links">
-        {materials?.theory
+        {materials.theory
           ? <Link className="math-link" to={`/autumn-camp/math/day${day}/theory`}>Конспект</Link>
           : <Soon>Конспект</Soon>}
 
-        {materials?.homework
+        {materials.homework
           ? <Link className="math-link" to={`/autumn-camp/math/day${day}/homework`}>Домашнее задание</Link>
           : <Soon>Домашнее задание</Soon>}
 
-        {materials?.recording
+        {materials.recording
           ? (
             <a
               className="math-link is-external"
@@ -133,6 +155,20 @@ export default function MathCoursePage() {
         <div className="math-papers-title">Научные статьи уровня Scopus Q3</div>
         <ul className="math-papers">
           {MATH_TEACHER.papers.map((paper, i) => <li key={i}>{paper}</li>)}
+        </ul>
+
+        <div className="math-papers-title">Контакты преподавателя</div>
+        <ul className="math-contacts">
+          <li>
+            <span className="math-contacts-label">Телеграм</span>
+            <a href={MATH_TEACHER.contacts.telegram.url} target="_blank" rel="noreferrer">
+              {MATH_TEACHER.contacts.telegram.handle}
+            </a>
+          </li>
+          <li>
+            <span className="math-contacts-label">Телефон</span>
+            <a href={MATH_TEACHER.contacts.phone.href}>{MATH_TEACHER.contacts.phone.text}</a>
+          </li>
         </ul>
       </div>
     </section>

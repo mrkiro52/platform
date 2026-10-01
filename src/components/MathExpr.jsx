@@ -10,8 +10,16 @@ const SYMBOLS = {
   varnothing: '∅', infty: '∞', ldots: '…', dots: '…',
   Delta: 'Δ', alpha: 'α', beta: 'β', pi: 'π', varepsilon: 'ε', lambda: 'λ',
   N: 'ℕ', Z: 'ℤ', Q: 'ℚ', R: 'ℝ',
-  percent: '%', quad: ' ', ',': ' ',
+  percent: '%', quad: '\u2003', ',': '\u2009',
+  ';': '\u2005',
+  qquad: '\u2003\u2003',
+  land: '∧', lor: '∨', neg: '¬', lnot: '¬',
+  leftrightarrow: '↔', Leftrightarrow: '⟺',
+  nabla: '∇', partial: '∂', eta: 'η', mu: 'μ', sigma: 'σ',
 }
+
+// Имена функций пишутся прямым шрифтом, а не курсивом переменных
+const UPRIGHT = new Set(['ln', 'log', 'lim', 'max', 'min', 'sin', 'cos', 'exp'])
 
 function parse(src) {
   let i = 0
@@ -26,7 +34,7 @@ function parse(src) {
       if (stop && c === stop) break
 
       if (c === '\\') {
-        const m = /^\\([a-zA-Z]+|,)/.exec(src.slice(i))
+        const m = /^\\([a-zA-Z]+|,|;)/.exec(src.slice(i))
         if (!m) { i += 1; buf += src[i] ?? ''; i += 1; continue }
         i += m[0].length
         const name = m[1]
@@ -35,6 +43,7 @@ function parse(src) {
         if (name === 'text') { flush(); out.push({ t: 'text', a: group() }); continue }
         // \left( и \right) — только подсказка размера скобки, сама скобка идёт следом
         if (name === 'left' || name === 'right') continue
+        if (UPRIGHT.has(name)) { flush(); out.push({ t: 'text', a: [{ t: 'txt', v: name }] }); continue }
         buf += SYMBOLS[name] ?? name
         continue
       }
