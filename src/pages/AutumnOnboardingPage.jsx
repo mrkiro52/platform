@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 
 const OS_INSTALL = {
   vscode: [
@@ -170,11 +170,13 @@ export default function AutumnOnboardingPage() {
           <span className="widget-title">Как сдавать домашку</span>
         </div>
         <p style={{ fontSize: 13.5, color: 'var(--text-secondary)', lineHeight: 1.6, margin: 0 }}>
-          Готовое решение скидывай в личные сообщения Ханилю в Telegram —{' '}
-          <a href="https://t.me/x_tap" target="_blank" rel="noopener" style={{ color: 'var(--accent-lime)', fontWeight: 600 }}>
-            t.me/x_tap
-          </a>
-          . Формат любой: файлом с кодом, документом или просто фотографией решения из тетради.
+          Все домашние задания сдаются прямо на платформе — каждая задача отдельно. На{' '}
+          <Link to="/autumn-camp" style={{ color: 'var(--accent-lime)', fontWeight: 600 }}>главном экране Autumn Camp</Link>
+          {' '}есть кнопка{' '}
+          <Link to="/autumn-camp/upload-homework" style={{ color: 'var(--accent-lime)', fontWeight: 600 }}>«Сдать дз»</Link>
+          {' '}— там форма для решения каждой задачи. А на компьютере в материалах недели можно нажать
+          {' '}<b>«Сплит скрин»</b>: слева останется теория, справа появятся задачи — читаешь материал и сразу
+          решаешь и сдаёшь.
         </p>
       </div>
     </section>

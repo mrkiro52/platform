@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
+import { Link } from 'react-router-dom'
 import MultiPartVideo, { PYTHON_BASICS_PARTS } from './MultiPartVideo'
 import AlgoViz from './AlgoViz'
 import VideoPlayer from './VideoPlayer'
@@ -376,35 +377,31 @@ function Homework({ homework, weekNumber, submitFormat = 'free', action = null, 
         </div>
       )}
 
-      <p style={{
-        margin: '16px 0 0', paddingTop: 14, borderTop: '1px solid var(--border-color)',
-        fontSize: 13, color: 'var(--text-tertiary)', lineHeight: 1.6,
-      }}>
-        Готовое решение присылай в личные сообщения Ханилю в Telegram —{' '}
-        <a href="https://t.me/x_tap" target="_blank" rel="noopener" style={{ color: 'var(--accent-lime)', fontWeight: 600 }}>
-          t.me/x_tap
-        </a>
-        {submitFormat === 'platform' ? (
-          <>
-            {' '}— или, что удобнее, сдай прямо здесь: кнопка <b>«Сдать дз»</b> на странице
-            Autumn Camp открывает форму, где можно вставить решение каждой задачи и увидеть
-            проверку. Подпиши, что это неделя {weekNumber}, номер {homework.number}.
-          </>
-        ) : submitFormat === 'notebook' ? (
-          <>
-            . Решай в тетради от руки, а потом сфотографируй страницы и пришли фото. Ничего писать
-            на компьютере не нужно. Подпиши, что это неделя {weekNumber}, номер {homework.number}.
-          </>
-        ) : submitFormat === 'zip' ? (
-          <>
-            . По этой главе собери отдельный <b>.zip</b>-архив с пятью файлами <b>.py</b> — по одному на каждую
-            задачу: <code>task1.py</code>, <code>task2.py</code>, <code>task3.py</code>, <code>task4.py</code>,{' '}
-            <code>task5.py</code>. В названии архива укажи, что это неделя {weekNumber}, номер {homework.number}.
-          </>
-        ) : (
-          <>. Формат любой, какой удобен: файлом или текстом. Подпиши, что это домашнее задание недели {weekNumber}, номер {homework.number}.</>
+      {/* Все ДЗ сдаются на платформе: через страницу сдачи или сплит-экран */}
+      <div className="hw-howto">
+        <p className="hw-howto-lead">
+          Все домашние задания сдаются прямо на платформе — каждая задача отдельно. Два способа:
+        </p>
+        <ol className="hw-howto-list">
+          <li>
+            На <Link to="/autumn-camp">главном экране Autumn Camp</Link> нажми кнопку{' '}
+            <Link to="/autumn-camp/upload-homework" className="hw-howto-btn">Сдать дз</Link> — откроется
+            форма, где можно вставить решение каждой задачи и отправить на проверку.
+          </li>
+          {action && (
+            <li>
+              Нажми <b>«Сплит скрин»</b> справа от заголовка этого задания — слева останется теория,
+              справа появятся задачи: читай материал и сразу решай и сдавай.
+            </li>
+          )}
+        </ol>
+        {submitFormat === 'notebook' && (
+          <p className="hw-howto-note">
+            Задания этого уровня удобно решать в тетради — потом перенеси ответ и ход решения в поле
+            решения текстом.
+          </p>
         )}
-      </p>
+      </div>
     </div>
   )
 }

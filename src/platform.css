@@ -4087,3 +4087,20 @@ body.reels-lock {
   margin-bottom: 10px; font-family: var(--font-syne); font-size: 12.5px; font-weight: 700; color: #FFB870;
 }
 .math-ref .math-p:last-child { margin-bottom: 0; }
+
+/* Как сдавать ДЗ — под условиями задач в материалах недели */
+.hw-howto {
+  margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--border-color);
+  font-size: 13px; color: var(--text-secondary); line-height: 1.65;
+}
+.hw-howto-lead { margin: 0 0 8px; }
+.hw-howto-list { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 6px; }
+.hw-howto-list li::marker { color: #FFB870; font-weight: 700; }
+.hw-howto a { color: #FFB870; font-weight: 600; text-decoration: underline; text-underline-offset: 2px; }
+.hw-howto a.hw-howto-btn {
+  display: inline-block; text-decoration: none; padding: 1px 10px; border-radius: 999px;
+  font-family: var(--font-syne); font-size: 12px; font-weight: 700;
+  color: var(--on-accent); background: var(--accent-ink);
+}
+.hw-howto a.hw-howto-btn:hover { background: var(--accent-soft); }
+.hw-howto-note { margin: 10px 0 0; font-size: 12.5px; color: var(--text-tertiary); }
