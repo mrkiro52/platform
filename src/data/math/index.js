@@ -11,10 +11,10 @@ export const MATH_MATERIALS = {
     homework: DAY1_HOMEWORK,
     recording: 'https://t.me/c/3964673023/3',
   },
-  // Запись второго занятия пока не загружена — карточка покажет «скоро»
   2: {
     theory: DAY2_THEORY,
     homework: DAY2_HOMEWORK,
+    recording: 'https://t.me/c/3964673023/13',
   },
 }
 
