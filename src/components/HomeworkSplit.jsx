@@ -2,6 +2,7 @@ import { useState, useEffect, useLayoutEffect, useRef, useCallback } from 'react
 import { createPortal } from 'react-dom'
 import TaskCard, { keyOf, StatusSquares, chapterStats, useMyHomework } from './HomeworkTaskCard'
 import { usePythonState } from '../lib/python/runner'
+import { track } from '../lib/analytics'
 import { chaptersOf, tasksOf, hwNumberOf, hasLevels, OPEN_WEEKS } from '../data/homeworkCatalog'
 
 // Сплит-экран: слева материалы, справа задания текущей главы с полями
@@ -55,6 +56,12 @@ export function useSplitScreen(enabled = true) {
   useLayoutEffect(() => {
     document.body.classList.toggle('split-screen', active)
     return () => document.body.classList.remove('split-screen')
+  }, [active])
+
+  const mounted = useRef(false)
+  useEffect(() => {
+    if (mounted.current && active) track('split_open')
+    mounted.current = true
   }, [active])
 
   // Переключение сохраняет место чтения: блок, от которого открыли сплит,

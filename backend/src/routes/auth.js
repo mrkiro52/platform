@@ -2,6 +2,8 @@ const router = require('express').Router()
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const db = require('../db')
+const { adminAccounts } = require('../admins')
+const { recordEvent } = require('../analytics')
 
 // Сессия участника — две недели. При 24 часах людей выбрасывало на страницу
 // входа почти каждый день: токен протухал, следующий же запрос к API отдавал
@@ -61,6 +63,7 @@ router.post('/login', (req, res) => {
   }
 
   const token = makeToken({ id: user.id, email: user.email, name: user.name, role: user.role })
+  recordEvent(user.id, 'login')
   res.json({ token, user: userResponse(user) })
 })
 
@@ -111,20 +114,6 @@ router.post('/register', registerRateLimit, (req, res) => {
   const token = makeToken({ id: user.id, email: user.email, name: user.name, role: user.role })
   res.status(201).json({ token, user: userResponse(user) })
 })
-
-// Аккаунты админки. Полный доступ и проверяющий домашних заданий, которому
-// открыт только соответствующий раздел. Пароли живут в .env — в репозитории
-// их нет. Проверяющий не настроен, пока переменные не заданы.
-function adminAccounts() {
-  const list = []
-  if (process.env.ADMIN_USERNAME && process.env.ADMIN_PASSWORD) {
-    list.push({ username: process.env.ADMIN_USERNAME, password: process.env.ADMIN_PASSWORD, scope: 'full' })
-  }
-  if (process.env.REVIEWER_USERNAME && process.env.REVIEWER_PASSWORD) {
-    list.push({ username: process.env.REVIEWER_USERNAME, password: process.env.REVIEWER_PASSWORD, scope: 'homework' })
-  }
-  return list
-}
 
 // POST /api/auth/admin-login — admin login
 router.post('/admin-login', (req, res) => {

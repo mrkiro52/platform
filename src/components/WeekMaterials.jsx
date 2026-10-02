@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import MultiPartVideo, { PYTHON_BASICS_PARTS } from './MultiPartVideo'
 import AlgoViz from './AlgoViz'
 import VideoPlayer from './VideoPlayer'
+import { track } from '../lib/analytics'
 import {
   useSplitScreen, SplitButton, HomeworkSplitPanel, submittableChapter, materialsScroller,
 } from './HomeworkSplit'
@@ -264,7 +265,10 @@ function Quiz({ quiz, chapterId }) {
           return (
             <button
               key={i}
-              onClick={() => setPicked(i)}
+              onClick={() => {
+                setPicked(i)
+                track('quiz_answer', { chapter: chapterId, correct: i === quiz.correct })
+              }}
               disabled={picked !== null}
               style={{
                 display: 'flex', alignItems: 'center', gap: 10, width: '100%', textAlign: 'left',
@@ -440,6 +444,12 @@ export default function WeekMaterials({
       return next
     })
   }, [chapter?.id, storageKey])
+
+  // Какие главы открывают и как далеко доходят — для дашборда админки
+  useEffect(() => {
+    if (!chapter) return
+    track('material_open', { week: weekNumber, chapter: chapter.id, n: safeIndex + 1, title: String(chapter.title || '').slice(0, 80) })
+  }, [chapter?.id])
 
   // Сплит-экран с заданиями — только если в неделе есть что сдавать
   const weekHasHomework = chapters.some(c => submittableChapter(weekNumber, level, c.id))

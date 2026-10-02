@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { LEVEL_TEST_SECTIONS, LEVEL_TEST_TITLE, LEVEL_TEST_INTRO, LEVEL_TEST_TOTAL } from '../data/levelTest'
+import { track } from '../lib/analytics'
 
 const STORAGE_KEY = 'kiro_level_test_answers'
 
@@ -110,6 +111,7 @@ export default function LevelTest({ participant }) {
     a.click()
     URL.revokeObjectURL(url)
     setFinished(true)
+    track('level_test_finish', { answered: answeredCount })
   }
 
   let questionNumber = 0

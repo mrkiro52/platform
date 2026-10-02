@@ -1,4 +1,5 @@
 import { useSyncExternalStore } from 'react'
+import { track } from '../analytics'
 
 // Мост к воркеру с Python. Воркер один на всю вкладку: Python весит ~12 МБ,
 // грузить его на каждый редактор незачем. Поэтому и запуск в каждый момент
@@ -63,6 +64,11 @@ function finish(result) {
   current = null
   clearTimeout(run.timer)
   setState({ running: false, owner: null })
+  track('code_run', {
+    ok: !!result.ok,
+    ms: Math.round(result.ms || 0),
+    reason: result.reason || (result.loadFailed ? 'load' : result.ok ? undefined : 'error'),
+  })
   run.resolve(result)
 }
 

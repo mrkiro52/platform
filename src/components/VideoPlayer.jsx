@@ -1,4 +1,5 @@
 import { useRef, useState, useEffect, useCallback } from 'react'
+import { track } from '../lib/analytics'
 
 export default function VideoPlayer({ src }) {
   const videoRef = useRef(null)
@@ -104,6 +105,13 @@ export default function VideoPlayer({ src }) {
     const onTime = () => setCurrentTime(v.currentTime)
     const onMeta = () => setDuration(v.duration)
     const onEnded = () => setPlaying(false)
+    // Для дашборда: какие видео запускают — один раз на открытие плеера
+    let counted = false
+    const onPlay = () => {
+      if (counted) return
+      counted = true
+      track('video_play', { video: decodeURIComponent(String(v.currentSrc || '').split('/').pop().split('?')[0]).slice(0, 80) })
+    }
     const onProgress = () => {
       if (v.buffered.length > 0) {
         setBuffered((v.buffered.end(v.buffered.length - 1) / v.duration) * 100)
@@ -113,7 +121,9 @@ export default function VideoPlayer({ src }) {
     v.addEventListener('loadedmetadata', onMeta)
     v.addEventListener('ended', onEnded)
     v.addEventListener('progress', onProgress)
+    v.addEventListener('play', onPlay)
     return () => {
+      v.removeEventListener('play', onPlay)
       v.removeEventListener('timeupdate', onTime)
       v.removeEventListener('loadedmetadata', onMeta)
       v.removeEventListener('ended', onEnded)

@@ -4,9 +4,11 @@ import { theoryOf } from '../data/math'
 import { MATH_SESSIONS } from '../data/mathCourse'
 import MathBlocks, { MathText } from '../components/MathContent'
 import { MathCases } from '../components/MathExpr'
+import { track } from '../lib/analytics'
 
 function Task({ task, index }) {
   const [open, setOpen] = useState(false)
+  const { day } = useParams()
 
   return (
     <div className={`math-task${open ? ' is-open' : ''}`}>
@@ -21,7 +23,10 @@ function Task({ task, index }) {
       )}
       {task.statementCases && <MathCases lines={task.statementCases} />}
 
-      <button className="math-task-toggle" onClick={() => setOpen(o => !o)}>
+      <button className="math-task-toggle" onClick={() => {
+        if (!open) track('math_solution_open', { day })
+        setOpen(o => !o)
+      }}>
         {open ? 'Скрыть решение' : 'Показать решение'}
       </button>
 

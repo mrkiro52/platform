@@ -26,10 +26,15 @@ app.use('/api/messages',      require('./src/routes/messages'))
 app.use('/api/notifications', require('./src/routes/notifications'))
 app.use('/api/calls',         require('./src/routes/calls'))
 app.use('/api/homework',      require('./src/routes/homework'))
+app.use('/api/analytics',     require('./src/routes/analytics'))
+app.use('/api/admin-tasks',   require('./src/routes/adminTasks'))
 
 // ── Admin Panel ──────────────────────────────────────────────────────────────
 app.use('/admin', express.static(path.join(__dirname, 'admin')))
-app.get('/admin', (req, res) => res.sendFile(path.join(__dirname, 'admin', 'index.html')))
+// У каждого раздела админки свой адрес (/admin/users, /admin/homework/12…),
+// поэтому любой путь, не совпавший с файлом, отдаёт ту же страницу —
+// раздел выбирает уже скрипт по адресу
+app.get(['/admin', '/admin/*'], (req, res) => res.sendFile(path.join(__dirname, 'admin', 'index.html')))
 
 // ── Health check ────────────────────────────────────────────────────────────
 app.get('/health', (req, res) => res.json({ status: 'ok', time: new Date().toISOString() }))

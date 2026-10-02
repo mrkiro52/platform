@@ -858,6 +858,78 @@ function migrate() {
       console.error('❌ Migration 25 failed:', err.message)
     }
   }
+
+  // Migration 26: аналитика поведения на платформе.
+  // analytics_events — отдельные события (визит, просмотр раздела, запуск кода
+  // и т.п.); day — московская дата, по ней группируются графики.
+  // analytics_time — активное время: сколько секунд человек провёл в разделе
+  // за день. Время приходит пачками раз в полминуты, поэтому хранится не
+  // строкой на каждый замер, а суммой — иначе таблица росла бы в десятки раз.
+  // Только новые таблицы: существующие данные не трогаются.
+  if (schemaVersion < 26) {
+    try {
+      db.exec(`
+        CREATE TABLE IF NOT EXISTS analytics_events (
+          id         INTEGER PRIMARY KEY AUTOINCREMENT,
+          user_id    INTEGER NOT NULL,
+          session_id TEXT,
+          name       TEXT NOT NULL,
+          page       TEXT,
+          path       TEXT,
+          props      TEXT,
+          day        TEXT NOT NULL,
+          created_at TEXT NOT NULL,
+          FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+        );
+        CREATE INDEX IF NOT EXISTS idx_an_events_day      ON analytics_events(day);
+        CREATE INDEX IF NOT EXISTS idx_an_events_user_day ON analytics_events(user_id, day);
+        CREATE INDEX IF NOT EXISTS idx_an_events_name_day ON analytics_events(name, day);
+
+        CREATE TABLE IF NOT EXISTS analytics_time (
+          user_id INTEGER NOT NULL,
+          day     TEXT    NOT NULL,
+          page    TEXT    NOT NULL,
+          seconds INTEGER NOT NULL DEFAULT 0,
+          PRIMARY KEY (user_id, day, page),
+          FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+        );
+        CREATE INDEX IF NOT EXISTS idx_an_time_day ON analytics_time(day);
+      `)
+      db.pragma('user_version = 26')
+      console.log('✅ Migration 26 completed: added analytics_events and analytics_time')
+    } catch (err) {
+      console.error('❌ Migration 26 failed:', err.message)
+    }
+  }
+
+  // Migration 27: задачи для админов.
+  // Админы живут в .env, а не в таблице users, поэтому исполнитель и автор
+  // хранятся логином. Статусы: todo → in_progress → done → approved;
+  // последний ставит только главный админ.
+  if (schemaVersion < 27) {
+    try {
+      db.exec(`
+        CREATE TABLE IF NOT EXISTS admin_tasks (
+          id          INTEGER PRIMARY KEY AUTOINCREMENT,
+          title       TEXT NOT NULL,
+          description TEXT NOT NULL DEFAULT '',
+          deadline    TEXT,
+          status      TEXT NOT NULL DEFAULT 'todo',
+          assignee    TEXT NOT NULL,
+          created_by  TEXT NOT NULL,
+          created_at  TEXT NOT NULL,
+          updated_at  TEXT NOT NULL,
+          done_at     TEXT,
+          approved_at TEXT
+        );
+        CREATE INDEX IF NOT EXISTS idx_admin_tasks_assignee ON admin_tasks(assignee, status);
+      `)
+      db.pragma('user_version = 27')
+      console.log('✅ Migration 27 completed: added admin_tasks')
+    } catch (err) {
+      console.error('❌ Migration 27 failed:', err.message)
+    }
+  }
 }
 
 migrate()

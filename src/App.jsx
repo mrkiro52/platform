@@ -5,6 +5,7 @@ import RegisterPage from './pages/Register'
 import Landing from './pages/Landing'
 import AppShell from './AppShell'
 import { api } from './api'
+import { endAnalyticsSession } from './lib/analytics'
 
 function isTokenValid(token) {
   if (!token) return false
@@ -115,6 +116,8 @@ export default function App() {
   const handleLogout = useCallback(() => {
     // Обычный выход пользователя — это не истечение сессии, флаг sessionExpired
     // здесь не ставим, иначе баннер "сессия истекла" будет всплывать просто так.
+    // Накопленную аналитику отправляем, пока токен ещё на месте.
+    endAnalyticsSession()
     localStorage.removeItem('kiro_user')
     setUser(null)
     navigate('/login')

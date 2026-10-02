@@ -39,4 +39,14 @@ function requireHomeworkReview(req, res, next) {
   })
 }
 
-module.exports = { verifyToken, requireAdmin, requireHomeworkReview, scopeOf }
+// Любой вход в админку, независимо от области доступа: задачи видят все админы
+function requireAnyAdmin(req, res, next) {
+  verifyToken(req, res, () => {
+    if (req.user.role !== 'admin' || !req.user.username) {
+      return res.status(403).json({ message: 'Недостаточно прав' })
+    }
+    next()
+  })
+}
+
+module.exports = { verifyToken, requireAdmin, requireHomeworkReview, requireAnyAdmin, scopeOf }

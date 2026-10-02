@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useState } from 'react'
-import { Routes, Route, Navigate, useNavigate, useParams } from 'react-router-dom'
+import { Routes, Route, Navigate, useNavigate, useParams, useLocation } from 'react-router-dom'
 import Sidebar from './components/Sidebar'
 import TopBar from './components/TopBar'
 import { api } from './api'
+import { startAnalytics, trackPage } from './lib/analytics'
 import Dashboard from './pages/Dashboard'
 import Library from './pages/Library'
 import Links from './pages/Links'
@@ -52,6 +53,7 @@ function AnnouncementsRoute() {
 
 export default function AppShell({ user, onLogout }) {
   const navigate = useNavigate()
+  const location = useLocation()
   const [sidebarOpen, setSidebarOpen] = useState(false)
   // Свёрнутый сайдбар на компьютере — выбор запоминается между визитами
   const [collapsed, setCollapsed] = useState(() => {
@@ -91,6 +93,10 @@ export default function AppShell({ user, onLogout }) {
   useEffect(() => {
     api.profile().then(p => setAvatarUrl(p.avatar_url || '')).catch(() => {})
   }, [])
+
+  // Аналитика поведения: визиты, разделы, активное время
+  useEffect(() => { startAnalytics() }, [])
+  useEffect(() => { trackPage(location.pathname) }, [location.pathname])
 
   const openTheory = (day) => navigate(`/library/theory/${day.day}`)
 

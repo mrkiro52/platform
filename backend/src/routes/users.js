@@ -4,6 +4,7 @@ const multer = require('multer')
 const db = require('../db')
 const { requireAdmin, verifyToken } = require('../middleware/auth')
 const { uploadAvatar, deleteAvatar, keyFromUrl, s3Configured } = require('../s3')
+const { lastActiveDays } = require('../analytics')
 
 const upload = multer({
   storage: multer.memoryStorage(),
@@ -77,9 +78,27 @@ router.put('/me', verifyToken, (req, res) => {
   res.json(user)
 })
 
-// GET /api/users
+// GET /api/users — список для админки: логин, участие в лагере и день
+// последней активности (по Москве), чтобы видеть, кто пропал
 router.get('/', requireAdmin, (req, res) => {
-  res.json(db.prepare('SELECT id, name, points, streak, created_at FROM users ORDER BY created_at DESC').all())
+  const last = lastActiveDays()
+  const users = db.prepare(`
+    SELECT id, name, nickname, points, streak, created_at, is_autumn_camp_2026
+      FROM users ORDER BY created_at DESC`).all()
+  res.json(users.map(u => ({
+    ...u,
+    autumnCamp: !!u.is_autumn_camp_2026,
+    lastActiveDay: last.get(u.id) || null,
+  })))
+})
+
+// PATCH /api/users/:id/camp — выдать или снять доступ к осеннему лагерю
+router.patch('/:id/camp', requireAdmin, (req, res) => {
+  const { autumnCamp } = req.body || {}
+  if (typeof autumnCamp !== 'boolean') return res.status(400).json({ message: 'autumnCamp должен быть true или false' })
+  const r = db.prepare('UPDATE users SET is_autumn_camp_2026 = ? WHERE id = ?').run(autumnCamp ? 1 : 0, req.params.id)
+  if (!r.changes) return res.status(404).json({ message: 'Пользователь не найден' })
+  res.json({ id: Number(req.params.id), autumnCamp })
 })
 
 // POST /api/users — create user (login + password)
@@ -109,12 +128,30 @@ router.post('/', requireAdmin, (req, res) => {
 router.put('/:id', requireAdmin, (req, res) => {
   const { login, password } = req.body
   if (!login) return res.status(400).json({ message: 'login обязателен' })
-  const user = db.prepare('SELECT id FROM users WHERE id = ?').get(req.params.id)
+  const user = db.prepare('SELECT id, nickname FROM users WHERE id = ?').get(req.params.id)
   if (!user) return res.status(404).json({ message: 'Пользователь не найден' })
-  if (password) {
-    db.prepare('UPDATE users SET password_hash=? WHERE id=?').run(bcrypt.hashSync(password, 10), req.params.id)
+  // Логин не менялся (частый случай — админ сбрасывает пароль) — имя и почту
+  // не трогаем: раньше они затирались логином при каждом сохранении
+  const loginChanged = String(user.nickname) !== String(login)
+  if (loginChanged) {
+    const taken = db.prepare('SELECT id FROM users WHERE LOWER(nickname) = LOWER(?) AND id != ?').get(login, req.params.id)
+    if (taken) return res.status(409).json({ message: 'Этот логин уже занят' })
   }
-  db.prepare('UPDATE users SET name=?, nickname=?, email=? WHERE id=?').run(login, login, login, req.params.id)
+  // Логин и пароль меняются вместе или никак: при конфликте почты пароль
+  // не должен смениться отдельно от логина
+  try {
+    db.transaction(() => {
+      if (loginChanged) {
+        db.prepare('UPDATE users SET name=?, nickname=?, email=? WHERE id=?').run(login, login, login, req.params.id)
+      }
+      if (password) {
+        db.prepare('UPDATE users SET password_hash=? WHERE id=?').run(bcrypt.hashSync(password, 10), req.params.id)
+      }
+    })()
+  } catch (e) {
+    if (e.message.includes('UNIQUE')) return res.status(409).json({ message: 'Этот логин уже занят' })
+    throw e
+  }
   res.json({ message: 'Обновлено' })
 })
 
