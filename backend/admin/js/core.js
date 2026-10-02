@@ -41,7 +41,7 @@ const Session = {
   },
   get expired() { return this.exp && Date.now() > this.exp },
   get isMain() { return this.scope === 'full' },
-  get roleLabel() { return this.isMain ? 'Главный админ' : 'Проверка ДЗ' },
+  get roleLabel() { return { full: 'Главный админ', homework: 'Проверка ДЗ', tasks: 'Помощник' }[this.scope] || 'Админ' },
 }
 
 // ═══ Утилиты ═══════════════════════════════════════════════════════════
@@ -271,11 +271,13 @@ async function copyText(text) {
 // ═══ Маршруты и меню ═══════════════════════════════════════════════════
 const BOTH = ['full', 'homework']
 const MAIN = ['full']
+// Задачи видят все админы, включая помощников с доступом только к ним
+const ALL = ['full', 'homework', 'tasks']
 
 const NAV = [
   { label: 'Обзор', items: [
     { id: 'dashboard', path: '/dashboard', label: 'Дашборд', icon: 'layout-dashboard', scopes: MAIN },
-    { id: 'tasks', path: '/tasks', label: 'Задачи', icon: 'square-kanban', scopes: BOTH, badge: 'tasks' },
+    { id: 'tasks', path: '/tasks', label: 'Задачи', icon: 'square-kanban', scopes: ALL, badge: 'tasks' },
   ] },
   { label: 'Платформа', items: [
     { id: 'users', path: '/users', label: 'Пользователи', icon: 'users', scopes: MAIN },
@@ -293,7 +295,7 @@ const NAV = [
 
 const ROUTES = [
   { re: /^\/dashboard$/, page: 'dashboard', nav: 'dashboard', title: 'Дашборд', scopes: MAIN },
-  { re: /^\/tasks$/, page: 'tasks', nav: 'tasks', title: 'Задачи', scopes: BOTH },
+  { re: /^\/tasks$/, page: 'tasks', nav: 'tasks', title: 'Задачи', scopes: ALL },
   { re: /^\/users$/, page: 'users', nav: 'users', title: 'Пользователи', scopes: MAIN },
   { re: /^\/announcements$/, page: 'announcements', nav: 'announcements', title: 'Объявления', scopes: MAIN },
   { re: /^\/calls$/, page: 'calls', nav: 'calls', title: 'Слоты созвонов', scopes: MAIN },
@@ -316,7 +318,7 @@ const Router = {
     return p.replace(/\/+$/, '') || '/'
   },
 
-  defaultPath() { return Session.isMain ? '/dashboard' : '/homework' },
+  defaultPath() { return { full: '/dashboard', homework: '/homework' }[Session.scope] || '/tasks' },
 
   async canLeave() {
     const msg = Router.guard && Router.guard()
@@ -437,7 +439,7 @@ const Shell = {
             </a>`).join('')}
         </div>`
     }).join('')
-    $('#sb-role').textContent = Session.isMain ? 'Admin Panel' : 'Проверка ДЗ'
+    $('#sb-role').textContent = Session.isMain ? 'Admin Panel' : Session.roleLabel
     $('#sb-foot').innerHTML = `
       <div class="me">
         <div class="me-avatar">${esc(initials(Session.username))}</div>
@@ -469,7 +471,7 @@ const Shell = {
 
   async refreshBadges() {
     if (!Session.token) return
-    try {
+    if (BOTH.includes(Session.scope)) try {
       const students = await api('/api/homework/admin/students')
       Badges.homework = students.reduce((sum, s) => sum + (s.pending || 0), 0)
     } catch { /* раздел сам покажет ошибку */ }
