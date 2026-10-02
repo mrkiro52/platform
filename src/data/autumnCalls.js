@@ -9,19 +9,6 @@ export const AUTUMN_MONTHS = [
   { label: 'Ноябрь',   total: 30, start: new Date(2026, 10, 1) },
 ]
 
-// По умолчанию созвон — каждая пятница месяца. Дни считаются по дню недели,
-// чтобы не разъехаться при правках дат выше. Для сентября даты и темы заданы
-// явно — они сдвинуты на день позже пятницы.
-function fridaysOf(month) {
-  const days = []
-  for (let d = 1; d <= month.total; d++) {
-    const dt = new Date(month.start)
-    dt.setDate(d)
-    if (dt.getDay() === 5) days.push(d)
-  }
-  return days
-}
-
 // videos — записи созвона. Их может быть несколько, если созвон разбит на части.
 // Элемент — либо ссылка строкой (тогда подпись проставляется автоматически),
 // либо { url, label } с собственной подписью.
@@ -41,12 +28,27 @@ const SEPTEMBER_CALLS = [
   { day: 26, topic: 'Полный гайд по базам данных и SQL', videos: ['https://youtu.be/aivBh533CBQ'] },
 ]
 
+// Октябрь и ноябрь — по субботам. Тема у созвона пока одна: на остальные
+// даты она ещё не объявлена (topic: null), карточка покажет дату без темы.
+const OCTOBER_CALLS = [
+  { day: 3, topic: 'Системный дизайн для всех' },
+  { day: 10, topic: null },
+  { day: 17, topic: null },
+  { day: 24, topic: null },
+  { day: 31, topic: null },
+]
+const NOVEMBER_CALLS = [7, 14, 21, 28].map(day => ({ day, topic: null }))
+
+const CALLS_BY_MONTH = {
+  'Сентябрь': SEPTEMBER_CALLS,
+  'Октябрь': OCTOBER_CALLS,
+  'Ноябрь': NOVEMBER_CALLS,
+}
+
 export const CALL_MONTHS = AUTUMN_MONTHS.map(m => ({
   label: m.label,
   monthIndex: m.start.getMonth(),
-  calls: m.label === 'Сентябрь'
-    ? SEPTEMBER_CALLS
-    : fridaysOf(m).map(day => ({ day, topic: null })),
+  calls: CALLS_BY_MONTH[m.label],
 }))
 
 // Есть ли групповой созвон в этот день. Возвращает { topic } или null.
