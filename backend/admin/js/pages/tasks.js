@@ -10,6 +10,14 @@ const TASK_STATUSES = [
 ]
 const statusMeta = (key) => TASK_STATUSES.find(s => s.key === key) || TASK_STATUSES[0]
 
+// Сколько задач ждёт внимания этого админа — для бейджа в меню:
+// выполненные задачи, которые он должен подтвердить, и открытые задачи на нём
+function tasksNeedingAttention(tasks, me) {
+  const toConfirm = (t) => t.status === 'done' && (me.isMain || (me.isProducer && t.createdBy === me.username))
+  const mineOpen = (t) => t.assignee === me.username && (t.status === 'todo' || t.status === 'in_progress')
+  return tasks.filter(t => toConfirm(t) || mineOpen(t)).length
+}
+
 const TasksPage = {
   me: null,
   tasks: [],
@@ -21,7 +29,7 @@ const TasksPage = {
   async render(view, ctx) {
     TasksPage.assignee = ctx.query.get('assignee') || 'all'
     TasksPage.showAllApproved = false
-    view.innerHTML = pageHead({ title: Session.isMain ? 'Задачи' : 'Мои задачи' }) + skeleton({ rows: 8 })
+    view.innerHTML = pageHead({ title: ['full', 'producer'].includes(Session.scope) ? 'Задачи' : 'Мои задачи' }) + skeleton({ rows: 8 })
     const [{ me, tasks }, admins] = await Promise.all([api('/api/admin-tasks'), api('/api/admin-tasks/admins')])
     if (ctx.stale()) return
     TasksPage.me = me
@@ -33,14 +41,24 @@ const TasksPage = {
   },
 
   head() {
-    const main = TasksPage.me.isMain
+    const me = TasksPage.me
+    const subs = {
+      main: 'Ставь задачи помощникам и принимай выполненные. Помощник сам двигает задачу до «Выполнена», подтверждаешь ты',
+      producer: 'Ставь задачи главному админу. Он ведёт их по статусам, а выполненные подтверждаешь ты',
+      helper: 'Задачи от главного админа. Меняй статус по ходу работы — перетаскивай карточку или открой её. «Подтверждена» ставит тот, кто поставил задачу',
+    }
     return pageHead({
-      title: main ? 'Задачи' : 'Мои задачи',
-      sub: main
-        ? 'Ставь задачи помощникам и принимай выполненные. Помощник сам двигает задачу до «Выполнена», подтверждаешь ты'
-        : 'Задачи от главного админа. Меняй статус по ходу работы — перетаскивай карточку или открой её. «Подтверждена» ставит главный админ после проверки',
-      actions: main ? `<button class="btn btn-primary" onclick="TasksPage.openForm(null)">${icon('plus')}Новая задача</button>` : '',
+      title: me.canAssign ? 'Задачи' : 'Мои задачи',
+      sub: subs[me.isMain ? 'main' : me.isProducer ? 'producer' : 'helper'],
+      actions: me.canAssign ? `<button class="btn btn-primary" onclick="TasksPage.openForm(null)">${icon('plus')}Новая задача</button>` : '',
     })
+  },
+
+  // Управлять задачей — править, удалять, подтверждать — может главный админ
+  // или продюсер, который её поставил
+  manages(t) {
+    const me = TasksPage.me
+    return me.isMain || (me.isProducer && t.createdBy === me.username)
   },
 
   // ── Данные ──
@@ -73,21 +91,19 @@ const TasksPage = {
 
   // Может ли текущий админ поставить задаче этот статус
   canMove(task, status) {
-    if (TasksPage.me.isMain) return true
+    if (TasksPage.manages(task)) return true
     return task.assignee === TasksPage.me.username && task.status !== 'approved' && status !== 'approved'
   },
 
   syncBadge() {
-    Badges.tasks = TasksPage.me.isMain
-      ? TasksPage.tasks.filter(t => t.status === 'done').length
-      : TasksPage.tasks.filter(t => t.status === 'todo' || t.status === 'in_progress').length
+    Badges.tasks = tasksNeedingAttention(TasksPage.tasks, TasksPage.me)
     Shell.paintBadges()
   },
 
   // ── Отрисовка ──
   paint() {
     TasksPage.syncBadge()
-    $('#tasks-team').innerHTML = TasksPage.me.isMain ? TasksPage.team() : TasksPage.mySummary()
+    $('#tasks-team').innerHTML = TasksPage.me.canAssign ? TasksPage.team() : TasksPage.mySummary()
     $('#tasks-board').innerHTML = TasksPage.board()
   },
 
@@ -149,14 +165,14 @@ const TasksPage = {
   board() {
     const list = TasksPage.visible()
     if (!TasksPage.tasks.length) {
-      return `<div class="card">${TasksPage.me.isMain
-        ? emptyState('square-kanban', 'Задач пока нет', 'Поставь первую задачу помощнику — она появится у него в разделе «Мои задачи»')
+      return `<div class="card">${TasksPage.me.canAssign
+        ? emptyState('square-kanban', 'Задач пока нет', TasksPage.me.isProducer ? 'Поставь первую задачу главному админу — он увидит её у себя в разделе «Задачи»' : 'Поставь первую задачу помощнику — она появится у него в разделе «Мои задачи»')
         : emptyState('square-kanban', 'Задач пока нет', 'Когда главный админ поставит тебе задачу, она появится здесь')}</div>`
     }
     return `<div class="board">${TASK_STATUSES.map(st => {
       let cards = TasksPage.sorted(list.filter(t => t.status === st.key), st.key)
       const total = cards.length
-      const locked = !TasksPage.me.isMain && st.key === 'approved'
+      const locked = !TasksPage.me.canAssign && st.key === 'approved'
       let more = ''
       if (st.key === 'approved' && !TasksPage.showAllApproved && cards.length > 6) {
         more = `<button class="btn btn-secondary btn-sm" style="margin:2px 0" onclick="TasksPage.toggleApproved()">Ещё ${cards.length - 6}</button>`
@@ -193,7 +209,7 @@ const TasksPage = {
   },
 
   card(t) {
-    const draggable = TasksPage.me.isMain || (t.assignee === TasksPage.me.username && t.status !== 'approved')
+    const draggable = TasksPage.manages(t) || (t.assignee === TasksPage.me.username && t.status !== 'approved')
     return `
       <button class="task-card${TasksPage.isOverdue(t) ? ' is-overdue' : ''}" ${draggable ? 'draggable="true"' : ''}
               ondragstart="TasksPage.dragStart(event, ${t.id})" ondragend="TasksPage.dragEnd(event)"
@@ -201,7 +217,8 @@ const TasksPage = {
         <div class="task-title">${esc(t.title)}</div>
         ${t.description ? `<div class="task-desc">${esc(t.description)}</div>` : ''}
         <div class="task-meta">
-          ${TasksPage.me.isMain ? `<span class="badge badge-violet">${icon('user')}${esc(t.assignee)}</span>` : ''}
+          ${TasksPage.me.isMain && t.createdBy !== TasksPage.me.username ? `<span class="badge badge-gray" title="Поставил">${icon('send')}от ${esc(t.createdBy)}</span>` : ''}
+          ${TasksPage.me.canAssign ? `<span class="badge badge-violet">${icon('user')}${esc(t.assignee)}</span>` : ''}
           ${TasksPage.deadlineBadge(t)}
         </div>
       </button>`
@@ -273,13 +290,13 @@ const TasksPage = {
   openDetail(id) {
     const t = TasksPage.find(id)
     if (!t) return
-    const main = TasksPage.me.isMain
+    const main = TasksPage.manages(t)
     const st = statusMeta(t.status)
     const locked = !main && t.status === 'approved'
     const steps = TASK_STATUSES.map(s => {
       const disabled = !TasksPage.canMove(t, s.key)
       return `<button class="status-step${t.status === s.key ? ' active' : ''}" ${disabled ? 'disabled' : ''}
-                title="${disabled ? (s.key === 'approved' ? 'Подтверждает главный админ' : 'Задача уже подтверждена') : s.hint}"
+                title="${disabled ? (s.key === 'approved' ? 'Подтверждает тот, кто поставил задачу' : 'Задача уже подтверждена') : s.hint}"
                 onclick="TasksPage.setStatus(${t.id}, '${s.key}', { fromModal: true })">${icon(s.icon, 18)}${s.label}</button>`
     }).join('')
 

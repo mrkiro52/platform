@@ -41,7 +41,7 @@ const Session = {
   },
   get expired() { return this.exp && Date.now() > this.exp },
   get isMain() { return this.scope === 'full' },
-  get roleLabel() { return { full: 'Главный админ', homework: 'Проверка ДЗ', tasks: 'Помощник' }[this.scope] || 'Админ' },
+  get roleLabel() { return { full: 'Главный админ', homework: 'Проверка ДЗ', tasks: 'Помощник', producer: 'Продюсер' }[this.scope] || 'Админ' },
 }
 
 // ═══ Утилиты ═══════════════════════════════════════════════════════════
@@ -272,7 +272,7 @@ async function copyText(text) {
 const BOTH = ['full', 'homework']
 const MAIN = ['full']
 // Задачи видят все админы, включая помощников с доступом только к ним
-const ALL = ['full', 'homework', 'tasks']
+const ALL = ['full', 'homework', 'tasks', 'producer']
 
 const NAV = [
   { label: 'Обзор', items: [
@@ -476,10 +476,8 @@ const Shell = {
       Badges.homework = students.reduce((sum, s) => sum + (s.pending || 0), 0)
     } catch { /* раздел сам покажет ошибку */ }
     try {
-      const { tasks } = await api('/api/admin-tasks')
-      Badges.tasks = Session.isMain
-        ? tasks.filter(t => t.status === 'done').length
-        : tasks.filter(t => t.status === 'todo' || t.status === 'in_progress').length
+      const { me, tasks } = await api('/api/admin-tasks')
+      Badges.tasks = tasksNeedingAttention(tasks, me)
     } catch { /* бэкенд без задач — бейдж просто не появится */ }
     Shell.paintBadges()
   },
