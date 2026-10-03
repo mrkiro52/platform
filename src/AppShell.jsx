@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useState, lazy, Suspense } from 'react'
 import { Routes, Route, Navigate, useNavigate, useParams, useLocation } from 'react-router-dom'
 import Sidebar from './components/Sidebar'
 import TopBar from './components/TopBar'
@@ -27,6 +27,8 @@ import MathHomeworkPage from './pages/MathHomeworkPage'
 import HomeworkUploadPage from './pages/HomeworkUploadPage'
 import HomeworkTaskPage from './pages/HomeworkTaskPage'
 import AutumnWeekPage from './pages/AutumnWeekPage'
+
+const SqlTableView = lazy(() => import('./pages/trainings/SqlTableView'))
 
 function TheoryRoute() {
   const { day } = useParams()
@@ -139,6 +141,9 @@ export default function AppShell({ user, onLogout }) {
             <Route path="/profile"    element={<Profile user={user} onAvatarChange={setAvatarUrl} />} />
             <Route path="/trainings"    element={<TrainingsPage />} />
             <Route path="/trainings/:id" element={<TrainingsPage />} />
+            <Route path="/trainings/sql/:table" element={
+              <Suspense fallback={<p style={{ color: 'var(--text-secondary)' }}>Загрузка...</p>}><SqlTableView /></Suspense>
+            } />
             <Route path="/wall" element={<WallPage user={user} avatarUrl={avatarUrl} />} />
             <Route path="/u/:id" element={<UserProfilePage user={user} avatarUrl={avatarUrl} />} />
             <Route path="/messages" element={

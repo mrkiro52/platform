@@ -1,7 +1,7 @@
 const router = require('express').Router()
 const { verifyToken } = require('../middleware/auth')
 const trainer = require('../sqlTrainer')
-const { TASKS, COLUMN_DOCS } = require('../sqlTrainer/tasks')
+const { CATEGORIES, COLUMN_DOCS } = require('../sqlTrainer/tasks')
 
 // Не больше 30 запусков в минуту на человека — с запасом для обычной
 // работы, но не даёт загрузить тренажёр скриптом
@@ -24,7 +24,11 @@ router.get('/', verifyToken, async (req, res) => {
   try {
     const schema = await trainer.getSchema()
     res.json({
-      tasks: TASKS.map(({ id, title, text, hint }) => ({ id, title, text, hint })),
+      categories: CATEGORIES.map(c => ({
+        id: c.id,
+        title: c.title,
+        tasks: c.tasks.map((t, i) => ({ id: `${c.id}-${i + 1}`, title: t.title, text: t.text, hint: t.hint, ordered: !!t.ordered })),
+      })),
       schema: schema.map(t => ({
         ...t,
         description: (COLUMN_DOCS[t.table] || {})._ || '',
@@ -41,7 +45,8 @@ router.post('/run', verifyToken, rateLimit, async (req, res) => {
   const { sql, taskId } = req.body || {}
   if (typeof sql !== 'string' || !sql.trim()) return res.status(400).json({ message: 'Напиши запрос' })
   if (sql.length > 5000) return res.status(400).json({ message: 'Запрос слишком длинный' })
-  const result = await trainer.run(sql, Number.isInteger(taskId) ? taskId : null)
+  const id = typeof taskId === 'string' && /^[a-z]+-\d+$/.test(taskId) ? taskId : null
+  const result = await trainer.run(sql, id)
   res.status(result.busy ? 503 : 200).json(result)
 })
 

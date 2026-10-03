@@ -113,12 +113,15 @@ function verdict(task, result) {
   if (rows.length !== ref.rows.length) {
     return { correct: false, reason: 'Количество строк не совпадает с правильным ответом' }
   }
-  const a = [...rows].sort((x, y) => rowKey(x).localeCompare(rowKey(y)))
-  const b = [...ref.rows].sort((x, y) => rowKey(x).localeCompare(rowKey(y)))
-  for (let i = 0; i < a.length; i++) {
-    for (let j = 0; j < a[i].length; j++) {
-      if (!same(a[i][j], b[i][j])) return { correct: false, reason: 'Строк столько же, но значения отличаются' }
-    }
+  const equalRows = (a, b) => a.every((row, i) => row.every((v, j) => same(v, b[i][j])))
+  const byKey = (x, y) => rowKey(x).localeCompare(rowKey(y))
+  // Набор строк сравнивается без учёта порядка
+  if (!equalRows([...rows].sort(byKey), [...ref.rows].sort(byKey))) {
+    return { correct: false, reason: 'Строк столько же, но значения отличаются' }
+  }
+  // В задачах на сортировку важен и порядок
+  if (task.ordered && !equalRows(rows, ref.rows)) {
+    return { correct: false, reason: 'Строки верные, но порядок другой — проверь ORDER BY' }
   }
   return { correct: true }
 }
