@@ -32,7 +32,7 @@ const SEPTEMBER_CALLS = [
 // даты она ещё не объявлена (topic: null), карточка покажет дату без темы.
 const OCTOBER_CALLS = [
   { day: 3, topic: 'Системный дизайн для всех' },
-  { day: 10, topic: null },
+  { day: 10, topic: 'Кибербезопасность: основы для всех' },
   { day: 17, topic: null },
   { day: 24, topic: null },
   { day: 31, topic: null },
