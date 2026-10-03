@@ -90,5 +90,9 @@ export const api = {
   bookSlot:     (slotId) => req(`/api/calls/slots/${slotId}/book`, { method: 'POST' }),
   cancelSlot:   (slotId) => req(`/api/calls/slots/${slotId}/book`, { method: 'DELETE' }),
   unreadNotifications:()  => req('/api/notifications/unread-count'),
+
+  // SQL-тренажёр: задания, схема базы и выполнение запросов
+  sqlTrainer:   ()             => req('/api/sql-trainer'),
+  sqlRun:       (sql, taskId)  => req('/api/sql-trainer/run', { method: 'POST', body: JSON.stringify({ sql, taskId }) }),
   readNotifications:  ()  => req('/api/notifications/read', { method: 'POST' }),
 }

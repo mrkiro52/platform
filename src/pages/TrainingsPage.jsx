@@ -3,6 +3,7 @@ import { lazy, Suspense } from 'react'
 
 const AlgorithmComplexityTraining = lazy(() => import('./trainings/AlgorithmComplexityTraining'))
 const PythonOutputTraining = lazy(() => import('./trainings/PythonOutputTraining'))
+const SqlTraining = lazy(() => import('./trainings/SqlTraining'))
 
 const TRAININGS = [
   {
@@ -20,6 +21,14 @@ const TRAININGS = [
     tag: 'Python',
     questions: 20,
     component: PythonOutputTraining,
+  },
+  {
+    id: 'sql',
+    title: 'SQL-тренажёр',
+    subtitle: 'Пиши настоящие SQL-запросы к живой базе маркетплейса — 10 задач на SELECT, WHERE и агрегаты',
+    tag: 'SQL',
+    questions: 10,
+    component: SqlTraining,
   },
 ]
 

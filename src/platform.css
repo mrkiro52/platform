@@ -4104,3 +4104,90 @@ body.reels-lock {
 }
 .hw-howto a.hw-howto-btn:hover { background: var(--accent-soft); }
 .hw-howto-note { margin: 10px 0 0; font-size: 12.5px; color: var(--text-tertiary); }
+
+/* ════════════════════════════════════════════════════════════════
+   SQL-ТРЕНАЖЁР
+════════════════════════════════════════════════════════════════ */
+.sqlt-back { background: none; border: none; color: var(--accent-lime); font-size: 13px; font-weight: 600; cursor: pointer; padding: 0; margin-bottom: 14px; }
+.sqlt-progress { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
+.sqlt-dots { display: flex; gap: 6px; flex-wrap: wrap; }
+.sqlt-dot {
+  width: 36px; height: 36px; border-radius: 10px; cursor: pointer;
+  background: var(--bg-tertiary); border: 1px solid var(--border-color);
+  color: var(--text-secondary); font-family: var(--font-syne); font-size: 13px; font-weight: 700;
+  transition: border-color .15s, background .15s, color .15s;
+}
+.sqlt-dot:hover { border-color: rgba(255,214,10,.5); color: var(--text-primary); }
+.sqlt-dot.is-solved { background: var(--success-dim); border-color: rgba(63,185,80,.5); color: var(--success); }
+.sqlt-dot.is-active { background: var(--accent-lime); border-color: var(--accent-lime); color: var(--on-accent); }
+.sqlt-score { font-size: 13px; font-weight: 700; color: var(--text-secondary); }
+
+.sqlt-layout { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 20px; align-items: start; }
+.sqlt-main { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+
+.sqlt-task { background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 18px; }
+.sqlt-task-top { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+.sqlt-task-num { font-family: var(--font-syne); font-size: 11px; font-weight: 700; color: var(--accent-lime); text-transform: uppercase; letter-spacing: .06em; }
+.sqlt-solved { font-size: 11px; font-weight: 700; color: var(--success); background: var(--success-dim); border-radius: 999px; padding: 2px 9px; }
+.sqlt-task-title { font-family: var(--font-syne); font-size: 18px; font-weight: 700; color: var(--text-primary); margin: 0 0 8px; }
+.sqlt-task-text { font-size: 14px; color: var(--text-secondary); line-height: 1.7; margin: 0; }
+.sqlt-hint-toggle { margin-top: 12px; background: none; border: 1px solid var(--border-color); border-radius: 999px; padding: 5px 13px; font-size: 12px; font-weight: 600; color: var(--text-secondary); cursor: pointer; }
+.sqlt-hint-toggle:hover { border-color: rgba(255,214,10,.5); color: var(--text-primary); }
+.sqlt-hint { margin: 10px 0 0; padding: 10px 13px; border-radius: 10px; background: rgba(255,214,10,.06); border: 1px solid rgba(255,214,10,.22); font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
+
+.sqlt-actions { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.sqlt-run { background: var(--accent-lime); color: var(--on-accent); border: none; border-radius: 12px; padding: 10px 20px; font-size: 14px; font-weight: 700; cursor: pointer; }
+.sqlt-run:disabled { opacity: .5; cursor: not-allowed; }
+.sqlt-kbd { font-size: 12px; color: var(--text-tertiary); }
+.sqlt-clear { margin-left: auto; background: none; border: none; color: var(--text-tertiary); font-size: 13px; cursor: pointer; }
+.sqlt-clear:hover { color: var(--text-primary); }
+
+.sqlt-banner { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; padding: 12px 14px; border-radius: 12px; font-size: 14px; color: var(--text-secondary); background: var(--bg-secondary); border: 1px solid var(--border-color); margin-bottom: 12px; }
+.sqlt-banner.is-ok { background: var(--success-dim); border-color: rgba(63,185,80,.45); color: var(--text-primary); }
+.sqlt-banner.is-ok b { color: var(--success); }
+.sqlt-banner.is-bad { background: var(--danger-dim); border-color: rgba(255,95,95,.45); color: var(--text-primary); }
+.sqlt-banner.is-bad b { color: var(--danger); }
+.sqlt-next { margin-left: auto; background: var(--success); color: #06260f; border: none; border-radius: 10px; padding: 7px 14px; font-size: 13px; font-weight: 700; cursor: pointer; }
+.sqlt-error { padding: 12px 14px; border-radius: 12px; background: var(--danger-dim); border: 1px solid rgba(255,95,95,.45); color: #FF8A8A; font-family: ui-monospace, Menlo, monospace; font-size: 13px; line-height: 1.6; white-space: pre-wrap; margin-bottom: 12px; }
+
+.sqlt-result { border: 1px solid var(--border-color); border-radius: var(--radius-md); overflow: hidden; background: var(--bg-secondary); }
+.sqlt-table-wrap { overflow: auto; max-height: 460px; }
+.sqlt-table { border-collapse: collapse; width: 100%; font-size: 12.5px; font-family: ui-monospace, Menlo, monospace; }
+.sqlt-table th { position: sticky; top: 0; background: var(--bg-tertiary); color: var(--text-primary); font-weight: 700; text-align: left; padding: 8px 12px; border-bottom: 1px solid var(--border-color); white-space: nowrap; }
+.sqlt-table td { padding: 7px 12px; color: var(--text-secondary); border-bottom: 1px solid rgba(255,255,255,.05); white-space: nowrap; max-width: 360px; overflow: hidden; text-overflow: ellipsis; }
+.sqlt-table tr:hover td { background: rgba(255,255,255,.025); }
+.sqlt-table td.sqlt-num { text-align: right; color: var(--text-primary); }
+.sqlt-table td.sqlt-null { color: var(--text-tertiary); font-style: italic; }
+.sqlt-empty { padding: 18px; text-align: center; color: var(--text-tertiary); font-size: 13px; }
+.sqlt-meta { display: flex; justify-content: space-between; gap: 12px; padding: 9px 12px; border-top: 1px solid var(--border-color); font-size: 12px; color: var(--text-tertiary); }
+
+.sqlt-schema { position: sticky; top: 16px; max-height: calc(100vh - 32px); overflow-y: auto; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 14px; }
+.sqlt-schema-title { font-family: var(--font-syne); font-size: 14px; font-weight: 700; color: var(--text-primary); }
+.sqlt-schema-sub { font-size: 12px; color: var(--text-tertiary); margin: 3px 0 12px; line-height: 1.5; }
+.sqlt-tbl { border: 1px solid var(--border-color); border-radius: 10px; margin-bottom: 8px; background: var(--bg-tertiary); }
+.sqlt-tbl-head { display: flex; align-items: center; gap: 8px; width: 100%; padding: 10px 12px; background: none; border: none; cursor: pointer; text-align: left; }
+.sqlt-tbl-name { font-family: ui-monospace, Menlo, monospace; font-size: 13px; font-weight: 700; color: var(--accent-lime); }
+.sqlt-tbl-rows { font-size: 11.5px; color: var(--text-tertiary); margin-left: auto; }
+.sqlt-chev { color: var(--text-tertiary); transition: transform .2s; font-size: 16px; line-height: 1; }
+.sqlt-tbl.is-open .sqlt-chev { transform: rotate(90deg); }
+.sqlt-tbl-body { padding: 0 12px 12px; }
+.sqlt-tbl-desc { font-size: 12px; color: var(--text-secondary); margin-bottom: 8px; }
+.sqlt-cols { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 7px; }
+.sqlt-col-line { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.sqlt-col-name { font-family: ui-monospace, Menlo, monospace; font-size: 12.5px; color: var(--text-primary); }
+.sqlt-col-type { font-size: 10.5px; color: var(--text-tertiary); text-transform: uppercase; }
+.sqlt-col-flag { font-size: 9.5px; font-weight: 700; border-radius: 4px; padding: 1px 5px; background: rgba(255,214,10,.12); color: var(--accent-lime); }
+.sqlt-col-flag.is-null { background: rgba(139,139,150,.16); color: var(--text-tertiary); }
+.sqlt-col-desc { font-size: 11.5px; color: var(--text-tertiary); line-height: 1.45; margin-top: 1px; }
+.sqlt-preview { margin-top: 10px; width: 100%; background: none; border: 1px dashed var(--border-color); border-radius: 8px; padding: 7px; font-size: 12px; font-weight: 600; color: var(--text-secondary); cursor: pointer; }
+.sqlt-preview:hover:not(:disabled) { border-color: rgba(255,214,10,.5); color: var(--text-primary); }
+.sqlt-preview:disabled { opacity: .5; cursor: not-allowed; }
+
+@media (max-width: 1100px) {
+  .sqlt-layout { grid-template-columns: minmax(0, 1fr); }
+  .sqlt-schema { position: static; max-height: none; }
+}
+@media (pointer: coarse) {
+  .sqlt-dot { width: 40px; height: 40px; }
+  .sqlt-kbd { display: none; }
+}
