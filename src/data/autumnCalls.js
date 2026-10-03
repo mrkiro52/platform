@@ -31,7 +31,11 @@ const SEPTEMBER_CALLS = [
 // Октябрь и ноябрь — по субботам. Тема у созвона пока одна: на остальные
 // даты она ещё не объявлена (topic: null), карточка покажет дату без темы.
 const OCTOBER_CALLS = [
-  { day: 3, topic: 'Системный дизайн для всех' },
+  {
+    day: 3,
+    topic: 'Системный дизайн для всех',
+    videos: [{ url: 'https://youtu.be/gx3YLGu70qc', label: 'Запись — часть 1' }],
+  },
   { day: 10, topic: 'Кибербезопасность: основы для всех' },
   { day: 17, topic: null },
   { day: 24, topic: null },
