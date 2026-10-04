@@ -4,8 +4,8 @@ import CodeEditor from '../../components/CodeEditor'
 import InlineMarkup from '../../components/InlineMarkup'
 
 // SQL-тренажёр: настоящие запросы к настоящей базе маркетплейса на сервере.
-// Сначала выбор тем и порядка задач, потом решение. Прогресс и черновики
-// живут только в состоянии страницы — после перезагрузки всё заново.
+// Сначала выбор тем и порядка задач, потом решение. Решённые задачи
+// сохраняет сервер (при верной проверке), черновики живут в странице.
 
 export function plural(n, one, few, many) {
   const m100 = n % 100
@@ -105,8 +105,47 @@ function SchemaPanel({ schema }) {
   )
 }
 
+// Мой id — чтобы отметить себя в таблице лидеров
+function myId() {
+  try { return JSON.parse(localStorage.getItem('kiro_user'))?.id ?? null } catch { return null }
+}
+
+function Leaderboard({ list }) {
+  const me = myId()
+  return (
+    <div className="sqlt-leaders">
+      <div className="sqlt-leaders-head">
+        <span className="sqlt-leaders-title">Лидеры тренажёра</span>
+        <span className="sqlt-leaders-sub">топ-5 по решённым задачам</span>
+      </div>
+      {!list.length ? (
+        <div className="sqlt-leaders-empty">Пока никто не решил ни одной задачи — стань первым</div>
+      ) : (
+        <ol className="sqlt-leaders-list">
+          {list.map((u, i) => {
+            const label = u.nickname || u.name || '?'
+            return (
+              <li key={u.id} className={`sqlt-leader${u.id === me ? ' is-me' : ''}`}>
+                <span className={`sqlt-place is-${i + 1}`}>{i + 1}</span>
+                {u.avatarUrl
+                  ? <img className="sqlt-ava" src={u.avatarUrl} alt="" loading="lazy" />
+                  : <span className="sqlt-ava">{(u.name || label).trim()[0]?.toUpperCase() || '?'}</span>}
+                <span className="sqlt-leader-name">
+                  {label}
+                  {u.id === me && <small> · это ты</small>}
+                </span>
+                <span className="sqlt-leader-score">{u.solved} {plural(u.solved, 'задача', 'задачи', 'задач')}</span>
+              </li>
+            )
+          })}
+        </ol>
+      )}
+    </div>
+  )
+}
+
 // ── Экран выбора тем ──
-function Setup({ categories, picked, setPicked, mode, setMode, onStart, solved }) {
+function Setup({ categories, picked, setPicked, mode, setMode, onStart, solved, leaderboard }) {
   const all = picked === 'all'
   const total = categories.reduce((n, c) => n + c.tasks.length, 0)
   const count = all ? total : categories.filter(c => picked.has(c.id)).reduce((n, c) => n + c.tasks.length, 0)
@@ -155,6 +194,8 @@ function Setup({ categories, picked, setPicked, mode, setMode, onStart, solved }
       <button type="button" className="sqlt-start" disabled={!count} onClick={onStart}>
         {count ? `Начать — ${count} ${plural(count, 'задача', 'задачи', 'задач')}` : 'Выбери хотя бы одну тему'}
       </button>
+
+      <Leaderboard list={leaderboard} />
     </div>
   )
 }
@@ -174,11 +215,16 @@ export default function SqlTraining({ onBack }) {
   const [hintOpen, setHintOpen] = useState(false)
   const resultRef = useRef(null)
 
-  useEffect(() => {
-    api.sqlTrainer()
-      .then(setData)
-      .catch(e => setLoadError(e.message || 'Не удалось загрузить тренажёр'))
-  }, [])
+  // Задания, схема, мой прогресс и таблица лидеров. Перезапрашиваем при
+  // возврате к выбору тем — чтобы лидерборд был свежим.
+  const load = () => api.sqlTrainer()
+    .then(d => {
+      setData(d)
+      setSolved(prev => new Set([...prev, ...(d.solved || [])]))
+    })
+    .catch(e => setLoadError(e.message || 'Не удалось загрузить тренажёр'))
+
+  useEffect(() => { load() }, [])
 
   const categories = data ? data.categories : []
   const titleOf = useMemo(() => Object.fromEntries(categories.map(c => [c.id, c.title])), [categories])
@@ -222,7 +268,7 @@ export default function SqlTraining({ onBack }) {
 
   const head = (
     <>
-      <button className="sqlt-back" onClick={phase === 'solve' ? () => setPhase('setup') : onBack}>
+      <button className="sqlt-back" onClick={phase === 'solve' ? () => { setPhase('setup'); load() } : onBack}>
         {phase === 'solve' ? '← Выбор тем' : '← Тренировки'}
       </button>
       <div className="page-header">
@@ -248,7 +294,7 @@ export default function SqlTraining({ onBack }) {
       <section className="page active sqlt">
         {head}
         <div className="sqlt-layout">
-          <Setup categories={categories} picked={picked} setPicked={setPicked} mode={mode} setMode={setMode} onStart={start} solved={solved} />
+          <Setup categories={categories} picked={picked} setPicked={setPicked} mode={mode} setMode={setMode} onStart={start} solved={solved} leaderboard={data.leaderboard || []} />
           <SchemaPanel schema={data.schema} />
         </div>
       </section>

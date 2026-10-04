@@ -930,6 +930,27 @@ function migrate() {
       console.error('❌ Migration 27 failed:', err.message)
     }
   }
+
+  // Migration 28: прогресс SQL-тренажёра — какие задачи решил каждый.
+  // Строка появляется, когда проверка засчитала ответ; повторное решение
+  // ничего не меняет.
+  if (schemaVersion < 28) {
+    try {
+      db.exec(`
+        CREATE TABLE IF NOT EXISTS sql_trainer_solved (
+          user_id   INTEGER NOT NULL,
+          task_id   TEXT    NOT NULL,
+          solved_at TEXT    NOT NULL,
+          PRIMARY KEY (user_id, task_id),
+          FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+        );
+      `)
+      db.pragma('user_version = 28')
+      console.log('✅ Migration 28 completed: added sql_trainer_solved')
+    } catch (err) {
+      console.error('❌ Migration 28 failed:', err.message)
+    }
+  }
 }
 
 migrate()
