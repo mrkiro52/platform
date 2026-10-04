@@ -13,6 +13,10 @@ ensureDatabase(file)
 
 const db = new Database(file, { readonly: true, fileMustExist: true })
 db.pragma('query_only = ON')
+// Кэш страниц — не больше 16 МБ, сортировки и временные таблицы — на диск,
+// а не в память: сервер маленький
+db.pragma('cache_size = -16000')
+db.pragma('temp_store = FILE')
 
 // Лимиты памяти SQLite в этой сборке не работают (она собрана без учёта
 // памяти), поэтому функции, которыми можно раздуть одно значение до
