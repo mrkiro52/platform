@@ -5,7 +5,7 @@ const AlgorithmComplexityTraining = lazy(() => import('./trainings/AlgorithmComp
 const PythonOutputTraining = lazy(() => import('./trainings/PythonOutputTraining'))
 const SqlTraining = lazy(() => import('./trainings/SqlTraining'))
 
-export const TRAININGS = [
+const TRAININGS = [
   {
     id: 'algorithm-complexity',
     title: 'Сложность алгоритмов',

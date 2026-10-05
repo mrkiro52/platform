@@ -1,10 +1,8 @@
-// События календаря на дэшборде из всех источников:
-// групповые созвоны и математика лагеря, личные созвоны и свои события.
+// События календаря на дэшборде: групповые созвоны и математика лагеря,
+// личные созвоны.
 
 import { CALL_MONTHS } from '../data/autumnCalls'
 import { MATH_SESSIONS } from '../data/mathCourse'
-
-const OWN_KEY = 'kiro_dash_events'
 
 export function pad(n) { return String(n).padStart(2, '0') }
 export function isoOf(date) {
@@ -52,25 +50,9 @@ function personalCallEvents(myCalls) {
   }))
 }
 
-export function loadOwnEvents() {
-  try {
-    const list = JSON.parse(localStorage.getItem(OWN_KEY))
-    return Array.isArray(list) ? list : []
-  } catch {
-    return []
-  }
-}
-
-export function saveOwnEvents(list) {
-  try { localStorage.setItem(OWN_KEY, JSON.stringify(list)) } catch { /* приватный режим */ }
-}
-
-export function allEvents({ isCamp, myCalls, own }) {
-  const list = [
-    ...(isCamp ? campEvents() : []),
-    ...(isCamp ? personalCallEvents(myCalls) : []),
-    ...own.map(e => ({ ...e, type: 'own', note: e.note || '' })),
-  ]
+export function allEvents({ isCamp, myCalls }) {
+  if (!isCamp) return []
+  const list = [...campEvents(), ...personalCallEvents(myCalls)]
   return list.sort((a, b) =>
     a.date.localeCompare(b.date) || (a.time || '').localeCompare(b.time || ''))
 }

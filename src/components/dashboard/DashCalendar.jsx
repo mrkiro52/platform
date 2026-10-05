@@ -10,7 +10,6 @@ const TYPES = {
   group: 'Групповой созвон',
   math:  'Математика',
   mine:  'Личный созвон',
-  own:   'Моё событие',
 }
 
 // Сетка месяца с понедельника: 6 недель, чтобы высота не прыгала
@@ -21,10 +20,10 @@ function monthGrid(year, month) {
   return Array.from({ length: 42 }, (_, i) => new Date(start.getFullYear(), start.getMonth(), start.getDate() + i))
 }
 
-function EventRow({ event, onDelete, onOpen, showDate }) {
+function EventRow({ event, onOpen, showDate }) {
   return (
     <div className={`dsh-ev is-${event.type}`}>
-      <span className={`dsh-ev-time${event.time ? '' : ' is-allday'}`}>{event.time || (event.type === 'own' ? 'весь день' : '—')}</span>
+      <span className={`dsh-ev-time${event.time ? '' : ' is-allday'}`}>{event.time || '—'}</span>
       <div className="dsh-ev-body">
         {showDate && <div className="dsh-ev-date">{dayLabel(event.date)}</div>}
         <div className="dsh-ev-title">
@@ -34,22 +33,16 @@ function EventRow({ event, onDelete, onOpen, showDate }) {
         </div>
         {event.note && <div className="dsh-ev-note">{event.note}</div>}
       </div>
-      {event.type === 'own' && (
-        <button type="button" className="dsh-ev-del" onClick={() => onDelete(event.id)} aria-label="Удалить событие" title="Удалить">×</button>
-      )}
     </div>
   )
 }
 
-export default function DashCalendar({ events, isCamp, onAdd, onDelete }) {
+export default function DashCalendar({ events, isCamp }) {
   const navigate = useNavigate()
   const today = new Date()
   const todayIso = isoOf(today)
   const [view, setView] = useState({ y: today.getFullYear(), m: today.getMonth() })
   const [selected, setSelected] = useState(todayIso)
-  const [adding, setAdding] = useState(false)
-  const [title, setTitle] = useState('')
-  const [time, setTime] = useState('')
 
   const byDay = useMemo(() => {
     const map = {}
@@ -60,23 +53,12 @@ export default function DashCalendar({ events, isCamp, onAdd, onDelete }) {
   const cells = monthGrid(view.y, view.m)
   const dayEvents = byDay[selected] || []
   const later = upcoming(events).filter(e => e.date > selected).slice(0, 4)
-  const legend = isCamp ? Object.keys(TYPES) : ['own']
 
   const shiftMonth = (delta) => setView(v => {
     const d = new Date(v.y, v.m + delta, 1)
     return { y: d.getFullYear(), m: d.getMonth() }
   })
   const goToday = () => { setView({ y: today.getFullYear(), m: today.getMonth() }); setSelected(todayIso) }
-
-  const submit = (e) => {
-    e.preventDefault()
-    const text = title.trim()
-    if (!text) return
-    onAdd({ id: `own-${Date.now()}`, date: selected, time: time || null, title: text })
-    setTitle('')
-    setTime('')
-    setAdding(false)
-  }
 
   return (
     <div className="widget dsh-cal">
@@ -110,7 +92,7 @@ export default function DashCalendar({ events, isCamp, onAdd, onDelete }) {
                   key={iso}
                   type="button"
                   className={cls}
-                  onClick={() => { setSelected(iso); setAdding(false) }}
+                  onClick={() => setSelected(iso)}
                   aria-label={`${d.getDate()} ${MONTHS[d.getMonth()].toLowerCase()}${list.length ? `, событий: ${list.length}` : ''}`}
                 >
                   <span className="dsh-cal-num">{d.getDate()}</span>
@@ -121,47 +103,27 @@ export default function DashCalendar({ events, isCamp, onAdd, onDelete }) {
               )
             })}
           </div>
+          {isCamp && (
           <div className="dsh-cal-legend">
-            {legend.map(t => <span key={t}><i className={`dot-${t}`} />{TYPES[t]}</span>)}
+            {Object.keys(TYPES).map(t => <span key={t}><i className={`dot-${t}`} />{TYPES[t]}</span>)}
           </div>
+          )}
         </div>
 
         <div className="dsh-cal-side">
           <div className="dsh-cal-side-head">
             <span className="dsh-cal-side-title">{dayLabel(selected)}</span>
-            {!adding && (
-              <button type="button" className="dsh-add-btn" onClick={() => setAdding(true)}>+ Событие</button>
-            )}
           </div>
 
-          {adding && (
-            <form className="dsh-add-form" onSubmit={submit}>
-              <input
-                id="dsh-event-title"
-                className="dsh-input"
-                value={title}
-                onChange={e => setTitle(e.target.value)}
-                placeholder="Например: дедлайн ДЗ, собеседование"
-                maxLength={80}
-                autoFocus
-              />
-              <div className="dsh-add-row">
-                <input id="dsh-event-time" className="dsh-input dsh-input-time" type="time" value={time} onChange={e => setTime(e.target.value)} aria-label="Время, необязательно" />
-                <button type="submit" className="dsh-btn-primary" disabled={!title.trim()}>Добавить</button>
-                <button type="button" className="dsh-btn-ghost" onClick={() => setAdding(false)}>Отмена</button>
-              </div>
-            </form>
+          {dayEvents.length === 0 && (
+            <p className="dsh-muted">{isCamp ? 'В этот день событий нет.' : 'В этот день событий нет. Здесь появятся созвоны и занятия, когда ты станешь участником лагеря.'}</p>
           )}
-
-          {dayEvents.length === 0 && !adding && (
-            <p className="dsh-muted">В этот день ничего нет. Добавь своё событие — оно сохранится в этом браузере.</p>
-          )}
-          {dayEvents.map(e => <EventRow key={e.id} event={e} onDelete={onDelete} onOpen={navigate} />)}
+          {dayEvents.map(e => <EventRow key={e.id} event={e} onOpen={navigate} />)}
 
           {later.length > 0 && (
             <>
               <div className="dsh-cal-later">Дальше</div>
-              {later.map(e => <EventRow key={e.id} event={e} onDelete={onDelete} onOpen={navigate} showDate />)}
+              {later.map(e => <EventRow key={e.id} event={e} onOpen={navigate} showDate />)}
             </>
           )}
         </div>

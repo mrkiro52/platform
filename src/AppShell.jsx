@@ -4,7 +4,6 @@ import Sidebar from './components/Sidebar'
 import TopBar from './components/TopBar'
 import { api } from './api'
 import { startAnalytics, trackPage } from './lib/analytics'
-import { rememberPage } from './lib/recent'
 import Dashboard from './pages/Dashboard'
 import Library from './pages/Library'
 import Links from './pages/Links'
@@ -99,10 +98,7 @@ export default function AppShell({ user, onLogout }) {
 
   // Аналитика поведения: визиты, разделы, активное время
   useEffect(() => { startAnalytics() }, [])
-  useEffect(() => {
-    trackPage(location.pathname)
-    rememberPage(location.pathname)
-  }, [location.pathname])
+  useEffect(() => { trackPage(location.pathname) }, [location.pathname])
 
   const openTheory = (day) => navigate(`/library/theory/${day.day}`)
 

@@ -7,8 +7,7 @@ import NotesTasks from '../components/dashboard/NotesTasks'
 import SqlProgress from '../components/dashboard/SqlProgress'
 import CampPanel from '../components/dashboard/CampPanel'
 import DailyQuestion from '../components/dashboard/DailyQuestion'
-import ContinueStrip from '../components/dashboard/ContinueStrip'
-import { allEvents, upcoming, countdown, dayLabel, loadOwnEvents, saveOwnEvents } from '../lib/dashEvents'
+import { allEvents, upcoming, countdown, dayLabel } from '../lib/dashEvents'
 
 const RU_MONTHS  = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря']
 const RU_WEEKDAY = ['воскресенье','понедельник','вторник','среда','четверг','пятница','суббота']
@@ -39,7 +38,7 @@ function NextEvent({ event, now }) {
         {event.note && <span className="dsh-next-note">{event.note}</span>}
       </span>
       <span className="dsh-next-time">
-        {dayLabel(event.date)}{event.time ? `, ${event.time}${event.type === 'own' ? '' : ' МСК'}` : ''}
+        {dayLabel(event.date)}{event.time ? `, ${event.time} МСК` : ''}
       </span>
     </button>
   )
@@ -48,7 +47,6 @@ function NextEvent({ event, now }) {
 export default function Dashboard({ user }) {
   const isCamp = !!user?.isAutumnCamp2026
   const [myCalls, setMyCalls] = useState([])
-  const [own, setOwn] = useState(loadOwnEvents)
   const [now, setNow] = useState(() => new Date())
 
   useEffect(() => {
@@ -63,20 +61,10 @@ export default function Dashboard({ user }) {
     return () => clearInterval(t)
   }, [])
 
-  const events = useMemo(() => allEvents({ isCamp, myCalls, own }), [isCamp, myCalls, own])
+  const events = useMemo(() => allEvents({ isCamp, myCalls }), [isCamp, myCalls])
   const weekAhead = new Date(now.getTime() + 7 * 86400000)
   const next = upcoming(events, now).find(e => new Date(`${e.date}T00:00:00`) <= weekAhead)
 
-  const addEvent = (event) => setOwn(list => {
-    const nextList = [...list, event]
-    saveOwnEvents(nextList)
-    return nextList
-  })
-  const deleteEvent = (id) => setOwn(list => {
-    const nextList = list.filter(e => e.id !== id)
-    saveOwnEvents(nextList)
-    return nextList
-  })
 
   const name = user?.nickname || user?.name || ''
   const weekday = RU_WEEKDAY[now.getDay()]
@@ -93,11 +81,9 @@ export default function Dashboard({ user }) {
 
       <NextEvent event={next} now={now} />
 
-      <ContinueStrip />
-
       <div className="dsh-grid">
         <div className="dsh-col dsh-col-main">
-          <DashCalendar events={events} isCamp={isCamp} onAdd={addEvent} onDelete={deleteEvent} />
+          <DashCalendar events={events} isCamp={isCamp} />
           {isCamp && <CampPanel />}
         </div>
         <div className="dsh-col dsh-col-side">

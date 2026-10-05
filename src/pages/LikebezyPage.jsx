@@ -11,7 +11,7 @@ const ItCareer2026Likbez = lazy(() => import('./likebezy/ItCareer2026Likbez'))
 const BackendInterviewLikbez = lazy(() => import('./likebezy/BackendInterviewLikbez'))
 const AvitoMlTestLikbez = lazy(() => import('./likebezy/AvitoMlTestLikbez'))
 
-export const LIKEBEZY = [
+const LIKEBEZY = [
   {
     id: 'avito-ml-test',
     title: 'Отборочный тест Avito ML Bootcamp',

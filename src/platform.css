@@ -4227,7 +4227,7 @@ body.reels-lock {
    DASHBOARD v2 — календарь, фокус, задачи, SQL, лагерь
    Сетка: слева основное (календарь, лагерь, SQL), справа инструменты.
 ================================================================ */
-.dsh { --c-group: #FFD60A; --c-math: #8AB4FF; --c-mine: #3FB950; --c-own: #F28CC6; }
+.dsh { --c-group: #FFD60A; --c-math: #8AB4FF; --c-mine: #3FB950; }
 .dsh-head { margin-bottom: 18px; }
 .dsh-grid { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: 16px; align-items: start; }
 .dsh-col { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
@@ -4253,7 +4253,7 @@ body.reels-lock {
 .dsh-btn-ghost { background: transparent; color: var(--text-secondary); border: 1px solid var(--border-color); font-weight: 600; }
 .dsh-btn-ghost:hover { color: var(--text-primary); border-color: #3a3a44; }
 .dsh-btn-primary:focus-visible, .dsh-btn-secondary:focus-visible, .dsh-btn-ghost:focus-visible,
-.dsh-cal-day:focus-visible, .dsh-continue-card:focus-visible, .dsh-camp-card:focus-visible, .dsh-next:focus-visible {
+.dsh-cal-day:focus-visible, .dsh-camp-card:focus-visible, .dsh-next:focus-visible {
   outline: 2px solid var(--accent-lime); outline-offset: 2px;
 }
 .dsh-link-btn { background: none; border: none; padding: 0; color: var(--accent-lime); font-size: 12px; font-weight: 600; cursor: pointer; }
@@ -4282,32 +4282,18 @@ body.reels-lock {
 .dsh-next:disabled { cursor: default; }
 .dsh-next.is-math { background: linear-gradient(90deg, rgba(138,180,255,0.12), rgba(138,180,255,0.02)); border-color: rgba(138,180,255,0.3); }
 .dsh-next.is-mine { background: linear-gradient(90deg, rgba(63,185,80,0.12), rgba(63,185,80,0.02)); border-color: rgba(63,185,80,0.32); }
-.dsh-next.is-own  { background: linear-gradient(90deg, rgba(242,140,198,0.12), rgba(242,140,198,0.02)); border-color: rgba(242,140,198,0.3); }
 .dsh-next-when {
   font: 700 12px/1 var(--font-inter); text-transform: uppercase; letter-spacing: .06em;
   color: var(--on-accent); background: var(--accent-lime); padding: 7px 10px; border-radius: 999px; white-space: nowrap;
 }
 .dsh-next.is-math .dsh-next-when { background: var(--c-math); }
 .dsh-next.is-mine .dsh-next-when { background: var(--c-mine); }
-.dsh-next.is-own .dsh-next-when { background: var(--c-own); }
 .dsh-next.is-live .dsh-next-when { animation: dsh-pulse 1.6s ease-in-out infinite; }
 @keyframes dsh-pulse { 50% { opacity: .65; } }
 .dsh-next-main { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
 .dsh-next-title { font: 700 15px/1.3 var(--font-syne); color: var(--text-primary); }
 .dsh-next-note { font-size: 13px; color: var(--text-secondary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .dsh-next-time { font-size: 13px; color: var(--text-secondary); white-space: nowrap; font-variant-numeric: tabular-nums; }
-
-/* Продолжить */
-.dsh-continue { margin-bottom: 18px; }
-.dsh-continue-row { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 10px; }
-.dsh-continue-card {
-  display: flex; flex-direction: column; gap: 4px; text-align: left; cursor: pointer; min-width: 0;
-  background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-md);
-  padding: 12px 14px; color: inherit; transition: border-color .15s, transform .15s;
-}
-.dsh-continue-card:hover { border-color: rgba(255,214,10,0.4); transform: translateY(-1px); }
-.dsh-continue-kind { font-size: 11px; font-weight: 700; color: var(--accent-lime); letter-spacing: .04em; text-transform: uppercase; }
-.dsh-continue-title { font-size: 14px; font-weight: 600; color: var(--text-primary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
 /* Календарь */
 .dsh-cal-nav { display: flex; align-items: center; gap: 4px; }
@@ -4336,19 +4322,12 @@ body.reels-lock {
 .dot-group { background: var(--c-group); }
 .dot-math { background: var(--c-math); }
 .dot-mine { background: var(--c-mine); }
-.dot-own { background: var(--c-own); }
 .dsh-cal-day.is-selected .dot-group { background: var(--on-accent); }
 .dsh-cal-legend { display: flex; flex-wrap: wrap; gap: 6px 14px; margin-top: 10px; font-size: 11.5px; color: var(--text-tertiary); }
 .dsh-cal-legend i { width: 7px; height: 7px; margin-right: 6px; }
 .dsh-cal-side { display: flex; flex-direction: column; gap: 8px; min-width: 0; border-left: 1px solid var(--border-color); padding-left: 20px; }
 .dsh-cal-side-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 30px; }
 .dsh-cal-side-title { font: 700 14px var(--font-syne); color: var(--text-primary); }
-.dsh-add-btn { background: none; border: 1px dashed #3a3a44; color: var(--text-secondary); border-radius: 8px; padding: 5px 10px; font-size: 12px; font-weight: 600; cursor: pointer; }
-.dsh-add-btn:hover { color: var(--accent-lime); border-color: rgba(255,214,10,0.5); }
-.dsh-add-form { display: flex; flex-direction: column; gap: 8px; }
-.dsh-add-row { display: flex; gap: 6px; flex-wrap: wrap; }
-.dsh-input-time { width: 110px; flex: none; color-scheme: dark; }
-.dsh-add-row .dsh-btn-primary, .dsh-add-row .dsh-btn-ghost { padding: 8px 12px; }
 .dsh-cal-later { font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--text-tertiary); margin-top: 10px; }
 .dsh-ev {
   display: grid; grid-template-columns: 62px minmax(0, 1fr) auto; gap: 10px; align-items: start;
@@ -4491,9 +4470,7 @@ body.reels-lock {
 @media (max-width: 480px) {
   .dsh-camp-grid { grid-template-columns: 1fr; }
   .dsh-sql-promo { flex-direction: column; }
-  .dsh-continue-row { grid-template-columns: 1fr 1fr; }
 }
 @media (prefers-reduced-motion: reduce) {
   .dsh-next.is-live .dsh-next-when, .dsh-skeleton { animation: none; }
-  .dsh-continue-card:hover { transform: none; }
 }
