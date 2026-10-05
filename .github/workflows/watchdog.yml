@@ -1,0 +1,54 @@
+name: Watchdog
+
+# Внешний сторож: раз в 5 минут проверяет платформу с серверов GitHub и пишет
+# администратору в Telegram, если она не отвечает. Работает, даже когда сервер
+# платформы умер целиком вместе с ботом-монитором. Пишет только при смене
+# состояния: «упала» один раз и «поднялась» один раз.
+on:
+  schedule:
+    - cron: '*/5 * * * *'
+  workflow_dispatch:
+
+concurrency: watchdog
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Restore last state
+        uses: actions/cache/restore@v4
+        with:
+          path: watchdog-state
+          key: watchdog-${{ github.run_id }}
+          restore-keys: watchdog-
+
+      - name: Check platform
+        env:
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          ADMIN_CHAT_ID: ${{ secrets.ADMIN_CHAT_ID }}
+        run: |
+          check() {
+            curl -fsS --max-time 15 -o /dev/null https://kiroplatform.ru/ &&
+            curl -fsS --max-time 15 https://kiroplatform.ru/api/health | grep -q '"db":"ok"'
+          }
+          # Две попытки с паузой, чтобы не тревожить из-за одного сбоя
+          if check || { sleep 30; check; }; then now=up; else now=down; fi
+          prev=$(cat watchdog-state 2>/dev/null || echo up)
+          echo "prev=$prev now=$now"
+          send() {
+            curl -sS --max-time 15 "https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage" \
+              --data-urlencode "chat_id=${ADMIN_CHAT_ID}" --data-urlencode "text=$1" > /dev/null
+          }
+          if [ "$prev" = up ] && [ "$now" = down ]; then
+            send "🔴 Платформа не отвечает (проверка снаружи, GitHub). Если бот-монитор молчит — сервер, скорее всего, завис целиком: перезагрузи его в панели хостинга."
+          elif [ "$prev" = down ] && [ "$now" = up ]; then
+            send "🟢 Платформа снова отвечает (проверка снаружи, GitHub)."
+          fi
+          echo "$now" > watchdog-state
+
+      - name: Save state
+        uses: actions/cache/save@v4
+        with:
+          path: watchdog-state
+          key: watchdog-${{ github.run_id }}

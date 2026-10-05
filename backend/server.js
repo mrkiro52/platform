@@ -39,6 +39,7 @@ app.get(['/admin', '/admin/*'], (req, res) => res.sendFile(path.join(__dirname, 
 
 // ── Health check ────────────────────────────────────────────────────────────
 app.get('/health', (req, res) => res.json({ status: 'ok', time: new Date().toISOString() }))
+app.use('/api/health', require('./src/routes/health'))
 
 // ── Error handler ───────────────────────────────────────────────────────────
 app.use((err, req, res, next) => {
