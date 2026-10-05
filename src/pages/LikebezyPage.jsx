@@ -2,6 +2,7 @@ import { useState, useEffect, lazy, Suspense } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 
 const PandasLikbez = lazy(() => import('./likebezy/PandasLikbez'))
+const NumpyLikbez = lazy(() => import('./likebezy/NumpyLikbez'))
 const SqlLikbez = lazy(() => import('./likebezy/SqlLikbez'))
 const MlLikbez = lazy(() => import('./likebezy/MlLikbez'))
 const PythonLikbez = lazy(() => import('./likebezy/PythonLikbez'))
@@ -84,6 +85,18 @@ const LIKEBEZY = [
     component: PandasLikbez,
   },
   {
+    id: 'numpy',
+    title: 'NumPy',
+    subtitle: 'Массивы, векторизация и линейная алгебра — фундамент анализа данных и ML',
+    tag: 'Python',
+    level: 'Junior → Middle',
+    time: '~50 мин',
+    chapters: 21,
+    questions: 63,
+    topics: ['ndarray и dtype', 'Индексация и маски', 'View и copy', 'Broadcasting', 'Оси и агрегации', 'Линейная алгебра'],
+    component: NumpyLikbez,
+  },
+  {
     id: 'sql',
     title: 'SQL',
     subtitle: 'Полный курс по базам данных',
@@ -110,7 +123,9 @@ const LIKEBEZY = [
 ]
 
 const COMING = [
-  { title: 'NumPy', tag: 'Python', desc: 'Массивы, линейная алгебра, векторизация' },
+  { title: 'C++', tag: 'C++', desc: 'Указатели, память, STL, ООП и шаблоны' },
+  { title: 'Системный дизайн', tag: 'Архитектура', desc: 'Масштабирование, кэши, очереди, базы данных' },
+  { title: 'Docker', tag: 'DevOps', desc: 'Образы, контейнеры, Dockerfile, Compose' },
   { title: 'Git & GitHub', tag: 'DevOps', desc: 'Ветки, merge, rebase, PR, CI/CD' },
 ]
 
@@ -122,6 +137,8 @@ const TAG_COLORS = {
   'ML':         { bg: 'rgba(34,197,94,0.1)',   border: 'rgba(34,197,94,0.25)',  text: '#4ade80' },
   'Карьера':    { bg: 'rgba(255,214,10,0.1)',  border: 'rgba(255,214,10,0.25)', text: '#FFD60A' },
   'Backend':    { bg: 'rgba(251,146,60,0.1)',  border: 'rgba(251,146,60,0.25)', text: '#fb923c' },
+  'C++':        { bg: 'rgba(14,165,233,0.1)',  border: 'rgba(14,165,233,0.25)', text: '#38bdf8' },
+  'Архитектура':{ bg: 'rgba(236,72,153,0.1)',  border: 'rgba(236,72,153,0.25)', text: '#f472b6' },
 }
 
 export default function LikebezyPage() {
