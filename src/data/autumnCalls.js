@@ -28,14 +28,16 @@ const SEPTEMBER_CALLS = [
   { day: 26, topic: 'Полный гайд по базам данных и SQL', videos: ['https://youtu.be/aivBh533CBQ'] },
 ]
 
-// Октябрь и ноябрь — по субботам. Тема у созвона пока одна: на остальные
-// даты она ещё не объявлена (topic: null), карточка покажет дату без темы.
+// Октябрь и ноябрь — по субботам, плюс отдельные созвоны в будни.
+// Где тема ещё не объявлена, topic: null — карточка покажет дату без темы.
+// time — время начала по Москве, если оно известно.
 const OCTOBER_CALLS = [
   {
     day: 3,
     topic: 'Системный дизайн для всех',
     videos: [{ url: 'https://youtu.be/gx3YLGu70qc', label: 'Запись — часть 1' }],
   },
+  { day: 6, topic: 'Системный дизайн для всех. Часть 2', time: '20:00' },
   { day: 10, topic: 'Кибербезопасность: основы для всех' },
   { day: 17, topic: null },
   { day: 24, topic: null },
@@ -55,7 +57,7 @@ export const CALL_MONTHS = AUTUMN_MONTHS.map(m => ({
   calls: CALLS_BY_MONTH[m.label],
 }))
 
-// Есть ли групповой созвон в этот день. Возвращает { topic } или null.
+// Есть ли групповой созвон в этот день. Возвращает { day, topic, time? } или null.
 export function groupCallOn(date) {
   if (date.getFullYear() !== 2026) return null
   const month = CALL_MONTHS.find(m => m.monthIndex === date.getMonth())

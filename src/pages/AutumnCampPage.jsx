@@ -102,7 +102,7 @@ function GroupCalls() {
                   <span className="call-card-month">{m.label.toLowerCase()}</span>
                 </div>
                 <div className="call-card-body">
-                  <div className="call-card-title">Групповой созвон</div>
+                  <div className="call-card-title">Групповой созвон{call.time ? ` · ${call.time} МСК` : ''}</div>
                   <div className="call-card-topic">Тема: {call.topic || 'будет скоро'}</div>
                   {(call.videos || []).map((video, i, all) => {
                     // Запись — либо просто ссылка, либо ссылка со своей подписью

@@ -5,7 +5,7 @@ const AlgorithmComplexityTraining = lazy(() => import('./trainings/AlgorithmComp
 const PythonOutputTraining = lazy(() => import('./trainings/PythonOutputTraining'))
 const SqlTraining = lazy(() => import('./trainings/SqlTraining'))
 
-const TRAININGS = [
+export const TRAININGS = [
   {
     id: 'algorithm-complexity',
     title: 'Сложность алгоритмов',
@@ -25,9 +25,9 @@ const TRAININGS = [
   {
     id: 'sql',
     title: 'SQL-тренажёр',
-    subtitle: 'Пиши настоящие SQL-запросы к живой базе маркетплейса — 10 задач на SELECT, WHERE и агрегаты',
+    subtitle: 'Пиши настоящие SQL-запросы к живой базе маркетплейса — 90 задач в 9 темах, от SELECT до оконных функций',
     tag: 'SQL',
-    questions: 10,
+    questions: 90,
     component: SqlTraining,
   },
 ]
