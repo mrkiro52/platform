@@ -38,7 +38,7 @@ const OCTOBER_CALLS = [
     videos: [{ url: 'https://youtu.be/gx3YLGu70qc', label: 'Запись — часть 1' }],
   },
   { day: 6, topic: 'Системный дизайн для всех. Часть 2', time: '20:00' },
-  { day: 10, topic: 'Кибербезопасность: основы для всех' },
+  { day: 10, topic: 'Кибербезопасность: основы для всех', time: '20:00' },
   { day: 17, topic: null },
   { day: 24, topic: null },
   { day: 31, topic: null },

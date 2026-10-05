@@ -266,18 +266,37 @@ export default function SqlTraining({ onBack }) {
     }
   }
 
+  // Сколько задач решено из всех — для плашки прогресса в шапке
+  const totalTasks = data ? data.categories.reduce((n, c) => n + c.tasks.length, 0) : 0
+  const solvedCount = data ? data.categories.reduce((n, c) => n + c.tasks.filter(t => solved.has(t.id)).length, 0) : 0
+  const solvedPct = totalTasks ? Math.round((solvedCount / totalTasks) * 100) : 0
+
   const head = (
     <>
       <button className="sqlt-back" onClick={phase === 'solve' ? () => { setPhase('setup'); load() } : onBack}>
         {phase === 'solve' ? '← Выбор тем' : '← Тренировки'}
       </button>
-      <div className="page-header">
+      <div className="sqlt-head-row">
+      <div className="page-header sqlt-head-intro">
         <h1 className="page-title">SQL-тренажёр</h1>
         <p className="page-subtitle">
           Настоящая база маркетплейса: 5 таблиц, около 50 тысяч строк, пропуски и разнобой — как в работе.
           Пиши SQL — запрос выполняется на сервере, а ответ сверяется с правильным.{' '}
           <b className="sqlt-lead">Чтобы посмотреть содержимое любой таблицы, открой «Схему базы», выбери таблицу и нажми «Посмотреть данные» — она откроется в новой вкладке.</b>
         </p>
+      </div>
+      {data && (
+        <div className="sqlt-head-progress" aria-label={`Решено ${solvedCount} из ${totalTasks} задач`}>
+          <span className="sqlt-head-progress-label">Твой прогресс</span>
+          <span className="sqlt-head-progress-num">{solvedCount}<span>/{totalTasks}</span></span>
+          <span className="sqlt-head-progress-bar"><i style={{ width: `${solvedPct}%` }} /></span>
+          <span className="sqlt-head-progress-sub">
+            {solvedCount === totalTasks
+              ? 'Все задачи решены'
+              : `Решено ${solvedPct}% · осталось ${totalTasks - solvedCount} ${plural(totalTasks - solvedCount, 'задача', 'задачи', 'задач')}`}
+          </span>
+        </div>
+      )}
       </div>
     </>
   )

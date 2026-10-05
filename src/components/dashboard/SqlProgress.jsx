@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { api } from '../../api'
 
-// SQL-тренажёр: прогресс по темам, если человек уже решал, иначе — приглашение.
+// SQL-тренажёр: прогресс, если человек уже решал, иначе — приглашение.
 
-// «WHERE: фильтрация строк» → «WHERE»: в узких местах хватает названия темы
+// «WHERE: фильтрация строк» → «WHERE»: в кнопке хватает названия темы
 const shortTitle = (title) => title.split(':')[0]
 
 function plural(n, one, few, many) {
@@ -48,11 +48,6 @@ export default function SqlProgress({ user }) {
               {total} задач на настоящей базе маркетплейса: 4 000 клиентов, 15 000 заказов, пропуски и грязные данные как в жизни.
               От SELECT до оконных функций — запрос проверяется сразу.
             </p>
-            <div className="dsh-chips">
-              {(categories.length ? categories.map(c => shortTitle(c.title)) : ['SELECT', 'WHERE', 'JOIN', 'GROUP BY', 'Оконные функции']).map(t => (
-                <span key={t} className="dsh-chip">{t}</span>
-              ))}
-            </div>
           </div>
         </div>
         <button type="button" className="dsh-btn-primary" onClick={open}>Начать решать</button>
@@ -82,19 +77,6 @@ export default function SqlProgress({ user }) {
               : 'Все задачи решены — тренажёр пройден целиком!'}
           </div>
         </div>
-      </div>
-
-      <div className="dsh-sql-topics">
-        {categories.map(c => {
-          const done = c.tasks.filter(t => solvedSet.has(t.id)).length
-          return (
-            <div key={c.id} className={`dsh-sql-topic${done === c.tasks.length ? ' is-done' : ''}`} title={`${c.title}: ${done} из ${c.tasks.length}`}>
-              <span className="dsh-sql-topic-name">{shortTitle(c.title)}</span>
-              <span className="dsh-sql-topic-bar"><i style={{ width: `${(done / c.tasks.length) * 100}%` }} /></span>
-              <span className="dsh-sql-topic-num">{done}/{c.tasks.length}</span>
-            </div>
-          )
-        })}
       </div>
 
       <button type="button" className="dsh-btn-primary" onClick={open}>

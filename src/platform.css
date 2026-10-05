@@ -4145,6 +4145,20 @@ body.reels-lock {
 
 /* SQL-тренажёр: выбор тем, порядок, страница таблицы, скроллбары */
 .sqlt-lead { color: var(--text-primary); font-weight: 700; }
+/* Шапка тренажёра: описание 70%, прогресс 30% */
+.sqlt-head-row { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 3fr); gap: 20px; align-items: stretch; margin-bottom: 24px; }
+.sqlt-head-row .page-header { margin-bottom: 0; }
+.sqlt-head-progress {
+  display: flex; flex-direction: column; justify-content: center; gap: 8px;
+  background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 18px;
+}
+.sqlt-head-progress-label { font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--text-tertiary); }
+.sqlt-head-progress-num { font: 700 34px/1 var(--font-syne); color: var(--text-primary); font-variant-numeric: tabular-nums; }
+.sqlt-head-progress-num span { font-size: 18px; color: var(--text-tertiary); }
+.sqlt-head-progress-bar { height: 8px; background: var(--bg-tertiary); border-radius: 999px; overflow: hidden; }
+.sqlt-head-progress-bar i { display: block; height: 100%; background: var(--accent-lime); border-radius: 999px; transition: width .4s; }
+.sqlt-head-progress-sub { font-size: 12.5px; color: var(--text-secondary); }
+@media (max-width: 860px) { .sqlt-head-row { grid-template-columns: 1fr; } }
 .sqlt-task-cat { font-size: 11.5px; color: var(--text-tertiary); }
 .sqlt-ordered { margin: 8px 0 0; font-size: 12.5px; color: #FFB870; }
 
@@ -4338,11 +4352,8 @@ body.reels-lock {
 .dsh-cal-later { font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--text-tertiary); margin-top: 10px; }
 .dsh-ev {
   display: grid; grid-template-columns: 62px minmax(0, 1fr) auto; gap: 10px; align-items: start;
-  padding: 9px 10px; border-radius: 9px; background: var(--bg-tertiary); border-left: 3px solid var(--c-own);
+  padding: 9px 10px; border-radius: 9px; background: var(--bg-tertiary);
 }
-.dsh-ev.is-group { border-left-color: var(--c-group); }
-.dsh-ev.is-math { border-left-color: var(--c-math); }
-.dsh-ev.is-mine { border-left-color: var(--c-mine); }
 .dsh-ev-time { font: 700 12px/1.5 var(--font-mono); color: var(--text-secondary); }
 .dsh-ev-time.is-allday { font: 600 11px/1.6 var(--font-inter); color: var(--text-tertiary); }
 .dsh-ev-body { min-width: 0; }
@@ -4423,13 +4434,6 @@ body.reels-lock {
 .dsh-sql-summary-text { flex: 1; display: flex; flex-direction: column; gap: 7px; min-width: 0; }
 .dsh-progress { height: 8px; background: var(--bg-tertiary); border-radius: 999px; overflow: hidden; }
 .dsh-progress > div { height: 100%; background: var(--accent-lime); border-radius: 999px; transition: width .4s; }
-.dsh-sql-topics { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 6px 18px; margin-bottom: 16px; }
-.dsh-sql-topic { display: grid; grid-template-columns: minmax(0, 1fr) 56px 34px; gap: 8px; align-items: center; font-size: 12.5px; }
-.dsh-sql-topic-name { color: var(--text-secondary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.dsh-sql-topic-bar { height: 5px; background: var(--bg-tertiary); border-radius: 999px; overflow: hidden; }
-.dsh-sql-topic-bar i { display: block; height: 100%; background: var(--c-math); border-radius: 999px; }
-.dsh-sql-topic.is-done .dsh-sql-topic-bar i { background: var(--c-mine); }
-.dsh-sql-topic-num { text-align: right; color: var(--text-tertiary); font-variant-numeric: tabular-nums; }
 
 /* Лагерь */
 .dsh-camp-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-bottom: 14px; }
@@ -4462,7 +4466,7 @@ body.reels-lock {
 .dsh-question-q { margin: 0 0 8px; font: 600 15px/1.5 var(--font-inter); color: var(--text-primary); }
 .dsh-question-a {
   margin: 0; font-size: 13.5px; line-height: 1.65; color: var(--text-secondary);
-  background: var(--bg-tertiary); border-radius: var(--radius-sm); padding: 10px 12px; border-left: 3px solid var(--accent-lime);
+  background: var(--bg-tertiary); border-radius: var(--radius-sm); padding: 10px 12px;
 }
 .dsh-question-btns { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
 

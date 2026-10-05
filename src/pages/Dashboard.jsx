@@ -99,9 +99,9 @@ export default function Dashboard({ user }) {
         <div className="dsh-col dsh-col-main">
           <DashCalendar events={events} isCamp={isCamp} onAdd={addEvent} onDelete={deleteEvent} />
           {isCamp && <CampPanel />}
-          <SqlProgress user={user} />
         </div>
         <div className="dsh-col dsh-col-side">
+          <SqlProgress user={user} />
           <FocusTimer />
           <NotesTasks />
           <DailyQuestion />
