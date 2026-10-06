@@ -1,47 +1,22 @@
-import { useMemo, useState } from 'react'
-import { AUDIENCES, SECTIONS } from '../data/libraryCatalog'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { SECTIONS } from '../data/libraryCatalog'
 
-// Библиотека знаний: разделы в порядке изучения, внутри — порядок чтения.
-// Фильтр по направлению показывает маршрут: общая база + материалы направления.
-// Поиск — по подстроке в названии, без учёта регистра и разницы «е/ё».
+// Библиотека знаний: разделы в порядке изучения, внутри — конспекты в порядке
+// чтения. Слева поиск по подстроке в названии (без учёта регистра и «е/ё»),
+// справа выбор категорий: можно отметить несколько и сохранить.
 
-const OPENED_KEY = 'kiro_library_opened'
-const AUDIENCE_KEY = 'kiro_library_audience'
-
-const AUDIENCE_LABEL = Object.fromEntries(AUDIENCES.map(a => [a.key, a.label]))
+const CATEGORIES_KEY = 'kiro_library_categories'
 const TOTAL = SECTIONS.reduce((n, s) => n + s.items.length, 0)
-
-const FILTERS = [
-  { key: 'everything', label: 'Все материалы' },
-  ...AUDIENCES,
-]
-
-function readOpened() {
-  try {
-    const list = JSON.parse(localStorage.getItem(OPENED_KEY))
-    return new Set(Array.isArray(list) ? list : [])
-  } catch {
-    return new Set()
-  }
-}
-
-function readAudience() {
-  try {
-    const v = localStorage.getItem(AUDIENCE_KEY)
-    return FILTERS.some(f => f.key === v) ? v : 'everything'
-  } catch {
-    return 'everything'
-  }
-}
 
 const normalize = (s) => s.toLowerCase().replace(/ё/g, 'е')
 
-// Подходит ли материал под выбранное направление. Маршрут направления —
-// это его материалы плюс общая база «для всех»; «Для всех» и «Карьера» — только свои.
-function fits(item, filter) {
-  if (filter === 'everything') return true
-  if (filter === 'all' || filter === 'career') return item.for.includes(filter)
-  return item.for.includes(filter) || item.for.includes('all')
+function readCategories() {
+  try {
+    const list = JSON.parse(localStorage.getItem(CATEGORIES_KEY))
+    return Array.isArray(list) ? list.filter(k => SECTIONS.some(s => s.key === k)) : []
+  } catch {
+    return []
+  }
 }
 
 function Highlight({ text, query }) {
@@ -57,73 +32,126 @@ function Highlight({ text, query }) {
   )
 }
 
-function AudienceChips({ list }) {
+function LessonCard({ item, num, query, sectionTitle, onOpen }) {
   return (
-    <span className="lib-chips">
-      {list.map(a => <span key={a} className={`lib-chip is-${a}`}>{AUDIENCE_LABEL[a]}</span>)}
-    </span>
+    <button type="button" className="lib-card" onClick={() => onOpen(item)}>
+      <span className="lib-card-top">
+        <span className="lib-card-num">{num}</span>
+        {sectionTitle && <span className="lib-card-section">{sectionTitle}</span>}
+      </span>
+      <span className="lib-card-title"><Highlight text={item.title} query={query} /></span>
+      <span className="lib-card-open">Читать →</span>
+    </button>
   )
 }
 
-function LessonRow({ item, num, opened, query, sectionTitle, onOpen }) {
+function CategoryPicker({ selected, onSave }) {
+  const [open, setOpen] = useState(false)
+  const [draft, setDraft] = useState(selected)
+  const ref = useRef(null)
+
+  useEffect(() => {
+    if (!open) return
+    const onDown = (e) => { if (ref.current && !ref.current.contains(e.target)) setOpen(false) }
+    const onKey = (e) => { if (e.key === 'Escape') setOpen(false) }
+    document.addEventListener('mousedown', onDown)
+    document.addEventListener('keydown', onKey)
+    return () => {
+      document.removeEventListener('mousedown', onDown)
+      document.removeEventListener('keydown', onKey)
+    }
+  }, [open])
+
+  const toggleOpen = () => {
+    if (!open) setDraft(selected)
+    setOpen(o => !o)
+  }
+  const toggle = (key) => setDraft(d => (d.includes(key) ? d.filter(k => k !== key) : [...d, key]))
+  const save = () => { onSave(draft); setOpen(false) }
+
   return (
-    <button type="button" className={`lib-row${opened ? ' is-opened' : ''}`} onClick={() => onOpen(item)}>
-      <span className="lib-row-num">{opened ? '✓' : num}</span>
-      <span className="lib-row-body">
-        {sectionTitle && <span className="lib-row-section">{sectionTitle}</span>}
-        <span className="lib-row-title"><Highlight text={item.title} query={query} /></span>
-      </span>
-      <AudienceChips list={item.for} />
-    </button>
+    <div className="lib-picker" ref={ref}>
+      <button
+        type="button"
+        className={`lib-picker-btn${selected.length ? ' is-active' : ''}`}
+        onClick={toggleOpen}
+        aria-expanded={open}
+        aria-haspopup="true"
+      >
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <path d="M3 5h18M6 12h12M10 19h4" />
+        </svg>
+        {selected.length ? `Категории: ${selected.length}` : 'Выбрать категории'}
+      </button>
+
+      {open && (
+        <div className="lib-picker-panel" role="dialog" aria-label="Выбор категорий">
+          <div className="lib-picker-head">
+            <span className="lib-picker-title">Категории</span>
+            <button type="button" className="lib-picker-link" onClick={() => setDraft(draft.length === SECTIONS.length ? [] : SECTIONS.map(s => s.key))}>
+              {draft.length === SECTIONS.length ? 'Снять все' : 'Выбрать все'}
+            </button>
+          </div>
+          <div className="lib-picker-list">
+            {SECTIONS.map(s => {
+              const on = draft.includes(s.key)
+              return (
+                <label key={s.key} className={`lib-picker-item${on ? ' is-on' : ''}`}>
+                  <input id={`lib-cat-${s.key}`} type="checkbox" checked={on} onChange={() => toggle(s.key)} />
+                  <span className="lib-picker-check" aria-hidden="true">
+                    {on && (
+                      <svg width="11" height="8" viewBox="0 0 11 8" fill="none"><path d="M1 3.5L4 6.5L10 1" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                    )}
+                  </span>
+                  <span className="lib-picker-name">{s.title}</span>
+                  <span className="lib-picker-count">{s.items.length}</span>
+                </label>
+              )
+            })}
+          </div>
+          <div className="lib-picker-foot">
+            <button type="button" className="lib-picker-cancel" onClick={() => setOpen(false)}>Отмена</button>
+            <button type="button" className="lib-picker-save" onClick={save}>Сохранить</button>
+          </div>
+        </div>
+      )}
+    </div>
   )
 }
 
 export default function Library({ onOpenTheory }) {
   const [query, setQuery] = useState('')
-  const [filter, setFilter] = useState(readAudience)
-  const [opened, setOpened] = useState(readOpened)
+  const [selected, setSelected] = useState(readCategories)
 
-  const chooseFilter = (key) => {
-    setFilter(key)
-    try { localStorage.setItem(AUDIENCE_KEY, key) } catch { /* приватный режим */ }
+  const saveCategories = (keys) => {
+    // Порядок категорий — как в каталоге, а не как их отмечали
+    const ordered = SECTIONS.map(s => s.key).filter(k => keys.includes(k))
+    setSelected(ordered)
+    try { localStorage.setItem(CATEGORIES_KEY, JSON.stringify(ordered)) } catch { /* приватный режим */ }
   }
 
-  const open = (item) => {
-    const next = new Set(opened)
-    next.add(item.id)
-    setOpened(next)
-    try { localStorage.setItem(OPENED_KEY, JSON.stringify([...next])) } catch { /* приватный режим */ }
-    onOpenTheory({ day: item.id })
-  }
+  const open = (item) => onOpenTheory({ day: item.id })
 
-  // Разделы маршрута: только подходящие материалы, пустые разделы скрыты
-  const sections = useMemo(() => SECTIONS
-    .map(s => ({ ...s, items: s.items.filter(i => fits(i, filter)) }))
-    .filter(s => s.items.length > 0), [filter])
+  const sections = useMemo(
+    () => (selected.length ? SECTIONS.filter(s => selected.includes(s.key)) : SECTIONS),
+    [selected],
+  )
 
   const q = query.trim()
   const results = useMemo(() => {
     if (!q) return null
     const needle = normalize(q)
     return sections.flatMap(s => s.items
-      .filter(i => normalize(i.title).includes(needle))
-      .map(i => ({ item: i, section: s.title })))
+      .map((item, i) => ({ item, num: i + 1, section: s.title }))
+      .filter(r => normalize(r.item.title).includes(needle)))
   }, [q, sections])
-
-  const routeItems = sections.flatMap(s => s.items)
-  const routeOpened = routeItems.filter(i => opened.has(i.id)).length
-  const nextItem = routeItems.find(i => !opened.has(i.id))
-  const nextSection = nextItem && sections.find(s => s.items.includes(nextItem))
-  const filterLabel = FILTERS.find(f => f.key === filter)?.label
-
-  const jump = (key) => document.getElementById(`lib-${key}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
 
   return (
     <section className="page active lib">
       <div className="page-header">
         <h1 className="page-title">Библиотека знаний</h1>
         <p className="page-subtitle">
-          {TOTAL} конспектов в {SECTIONS.length} разделах. Разделы идут в порядке изучения, внутри — в порядке чтения: начинай сверху.
+          {TOTAL} конспектов в {SECTIONS.length} категориях. Категории идут в порядке изучения, внутри — в порядке чтения.
         </p>
       </div>
 
@@ -145,106 +173,50 @@ export default function Library({ onOpenTheory }) {
             <button type="button" className="lib-search-clear" onClick={() => setQuery('')} aria-label="Очистить поиск">×</button>
           )}
         </label>
-
-        <div className="lib-filters" role="group" aria-label="Направление">
-          {FILTERS.map(f => (
-            <button
-              key={f.key}
-              type="button"
-              className={`lib-filter${filter === f.key ? ' is-active' : ''}`}
-              aria-pressed={filter === f.key}
-              onClick={() => chooseFilter(f.key)}
-            >
-              {f.label}
-            </button>
-          ))}
-        </div>
+        <CategoryPicker selected={selected} onSave={saveCategories} />
       </div>
 
+      {selected.length > 0 && (
+        <div className="lib-selected">
+          {sections.map(s => (
+            <button key={s.key} type="button" className="lib-selected-chip" onClick={() => saveCategories(selected.filter(k => k !== s.key))} aria-label={`Убрать категорию ${s.title}`}>
+              {s.title} <span aria-hidden="true">×</span>
+            </button>
+          ))}
+          <button type="button" className="lib-picker-link" onClick={() => saveCategories([])}>Показать все</button>
+        </div>
+      )}
+
       {results ? (
-        <div className="lib-results">
+        <div>
           <div className="lib-results-head">
             {results.length
-              ? `Найдено: ${results.length}${filter !== 'everything' ? ` · направление «${filterLabel}»` : ''}`
-              : `По запросу «${q}» ничего не найдено${filter !== 'everything' ? ` в направлении «${filterLabel}». Попробуй «Все материалы»` : ''}.`}
+              ? `Найдено: ${results.length}`
+              : `По запросу «${q}» ничего не найдено${selected.length ? ' в выбранных категориях' : ''}.`}
           </div>
-          <div className="lib-list">
-            {results.map(({ item, section }) => (
-              <LessonRow
-                key={item.id}
-                item={item}
-                num="·"
-                opened={opened.has(item.id)}
-                query={q}
-                sectionTitle={section}
-                onOpen={open}
-              />
+          <div className="lib-grid">
+            {results.map(r => (
+              <LessonCard key={r.item.id} item={r.item} num={r.num} query={q} sectionTitle={r.section} onOpen={open} />
             ))}
           </div>
         </div>
       ) : (
-        <>
-          <div className="lib-route">
-            <div className="lib-route-text">
-              <div className="lib-route-title">
-                {filter === 'everything' ? 'Весь маршрут' : `Маршрут: ${filterLabel}`}
+        <div className="lib-sections">
+          {sections.map(s => (
+            <section key={s.key} className="lib-section">
+              <div className="lib-section-head">
+                <h2 className="lib-section-title">{s.title}</h2>
+                <span className="lib-section-count">{s.items.length}</span>
               </div>
-              <div className="lib-route-sub">
-                {filter === 'everything' && 'Все материалы платформы. Выбери направление, чтобы оставить только нужное.'}
-                {filter === 'all' && 'Общая база, которая нужна в любой профессии в IT.'}
-                {filter === 'career' && 'Резюме, собеседования, soft skills и как учиться.'}
-                {!['everything', 'all', 'career'].includes(filter) && 'Общая база и материалы направления в порядке изучения.'}
+              <p className="lib-section-about">{s.about}</p>
+              <div className="lib-grid">
+                {s.items.map((item, n) => (
+                  <LessonCard key={item.id} item={item} num={n + 1} onOpen={open} />
+                ))}
               </div>
-              <div className="lib-progress" aria-label={`Открыто ${routeOpened} из ${routeItems.length}`}>
-                <i style={{ width: `${routeItems.length ? (routeOpened / routeItems.length) * 100 : 0}%` }} />
-              </div>
-              <div className="lib-route-count">Открыто {routeOpened} из {routeItems.length}</div>
-            </div>
-            {nextItem && (
-              <button type="button" className="lib-next" onClick={() => open(nextItem)}>
-                <span className="lib-next-label">{routeOpened ? 'Читать дальше' : 'Начать с первого'}</span>
-                <span className="lib-next-title">{nextItem.title}</span>
-                <span className="lib-next-section">{nextSection.title}</span>
-              </button>
-            )}
-          </div>
-
-          <div className="lib-layout">
-            <nav className="lib-toc" aria-label="Разделы">
-              {sections.map((s, i) => {
-                const done = s.items.filter(it => opened.has(it.id)).length
-                return (
-                  <button key={s.key} type="button" className="lib-toc-item" onClick={() => jump(s.key)}>
-                    <span className="lib-toc-num">{i + 1}</span>
-                    <span className="lib-toc-title">{s.title}</span>
-                    <span className="lib-toc-count">{done}/{s.items.length}</span>
-                  </button>
-                )
-              })}
-            </nav>
-
-            <div className="lib-sections">
-              {sections.map((s, i) => {
-                const done = s.items.filter(it => opened.has(it.id)).length
-                return (
-                  <section key={s.key} id={`lib-${s.key}`} className="lib-section">
-                    <div className="lib-section-head">
-                      <span className="lib-section-step">Шаг {i + 1}</span>
-                      <h2 className="lib-section-title">{s.title}</h2>
-                      <span className="lib-section-count">{done}/{s.items.length}</span>
-                    </div>
-                    <p className="lib-section-about">{s.about}</p>
-                    <div className="lib-list">
-                      {s.items.map((item, n) => (
-                        <LessonRow key={item.id} item={item} num={n + 1} opened={opened.has(item.id)} onOpen={open} />
-                      ))}
-                    </div>
-                  </section>
-                )
-              })}
-            </div>
-          </div>
-        </>
+            </section>
+          ))}
+        </div>
       )}
     </section>
   )
