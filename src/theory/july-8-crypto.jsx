@@ -6,7 +6,7 @@ function Fig({ children, caption }) {
   return (
     <figure style={{ margin: '18px 0', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
       <div style={{
-        width: '100%', maxWidth: 640, background: '#12121e', border: '1px solid #2a2a3a',
+        width: '100%', maxWidth: 640, background: 'var(--bg-tertiary)', border: '1px solid var(--border-color)',
         borderRadius: 10, padding: '16px', display: 'flex', justifyContent: 'center', overflowX: 'auto',
       }}>{children}</div>
       {caption && <figcaption style={{ color: 'var(--text-tertiary)', fontSize: 12.5, textAlign: 'center', maxWidth: 640 }}>{caption}</figcaption>}
@@ -56,10 +56,8 @@ export default function July8CryptoTheory() {
     <div className="theory-container">
       <section className="theory-section">
         <h1 className="theory-title">Криптография</h1>
-        <p className="theory-subtitle">Трек: Кибербезопасность</p>
-        <p className="theory-date">8 июля 2026</p>
         <p>
-          Криптография — наука о защите информации математическими методами. Сегодня разберём четыре связанные
+          Криптография — наука о защите информации математическими методами. В этом конспекте разберём четыре связанные
           темы: <strong>какие цели</strong> преследует применение криптографии и в каком порядке достигаются;{' '}
           <strong>что такое криптографическая система</strong> и как их классифицируют, включая госрегулирование в
           РФ; <strong>что такое криптографический протокол</strong> и какими свойствами он должен обладать; и{' '}
@@ -295,7 +293,7 @@ export default function July8CryptoTheory() {
         </P>
         <P n={19}>
           <strong>Применение хэш-функций.</strong> Проверка целостности файлов и загрузок (сравнение хэша до и
-          после передачи); хранение паролей — хранят не сам пароль, а его хэш с солью (см. занятие про
+          после передачи); хранение паролей — хранят не сам пароль, а его хэш с солью (см. конспект про
           аутентификацию); основа электронной подписи — подписывают не весь документ целиком, а его хэш (быстрее,
           но не менее надёжно благодаря стойкости к коллизиям); основа блокчейна — каждый блок ссылается на хэш
           предыдущего, что делает цепочку неизменяемой без пересчёта всех последующих хэшей.

@@ -5,8 +5,6 @@ export default function July1HtmlTheory() {
     <div className="theory-container">
       <section className="theory-section">
         <h1 className="theory-title">Основы HTML</h1>
-        <p className="theory-subtitle">Трек: Frontend-разработка</p>
-        <p className="theory-date">1 июля 2026</p>
         <p>
           HTML (HyperText Markup Language) — язык разметки, «скелет» любой веб-страницы. Он не
           программирует логику, а описывает структуру: что тут заголовок, что абзац, что картинка,
@@ -180,7 +178,7 @@ export default function July1HtmlTheory() {
 <aside>Боковая колонка</aside>
 <footer>Подвал: контакты, копирайт</footer>`} />
         <TheoryTable
-          headers={['Семантично ✅', 'Несемантично ❌']}
+          headers={['Семантично ✓', 'Несемантично ✗']}
           rows={[
             ['<nav>', '<div class="nav">'],
             ['<header>', '<div class="header">'],

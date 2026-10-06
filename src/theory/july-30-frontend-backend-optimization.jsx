@@ -4,7 +4,7 @@ function Fig({ children, caption }) {
   return (
     <figure style={{ margin: '18px 0', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
       <div style={{
-        width: '100%', maxWidth: 680, background: '#12121e', border: '1px solid #2a2a3a',
+        width: '100%', maxWidth: 680, background: 'var(--bg-tertiary)', border: '1px solid var(--border-color)',
         borderRadius: 12, padding: '16px', display: 'flex', justifyContent: 'center', overflowX: 'auto',
       }}>{children}</div>
       {caption && <figcaption style={{ color: 'var(--text-tertiary)', fontSize: 12.5, textAlign: 'center', maxWidth: 680 }}>{caption}</figcaption>}
@@ -39,10 +39,8 @@ export default function July30OptimizationTheory() {
     <div className="theory-container">
       <section className="theory-section">
         <h1 className="theory-title">Методы оптимизации фронтенда и бэкенда</h1>
-        <p className="theory-subtitle">Трек: Frontend / Backend</p>
-        <p className="theory-date">30 июля 2026</p>
         <p>
-          Оптимизация — это не одно действие, а набор приёмов разного уровня сложности. Сегодня пройдём путь от
+          Оптимизация — это не одно действие, а набор приёмов разного уровня сложности. Пройдём путь от
           «включить одну настройку и получить прирост» до сложных архитектурных решений, которые применяют в
           высоконагруженных системах. Разберём отдельно фронтенд и бэкенд, от простого к сложному.
         </p>

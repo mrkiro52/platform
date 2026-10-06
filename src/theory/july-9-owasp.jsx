@@ -6,7 +6,7 @@ function Fig({ children, caption }) {
   return (
     <figure style={{ margin: '18px 0', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
       <div style={{
-        width: '100%', maxWidth: 640, background: '#12121e', border: '1px solid #2a2a3a',
+        width: '100%', maxWidth: 640, background: 'var(--bg-tertiary)', border: '1px solid var(--border-color)',
         borderRadius: 10, padding: '16px', display: 'flex', justifyContent: 'center', overflowX: 'auto',
       }}>{children}</div>
       {caption && <figcaption style={{ color: 'var(--text-tertiary)', fontSize: 12.5, textAlign: 'center', maxWidth: 640 }}>{caption}</figcaption>}
@@ -39,7 +39,7 @@ function P({ n, children }) {
 // Карточка одной категории OWASP
 function Risk({ code, title, children }) {
   return (
-    <div style={{ margin: '16px 0', padding: '14px 16px', background: 'var(--bg-secondary)', border: '1px solid var(--border-color)', borderRadius: 10 }}>
+    <div style={{ margin: '16px 0', padding: '14px 16px', background: 'var(--bg-tertiary)', border: '1px solid var(--border-color)', borderRadius: 10 }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
         <span style={{ background: 'rgba(248,113,113,0.15)', color: '#f87171', fontWeight: 700, fontSize: 12, padding: '3px 10px', borderRadius: 6, fontFamily: 'monospace' }}>{code}</span>
         <span style={{ color: 'var(--text-primary)', fontWeight: 700, fontSize: 16 }}>{title}</span>
@@ -63,8 +63,6 @@ export default function July9OwaspTheory() {
     <div className="theory-container">
       <section className="theory-section">
         <h1 className="theory-title">OWASP Top 10: полный разбор</h1>
-        <p className="theory-subtitle">Трек: Кибербезопасность</p>
-        <p className="theory-date">9 июля 2026</p>
         <p>
           Большинство взломов веб-приложений происходят не из-за экзотических атак, а из-за одних и тех же типовых
           ошибок. <strong>OWASP Top 10</strong> — это составленный сообществом OWASP список десяти самых

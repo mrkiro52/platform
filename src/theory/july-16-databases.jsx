@@ -5,7 +5,7 @@ function Fig({ children, caption }) {
   return (
     <figure style={{ margin: '18px 0', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
       <div style={{
-        width: '100%', maxWidth: 640, background: '#12121e', border: '1px solid #2a2a3a',
+        width: '100%', maxWidth: 640, background: 'var(--bg-tertiary)', border: '1px solid var(--border-color)',
         borderRadius: 10, padding: '16px', display: 'flex', justifyContent: 'center', overflowX: 'auto',
       }}>{children}</div>
       {caption && <figcaption style={{ color: 'var(--text-tertiary)', fontSize: 12.5, textAlign: 'center', maxWidth: 640 }}>{caption}</figcaption>}
@@ -40,11 +40,9 @@ export default function July16DatabasesTheory({ videoUrl }) {
     <div className="theory-container">
       <section className="theory-section">
         <h1 className="theory-title">Все виды баз данных: сходства и отличия</h1>
-        <p className="theory-subtitle">Треки: Frontend и Backend</p>
-        <p className="theory-date">16 июля 2026</p>
         <p>
           «База данных» — не одна технология, а целое семейство очень разных инструментов, каждый из которых
-          хорош для своей задачи. Сегодня разберём реляционные, документные, ключ-значение, колоночные, графовые
+          хорош для своей задачи. В этом конспекте разберём реляционные, документные, ключ-значение, колоночные, графовые
           и полнотекстовые базы данных: чем они похожи, чем отличаются, на конкретных командах — как их запускать,
           настраивать и с ними работать, и в каком случае какую выбрать.
         </p>

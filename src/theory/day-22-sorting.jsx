@@ -8,13 +8,16 @@ export default function Day22SortingTheory({ videoUrl }) {
     <div className="theory-container">
       <section className="theory-section">
         <h1 className="theory-title">Алгоритмы: сортировки и поиск</h1>
+        <p>
+          Сортировка и поиск — классика алгоритмических собеседований и основа множества реальных задач. Разберём, как работают основные алгоритмы сортировки, сравним их сложность и подробно изучим бинарный поиск.
+        </p>
       </section>
 
       {videoUrl && <VideoPlayer src={videoUrl} />}
 
       {/* ─── Интерактив ─── */}
       <section className="theory-section">
-        <h2 className="theory-heading-2">🎮 Визуализация: запусти и посмотри</h2>
+        <h2 className="theory-heading-2">Визуализация: запусти и посмотри</h2>
         <p>
           Лучший способ понять сортировку — увидеть её в действии. Выбери алгоритм, нажми
           «Запустить» и наблюдай, как меняются местами элементы. Жёлтым подсвечиваются сравниваемые

@@ -7,7 +7,7 @@ function Fig({ children, caption }) {
   return (
     <figure style={{ margin: '18px 0', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
       <div style={{
-        width: '100%', maxWidth: 640, background: '#12121e', border: '1px solid #2a2a3a',
+        width: '100%', maxWidth: 640, background: 'var(--bg-tertiary)', border: '1px solid var(--border-color)',
         borderRadius: 10, padding: '16px', display: 'flex', justifyContent: 'center', overflowX: 'auto',
       }}>{children}</div>
       {caption && <figcaption style={{ color: 'var(--text-tertiary)', fontSize: 12.5, textAlign: 'center', maxWidth: 640 }}>{caption}</figcaption>}
@@ -29,7 +29,7 @@ function Formula({ children, note }) {
     <div style={{ margin: '18px 0', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
       <div style={{
         fontFamily: 'Georgia, "Times New Roman", serif', fontSize: 21, color: 'var(--text-primary)',
-        background: 'var(--bg-secondary)', border: '1px solid var(--border-color)', borderRadius: 10,
+        background: 'var(--bg-tertiary)', border: '1px solid var(--border-color)', borderRadius: 10,
         padding: '14px 26px', textAlign: 'center', maxWidth: '100%', overflowX: 'auto',
       }}>{children}</div>
       {note && <div style={{ color: 'var(--text-tertiary)', fontSize: 12.5, textAlign: 'center' }}>{note}</div>}
@@ -52,8 +52,6 @@ export default function July6StatisticsTheory() {
     <div className="theory-container">
       <section className="theory-section">
         <h1 className="theory-title">Математическая статистика: основные понятия</h1>
-        <p className="theory-subtitle">Трек: Аналитика данных</p>
-        <p className="theory-date">6 июля 2026</p>
         <p>
           Статистика — это язык, на котором аналитик разговаривает с данными. Она отвечает на два вопроса:{' '}
           <strong>как коротко описать имеющиеся данные</strong> и <strong>как по маленькой выборке сделать вывод

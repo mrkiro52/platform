@@ -27,8 +27,6 @@ export default function July23SecurityInterviewTheory() {
     <div className="theory-container">
       <section className="theory-section">
         <h1 className="theory-title">Вопросы с собеседования: Кибербезопасность</h1>
-        <p className="theory-subtitle">Трек: Кибербезопасность</p>
-        <p className="theory-date">23 июля 2026</p>
         <p>
           Тренировка на самых популярных вопросах для собеседований на позиции в сфере информационной
           безопасности. Первый блок — базовые понятия и виды атак. Второй блок — защита, шифрование и практика

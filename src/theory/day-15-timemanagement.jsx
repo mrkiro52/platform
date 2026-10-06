@@ -5,6 +5,9 @@ export default function Day15TimeManagementTheory() {
     <div className="theory-container">
       <section className="theory-section">
         <h1 className="theory-title">Тайм- и таск-менеджмент</h1>
+        <p>
+          В IT много задач, которые тянутся неделями, и много отвлекающих факторов. Умение планировать, расставлять приоритеты и доводить дела до конца влияет на результат не меньше технических навыков. Здесь — рабочие техники планирования и фокуса.
+        </p>
       </section>
 
       <section className="theory-section">
@@ -39,7 +42,7 @@ export default function Day15TimeManagementTheory() {
             { n: '4', t: 'Обзор', en: 'Reflect', d: 'Еженедельно просматривай все списки и обновляй систему.' },
             { n: '5', t: 'Выполнение', en: 'Engage', d: 'Выбирай задачу по контексту, времени, энергии и приоритету.' },
           ].map((s, i) => (
-            <div key={i} style={{ flex: '1 1 150px', minWidth: '150px', background: 'var(--bg-secondary)', border: '1px solid var(--border-color)', borderRadius: '10px', padding: '14px' }}>
+            <div key={i} style={{ flex: '1 1 150px', minWidth: '150px', background: 'var(--bg-tertiary)', border: '1px solid var(--border-color)', borderRadius: '10px', padding: '14px' }}>
               <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: 'var(--accent-lime)', color: '#0a0a14', fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '8px' }}>{s.n}</div>
               <div style={{ fontWeight: 700, color: 'var(--text-primary)', fontSize: '14px' }}>{s.t}</div>
               <div style={{ fontSize: '11px', color: 'var(--accent-lime)', marginBottom: '6px' }}>{s.en}</div>
@@ -61,7 +64,7 @@ export default function Day15TimeManagementTheory() {
 
         {/* Иллюстрация Pomodoro: визуальная шкала цикла */}
         <div className="theory-subsection">
-          <h3 className="theory-heading-3">🍅 Техника Pomodoro</h3>
+          <h3 className="theory-heading-3">Техника Pomodoro</h3>
           <p className="theory-text" style={{ marginBottom: '12px' }}>
             Работай 25 минут без прерываний (один «помидор»), затем 5 минут отдыха. После четырёх «помидоров» — длинный перерыв 15–30 минут.
           </p>
@@ -91,22 +94,22 @@ export default function Day15TimeManagementTheory() {
         </div>
 
         <div className="theory-subsection">
-          <h3 className="theory-heading-3">🐸 Метод «Съешь лягушку»</h3>
+          <h3 className="theory-heading-3">Метод «Съешь лягушку»</h3>
           <p className="theory-text">«Лягушка» — самая неприятная задача дня. Выполняй её первой, пока энергия максимальна. Остаток дня ощущается легче. <strong>Для кого:</strong> тем, кто откладывает неприятное на конец дня.</p>
         </div>
 
         <div className="theory-subsection">
-          <h3 className="theory-heading-3">🐘 Метод «Съешь слона по частям»</h3>
+          <h3 className="theory-heading-3">Метод «Съешь слона по частям»</h3>
           <p className="theory-text">Большую задачу разбей на маленькие шаги. «Написать диплом» — это проект, а «написать введение (1500 слов)» — задача. <strong>Для кого:</strong> тем, кто чувствует паралич перед крупными проектами.</p>
         </div>
 
         <div className="theory-subsection">
-          <h3 className="theory-heading-3">🗓 Метод «Временные блоки» (Time Blocking)</h3>
+          <h3 className="theory-heading-3">Метод «Временные блоки» (Time Blocking)</h3>
           <p className="theory-text">Заранее выделяй в календаре блоки под типы задач. Например: 9:00–11:00 — глубокая работа, 11:00–12:00 — встречи, после обеда — рутина. <strong>Для кого:</strong> тем, кто не чувствует контроля над днём.</p>
         </div>
 
         <div className="theory-subsection">
-          <h3 className="theory-heading-3">1️⃣3️⃣5️⃣ Метод «1-3-5»</h3>
+          <h3 className="theory-heading-3">1. 3. 5. Метод «1-3-5»</h3>
           <p className="theory-text">Каждый день планируй: 1 большую задачу, 3 средних и 5 маленьких. Реалистичный план, который не позволяет перегрузить список.</p>
         </div>
       </section>
@@ -120,11 +123,11 @@ export default function Day15TimeManagementTheory() {
         {/* Иллюстрация: доска Канбан */}
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', margin: '20px 0' }}>
           {[
-            { title: 'Нужно сделать', color: 'var(--text-tertiary)', cards: ['📝 Написать функцию', '🧪 Добавить тесты', '📚 Прочитать главу'] },
-            { title: 'В процессе', color: 'var(--accent-lime)', limit: 'WIP ≤ 3', cards: ['🔍 Код-ревью PR', '🐛 Чинить баг'] },
-            { title: 'Готово', color: '#64c864', cards: ['✅ Настроить Git', '✅ Залить проект'] },
+            { title: 'Нужно сделать', color: 'var(--text-tertiary)', cards: ['Написать функцию', 'Добавить тесты', 'Прочитать главу'] },
+            { title: 'В процессе', color: 'var(--accent-lime)', limit: 'WIP ≤ 3', cards: ['Код-ревью PR', 'Чинить баг'] },
+            { title: 'Готово', color: '#64c864', cards: ['✓ Настроить Git', '✓ Залить проект'] },
           ].map((col, i) => (
-            <div key={i} style={{ flex: '1 1 200px', minWidth: '180px', background: 'var(--bg-secondary)', border: '1px solid var(--border-color)', borderRadius: '10px', padding: '12px' }}>
+            <div key={i} style={{ flex: '1 1 200px', minWidth: '180px', background: 'var(--bg-tertiary)', border: '1px solid var(--border-color)', borderRadius: '10px', padding: '12px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px', paddingBottom: '8px', borderBottom: `2px solid ${col.color}` }}>
                 <span style={{ fontWeight: 700, color: col.color, fontSize: '13px' }}>{col.title}</span>
                 {col.limit && <span style={{ fontSize: '10px', color: 'var(--accent-lime)', border: '1px solid var(--accent-lime)', borderRadius: '4px', padding: '1px 5px' }}>{col.limit}</span>}
@@ -214,7 +217,7 @@ export default function Day15TimeManagementTheory() {
         </p>
 
         <div className="theory-subsection">
-          <h3 className="theory-heading-3">🍅 Pomodoro-приложения</h3>
+          <h3 className="theory-heading-3">Pomodoro-приложения</h3>
           <ul className="theory-list">
             <li className="theory-list-item"><a href="https://www.forestapp.cc" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-lime)' }}>Forest</a> — вырастить виртуальный лес во время работы</li>
             <li className="theory-list-item"><a href="https://www.befocused.com" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-lime)' }}>Be Focused</a> — простой Pomodoro-таймер для всех устройств</li>
@@ -223,7 +226,7 @@ export default function Day15TimeManagementTheory() {
         </div>
 
         <div className="theory-subsection">
-          <h3 className="theory-heading-3">📋 Таск-менеджеры и доски</h3>
+          <h3 className="theory-heading-3">Таск-менеджеры и доски</h3>
           <ul className="theory-list">
             <li className="theory-list-item"><a href="https://trello.com" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-lime)' }}>Trello</a> — визуальные доски, канбан для личного и командного использования</li>
             <li className="theory-list-item"><a href="https://notion.so" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-lime)' }}>Notion</a> — всё в одном (задачи, заметки, БД, документы)</li>
@@ -235,7 +238,7 @@ export default function Day15TimeManagementTheory() {
         </div>
 
         <div className="theory-subsection">
-          <h3 className="theory-heading-3">🧠 Управление знаниями и заметки</h3>
+          <h3 className="theory-heading-3">Управление знаниями и заметки</h3>
           <ul className="theory-list">
             <li className="theory-list-item"><a href="https://obsidian.md" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-lime)' }}>Obsidian</a> — система личных заметок на основе Markdown (локально на диске)</li>
             <li className="theory-list-item"><a href="https://google.com/tasks" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-lime)' }}>Google Tasks</a> — простой список задач, интегрирован с Google Calendar и Gmail</li>
@@ -245,7 +248,7 @@ export default function Day15TimeManagementTheory() {
       </section>
 
       <section className="theory-section theory-section--closing">
-        <p className="theory-closing-text">Инструмент следует за системой, а не наоборот. Регулярный обзор — ключ к любой системе. Время — самый ценный ресурс! ⏰</p>
+        <p className="theory-closing-text">Инструмент следует за системой, а не наоборот. Регулярный обзор — ключ к любой системе. Время — самый ценный ресурс! </p>
       </section>
     </div>
   )

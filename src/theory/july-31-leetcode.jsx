@@ -7,7 +7,7 @@ function Fig({ children, caption }) {
   return (
     <figure style={{ margin: '18px 0', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
       <div style={{
-        width: '100%', maxWidth: 640, background: '#12121e', border: '1px solid #2a2a3a',
+        width: '100%', maxWidth: 640, background: 'var(--bg-tertiary)', border: '1px solid var(--border-color)',
         borderRadius: 10, padding: '16px', display: 'flex', justifyContent: 'center', overflowX: 'auto',
       }}>{children}</div>
       {caption && <figcaption style={{ color: 'var(--text-tertiary)', fontSize: 12.5, textAlign: 'center', maxWidth: 640 }}>{caption}</figcaption>}
@@ -85,11 +85,9 @@ export default function July31LeetcodeTheory() {
   return (
     <div className="theory-container">
       <section className="theory-section">
-        <h1 className="theory-title">Нарешиваем LeetCode: разбор занятия</h1>
-        <p className="theory-subtitle">Треки: Все треки</p>
-        <p className="theory-date">31 июля 2026</p>
+        <h1 className="theory-title">Разбор задач LeetCode · часть 3</h1>
         <p>
-          Запись встречи 31 июля — разобрали четыре задачи с LeetCode из подборки Top Interview 150:
+          В этом конспекте разобраны четыре задачи с LeetCode из подборки Top Interview 150:
           динамическое программирование, бинарный поиск, работу с хеш-таблицами и классический паттерн
           «два указателя» на отсортированном массиве. Для каждой — перевод условия, оптимальное решение
           на Python и оценка по времени и памяти (Big O).
@@ -334,7 +332,7 @@ export default function July31LeetcodeTheory() {
       <section className="theory-section">
         <h2 className="theory-heading-2">Итоги</h2>
         <P n={7}>
-          Сегодня разобрали четыре паттерна, которые встречаются на алгоритмических секциях
+          Мы разобрали четыре паттерна, которые встречаются на алгоритмических секциях
           собеседований постоянно. <strong>Climbing Stairs</strong> — динамическое программирование
           сводится к последовательности Фибоначчи и считается за O(n) времени и O(1) памяти двумя
           переменными вместо массива. <strong>Sqrt(x)</strong> — классический пример{' '}

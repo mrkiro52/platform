@@ -11,6 +11,9 @@ export default function Day24PatternsTheory() {
     <div className="theory-container">
       <section className="theory-section">
         <h1 className="theory-title">Паттерны алгоритмических задач</h1>
+        <p>
+          Большинство алгоритмических задач решаются одним из десятка повторяющихся приёмов. Если научиться узнавать паттерн по условию, задача перестаёт быть головоломкой. Здесь — главные паттерны с интерактивными визуализациями.
+        </p>
       </section>
 
       <section className="theory-section">
@@ -448,7 +451,7 @@ def knapsack(weights, values, capacity):
       </section>
 
       <section className="theory-section theory-section--closing">
-        <p className="theory-closing-text">Паттерны повторяются. Выучи шаблон — побеждай на любой задаче! 🎯</p>
+        <p className="theory-closing-text">Паттерны повторяются. Выучи шаблон — побеждай на любой задаче! </p>
       </section>
     </div>
   )

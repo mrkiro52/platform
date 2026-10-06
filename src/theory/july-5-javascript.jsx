@@ -7,7 +7,7 @@ function Fig({ children, caption }) {
   return (
     <figure style={{ margin: '18px 0', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
       <div style={{
-        width: '100%', maxWidth: 640, background: '#12121e', border: '1px solid #2a2a3a',
+        width: '100%', maxWidth: 640, background: 'var(--bg-tertiary)', border: '1px solid var(--border-color)',
         borderRadius: 10, padding: '16px', display: 'flex', justifyContent: 'center', overflowX: 'auto',
       }}>{children}</div>
       {caption && <figcaption style={{ color: 'var(--text-tertiary)', fontSize: 12.5, textAlign: 'center', maxWidth: 640 }}>{caption}</figcaption>}
@@ -29,12 +29,10 @@ export default function July5JavaScriptTheory() {
     <div className="theory-container">
       <section className="theory-section">
         <h1 className="theory-title">Продвинутый JavaScript</h1>
-        <p className="theory-subtitle">Трек: Frontend-разработка</p>
-        <p className="theory-date">5 июля 2026</p>
         <p>
           JavaScript — язык, на котором «оживает» весь фронтенд. Но чтобы писать серьёзные приложения, недостаточно
           знать переменные и функции. Нужно понимать, <strong>как код на самом деле выполняется</strong>: почему
-          JavaScript однопоточный, но при этом не «зависает», ожидая ответ сервера. Сегодня разберём три
+          JavaScript однопоточный, но при этом не «зависает», ожидая ответ сервера. В этом конспекте разберём три
           фундаментальные вещи, которые связаны в одну картину: <strong>Event Loop</strong> (цикл событий),{' '}
           <strong>Promises</strong> (промисы) и синтаксис <strong>async/await</strong>. Это самая частая тема на
           собеседованиях фронтендера — и главная причина «магии» асинхронного кода.

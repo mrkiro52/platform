@@ -4,7 +4,7 @@ function Fig({ children, caption }) {
   return (
     <figure style={{ margin: '18px 0', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
       <div style={{
-        width: '100%', maxWidth: 640, background: '#12121e', border: '1px solid #2a2a3a',
+        width: '100%', maxWidth: 640, background: 'var(--bg-tertiary)', border: '1px solid var(--border-color)',
         borderRadius: 10, padding: '16px', display: 'flex', justifyContent: 'center', overflowX: 'auto',
       }}>{children}</div>
       {caption && <figcaption style={{ color: 'var(--text-tertiary)', fontSize: 12.5, textAlign: 'center', maxWidth: 640 }}>{caption}</figcaption>}
@@ -39,8 +39,6 @@ export default function July14PhishingTheory() {
     <div className="theory-container">
       <section className="theory-section">
         <h1 className="theory-title">Социальная инженерия и фишинг</h1>
-        <p className="theory-subtitle">Трек: Кибербезопасность</p>
-        <p className="theory-date">14 июля 2026</p>
         <p>
           Самое слабое звено в защите — не код, а человек. Социальная инженерия обходит любые технические барьеры,
           обманывая пользователя. Разберём приёмы социальной инженерии, детально изучим, как устроены фишинговые

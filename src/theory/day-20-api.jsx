@@ -52,6 +52,9 @@ export default function Day20ApiTheory({ videoUrl }) {
 
       <section className="theory-section">
         <h1 className="theory-title">Сети и REST API</h1>
+        <p>
+          Почти любое приложение общается с сервером по сети. В конспекте — как устроен интернет на уровне, нужном разработчику: IP-адреса, DNS, протокол HTTP, а также что такое REST API и как с ним работать.
+        </p>
       </section>
 
       {videoUrl && <VideoPlayer src={videoUrl} />}

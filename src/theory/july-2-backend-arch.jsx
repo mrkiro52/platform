@@ -6,7 +6,7 @@ function Fig({ children, caption }) {
   return (
     <figure style={{ margin: '18px 0', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
       <div style={{
-        width: '100%', maxWidth: 620, background: '#12121e', border: '1px solid #2a2a3a',
+        width: '100%', maxWidth: 620, background: 'var(--bg-tertiary)', border: '1px solid var(--border-color)',
         borderRadius: 10, padding: '16px', display: 'flex', justifyContent: 'center', overflowX: 'auto',
       }}>{children}</div>
       {caption && <figcaption style={{ color: 'var(--text-tertiary)', fontSize: 12.5, textAlign: 'center' }}>{caption}</figcaption>}
@@ -19,8 +19,6 @@ export default function July2BackendArchTheory() {
     <div className="theory-container">
       <section className="theory-section">
         <h1 className="theory-title">Бэкенд-архитектура веб-приложения</h1>
-        <p className="theory-subtitle">Трек: Backend-разработка</p>
-        <p className="theory-date">2 июля 2026</p>
         <p>
           Бэкенд — серверная часть приложения, отвечающая за бизнес-логику, обработку данных, взаимодействие
           с базой данных и предоставление интерфейса для клиентских приложений. Клиент (браузер, мобильное

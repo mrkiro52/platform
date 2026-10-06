@@ -4,33 +4,51 @@ export default function Day13ProjectTheory() {
   return (
     <div className="theory-container">
       <section className="theory-section">
-        <h1 className="theory-title">Практический проект: визуализация структур данных и алгоритмов</h1>
+        <h1 className="theory-title">Мини-проект: визуализация алгоритмов</h1>
+        <p>
+          Лучший способ по-настоящему понять алгоритм — заставить компьютер показать, как он работает шаг за шагом.
+          Пока пишешь визуализацию, приходится разобраться в каждой детали: где сейчас указатель, что лежит в стеке,
+          почему вершина попала в очередь именно сейчас. А готовый проект с понятным README — хороший первый пункт
+          в портфолио.
+        </p>
       </section>
 
       <section className="theory-section">
-        <h2 className="theory-heading-2">📋 Дедлайны и правила</h2>
-        <div style={{ backgroundColor: 'rgba(255,214,10,0.05)', padding: '16px', borderRadius: '8px', marginBottom: '24px' }}>
-          <p style={{ margin: '0 0 12px 0', fontWeight: 600 }}>⏰ Когда можешь сдать:</p>
-          <ul style={{ margin: '0 0 12px 0', paddingLeft: '20px' }}>
-            <li>✅ Суббота, 13 июня в 21:00</li>
-            <li>✅ Или в любой день в 21:00 в начале лекции</li>
-          </ul>
-          <p style={{ margin: '0 0 12px 0', fontWeight: 600 }}>🎤 Выступление:</p>
-          <ul style={{ margin: '0 0 12px 0', paddingLeft: '20px' }}>
-            <li>Время на выступление: 5 минут</li>
-            <li>Показать что реализовал (демонстрация программы)</li>
-            <li>Рассказать какое задание было</li>
-            <li>Объяснить что получилось</li>
-            <li>Рассказать какие трудности были</li>
-          </ul>
-          <p style={{ margin: '0', color: 'var(--text-secondary)', fontSize: '13px' }}>Дедлайна нет! Можешь сдать когда готово. Главное - показать свою работу и рассказать как её делал.</p>
-        </div>
+        <h2 className="theory-heading-2">Как сделать проект</h2>
+        <ol className="theory-steps">
+          <li><strong>Выбери вариант</strong> из списка ниже — тот, где алгоритм тебе пока понятен хуже всего. Так проект даст больше пользы.</li>
+          <li><strong>Разберись в алгоритме на бумаге.</strong> Прогони его вручную на маленьком примере из 4–6 элементов и запиши состояние после каждого шага. Это и есть сценарий будущей визуализации.</li>
+          <li><strong>Отдели логику от отображения.</strong> Пусть алгоритм возвращает список шагов (состояний), а отдельный код их рисует. Так проще отлаживать и менять внешний вид.</li>
+          <li><strong>Начни с консоли.</strong> Вывод каждого шага текстом по нажатию Enter — уже рабочая визуализация. Графику (браузер, pygame, matplotlib) добавляй, когда логика готова.</li>
+          <li><strong>Проверь крайние случаи:</strong> пустая структура, один элемент, повторяющиеся значения, граф с циклом или несвязный граф.</li>
+          <li><strong>Оформи репозиторий на GitHub:</strong> понятное название, README с описанием задачи, инструкцией по запуску и скриншотом или GIF работы программы.</li>
+        </ol>
+        <TheoryExample title="Чем можно рисовать">
+          Python: вывод в консоль, <code>matplotlib</code> (анимации через <code>FuncAnimation</code>), <code>pygame</code>.
+          Браузер: HTML, CSS и JavaScript — каждый шаг перерисовывает блоки через DOM или Canvas.
+          ИИ-ассистенты (Copilot, Claude, ChatGPT) помогают с рисованием и анимацией, но саму логику алгоритма
+          напиши сам — иначе проект не прокачает понимание.
+        </TheoryExample>
       </section>
 
       <section className="theory-section">
-        <h2 className="theory-heading-2">🎯 Тебе мог попасться один из 10 вариантов</h2>
+        <h2 className="theory-heading-2">Как рассказать о проекте</h2>
+        <p>
+          Умение коротко показать свою работу пригодится на собеседовании и в команде. Уложись в 5 минут:
+        </p>
+        <ul className="theory-list">
+          <li className="theory-list-item">какую задачу решает алгоритм и где он применяется;</li>
+          <li className="theory-list-item">демонстрация программы на небольшом примере;</li>
+          <li className="theory-list-item">как устроен код: где логика, где отображение;</li>
+          <li className="theory-list-item">какие были трудности и как ты их решил;</li>
+          <li className="theory-list-item">что бы улучшил, если бы было больше времени.</li>
+        </ul>
+      </section>
+
+      <section className="theory-section">
+        <h2 className="theory-heading-2">Варианты проекта</h2>
         <p className="theory-intro" style={{ marginBottom: '24px' }}>
-          Получи вариант в лс в телеграме и реализуй его. Используй Python или другой язык программирования. Допускается использование AI (Copilot, Claude, ChatGPT) для помощи. Код загрузи в GitHub репозиторий.
+          Выбери любой из 10 вариантов. Язык — Python или любой другой, который тебе ближе.
         </p>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>

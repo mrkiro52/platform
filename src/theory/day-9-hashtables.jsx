@@ -5,6 +5,9 @@ export default function Day9HashtablesTheory() {
     <div className="theory-container">
       <section className="theory-section">
         <h1 className="theory-title">Структуры данных: хэш-таблицы</h1>
+        <p>
+          Хэш-таблица позволяет находить данные по ключу почти мгновенно — за O(1) в среднем. На ней построены словари и множества в Python, кэши и индексы. Разберём, как она устроена внутри и что такое коллизии.
+        </p>
       </section>
 
       <section className="theory-section">
@@ -382,7 +385,7 @@ def has_duplicates_v2(arr):
         </ul>
 
         <p className="theory-intro" style={{ marginTop: '16px' }}>
-          Это основа для 99% задач на собеседованиях! Практикуйся на LeetCode, и ты будешь готов 🚀
+          Это основа для 99% задач на собеседованиях! Практикуйся на LeetCode, и ты будешь готов 
         </p>
       </section>
 

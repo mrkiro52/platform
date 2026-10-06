@@ -5,12 +5,15 @@ export default function Day16LanguagesTheory() {
     <div className="theory-container">
       <section className="theory-section">
         <h1 className="theory-title">Языки программирования и фреймворки в 2026 году</h1>
+        <p>
+          Обзор основных языков программирования и фреймворков: где каждый используется, какие у него сильные стороны и с чего начинать в зависимости от выбранного направления.
+        </p>
       </section>
 
       <section className="theory-section">
         <p className="theory-intro">
           Технологический ландшафт в 2026 году продолжает меняться. Цель — не выучить всё, а понять, на что ориентироваться при построении карьеры. Ниже обзор по ключевым направлениям. <br /><br />
-          <span style={{ color: 'var(--text-secondary)', fontSize: '12px' }}>💡 В материале конспект есть подчеркнутые слова — по клику на них вы перейдёте на соответствующую документацию или сайт</span>
+          <span style={{ color: 'var(--text-secondary)', fontSize: '12px' }}>В материале конспект есть подчеркнутые слова — по клику на них вы перейдёте на соответствующую документацию или сайт</span>
         </p>
       </section>
 
@@ -69,7 +72,7 @@ export default function Day16LanguagesTheory() {
         />
         <div className="theory-subsection" style={{ marginTop: '16px' }}>
           <p style={{ marginBottom: '12px', fontSize: '12px' }}>
-            📚 Документации:
+            Документации:
             <a href="https://www.python.org/doc" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-lime)', marginLeft: '8px' }}>Python</a>
             <span style={{ color: 'var(--text-tertiary)' }}> · </span>
             <a href="https://fastapi.tiangolo.com" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-lime)', marginLeft: '8px' }}>FastAPI</a>
@@ -180,7 +183,7 @@ export default function Day16LanguagesTheory() {
       </section>
 
       <section className="theory-section theory-section--closing">
-        <p className="theory-closing-text">Не пытайся выучить всё сразу. Выбери одно направление, освой базу, начни применять. Глубина важнее ширины! 🚀</p>
+        <p className="theory-closing-text">Не пытайся выучить всё сразу. Выбери одно направление, освой базу, начни применять. Глубина важнее ширины! </p>
       </section>
     </div>
   )

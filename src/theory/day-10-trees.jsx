@@ -5,6 +5,9 @@ export default function Day10TreesTheory() {
     <div className="theory-container">
       <section className="theory-section">
         <h1 className="theory-title">Структуры данных: деревья</h1>
+        <p>
+          Дерево — иерархическая структура данных: у каждого узла есть родитель (кроме корня) и дети. На деревьях построены файловые системы, DOM в браузере, индексы баз данных и разбор выражений в компиляторах. В конспекте — бинарные деревья, их обходы, деревья поиска, балансировка и куча.
+        </p>
       </section>
 
       <section className="theory-section">
@@ -236,6 +239,109 @@ print(is_bst(root))  # True`} language="python" />
           <li className="theory-list-item"><strong>DOM дерево:</strong> В браузерах для HTML документов</li>
           <li className="theory-list-item"><strong>Индексы БД:</strong> B-деревья в базах данных</li>
           <li className="theory-list-item"><strong>Парсеры:</strong> Abstract Syntax Tree (AST)</li>
+        </ul>
+      </section>
+
+      <section className="theory-section">
+        <h2 className="theory-heading-2">Куча (heap)</h2>
+        <p>
+          <strong>Двоичная куча</strong> — почти полное бинарное дерево, в котором каждый родитель не больше своих
+          детей (min-куча). Поэтому минимум всегда в корне. Кучу удобно хранить в обычном массиве без указателей:
+          у элемента с индексом <code>i</code> дети находятся по индексам <code>2i + 1</code> и <code>2i + 2</code>,
+          а родитель — по индексу <code>(i − 1) // 2</code>.
+        </p>
+        <TheoryTable
+          headers={['Операция', 'Как работает', 'Сложность']}
+          rows={[
+            ['Получить минимум', 'Взять корень', 'O(1)'],
+            ['Добавить', 'Положить в конец и «поднимать», пока родитель больше', 'O(log n)'],
+            ['Извлечь минимум', 'Последний элемент в корень и «опускать» вниз', 'O(log n)'],
+          ]}
+        />
+        <TheoryCode language="python" code={`import heapq
+
+# k самых больших чисел за O(n log k)
+def top_k(nums, k):
+    heap = []
+    for x in nums:
+        heapq.heappush(heap, x)
+        if len(heap) > k:
+            heapq.heappop(heap)     # выкидываем самый маленький
+    return sorted(heap, reverse=True)
+
+top_k([5, 1, 9, 3, 7, 8], 3)   # [9, 8, 7]`} />
+      </section>
+
+      <section className="theory-section">
+        <h2 className="theory-heading-2">Префиксное дерево (trie)</h2>
+        <p>
+          Trie хранит строки по символам: каждый путь от корня — префикс слова. На нём построены автодополнение в
+          поисковых строках, проверка орфографии и маршрутизация URL. Поиск слова длины L занимает O(L) и не
+          зависит от того, сколько всего слов в словаре.
+        </p>
+        <TheoryCode language="python" code={`class Trie:
+    def __init__(self):
+        self.root = {}
+
+    def insert(self, word):
+        node = self.root
+        for ch in word:
+            node = node.setdefault(ch, {})
+        node["$"] = True                 # отметка конца слова
+
+    def starts_with(self, prefix):
+        node = self.root
+        for ch in prefix:
+            if ch not in node:
+                return False
+            node = node[ch]
+        return True
+
+t = Trie()
+for w in ["кот", "код", "кодекс"]:
+    t.insert(w)
+t.starts_with("ко")    # True
+t.starts_with("ка")    # False`} />
+      </section>
+
+      <section className="theory-section">
+        <h2 className="theory-heading-2">Обходы без рекурсии</h2>
+        <p>
+          Рекурсивный обход короткий, но на очень глубоком дереве упирается в ограничение глубины рекурсии. Любой
+          обход можно переписать на явный стек или очередь:
+        </p>
+        <TheoryCode language="python" code={`from collections import deque
+
+def preorder(root):                 # корень → левое → правое
+    result, stack = [], [root] if root else []
+    while stack:
+        node = stack.pop()
+        result.append(node.val)
+        if node.right: stack.append(node.right)   # правое кладём первым,
+        if node.left: stack.append(node.left)     # чтобы левое достать раньше
+    return result
+
+def level_order(root):              # по уровням (BFS)
+    result, queue = [], deque([root] if root else [])
+    while queue:
+        level = []
+        for _ in range(len(queue)):
+            node = queue.popleft()
+            level.append(node.val)
+            if node.left: queue.append(node.left)
+            if node.right: queue.append(node.right)
+        result.append(level)
+    return result`} />
+      </section>
+
+      <section className="theory-section">
+        <h2 className="theory-heading-2">Задачи на деревья с собеседований</h2>
+        <ul className="theory-list">
+          <li className="theory-list-item"><strong>Maximum Depth of Binary Tree</strong> — глубина дерева: 1 + max(глубина слева, глубина справа).</li>
+          <li className="theory-list-item"><strong>Invert Binary Tree</strong> — зеркально отразить дерево, поменяв детей местами в каждом узле.</li>
+          <li className="theory-list-item"><strong>Validate BST</strong> — проверить, что дерево является деревом поиска (передавать допустимый диапазон вниз).</li>
+          <li className="theory-list-item"><strong>Lowest Common Ancestor</strong> — ближайший общий предок двух узлов.</li>
+          <li className="theory-list-item"><strong>Kth Smallest in BST</strong> — симметричный обход выдаёт значения по возрастанию.</li>
         </ul>
       </section>
 

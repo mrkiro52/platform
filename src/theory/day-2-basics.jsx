@@ -6,6 +6,9 @@ export default function Day2BasicsTheory() {
     <div className="theory-container">
       <section className="theory-section">
         <h1 className="theory-title">Основы программирования: переменные, типы, условия</h1>
+        <p>
+          Первый шаг в программировании: как программа хранит данные в переменных, какие бывают типы данных, как работают арифметика и условия. Эти понятия одинаковы почти во всех языках — примеры даны на Python.
+        </p>
       </section>
 
       <section className="theory-section">

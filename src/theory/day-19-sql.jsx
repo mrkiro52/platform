@@ -5,6 +5,9 @@ export default function Day19SqlTheory() {
     <div className="theory-container">
       <section className="theory-section">
         <h1 className="theory-title">Основы баз данных и SQL · часть 3</h1>
+        <p>
+          Третья часть SQL: объединение таблиц через JOIN, связи между таблицами, первичные и внешние ключи, индексы и нормализация данных.
+        </p>
       </section>
 
       {/* ─── Ключи ─── */}
@@ -17,7 +20,7 @@ export default function Day19SqlTheory() {
 
         <DbTable
           name="users"
-          columns={['id 🔑', 'name', 'age', 'city']}
+          columns={['id ', 'name', 'age', 'city']}
           rows={[
             ['1', 'Анна', '25', 'Москва'],
             ['2', 'Борис', '31', 'Казань'],
@@ -31,7 +34,7 @@ export default function Day19SqlTheory() {
 
         <DbTable
           name="orders"
-          columns={['id 🔑', 'user_id 🔗', 'product', 'price']}
+          columns={['id ', 'user_id ', 'product', 'price']}
           rows={[
             ['1', '1', 'Книга', '500'],
             ['2', '1', 'Наушники', '3000'],
@@ -44,8 +47,8 @@ export default function Day19SqlTheory() {
         />
 
         <ul className="theory-list">
-          <li className="theory-list-item"><strong>PRIMARY KEY 🔑</strong> — уникальный идентификатор строки. Не повторяется, не бывает NULL.</li>
-          <li className="theory-list-item"><strong>FOREIGN KEY 🔗</strong> — ссылка на PRIMARY KEY другой таблицы. Гарантирует целостность данных.</li>
+          <li className="theory-list-item"><strong>PRIMARY KEY</strong> — уникальный идентификатор строки. Не повторяется, не бывает NULL.</li>
+          <li className="theory-list-item"><strong>FOREIGN KEY</strong> — ссылка на PRIMARY KEY другой таблицы. Гарантирует целостность данных.</li>
           <li className="theory-list-item"><strong>Типы связей:</strong> один-к-одному (1:1), один-ко-многим (1:N), многие-ко-многим (N:M через промежуточную таблицу).</li>
         </ul>
       </section>
@@ -418,7 +421,7 @@ LIMIT    N OFFSET M;              -- 8: ограничение`} />
       </section>
 
       <section className="theory-section theory-section--closing">
-        <p className="theory-closing-text">SQL — один из самых востребованных навыков в IT. Ты прошёл все основы за три дня. Теперь практикуйся на реальных данных! 📊</p>
+        <p className="theory-closing-text">SQL — один из самых востребованных навыков в IT. Ты прошёл все основы за три дня. Теперь практикуйся на реальных данных! </p>
       </section>
     </div>
   )

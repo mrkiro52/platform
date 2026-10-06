@@ -27,8 +27,6 @@ export default function July22FullstackInterviewTheory() {
     <div className="theory-container">
       <section className="theory-section">
         <h1 className="theory-title">Вопросы с собеседования: Фуллстак разработка</h1>
-        <p className="theory-subtitle">Треки: Frontend и Backend</p>
-        <p className="theory-date">22 июля 2026</p>
         <p>
           Тренировка на самых популярных вопросах для фуллстак-разработчиков. Первый блок — общие вопросы про
           веб-разработку и бэкенд (HTTP, API, базы данных, архитектура). Второй блок — вопросы по фронтенду и

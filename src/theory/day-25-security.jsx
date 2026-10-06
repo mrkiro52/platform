@@ -40,7 +40,7 @@ const Good = ({ children }) => (
     background: 'rgba(63,185,80,0.07)', borderLeft: '3px solid #3fb950',
     borderRadius: '0 8px 8px 0', padding: '9px 14px', margin: '8px 0',
     fontSize: 13, color: 'var(--text-secondary)',
-  }}><strong style={{ color: '#3fb950' }}>✅ </strong>{children}</div>
+  }}><strong style={{ color: '#3fb950' }}>✓ </strong>{children}</div>
 )
 
 const Bad = ({ children }) => (
@@ -48,7 +48,7 @@ const Bad = ({ children }) => (
     background: 'rgba(248,81,73,0.07)', borderLeft: '3px solid #f85149',
     borderRadius: '0 8px 8px 0', padding: '9px 14px', margin: '8px 0',
     fontSize: 13, color: 'var(--text-secondary)',
-  }}><strong style={{ color: '#f85149' }}>❌ </strong>{children}</div>
+  }}><strong style={{ color: '#f85149' }}>✗ </strong>{children}</div>
 )
 
 const Warn = ({ children }) => (
@@ -56,12 +56,12 @@ const Warn = ({ children }) => (
     background: 'rgba(210,153,34,0.08)', borderLeft: '3px solid #d29922',
     borderRadius: '0 8px 8px 0', padding: '9px 14px', margin: '8px 0',
     fontSize: 13, color: 'var(--text-secondary)',
-  }}><strong style={{ color: '#d29922' }}>⚠️ </strong>{children}</div>
+  }}><strong style={{ color: '#d29922' }}>Важно: </strong>{children}</div>
 )
 
 const Viz = ({ children }) => (
   <div style={{
-    background: 'var(--bg-secondary)', border: '1px solid var(--border-color)',
+    background: 'var(--bg-tertiary)', border: '1px solid var(--border-color)',
     borderRadius: 12, padding: '18px 20px', margin: '18px 0',
     overflowX: 'auto',
   }}>{children}</div>
@@ -88,13 +88,13 @@ function SqlInjectionViz() {
   const normal = {
     input: 'alice',
     query: "SELECT * FROM users WHERE name = 'alice'",
-    result: '✅ Возвращает данные Алисы',
+    result: '✓ Возвращает данные Алисы',
     resultColor: '#3fb950',
   }
   const attack = {
     input: "' OR '1'='1",
     query: "SELECT * FROM users WHERE name = '' OR '1'='1'",
-    result: '💀 Возвращает ВСЕХ пользователей',
+    result: 'Возвращает ВСЕХ пользователей',
     resultColor: '#f85149',
   }
   const cur = mode === 'normal' ? normal : attack
@@ -151,7 +151,7 @@ function XSSViz() {
             <code style={{ color: '#f85149', fontSize: 12 }}>{'<script>стащить cookie</script>'}</code>
           </Box>
           <Arrow label="сохраняется в" />
-          <Box style={{ minWidth: 120 }}><span>🗄 База данных</span></Box>
+          <Box style={{ minWidth: 120 }}><span>База данных</span></Box>
         </Row>
       ),
     },
@@ -159,7 +159,7 @@ function XSSViz() {
       label: '2. Жертва открывает страницу',
       content: (
         <Row gap={10} wrap>
-          <Box style={{ minWidth: 120 }}>🗄 База данных</Box>
+          <Box style={{ minWidth: 120 }}>База данных</Box>
           <Arrow label="отдаёт HTML" />
           <Box color='#f85149' style={{ minWidth: 220 }}>
             <div style={{ fontSize: 11, color: 'var(--text-tertiary)', marginBottom: 4 }}>HTML браузера жертвы:</div>
@@ -174,19 +174,19 @@ function XSSViz() {
       label: '3. Скрипт выполняется — cookie украден',
       content: (
         <Row gap={10} wrap>
-          <Box style={{ minWidth: 120 }}>🖥 Браузер жертвы</Box>
+          <Box style={{ minWidth: 120 }}>Браузер жертвы</Box>
           <Arrow label="выполняет скрипт" />
           <Box color='#f85149' bg='rgba(248,81,73,0.07)' style={{ minWidth: 160 }}>
-            <div style={{ color: '#f85149', fontWeight: 700 }}>💀 Атакующий получает:</div>
+            <div style={{ color: '#f85149', fontWeight: 700 }}>Атакующий получает:</div>
             <code style={{ color: '#f85149', fontSize: 12 }}>session_id=abc123...</code>
           </Box>
           <Arrow label="отправляет на" />
-          <Box style={{ minWidth: 120 }}>🌍 evil.com</Box>
+          <Box style={{ minWidth: 120 }}>evil.com</Box>
         </Row>
       ),
     },
     {
-      label: '✅ Защита: экранирование',
+      label: '✓ Защита: экранирование',
       content: (
         <Row gap={10} wrap>
           <Box style={{ minWidth: 160 }}>
@@ -239,14 +239,14 @@ function CSRFViz() {
       <Row gap={12} wrap>
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
           <Box color={step >= 0 ? '#58a6ff' : 'var(--border-color)'} style={{ minWidth: 110, textAlign: 'center' }}>
-            <div>👤 Пользователь</div>
+            <div>Пользователь</div>
             {step >= 0 && <div style={{ fontSize: 10, color: '#58a6ff', marginTop: 2 }}>залогинен в банке</div>}
           </Box>
           {step >= 1 && (
             <>
               <Arrow vertical label="открывает" />
               <Box color='#f85149' style={{ minWidth: 110, textAlign: 'center' }}>
-                <div>😈 evil.ru</div>
+                <div>evil.ru</div>
                 {step >= 2 && <div style={{ fontSize: 10, color: '#f85149', marginTop: 2 }}>скрытая форма</div>}
               </Box>
             </>
@@ -255,11 +255,11 @@ function CSRFViz() {
         {step >= 2 && (
           <>
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-              <Arrow label={step >= 3 ? 'POST + 🍪 cookie' : 'POST'} />
+              <Arrow label={step >= 3 ? 'POST + cookie' : 'POST'} />
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
               <Box color={step >= 4 ? '#f85149' : '#d29922'} style={{ minWidth: 130, textAlign: 'center' }}>
-                <div>🏦 bank.ru</div>
+                <div>bank.ru</div>
                 {step >= 4 && <div style={{ fontSize: 10, color: '#f85149', marginTop: 2 }}>выполняет перевод!</div>}
                 {step === 3 && <div style={{ fontSize: 10, color: '#d29922', marginTop: 2 }}>видит валидные cookies</div>}
               </Box>
@@ -344,7 +344,7 @@ function PasswordHashViz() {
         {algos.map((a, i) => (
           <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
             <div style={{ minWidth: 160, fontSize: 12, color: a.safe ? '#3fb950' : '#f85149', fontWeight: 600 }}>
-              {a.safe ? '✅' : '❌'} {a.name}
+              {a.safe ? '✓' : '✗'} {a.name}
             </div>
             <div style={{ flex: 1, background: 'var(--bg-primary)', borderRadius: 4, height: 14, minWidth: 100 }}>
               <div style={{
@@ -378,7 +378,7 @@ function HTTPSViz() {
       </div>
       <Row gap={8} wrap>
         <Box style={{ minWidth: 110, textAlign: 'center' }}>
-          🖥 Браузер
+          Браузер
           <div style={{ fontSize: 10, color: 'var(--text-tertiary)', marginTop: 4 }}>login=alice&pass=qwerty</div>
         </Box>
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
@@ -388,7 +388,7 @@ function HTTPSViz() {
             border: `1px solid ${mode === 'http' ? '#f85149' : '#3fb950'}`,
             color: mode === 'http' ? '#f85149' : '#3fb950',
           }}>
-            {mode === 'http' ? '📦 Открытый пакет' : '🔒 Зашифрованный пакет'}
+            {mode === 'http' ? 'Открытый пакет' : 'Зашифрованный пакет'}
           </div>
           {mode === 'http' ? (
             <div style={{ fontSize: 11, color: '#f85149', fontFamily: 'monospace' }}>login=alice&pass=qwerty</div>
@@ -403,14 +403,14 @@ function HTTPSViz() {
               <div style={{ fontSize: 10, color: '#f85149' }}>перехват</div>
             </div>
             <Box color='#f85149' bg='rgba(248,81,73,0.07)' style={{ minWidth: 120, textAlign: 'center' }}>
-              😈 MITM
+              MITM
               <div style={{ fontSize: 10, color: '#f85149', marginTop: 2 }}>видит всё</div>
             </Box>
           </>
         )}
         <Arrow />
         <Box color={mode === 'https' ? '#3fb950' : 'var(--border-color)'} style={{ minWidth: 110, textAlign: 'center' }}>
-          🌐 Сервер
+          Сервер
           {mode === 'https' && <div style={{ fontSize: 10, color: '#3fb950', marginTop: 2 }}>расшифровывает</div>}
         </Box>
       </Row>
@@ -425,14 +425,14 @@ function SecretsViz() {
     <Viz>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
         <Box color={leaked ? '#f85149' : 'var(--border-color)'}>
-          <div style={{ fontSize: 11, color: 'var(--text-tertiary)', marginBottom: 6 }}>📄 config.py — закоммичен в git</div>
+          <div style={{ fontSize: 11, color: 'var(--text-tertiary)', marginBottom: 6 }}>config.py — закоммичен в git</div>
           <code style={{ fontSize: 12 }}>
             <span style={{ color: 'var(--text-tertiary)' }}>DB_HOST = "localhost"</span><br />
             <span style={{ color: leaked ? '#f85149' : '#d29922' }}>
-              DB_PASSWORD = "{leaked ? '💀 СКОМПРОМЕТИРОВАН' : 'super_secret_pass'}"
+              DB_PASSWORD = "{leaked ? 'СКОМПРОМЕТИРОВАН' : 'super_secret_pass'}"
             </span><br />
             <span style={{ color: leaked ? '#f85149' : '#d29922' }}>
-              OPENAI_KEY = "{leaked ? '💀 СКОМПРОМЕТИРОВАН' : 'sk-proj-abc123...'}"
+              OPENAI_KEY = "{leaked ? 'СКОМПРОМЕТИРОВАН' : 'sk-proj-abc123...'}"
             </span>
           </code>
         </Box>
@@ -446,7 +446,7 @@ function SecretsViz() {
               background: leaked ? 'var(--bg-primary)' : 'rgba(248,81,73,0.12)',
               color: leaked ? 'var(--text-tertiary)' : '#f85149',
             }}
-          >{leaked ? '☠ Репо стало публичным' : '☠ Сделать репо публичным'}</button>
+          >{leaked ? 'Репо стало публичным' : 'Сделать репо публичным'}</button>
           <button
             onClick={() => setLeaked(false)}
             style={{ padding: '6px 14px', fontSize: 12, fontWeight: 700, cursor: 'pointer', borderRadius: 7, border: '1px solid var(--border-color)', background: 'var(--bg-tertiary)', color: 'var(--text-secondary)' }}
@@ -454,7 +454,7 @@ function SecretsViz() {
         </Row>
         {leaked && (
           <Box color='#f85149' bg='rgba(248,81,73,0.07)'>
-            <div style={{ fontWeight: 700, color: '#f85149', marginBottom: 6 }}>💀 Произошло:</div>
+            <div style={{ fontWeight: 700, color: '#f85149', marginBottom: 6 }}>Произошло:</div>
             <ul style={{ margin: 0, paddingLeft: 18, fontSize: 12, color: 'var(--text-secondary)', lineHeight: 1.8 }}>
               <li>Боты сканируют GitHub каждые секунды</li>
               <li>Ключ найден через 3 минуты после публикации</li>
@@ -465,7 +465,7 @@ function SecretsViz() {
         )}
         {!leaked && (
           <Box color='#3fb950' bg='rgba(63,185,80,0.07)'>
-            <div style={{ fontWeight: 700, color: '#3fb950', marginBottom: 6 }}>✅ Правильно: через .env</div>
+            <div style={{ fontWeight: 700, color: '#3fb950', marginBottom: 6 }}>✓ Правильно: через .env</div>
             <code style={{ fontSize: 12, color: 'var(--text-secondary)' }}>
               # .env (в .gitignore!)<br />
               DB_PASSWORD=super_secret_pass<br />
@@ -506,7 +506,7 @@ function RateLimitViz() {
                 {i + 1}
               </div>
               <div style={{ fontSize: 9, color: !active ? 'var(--text-tertiary)' : blocked ? '#f85149' : '#3fb950' }}>
-                {!active ? '...' : blocked ? '🚫' : '✓'}
+                {!active ? '...' : blocked ? '✗' : '✓'}
               </div>
             </div>
           )
@@ -556,7 +556,7 @@ function MLAttackViz() {
             border: `2px solid ${mode === 'attack' ? '#f85149' : '#3fb950'}`,
             display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 36, position: 'relative', overflow: 'hidden',
           }}>
-            🐼
+            
             {mode === 'attack' && (
               <div style={{
                 position: 'absolute', inset: 0, opacity: 0.4,
@@ -571,7 +571,7 @@ function MLAttackViz() {
           </div>
         </div>
         <Arrow label="подаём в" />
-        <Box style={{ minWidth: 100, textAlign: 'center' }}>🤖 Нейросеть</Box>
+        <Box style={{ minWidth: 100, textAlign: 'center' }}>Нейросеть</Box>
         <Arrow label="предсказывает" />
         <Box
           color={mode === 'clean' ? '#3fb950' : '#f85149'}
@@ -579,9 +579,9 @@ function MLAttackViz() {
           style={{ minWidth: 130, textAlign: 'center' }}
         >
           {mode === 'clean' ? (
-            <><div style={{ fontSize: 22 }}>🐼</div><div style={{ color: '#3fb950', fontWeight: 700 }}>Панда (99.3%)</div></>
+            <><div style={{ fontSize: 22 }}></div><div style={{ color: '#3fb950', fontWeight: 700 }}>Панда (99.3%)</div></>
           ) : (
-            <><div style={{ fontSize: 22 }}>🦧</div><div style={{ color: '#f85149', fontWeight: 700 }}>Гиббон (99.9%)</div></>
+            <><div style={{ fontSize: 22 }}></div><div style={{ color: '#f85149', fontWeight: 700 }}>Гиббон (99.9%)</div></>
           )}
         </Box>
       </Row>
@@ -599,13 +599,16 @@ export default function Day25SecurityTheory() {
 
       <section className="theory-section">
         <h1 className="theory-title">Кибербезопасность для разработчика</h1>
+        <p>
+          Большинство взломов происходят не из-за гениальных хакеров, а из-за типичных ошибок в коде. В конспекте — уязвимости, о которых обязан знать каждый разработчик, и как их не допускать.
+        </p>
       </section>
 
       <section className="theory-section">
         <p className="theory-intro">
           Безопасность — не отдельная специальность, а навык каждого разработчика.
           SQL-инъекция, утечка токена, незащищённый датасет, атака на ML-модель — всё это дыры,
-          которые можно было закрыть ещё при написании кода. Сегодня разберём главные уязвимости:
+          которые можно было закрыть ещё при написании кода. В этом конспекте разберём главные уязвимости:
           как они работают, почему возникают и как от них защищаться.
         </p>
       </section>
@@ -620,11 +623,11 @@ export default function Day25SecurityTheory() {
         <TheoryTable
           headers={['Кто', 'Мотив', 'Что делает', 'Опасность']}
           rows={[
-            ['Script kiddie', 'Интерес / слава', 'Запускает готовые сканеры и эксплойты', '⭐⭐'],
-            ['Хактивист', 'Идеология', 'DDoS, дефейс сайтов, утечки данных', '⭐⭐⭐'],
-            ['Киберпреступник', 'Деньги', 'Кража данных, ransomware, фишинг', '⭐⭐⭐⭐'],
-            ['Инсайдер', 'Обида / деньги', 'Утечка данных, саботаж изнутри', '⭐⭐⭐⭐'],
-            ['APT (государство)', 'Шпионаж / диверсия', 'Целевые атаки, zero-day уязвимости', '⭐⭐⭐⭐⭐'],
+            ['Script kiddie', 'Интерес / слава', 'Запускает готовые сканеры и эксплойты', '2/5'],
+            ['Хактивист', 'Идеология', 'DDoS, дефейс сайтов, утечки данных', '3/5'],
+            ['Киберпреступник', 'Деньги', 'Кража данных, ransomware, фишинг', '4/5'],
+            ['Инсайдер', 'Обида / деньги', 'Утечка данных, саботаж изнутри', '4/5'],
+            ['APT (государство)', 'Шпионаж / диверсия', 'Целевые атаки, zero-day уязвимости', '5/5'],
           ]}
         />
         <p>
@@ -642,7 +645,7 @@ export default function Day25SecurityTheory() {
             ].map(({ letter, name, desc }) => (
               <div key={letter} style={{
                 border: '1.5px solid var(--border-color)', borderRadius: 10, padding: '10px 14px',
-                minWidth: 160, flex: '1 1 160px', background: 'var(--bg-secondary)',
+                minWidth: 160, flex: '1 1 160px', background: 'var(--bg-tertiary)',
               }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
                   <span style={{
@@ -812,22 +815,22 @@ export default function Day25SecurityTheory() {
         <Viz>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
             <Row gap={10} wrap>
-              <Box style={{ minWidth: 130, textAlign: 'center' }}>📄 evil.com<br /><code style={{ fontSize: 11 }}>fetch("bank.com/api")</code></Box>
+              <Box style={{ minWidth: 130, textAlign: 'center' }}>evil.com<br /><code style={{ fontSize: 11 }}>fetch("bank.com/api")</code></Box>
               <Arrow label="запрос" />
-              <Box color='#d29922' style={{ minWidth: 130, textAlign: 'center' }}>🏦 bank.com<br /><code style={{ fontSize: 11, color: '#d29922' }}>Access-Control-Allow-Origin:<br />"https://myapp.com"</code></Box>
+              <Box color='#d29922' style={{ minWidth: 130, textAlign: 'center' }}>bank.com<br /><code style={{ fontSize: 11, color: '#d29922' }}>Access-Control-Allow-Origin:<br />"https://myapp.com"</code></Box>
               <Arrow label="ответ" />
               <Box color='#f85149' bg='rgba(248,81,73,0.07)' style={{ minWidth: 130, textAlign: 'center' }}>
-                🚫 Браузер блокирует<br /><span style={{ fontSize: 11, color: '#f85149' }}>evil.com не в whitelist</span>
+                Браузер блокирует<br /><span style={{ fontSize: 11, color: '#f85149' }}>evil.com не в whitelist</span>
               </Box>
             </Row>
             <div style={{ borderTop: '1px dashed var(--border-color)', paddingTop: 10 }}>
               <Row gap={10} wrap>
-                <Box style={{ minWidth: 130, textAlign: 'center' }}>📄 myapp.com<br /><code style={{ fontSize: 11 }}>fetch("bank.com/api")</code></Box>
+                <Box style={{ minWidth: 130, textAlign: 'center' }}>myapp.com<br /><code style={{ fontSize: 11 }}>fetch("bank.com/api")</code></Box>
                 <Arrow label="запрос" />
-                <Box color='#3fb950' style={{ minWidth: 130, textAlign: 'center' }}>🏦 bank.com<br /><code style={{ fontSize: 11, color: '#3fb950' }}>Access-Control-Allow-Origin:<br />"https://myapp.com"</code></Box>
+                <Box color='#3fb950' style={{ minWidth: 130, textAlign: 'center' }}>bank.com<br /><code style={{ fontSize: 11, color: '#3fb950' }}>Access-Control-Allow-Origin:<br />"https://myapp.com"</code></Box>
                 <Arrow label="ответ" />
                 <Box color='#3fb950' bg='rgba(63,185,80,0.07)' style={{ minWidth: 130, textAlign: 'center' }}>
-                  ✅ Браузер пропускает<br /><span style={{ fontSize: 11, color: '#3fb950' }}>myapp.com в whitelist</span>
+                  ✓ Браузер пропускает<br /><span style={{ fontSize: 11, color: '#3fb950' }}>myapp.com в whitelist</span>
                 </Box>
               </Row>
             </div>
@@ -876,8 +879,8 @@ export default function Day25SecurityTheory() {
                   maxWidth: 220, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
                 }}>{input.length > 30 ? input.slice(0, 30) + '...' : input}</div>
                 <div style={{ fontSize: 11, color: 'var(--text-secondary)' }}>
-                  {!safe && <span style={{ color: '#f85149' }}>⚠ {attack}</span>}
-                  {safe && <span style={{ color: '#3fb950' }}>✅ Безопасно</span>}
+                  {!safe && <span style={{ color: '#f85149' }}>{attack}</span>}
+                  {safe && <span style={{ color: '#3fb950' }}>✓ Безопасно</span>}
                   <div style={{ color: 'var(--text-tertiary)', marginTop: 2 }}>{fix}</div>
                 </div>
               </div>
@@ -898,7 +901,7 @@ export default function Day25SecurityTheory() {
         <Viz>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
             <div>
-              <div style={{ fontSize: 12, color: 'var(--text-tertiary)', marginBottom: 6 }}>❌ Исходный датасет (ПДн):</div>
+              <div style={{ fontSize: 12, color: 'var(--text-tertiary)', marginBottom: 6 }}>✗ Исходный датасет (ПДн):</div>
               <TheoryTable
                 headers={['Имя', 'Email', 'Телефон', 'Диагноз']}
                 rows={[
@@ -909,7 +912,7 @@ export default function Day25SecurityTheory() {
             </div>
             <Arrow vertical label="псевдонимизация" />
             <div>
-              <div style={{ fontSize: 12, color: '#3fb950', marginBottom: 6 }}>✅ После обработки (безопасно для анализа):</div>
+              <div style={{ fontSize: 12, color: '#3fb950', marginBottom: 6 }}>✓ После обработки (безопасно для анализа):</div>
               <TheoryTable
                 headers={['ID', 'Email_hash', 'Регион', 'Диагноз']}
                 rows={[
@@ -974,26 +977,26 @@ export default function Day25SecurityTheory() {
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
             <div style={{ display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>
               <Box color='#f85149' style={{ minWidth: 160 }}>
-                <div style={{ fontSize: 11, color: '#f85149', marginBottom: 4 }}>😈 Атакующий знает:</div>
+                <div style={{ fontSize: 11, color: '#f85149', marginBottom: 4 }}>Атакующий знает:</div>
                 <code style={{ fontSize: 11 }}>requests==2.25.0<br />CVE-2023-XXXX: critical</code>
               </Box>
               <Arrow label="видит в" />
-              <Box style={{ minWidth: 120 }}>📄 requirements.txt<br /><code style={{ fontSize: 11 }}>requests==2.25.0</code></Box>
+              <Box style={{ minWidth: 120 }}>requirements.txt<br /><code style={{ fontSize: 11 }}>requests==2.25.0</code></Box>
               <Arrow label="атакует через" />
               <Box color='#f85149' bg='rgba(248,81,73,0.07)' style={{ minWidth: 120 }}>
-                💀 Твоё приложение
+                Твоё приложение
               </Box>
             </div>
             <div style={{ borderTop: '1px dashed var(--border-color)', paddingTop: 10, display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>
               <Box color='#3fb950' bg='rgba(63,185,80,0.07)' style={{ minWidth: 160 }}>
-                <div style={{ fontSize: 11, color: '#3fb950', marginBottom: 4 }}>✅ Защита:</div>
+                <div style={{ fontSize: 11, color: '#3fb950', marginBottom: 4 }}>✓ Защита:</div>
                 <code style={{ fontSize: 11 }}>pip-audit<br />npm audit<br />Dependabot</code>
               </Box>
               <Arrow label="находит" />
-              <Box color='#d29922' style={{ minWidth: 130 }}>⚠ CVE найден<br /><code style={{ fontSize: 11 }}>requests==2.25.0</code></Box>
+              <Box color='#d29922' style={{ minWidth: 130 }}>CVE найден<br /><code style={{ fontSize: 11 }}>requests==2.25.0</code></Box>
               <Arrow label="обновляй до" />
               <Box color='#3fb950' bg='rgba(63,185,80,0.07)' style={{ minWidth: 130 }}>
-                ✅ requests==2.31.0<br /><code style={{ fontSize: 11, color: '#3fb950' }}>уязвимость закрыта</code>
+                ✓ requests==2.31.0<br /><code style={{ fontSize: 11, color: '#3fb950' }}>уязвимость закрыта</code>
               </Box>
             </div>
           </div>

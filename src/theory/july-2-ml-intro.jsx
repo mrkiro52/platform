@@ -5,7 +5,7 @@ const C = { text: 'var(--text-primary)', sub: 'var(--text-secondary)', lime: '#F
 function Formula({ children }) {
   return (
     <div style={{
-      background: 'var(--bg-secondary)', border: '1px solid var(--border-color)', borderRadius: 8,
+      background: 'var(--bg-tertiary)', border: '1px solid var(--border-color)', borderRadius: 8,
       padding: '14px 18px', margin: '14px 0', textAlign: 'center',
       fontFamily: '"Cambria Math", Georgia, "Times New Roman", serif', fontSize: 18,
       color: 'var(--text-primary)', overflowX: 'auto', lineHeight: 1.7,
@@ -17,7 +17,7 @@ function Fig({ children, caption }) {
   return (
     <figure style={{ margin: '18px 0', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
       <div style={{
-        width: '100%', maxWidth: 620, background: '#12121e', border: '1px solid #2a2a3a',
+        width: '100%', maxWidth: 620, background: 'var(--bg-tertiary)', border: '1px solid var(--border-color)',
         borderRadius: 10, padding: '16px', display: 'flex', justifyContent: 'center', overflowX: 'auto',
       }}>{children}</div>
       {caption && <figcaption style={{ color: 'var(--text-tertiary)', fontSize: 12.5, textAlign: 'center' }}>{caption}</figcaption>}
@@ -43,8 +43,6 @@ export default function July2MlIntroTheory() {
     <div className="theory-container">
       <section className="theory-section">
         <h1 className="theory-title">Введение в машинное обучение</h1>
-        <p className="theory-subtitle">Трек: Machine Learning</p>
-        <p className="theory-date">2 июля 2026</p>
         <p>
           Машинное обучение (ML) — раздел искусственного интеллекта, где алгоритм <strong>сам находит
           закономерности в данных</strong> и применяет их к новым задачам, вместо того чтобы человек прописывал

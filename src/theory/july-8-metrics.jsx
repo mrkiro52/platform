@@ -6,7 +6,7 @@ function Fig({ children, caption }) {
   return (
     <figure style={{ margin: '18px 0', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
       <div style={{
-        width: '100%', maxWidth: 640, background: '#12121e', border: '1px solid #2a2a3a',
+        width: '100%', maxWidth: 640, background: 'var(--bg-tertiary)', border: '1px solid var(--border-color)',
         borderRadius: 10, padding: '16px', display: 'flex', justifyContent: 'center', overflowX: 'auto',
       }}>{children}</div>
       {caption && <figcaption style={{ color: 'var(--text-tertiary)', fontSize: 12.5, textAlign: 'center', maxWidth: 640 }}>{caption}</figcaption>}
@@ -28,7 +28,7 @@ function Formula({ children, note }) {
     <div style={{ margin: '18px 0', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
       <div style={{
         fontFamily: 'Georgia, "Times New Roman", serif', fontSize: 20, color: 'var(--text-primary)',
-        background: 'var(--bg-secondary)', border: '1px solid var(--border-color)', borderRadius: 10,
+        background: 'var(--bg-tertiary)', border: '1px solid var(--border-color)', borderRadius: 10,
         padding: '14px 24px', textAlign: 'center', maxWidth: '100%', overflowX: 'auto',
       }}>{children}</div>
       {note && <div style={{ color: 'var(--text-tertiary)', fontSize: 12.5, textAlign: 'center' }}>{note}</div>}
@@ -69,11 +69,9 @@ export default function July8MetricsTheory() {
     <div className="theory-container">
       <section className="theory-section">
         <h1 className="theory-title">Продуктовые метрики</h1>
-        <p className="theory-subtitle">Трек: Аналитика данных</p>
-        <p className="theory-date">8 июля 2026</p>
         <p>
           Продукт нельзя улучшать вслепую — нужно точно знать, что делают пользователи и насколько хорошо продукт
-          решает их задачу. Сегодня разберём <strong>способы измерения поведения пользователей</strong> — как
+          решает их задачу. В этом конспекте разберём <strong>способы измерения поведения пользователей</strong> — как
           вообще узнать, что происходит в приложении — и главные <strong>продуктовые метрики</strong>, которыми
           эти данные превращают в понятные числа для принятия решений.
         </p>
@@ -166,7 +164,7 @@ export default function July8MetricsTheory() {
           Чтобы понять, действительно ли изменение (новый дизайн кнопки, другой текст) улучшает поведение, а не
           просто совпало с ним по времени, используют <strong>A/B-тест</strong>: часть пользователей видит старую
           версию, часть — новую, а разницу в метриках между группами проверяют на статистическую значимость (p-value
-          — см. занятие по статистике). Так отличают реальный эффект от случайных колебаний.
+          — см. конспект по математической статистике). Так отличают реальный эффект от случайных колебаний.
         </P>
       </section>
 

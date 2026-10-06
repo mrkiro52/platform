@@ -4,7 +4,7 @@ function Fig({ children, caption }) {
   return (
     <figure style={{ margin: '18px 0', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
       <div style={{
-        width: '100%', maxWidth: 680, background: '#12121e', border: '1px solid #2a2a3a',
+        width: '100%', maxWidth: 680, background: 'var(--bg-tertiary)', border: '1px solid var(--border-color)',
         borderRadius: 12, padding: '16px', display: 'flex', justifyContent: 'center', overflowX: 'auto',
       }}>{children}</div>
       {caption && <figcaption style={{ color: 'var(--text-tertiary)', fontSize: 12.5, textAlign: 'center', maxWidth: 680 }}>{caption}</figcaption>}
@@ -39,11 +39,9 @@ export default function July30CryptoBasicsTheory() {
     <div className="theory-container">
       <section className="theory-section">
         <h1 className="theory-title">Основы криптографии</h1>
-        <p className="theory-subtitle">Трек: Кибербезопасность</p>
-        <p className="theory-date">30 июля 2026</p>
         <p>
           Криптография — это не «взлом», а прикладная математика, обеспечивающая доверие в цифровом мире: скрытность
-          данных, уверенность в их целостности и подтверждение личности отправителя. Сегодня разберём пять
+          данных, уверенность в их целостности и подтверждение личности отправителя. В этом конспекте разберём пять
           направлений — шифрование, хеширование, электронную подпись, стеганографию и криптоанализ — что в каждом из
           них является базой, какие алгоритмы и инструменты используются на практике.
         </p>

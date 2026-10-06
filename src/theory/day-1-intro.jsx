@@ -3,8 +3,6 @@ export default function Day1IntroTheory() {
     <div className="theory-container">
       <section className="theory-section">
         <h1 className="theory-title">KIRO IT SUMMER CAMP 2026</h1>
-        <p className="theory-subtitle">Вводное занятие: старт лагеря</p>
-        <p className="theory-date">1 июня 2026</p>
       </section>
 
       <section className="theory-section">
@@ -83,7 +81,7 @@ export default function Day1IntroTheory() {
       </section>
 
       <section className="theory-section theory-section--closing">
-        <p className="theory-closing-text">Добро пожаловать в KIRO IT SUMMER CAMP 2026! 🚀</p>
+        <p className="theory-closing-text">Добро пожаловать в KIRO IT SUMMER CAMP 2026! </p>
       </section>
     </div>
   )

@@ -10,7 +10,7 @@ const C = {
     borderRadius: 7, fontSize: 13, fontWeight: 700, fontFamily: 'monospace',
   }),
   wrap: {
-    background: 'var(--bg-secondary)', border: '1px solid var(--border-color)',
+    background: 'var(--bg-tertiary)', border: '1px solid var(--border-color)',
     borderRadius: 12, padding: '18px 20px', margin: '14px 0',
   },
   row: { display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' },
@@ -176,7 +176,7 @@ export function FastSlowViz() {
         {nodes.map((v, i) => (
           <div key={i} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
             <div style={{ ...C.label, height: 14 }}>
-              {i === s && i === f ? '⟳' : i === s ? '🐢' : i === f ? '🐇' : ''}
+              {i === s && i === f ? 'оба' : i === s ? 'slow' : i === f ? 'fast' : ''}
             </div>
             <div style={C.box(
               i === s && i === f ? 'rgba(210,153,34,0.3)' :
@@ -189,7 +189,7 @@ export function FastSlowViz() {
         <span style={{ ...C.label, fontSize: 12 }}>↩ к [{cycleBack}]</span>
       </div>
       <div style={{ fontSize: 12, color: 'var(--text-secondary)', marginBottom: 10, fontFamily: 'monospace' }}>
-        {meet ? `🐢 и 🐇 встретились на узле ${s} → цикл есть!` : `🐢 на [${s}], 🐇 на [${f}]`}
+        {meet ? `slow и fast встретились на узле ${s} → цикл есть!` : `slow на [${s}], fast на [${f}]`}
       </div>
       <div style={C.row}>
         <button style={btnStyle} onClick={() => setT(0)}>↩</button>

@@ -4,6 +4,7 @@ import { SCHEDULE } from '../data'
 import { api } from '../api'
 import { QUESTIONS_COMPONENTS, QuestionsInline } from './QuestionsPage'
 import { HomeworkInline } from './HomeworkPage'
+import { SECTIONS } from '../data/libraryCatalog'
 
 // Ссылки на видео для каждого дня. Пустая строка = нет видео.
 const VIDEO_URLS = {
@@ -323,65 +324,27 @@ function getDayLabel(dayNum) {
   return schedule ? schedule.title : `День ${dayNum}`
 }
 
-function scrollToId(e, id) {
-  e.preventDefault()
-  document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-}
-
-const pillStyle = {
-  display: 'inline-flex', alignItems: 'center', gap: 6,
-  background: 'rgba(255,214,10,0.1)', border: '1px solid rgba(255,214,10,0.4)',
-  color: 'var(--accent-lime)', fontWeight: 700, fontSize: 13.5,
-  padding: '8px 16px', borderRadius: 8, cursor: 'pointer',
-  textDecoration: 'none', whiteSpace: 'nowrap', transition: 'background 0.15s, border-color 0.15s',
-}
-
-// Плашки-переходы к записи/тесту/дз — рендерятся порталом прямо внутри
-// конспекта теории (после видео, если оно есть, иначе после даты занятия),
-// а не отдельным блоком над ним.
-function QuickLinks({ recordingMats, hasQuestions, hasHomework }) {
-  const hover = (e, on) => {
-    e.currentTarget.style.background = on ? 'rgba(255,214,10,0.2)' : 'rgba(255,214,10,0.1)'
-  }
+// Ссылки на записи встреч (материалы дня в Библиотеке) — рендерятся порталом
+// прямо внутри конспекта, после видео или после шапки.
+function RecordingLinks({ recordingMats }) {
   return (
-    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, margin: '20px 0 24px' }}>
+    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, margin: '20px 0 4px' }}>
       {recordingMats.map(m => (
-        <a
-          key={m.id}
-          href={m.url}
-          target="_blank"
-          rel="noopener noreferrer"
-          style={pillStyle}
-          onMouseEnter={e => hover(e, true)}
-          onMouseLeave={e => hover(e, false)}
-        >
+        <a key={m.id} href={m.url} target="_blank" rel="noopener noreferrer" className="theory-pill">
           {m.title} →
         </a>
       ))}
-      {hasQuestions && (
-        <a
-          href="#theory-test-section"
-          style={pillStyle}
-          onMouseEnter={e => hover(e, true)}
-          onMouseLeave={e => hover(e, false)}
-          onClick={e => scrollToId(e, 'theory-test-section')}
-        >
-          Перейти к тесту по теме
-        </a>
-      )}
-      {hasHomework && (
-        <a
-          href="#theory-homework-section"
-          style={pillStyle}
-          onMouseEnter={e => hover(e, true)}
-          onMouseLeave={e => hover(e, false)}
-          onClick={e => scrollToId(e, 'theory-homework-section')}
-        >
-          Перейти к заданиям по теме
-        </a>
-      )}
     </div>
   )
+}
+
+// Название конспекта и его категория из каталога библиотеки
+function catalogEntry(id) {
+  for (const section of SECTIONS) {
+    const item = section.items.find(i => i.id === id)
+    if (item) return { title: item.title, section: section.title }
+  }
+  return null
 }
 
 export default function TheoryPage({ selectedDay, onBack }) {
@@ -422,6 +385,7 @@ export default function TheoryPage({ selectedDay, onBack }) {
     return () => { cancelled = true }
   }, [selectedDay])
 
+  const entry = catalogEntry(selectedDay)
   const hasQuestions = !!QUESTIONS_COMPONENTS[selectedDay]
   const hasHomework = (homeworkContent?.[selectedDay]?.tasks?.length || 0) > 0
 
@@ -506,9 +470,15 @@ export default function TheoryPage({ selectedDay, onBack }) {
         <button className="breadcrumb-link" onClick={onBack}>
           Библиотека знаний
         </button>
+        {entry && (
+          <>
+            <span className="breadcrumb-sep">/</span>
+            <span className="breadcrumb-current">{entry.section}</span>
+          </>
+        )}
         <span className="breadcrumb-sep">/</span>
-        <span className="breadcrumb-current">
-          {JULY_TRACK_LABELS[selectedDay] ? getDayLabel(selectedDay) : (libraryTitle || getDayLabel(selectedDay))}
+        <span className="breadcrumb-current is-last">
+          {entry ? entry.title : (libraryTitle || getDayLabel(selectedDay))}
         </span>
       </div>
 
@@ -518,19 +488,19 @@ export default function TheoryPage({ selectedDay, onBack }) {
         </Suspense>
       </div>
 
-      {quickLinksMount && (recordingMats.length > 0 || hasQuestions || hasHomework) && createPortal(
-        <QuickLinks recordingMats={recordingMats} hasQuestions={hasQuestions} hasHomework={hasHomework} />,
+      {quickLinksMount && recordingMats.length > 0 && createPortal(
+        <RecordingLinks recordingMats={recordingMats} />,
         quickLinksMount
       )}
 
       {hasQuestions && (
-        <div id="theory-test-section" style={{ marginTop: 48, paddingTop: 32, borderTop: '1px solid var(--border-color)' }}>
+        <div id="theory-test-section" className="theory-section theory-section--extra">
           <QuestionsInline selectedDay={selectedDay} />
         </div>
       )}
 
       {hasHomework && (
-        <div id="theory-homework-section" style={{ marginTop: 48, paddingTop: 32, borderTop: '1px solid var(--border-color)' }}>
+        <div id="theory-homework-section" className="theory-section theory-section--extra">
           <HomeworkInline selectedDay={selectedDay} />
         </div>
       )}

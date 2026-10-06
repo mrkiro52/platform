@@ -4,7 +4,7 @@ import { TheoryTable } from './components/TheoryTable'
 /* ── мини-UI ── */
 const Viz = ({ children }) => (
   <div style={{
-    background: 'var(--bg-secondary)', border: '1px solid var(--border-color)',
+    background: 'var(--bg-tertiary)', border: '1px solid var(--border-color)',
     borderRadius: 12, padding: '18px 20px', margin: '18px 0', overflowX: 'auto',
   }}>{children}</div>
 )
@@ -29,7 +29,7 @@ const Good = ({ children }) => (
     background: 'rgba(63,185,80,0.07)', borderLeft: '3px solid #3fb950',
     borderRadius: '0 8px 8px 0', padding: '9px 14px', margin: '8px 0',
     fontSize: 13, color: 'var(--text-secondary)',
-  }}><strong style={{ color: '#3fb950' }}>✅ </strong>{children}</div>
+  }}><strong style={{ color: '#3fb950' }}>✓ </strong>{children}</div>
 )
 
 const Warn = ({ children }) => (
@@ -37,7 +37,7 @@ const Warn = ({ children }) => (
     background: 'rgba(210,153,34,0.08)', borderLeft: '3px solid #d29922',
     borderRadius: '0 8px 8px 0', padding: '9px 14px', margin: '8px 0',
     fontSize: 13, color: 'var(--text-secondary)',
-  }}><strong style={{ color: '#d29922' }}>💡 </strong>{children}</div>
+  }}><strong style={{ color: '#d29922' }}></strong>{children}</div>
 )
 
 const Quote = ({ text, author }) => (
@@ -73,28 +73,28 @@ function TuckmanViz() {
   const [active, setActive] = useState(0)
   const stages = [
     {
-      name: 'Forming', ru: 'Формирование', emoji: '👋',
+      name: 'Forming', ru: 'Формирование', emoji: '',
       color: '#58a6ff',
       desc: 'Команда только собралась. Все вежливы, осторожны, присматриваются. Непонятно кто за что отвечает, процессы ещё не выстроены.',
       signs: ['Много вопросов, мало действий', 'Зависимость от лидера', 'Избегание конфликтов', 'Неясные роли'],
       tip: 'Нужно: чёткие цели, познакомиться по-человечески, определить правила работы',
     },
     {
-      name: 'Storming', ru: 'Конфликт', emoji: '⚡',
+      name: 'Storming', ru: 'Конфликт', emoji: '',
       color: '#f85149',
       desc: 'Первые трения. Люди начинают проявлять настоящий характер, конкурировать за влияние, спорить о подходах. Это нормально и обязательно.',
       signs: ['Споры о процессах', 'Конкуренция за роли', 'Открытые конфликты', 'Снижение продуктивности'],
       tip: 'Нужно: не избегать конфликтов, а решать их конструктивно. Договориться о нормах.',
     },
     {
-      name: 'Norming', ru: 'Нормализация', emoji: '🤝',
+      name: 'Norming', ru: 'Нормализация', emoji: '',
       color: '#d29922',
       desc: 'Команда нашла общий язык. Роли распределены, процессы понятны, люди доверяют друг другу. Появляются командные шутки и традиции.',
       signs: ['Роли и процессы ясны', 'Доверие растёт', 'Конфликты решаются быстро', 'Растёт продуктивность'],
       tip: 'Нужно: закрепить договорённости, культивировать психологическую безопасность.',
     },
     {
-      name: 'Performing', ru: 'Работа', emoji: '🚀',
+      name: 'Performing', ru: 'Работа', emoji: '',
       color: '#3fb950',
       desc: 'Команда работает как единый организм. Высокая автономность, взаимоподдержка, фокус на результат. До сюда доходят не все команды.',
       signs: ['Высокая автономность', 'Взаимопомощь — норма', 'Быстрые решения', 'Фокус на результат'],
@@ -111,11 +111,11 @@ function TuckmanViz() {
             borderRadius: 7, border: `1.5px solid ${i === active ? st.color : 'var(--border-color)'}`,
             background: i === active ? st.color + '18' : 'var(--bg-tertiary)',
             color: i === active ? st.color : 'var(--text-tertiary)',
-          }}>{st.emoji} {st.name}</button>
+          }}>{st.name}</button>
         ))}
       </div>
       <div style={{ border: `1.5px solid ${s.color}`, borderRadius: 10, padding: '16px 18px', background: s.color + '07' }}>
-        <div style={{ fontSize: 20, marginBottom: 6 }}>{s.emoji} <strong style={{ color: s.color }}>{s.name} — {s.ru}</strong></div>
+        <div style={{ fontSize: 20, marginBottom: 6 }}><strong style={{ color: s.color }}>{s.name} — {s.ru}</strong></div>
         <p style={{ fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.65, marginBottom: 12 }}>{s.desc}</p>
         <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginBottom: 12 }}>
           {s.signs.map(sg => (
@@ -136,26 +136,25 @@ function TuckmanViz() {
 /* Коммуникация: синхронная vs асинхронная */
 function CommViz() {
   const sync = [
-    { icon: '🎤', name: 'Стендап', note: 'ежедневно, 15 мин, статус команды' },
-    { icon: '📹', name: 'Видеозвонок', note: 'сложные вопросы, брейнсторм' },
-    { icon: '💬', name: 'Живой чат', note: 'срочные вопросы, быстрые решения' },
-    { icon: '🖥', name: 'Пейр-программинг', note: 'код-ревью вживую, онбординг' },
+    { icon: '', name: 'Стендап', note: 'ежедневно, 15 мин, статус команды' },
+    { icon: '', name: 'Видеозвонок', note: 'сложные вопросы, брейнсторм' },
+    { icon: '', name: 'Живой чат', note: 'срочные вопросы, быстрые решения' },
+    { icon: '', name: 'Пейр-программинг', note: 'код-ревью вживую, онбординг' },
   ]
   const async = [
-    { icon: '📝', name: 'Тикет / задача', note: 'детальное описание, статус, история' },
-    { icon: '✉️', name: 'Email / мессенджер', note: 'не срочные вопросы, не ждёшь ответа немедленно' },
-    { icon: '📄', name: 'Confluence / Notion', note: 'документация, решения, RFC' },
-    { icon: '🔍', name: 'Code review', note: 'комментарии к PR, итерации' },
+    { icon: '', name: 'Тикет / задача', note: 'детальное описание, статус, история' },
+    { icon: '', name: 'Email / мессенджер', note: 'не срочные вопросы, не ждёшь ответа немедленно' },
+    { icon: '', name: 'Confluence / Notion', note: 'документация, решения, RFC' },
+    { icon: '', name: 'Code review', note: 'комментарии к PR, итерации' },
   ]
   return (
     <Viz>
       <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap' }}>
         <div style={{ flex: 1, minWidth: 200 }}>
-          <div style={{ fontSize: 12, fontWeight: 700, color: '#58a6ff', marginBottom: 10 }}>⚡ Синхронная (здесь и сейчас)</div>
+          <div style={{ fontSize: 12, fontWeight: 700, color: '#58a6ff', marginBottom: 10 }}>Синхронная (здесь и сейчас)</div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 7 }}>
             {sync.map(s => (
               <div key={s.name} style={{ display: 'flex', gap: 8, alignItems: 'flex-start', padding: '7px 10px', borderRadius: 8, background: 'rgba(88,166,255,0.07)', border: '1px solid rgba(88,166,255,0.15)' }}>
-                <span style={{ fontSize: 16 }}>{s.icon}</span>
                 <div>
                   <div style={{ fontSize: 12, fontWeight: 700, color: '#58a6ff' }}>{s.name}</div>
                   <div style={{ fontSize: 11, color: 'var(--text-tertiary)' }}>{s.note}</div>
@@ -165,11 +164,10 @@ function CommViz() {
           </div>
         </div>
         <div style={{ flex: 1, minWidth: 200 }}>
-          <div style={{ fontSize: 12, fontWeight: 700, color: '#3fb950', marginBottom: 10 }}>🕐 Асинхронная (без срочности)</div>
+          <div style={{ fontSize: 12, fontWeight: 700, color: '#3fb950', marginBottom: 10 }}>Асинхронная (без срочности)</div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 7 }}>
             {async.map(s => (
               <div key={s.name} style={{ display: 'flex', gap: 8, alignItems: 'flex-start', padding: '7px 10px', borderRadius: 8, background: 'rgba(63,185,80,0.07)', border: '1px solid rgba(63,185,80,0.15)' }}>
-                <span style={{ fontSize: 16 }}>{s.icon}</span>
                 <div>
                   <div style={{ fontSize: 12, fontWeight: 700, color: '#3fb950' }}>{s.name}</div>
                   <div style={{ fontSize: 11, color: 'var(--text-tertiary)' }}>{s.note}</div>
@@ -187,13 +185,13 @@ function CommViz() {
 function FeedbackViz() {
   const [mode, setMode] = useState('bad')
   const bad = {
-    label: '❌ Как НЕ надо',
+    label: '✗ Как НЕ надо',
     color: '#f85149',
     text: '"Ты опять всё сломал. Твой код — ужас. Ты вечно торопишься и не думаешь о последствиях."',
     problems: ['Оценивает личность, не поведение', 'Слово «вечно» — обобщение', 'Нет конкретики', 'Человек защищается, не слышит суть'],
   }
   const good = {
-    label: '✅ Модель SBI',
+    label: '✓ Модель SBI',
     color: '#3fb950',
     blocks: [
       { letter: 'S', name: 'Situation', color: '#58a6ff', text: 'Вчера на code review для PR #142...' },
@@ -292,15 +290,15 @@ function STARViz() {
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
             <div style={{ padding: '8px 12px', borderRadius: 7, background: 'rgba(248,81,73,0.08)', border: '1px solid rgba(248,81,73,0.2)' }}>
-              <div style={{ fontSize: 10, color: '#f85149', fontWeight: 700, marginBottom: 3 }}>❌ Слабый ответ</div>
+              <div style={{ fontSize: 10, color: '#f85149', fontWeight: 700, marginBottom: 3 }}>✗ Слабый ответ</div>
               <div style={{ fontSize: 12, color: 'var(--text-secondary)', fontStyle: 'italic' }}>{parts[active].bad}</div>
             </div>
             <div style={{ padding: '8px 12px', borderRadius: 7, background: 'rgba(63,185,80,0.08)', border: '1px solid rgba(63,185,80,0.2)' }}>
-              <div style={{ fontSize: 10, color: '#3fb950', fontWeight: 700, marginBottom: 3 }}>✅ Сильный ответ</div>
+              <div style={{ fontSize: 10, color: '#3fb950', fontWeight: 700, marginBottom: 3 }}>✓ Сильный ответ</div>
               <div style={{ fontSize: 12, color: 'var(--text-secondary)', fontStyle: 'italic' }}>{parts[active].good}</div>
             </div>
             <div style={{ fontSize: 11, color: parts[active].color, borderTop: `1px dashed ${parts[active].color}30`, paddingTop: 8, marginTop: 2 }}>
-              💡 {parts[active].tip}
+              {parts[active].tip}
             </div>
           </div>
         </div>
@@ -344,27 +342,27 @@ function SpeechViz() {
   const [active, setActive] = useState(0)
   const parts = [
     {
-      n: 1, name: 'Крючок (Hook)', emoji: '🎣', time: '~30 сек',
+      n: 1, name: 'Крючок (Hook)', emoji: '', time: '~30 сек',
       desc: 'Первые 30 секунд решают всё. Начни с неожиданного факта, вопроса к аудитории или короткой истории. Цель — захватить внимание.',
       ex: '«Знаете ли вы, что 70% IT-проектов проваливаются не из-за кода — а из-за коммуникации внутри команды?»',
     },
     {
-      n: 2, name: 'Контекст', emoji: '🗺', time: '~1 мин',
+      n: 2, name: 'Контекст', emoji: '', time: '~1 мин',
       desc: 'Объясни зачем это важно и для кого. Слушатель должен понять почему ему стоит слушать дальше. Один-два тезиса.',
-      ex: '«Сегодня разберём три техники, которые помогут вам доносить идеи чётче и получать лучший фидбек от коллег.»',
+      ex: '«В этом конспекте разберём три техники, которые помогут вам доносить идеи чётче и получать лучший фидбек от коллег.»',
     },
     {
-      n: 3, name: 'Основная часть', emoji: '📚', time: 'большая часть',
+      n: 3, name: 'Основная часть', emoji: '', time: 'большая часть',
       desc: 'Максимум 3-5 ключевых мыслей. Каждую раскрывай по схеме: тезис → пример → вывод. Не пытайся вместить всё — лучше меньше, но запомнится.',
       ex: '1. Тезис: «Фидбек нужно делать конкретным» → 2. Пример: показать SBI → 3. Вывод: «Люди меняются когда понимают что именно»',
     },
     {
-      n: 4, name: 'Призыв к действию', emoji: '🎯', time: '~30 сек',
+      n: 4, name: 'Призыв к действию', emoji: '', time: '~30 сек',
       desc: 'Что ты хочешь чтобы люди сделали после? Конкретное действие: попробовать, задать вопрос, применить технику сегодня.',
       ex: '«Попробуй дать хотя бы один фидбек по модели SBI на этой неделе. Посмотри что изменится.»',
     },
     {
-      n: 5, name: 'Финальный якорь', emoji: '⚓', time: '~20 сек',
+      n: 5, name: 'Финальный якорь', emoji: '', time: '~20 сек',
       desc: 'Последнее запоминается лучше всего. Повтори главную мысль одним предложением или оставь финальный вопрос, который заставит думать.',
       ex: '«Помните: технические навыки открывают дверь, но soft skills определяют как далеко вы пройдёте.»',
     },
@@ -380,12 +378,12 @@ function SpeechViz() {
             background: i === active ? 'rgba(255,214,10,0.12)' : 'var(--bg-tertiary)',
             color: i === active ? 'var(--accent-lime)' : 'var(--text-tertiary)',
             fontWeight: i === active ? 700 : 400,
-          }}>{pt.emoji} {pt.n}</button>
+          }}>{pt.n}</button>
         ))}
       </div>
       <div style={{ border: '1.5px solid var(--accent-lime)', borderRadius: 10, padding: '14px 16px', background: 'rgba(255,214,10,0.04)' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-          <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--accent-lime)' }}>{p.emoji} {p.n}. {p.name}</span>
+          <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--accent-lime)' }}>{p.n}. {p.name}</span>
           <span style={{ fontSize: 11, color: 'var(--text-tertiary)', background: 'var(--bg-tertiary)', padding: '2px 8px', borderRadius: 5 }}>{p.time}</span>
         </div>
         <p style={{ fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.65, marginBottom: 10 }}>{p.desc}</p>
@@ -400,19 +398,18 @@ function SpeechViz() {
 /* Инструменты роста */
 function GrowthToolsViz() {
   const tools = [
-    { icon: '📓', name: 'Brag Doc', color: '#a371f7', desc: 'Личный документ достижений. Каждую неделю записываешь что сделал: задачи, решения, влияние. Незаменим на performance review и при поиске работы.' },
-    { icon: '🔁', name: '1-on-1', color: '#58a6ff', desc: 'Регулярная встреча с менеджером (обычно раз в 1-2 недели). Место для фидбека, обсуждения роста, карьерных целей. Готовь agenda заранее.' },
-    { icon: '🗺', name: 'Карта навыков', color: '#d29922', desc: 'Таблица 3×3: что ты умеешь хорошо / средне / плохо. Помогает понять куда инвестировать время и о чём говорить на 1-on-1.' },
-    { icon: '🪞', name: 'Ретроспектива', color: '#3fb950', desc: 'Командная встреча в конце спринта: Что шло хорошо? Что мешало? Что улучшить? Три вопроса, 30 минут — мощный инструмент непрерывного улучшения.' },
-    { icon: '📚', name: 'RFC / ADR', color: 'var(--accent-lime)', desc: 'Request for Comments / Architecture Decision Record — письменное предложение изменений. Учит структурировать мышление и аргументировать решения.' },
-    { icon: '🎙', name: 'Tech talks', color: '#f85149', desc: 'Внутренние доклады внутри команды о том что изучил. Лучший способ закрепить знания — объяснить другим. Публичная прокачка без стресса.' },
+    { icon: '', name: 'Brag Doc', color: '#a371f7', desc: 'Личный документ достижений. Каждую неделю записываешь что сделал: задачи, решения, влияние. Незаменим на performance review и при поиске работы.' },
+    { icon: '', name: '1-on-1', color: '#58a6ff', desc: 'Регулярная встреча с менеджером (обычно раз в 1-2 недели). Место для фидбека, обсуждения роста, карьерных целей. Готовь agenda заранее.' },
+    { icon: '', name: 'Карта навыков', color: '#d29922', desc: 'Таблица 3×3: что ты умеешь хорошо / средне / плохо. Помогает понять куда инвестировать время и о чём говорить на 1-on-1.' },
+    { icon: '', name: 'Ретроспектива', color: '#3fb950', desc: 'Командная встреча в конце спринта: Что шло хорошо? Что мешало? Что улучшить? Три вопроса, 30 минут — мощный инструмент непрерывного улучшения.' },
+    { icon: '', name: 'RFC / ADR', color: 'var(--accent-lime)', desc: 'Request for Comments / Architecture Decision Record — письменное предложение изменений. Учит структурировать мышление и аргументировать решения.' },
+    { icon: '', name: 'Tech talks', color: '#f85149', desc: 'Внутренние доклады внутри команды о том что изучил. Лучший способ закрепить знания — объяснить другим. Публичная прокачка без стресса.' },
   ]
   return (
     <Viz>
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
         {tools.map(t => (
           <div key={t.name} style={{ flex: '1 1 200px', minWidth: 190, padding: '12px 14px', borderRadius: 9, border: `1.5px solid ${t.color}30`, background: t.color + '07' }}>
-            <div style={{ fontSize: 20, marginBottom: 5 }}>{t.icon}</div>
             <div style={{ fontSize: 13, fontWeight: 700, color: t.color, marginBottom: 5 }}>{t.name}</div>
             <div style={{ fontSize: 12, color: 'var(--text-secondary)', lineHeight: 1.65 }}>{t.desc}</div>
           </div>
@@ -432,6 +429,9 @@ export default function Day26SoftSkillsTheory() {
 
       <section className="theory-section">
         <h1 className="theory-title">Soft skills: команда, фидбек, рост</h1>
+        <p>
+          Soft skills — то, как ты работаешь с людьми: общаешься в команде, даёшь и принимаешь обратную связь, выступаешь и растёшь в карьере. На уровне middle и выше именно они чаще всего определяют скорость роста.
+        </p>
       </section>
 
       <section className="theory-section">
@@ -455,13 +455,13 @@ export default function Day26SoftSkillsTheory() {
           author="Standish Group CHAOS Report"
         />
         <Cards>
-          <Card icon="🧑‍💻" title="Junior" color="#58a6ff">
+          <Card icon="" title="Junior" color="#58a6ff">
             Берут за технические навыки. Умеет писать код — этого достаточно для старта.
           </Card>
-          <Card icon="🧑‍🔧" title="Middle" color="#d29922">
+          <Card icon="" title="Middle" color="#d29922">
             Нужно уже уметь объяснять решения, давать code review, работать в команде без надзора.
           </Card>
-          <Card icon="🧑‍🏫" title="Senior / Lead" color="#3fb950">
+          <Card icon="" title="Senior / Lead" color="#3fb950">
             Влияние через других людей. Умение убеждать, менторить, выступать, принимать решения с неполной информацией.
           </Card>
         </Cards>
@@ -498,16 +498,16 @@ export default function Day26SoftSkillsTheory() {
           скрывают ошибки — и именно это приводит к провалам проектов.
         </p>
         <Cards>
-          <Card icon="🙋" title="Задавай вопросы" color="#58a6ff">
+          <Card icon="" title="Задавай вопросы" color="#58a6ff">
             «Глупых» вопросов не существует. Если ты не понимаешь — скорее всего ещё кто-то тоже не понимает, но молчит.
           </Card>
-          <Card icon="🐛" title="Признавай ошибки" color="#d29922">
+          <Card icon="" title="Признавай ошибки" color="#d29922">
             «Я облажался — вот что пошло не так и что я сделаю чтобы не повторилось» — это признак зрелости, не слабости.
           </Card>
-          <Card icon="💡" title="Предлагай идеи" color="#a371f7">
+          <Card icon="" title="Предлагай идеи" color="#a371f7">
             Даже если идея кажется странной — скажи. Инновации рождаются из смелости озвучить нестандартную мысль.
           </Card>
-          <Card icon="🗣" title="Давай фидбек" color="#3fb950">
+          <Card icon="" title="Давай фидбек" color="#3fb950">
             Молчать о проблеме — значит позволять ей расти. Конструктивная критика = уважение к коллеге.
           </Card>
         </Cards>
@@ -533,10 +533,10 @@ export default function Day26SoftSkillsTheory() {
           ].map(({ bad, good, label }) => (
             <div key={label} style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
               <div style={{ flex: 1, minWidth: 180, padding: '8px 12px', borderRadius: 7, background: 'rgba(248,81,73,0.06)', border: '1px solid rgba(248,81,73,0.15)', fontSize: 12, color: 'var(--text-secondary)' }}>
-                <div style={{ fontSize: 10, color: '#f85149', fontWeight: 700, marginBottom: 3 }}>❌</div>{bad}
+                <div style={{ fontSize: 10, color: '#f85149', fontWeight: 700, marginBottom: 3 }}>✗</div>{bad}
               </div>
               <div style={{ flex: 1.5, minWidth: 200, padding: '8px 12px', borderRadius: 7, background: 'rgba(63,185,80,0.06)', border: '1px solid rgba(63,185,80,0.15)', fontSize: 12, color: 'var(--text-secondary)' }}>
-                <div style={{ fontSize: 10, color: '#3fb950', fontWeight: 700, marginBottom: 3 }}>✅ {label}</div>{good}
+                <div style={{ fontSize: 10, color: '#3fb950', fontWeight: 700, marginBottom: 3 }}>✓ {label}</div>{good}
               </div>
             </div>
           ))}
@@ -580,12 +580,12 @@ export default function Day26SoftSkillsTheory() {
         </p>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8, margin: '14px 0' }}>
           {[
-            { bad: '❌ Зачем ты написал это так??', good: '💬 Здесь можно использовать map() вместо цикла — будет короче. Что думаешь?', type: 'Вопрос вместо приговора' },
-            { bad: '❌ Это неправильно.', good: '💬 Если передать null — упадёт здесь. Предлагаю добавить guard clause в начале функции.', type: 'Конкретная проблема + решение' },
-            { bad: '❌ Стиль кода ужасный', good: '💬 Отлично реализованный алгоритм! Одно предложение по именованию: result лучше назвать filteredUsers — сразу понятно что внутри.', type: 'Сначала хорошее, потом улучшение' },
-            { bad: '❌ (молчание на 5 дней)', good: '💬 Ревью займёт у меня до пятницы, не блокируйся — можешь начать следующую задачу.', type: 'Коммуникация о сроках' },
+            { bad: '✗ Зачем ты написал это так??', good: 'Здесь можно использовать map() вместо цикла — будет короче. Что думаешь?', type: 'Вопрос вместо приговора' },
+            { bad: '✗ Это неправильно.', good: 'Если передать null — упадёт здесь. Предлагаю добавить guard clause в начале функции.', type: 'Конкретная проблема + решение' },
+            { bad: '✗ Стиль кода ужасный', good: 'Отлично реализованный алгоритм! Одно предложение по именованию: result лучше назвать filteredUsers — сразу понятно что внутри.', type: 'Сначала хорошее, потом улучшение' },
+            { bad: '✗ (молчание на 5 дней)', good: 'Ревью займёт у меня до пятницы, не блокируйся — можешь начать следующую задачу.', type: 'Коммуникация о сроках' },
           ].map(({ bad, good, type }) => (
-            <div key={type} style={{ padding: '10px 14px', borderRadius: 8, border: '1px solid var(--border-color)', background: 'var(--bg-secondary)' }}>
+            <div key={type} style={{ padding: '10px 14px', borderRadius: 8, border: '1px solid var(--border-color)', background: 'var(--bg-tertiary)' }}>
               <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--accent-lime)', marginBottom: 6 }}>{type}</div>
               <div style={{ fontSize: 12, color: '#f85149', marginBottom: 4, fontFamily: 'monospace' }}>{bad}</div>
               <div style={{ fontSize: 12, color: '#3fb950', fontFamily: 'monospace' }}>{good}</div>
@@ -605,16 +605,16 @@ export default function Day26SoftSkillsTheory() {
         <SpeechViz />
         <p style={{ marginTop: 14 }}><strong>Техники для работы с волнением:</strong></p>
         <Cards>
-          <Card icon="🌬" title="Дыхание" color="#58a6ff">
+          <Card icon="" title="Дыхание" color="#58a6ff">
             4-7-8: вдох 4 сек, задержка 7, выдох 8. Снижает уровень кортизола за 2 минуты.
           </Card>
-          <Card icon="🎯" title="Рефрейминг" color="#a371f7">
+          <Card icon="" title="Рефрейминг" color="#a371f7">
             «Я волнуюсь» → «Я воодушевлён». Физиологически одно и то же, но работает по-разному.
           </Card>
-          <Card icon="🗣" title="Репетиция вслух" color="#3fb950">
+          <Card icon="" title="Репетиция вслух" color="#3fb950">
             Прочитать про себя и сказать вслух — два разных опыта. Репетируй именно вслух, хотя бы один раз.
           </Card>
-          <Card icon="👁" title="Взгляд" color="#d29922">
+          <Card icon="" title="Взгляд" color="#d29922">
             Находи 2-3 дружелюбных лица в зале и переключайся между ними. Это создаёт ощущение разговора, а не монолога.
           </Card>
         </Cards>
@@ -709,14 +709,13 @@ export default function Day26SoftSkillsTheory() {
         <h2 className="theory-heading-2">С чего начать прямо сейчас</h2>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10, margin: '14px 0' }}>
           {[
-            { icon: '📓', action: 'Заведи Brag Doc', desc: 'Google Docs / Notion. Раз в неделю — одна запись о том что сделал и какой был результат.' },
-            { icon: '🎯', action: 'Подготовь 3 STAR-истории', desc: 'Технический успех, ошибка и вывод, инициатива которую взял сам.' },
-            { icon: '💬', action: 'Дай один SBI-фидбек', desc: 'Найди что-то конкретное за эту неделю. Ситуация → Поведение → Влияние.' },
-            { icon: '🙋', action: 'Задай «глупый» вопрос', desc: 'То что кажется очевидным другим — скорее всего неочевидно и им тоже. Спроси.' },
-            { icon: '📢', action: 'Расскажи о чём-то на следующем митинге', desc: 'Статья, паттерн, инструмент — 3 минуты. Первый шаг к публичным выступлениям.' },
+            { icon: '', action: 'Заведи Brag Doc', desc: 'Google Docs / Notion. Раз в неделю — одна запись о том что сделал и какой был результат.' },
+            { icon: '', action: 'Подготовь 3 STAR-истории', desc: 'Технический успех, ошибка и вывод, инициатива которую взял сам.' },
+            { icon: '', action: 'Дай один SBI-фидбек', desc: 'Найди что-то конкретное за эту неделю. Ситуация → Поведение → Влияние.' },
+            { icon: '', action: 'Задай «глупый» вопрос', desc: 'То что кажется очевидным другим — скорее всего неочевидно и им тоже. Спроси.' },
+            { icon: '', action: 'Расскажи о чём-то на следующем митинге', desc: 'Статья, паттерн, инструмент — 3 минуты. Первый шаг к публичным выступлениям.' },
           ].map(({ icon, action, desc }) => (
-            <div key={action} style={{ display: 'flex', gap: 12, padding: '12px 14px', borderRadius: 9, border: '1.5px solid var(--border-color)', background: 'var(--bg-secondary)' }}>
-              <span style={{ fontSize: 20, flexShrink: 0 }}>{icon}</span>
+            <div key={action} style={{ display: 'flex', gap: 12, padding: '12px 14px', borderRadius: 9, border: '1.5px solid var(--border-color)', background: 'var(--bg-tertiary)' }}>
               <div>
                 <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--accent-lime)', marginBottom: 3 }}>{action}</div>
                 <div style={{ fontSize: 12, color: 'var(--text-secondary)' }}>{desc}</div>

@@ -27,8 +27,6 @@ export default function July21AnalyticsInterviewTheory() {
     <div className="theory-container">
       <section className="theory-section">
         <h1 className="theory-title">Вопросы с собеседования: Аналитика</h1>
-        <p className="theory-subtitle">Трек: Аналитика</p>
-        <p className="theory-date">21 июля 2026</p>
         <p>
           Тренировка на самых популярных вопросах, которые звучат на собеседованиях на позиции аналитика данных и
           продуктового аналитика. Первый блок — общие вопросы про метрики, эксперименты и статистику. Второй блок

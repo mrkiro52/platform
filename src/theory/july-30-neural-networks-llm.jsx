@@ -4,7 +4,7 @@ function Fig({ children, caption }) {
   return (
     <figure style={{ margin: '18px 0', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
       <div style={{
-        width: '100%', maxWidth: 680, background: '#12121e', border: '1px solid #2a2a3a',
+        width: '100%', maxWidth: 680, background: 'var(--bg-tertiary)', border: '1px solid var(--border-color)',
         borderRadius: 12, padding: '16px', display: 'flex', justifyContent: 'center', overflowX: 'auto',
       }}>{children}</div>
       {caption && <figcaption style={{ color: 'var(--text-tertiary)', fontSize: 12.5, textAlign: 'center', maxWidth: 680 }}>{caption}</figcaption>}
@@ -39,10 +39,8 @@ export default function July30NeuralNetworksLlmTheory() {
     <div className="theory-container">
       <section className="theory-section">
         <h1 className="theory-title">Нейронные сети и LLM: взгляд AI-разработчика</h1>
-        <p className="theory-subtitle">Трек: Аналитика / Machine Learning</p>
-        <p className="theory-date">30 июля 2026</p>
         <p>
-          Сегодня — не занятие по built-from-scratch ML, а разбор того, что нужно понимать <strong>разработчику,
+          Это не конспект про built-from-scratch ML, а разбор того, что нужно понимать <strong>разработчику,
           который встраивает готовые AI-решения в продукт</strong>: приложения, боты, внутренние инструменты. Разберём,
           что такое нейронная сеть на пальцах, какие они бывают, что такое LLM и чем отличаются друг от друга
           готовые решения на рынке, что реально можно сделать через их API, и когда вообще нейросеть — правильный
@@ -287,7 +285,7 @@ response = client.messages.create(
             ['Оценка качества (evals)', 'Как понять, что промпт стал лучше/хуже после изменений — нужны тестовые наборы и метрики'],
           ]}
         />
-        <TheoryExample title="Главная мысль занятия">
+        <TheoryExample title="Главная мысль конспекта">
           Как AI-разработчику вам не нужно уметь обучать трансформер с нуля — но нужно понимать, как модель устроена
           «под капотом» достаточно, чтобы предсказывать её поведение: почему она иногда «галлюцинирует», почему
           контекст стоит денег и имеет предел, и почему безопасность промптов — это такая же инженерная задача, как

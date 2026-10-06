@@ -4,7 +4,7 @@ function Fig({ children, caption }) {
   return (
     <figure style={{ margin: '18px 0', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
       <div style={{
-        width: '100%', maxWidth: 680, background: '#12121e', border: '1px solid #2a2a3a',
+        width: '100%', maxWidth: 680, background: 'var(--bg-tertiary)', border: '1px solid var(--border-color)',
         borderRadius: 10, padding: '16px', display: 'flex', justifyContent: 'center', overflowX: 'auto',
       }}>{children}</div>
       {caption && <figcaption style={{ color: 'var(--text-tertiary)', fontSize: 12.5, textAlign: 'center', maxWidth: 680 }}>{caption}</figcaption>}
@@ -37,7 +37,7 @@ function P({ n, children }) {
 function Formula({ children }) {
   return (
     <div style={{
-      margin: '14px 0', padding: '12px 16px', background: 'var(--bg-secondary)',
+      margin: '14px 0', padding: '12px 16px', background: 'var(--bg-tertiary)',
       border: '1px solid var(--border-color)', borderRadius: 8, textAlign: 'center',
       fontFamily: 'ui-monospace, monospace', fontSize: 15, color: 'var(--text-primary)', overflowX: 'auto',
     }}>{children}</div>
@@ -49,12 +49,10 @@ export default function July29DecisionTreesTheory() {
     <div className="theory-container">
       <section className="theory-section">
         <h1 className="theory-title">Решающие деревья</h1>
-        <p className="theory-subtitle">Треки: Аналитика и Machine Learning</p>
-        <p className="theory-date">29 июля 2026</p>
         <p>
           Решающее дерево — один из самых интуитивно понятных алгоритмов машинного обучения: оно предсказывает
           значение целевой переменной через последовательное применение простых правил, во многом повторяя то, как
-          человек сам принимает решения. Сегодня разберём: что такое решающее дерево, почему построение идеального
+          человек сам принимает решения. В этом конспекте разберём: что такое решающее дерево, почему построение идеального
           дерева — вычислительно неподъёмная задача, как устроен жадный алгоритм, который решает эту проблему на
           практике, особенности работы с разными типами данных и способы регуляризации, без которых дерево
           переобучается почти всегда.

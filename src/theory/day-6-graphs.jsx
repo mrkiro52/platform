@@ -5,6 +5,9 @@ export default function Day6GraphsTheory() {
     <div className="theory-container">
       <section className="theory-section">
         <h1 className="theory-title">Дискретная математика: графы и алгоритмы</h1>
+        <p>
+          Граф — набор вершин и связей между ними. Графами описывают дороги, социальные сети, зависимости пакетов и маршруты в сети. В конспекте — представление графов и главные алгоритмы обхода.
+        </p>
       </section>
 
       <section className="theory-section">
@@ -218,6 +221,94 @@ print(topological_sort(graph, in_degree))  # ['A', 'B', 'C', 'D']`} language="py
         <TheoryExample title="Применение">
           <p>Например, в системе сборки проектов: нужно скомпилировать файл A перед файлом B, если B зависит от A.</p>
         </TheoryExample>
+      </section>
+
+      <section className="theory-section">
+        <h2 className="theory-heading-2">Взвешенные графы и алгоритм Дейкстры</h2>
+        <p>
+          Если у рёбер есть вес (расстояние, время, стоимость), BFS уже не находит кратчайший путь: путь из трёх
+          коротких рёбер может быть короче одного длинного. Для графов с неотрицательными весами используют
+          <strong> алгоритм Дейкстры</strong>: он всегда раскрывает ближайшую ещё не обработанную вершину, а
+          ближайшую быстро достаёт очередь с приоритетом.
+        </p>
+        <TheoryCode language="python" code={`import heapq
+
+def dijkstra(graph, start):
+    # graph: {вершина: [(сосед, вес), ...]}
+    dist = {start: 0}
+    heap = [(0, start)]
+    while heap:
+        d, v = heapq.heappop(heap)
+        if d > dist.get(v, float("inf")):
+            continue                      # устаревшая запись
+        for u, w in graph[v]:
+            nd = d + w
+            if nd < dist.get(u, float("inf")):
+                dist[u] = nd
+                heapq.heappush(heap, (nd, u))
+    return dist
+
+roads = {
+    "A": [("B", 4), ("C", 1)],
+    "B": [("D", 1)],
+    "C": [("B", 2), ("D", 5)],
+    "D": [],
+}
+dijkstra(roads, "A")   # {'A': 0, 'B': 3, 'C': 1, 'D': 4}`} />
+        <p>
+          Сложность — O((V + E) log V). С отрицательными весами Дейкстра даёт неверный ответ; там используют
+          алгоритм Беллмана — Форда.
+        </p>
+      </section>
+
+      <section className="theory-section">
+        <h2 className="theory-heading-2">Поиск цикла</h2>
+        <p>
+          Цикл в графе зависимостей означает, что задачи нельзя выполнить ни в каком порядке (A ждёт B, B ждёт A).
+          В ориентированном графе цикл ищут обходом в глубину с тремя цветами вершин:
+        </p>
+        <TheoryCode language="python" code={`WHITE, GRAY, BLACK = 0, 1, 2   # не посещена / в обработке / готова
+
+def has_cycle(graph):
+    color = {v: WHITE for v in graph}
+
+    def dfs(v):
+        color[v] = GRAY
+        for u in graph[v]:
+            if color[u] == GRAY:            # вернулись в вершину на текущем пути
+                return True
+            if color[u] == WHITE and dfs(u):
+                return True
+        color[v] = BLACK
+        return False
+
+    return any(color[v] == WHITE and dfs(v) for v in graph)`} />
+      </section>
+
+      <section className="theory-section">
+        <h2 className="theory-heading-2">Какой алгоритм выбрать</h2>
+        <TheoryTable
+          headers={['Задача', 'Алгоритм', 'Сложность']}
+          rows={[
+            ['Кратчайший путь, все рёбра одинаковые', 'BFS', 'O(V + E)'],
+            ['Кратчайший путь, неотрицательные веса', 'Дейкстра', 'O((V + E) log V)'],
+            ['Обойти всё, найти компоненты связности', 'DFS или BFS', 'O(V + E)'],
+            ['Порядок выполнения задач с зависимостями', 'Топологическая сортировка', 'O(V + E)'],
+            ['Есть ли цикл', 'DFS с тремя цветами', 'O(V + E)'],
+            ['Объединять группы и проверять «в одной ли группе»', 'Система непересекающихся множеств (Union-Find)', 'почти O(1) на операцию'],
+          ]}
+        />
+      </section>
+
+      <section className="theory-section">
+        <h2 className="theory-heading-2">Задачи на графы с собеседований</h2>
+        <ul className="theory-list">
+          <li className="theory-list-item"><strong>Number of Islands</strong> — сколько островов на карте из нулей и единиц (DFS/BFS по клеткам).</li>
+          <li className="theory-list-item"><strong>Course Schedule</strong> — можно ли пройти все курсы с учётом пререквизитов (поиск цикла).</li>
+          <li className="theory-list-item"><strong>Clone Graph</strong> — глубокая копия графа (обход + словарь «оригинал → копия»).</li>
+          <li className="theory-list-item"><strong>Rotting Oranges</strong> — распространение по сетке за минимальное время (многоисточниковый BFS).</li>
+          <li className="theory-list-item"><strong>Network Delay Time</strong> — время прохождения сигнала по сети (Дейкстра).</li>
+        </ul>
       </section>
 
       <section className="theory-section theory-section--closing">

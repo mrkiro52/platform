@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { TheoryCode } from './components/TheoryTable'
 
-/* ─── UI helpers (тот же язык, что и в конспекте 29 июня) ─── */
+/* ─── UI helpers (тот же язык, что и в конспекте «Резюме IT-джуна») ─── */
 const S = ({ children, style }) => (
   <p style={{ color: 'var(--text-secondary)', fontSize: 14, lineHeight: 1.8, margin: '10px 0', ...style }}>{children}</p>
 )
@@ -19,7 +19,7 @@ const Ul = ({ items }) => (
 
 const Card = ({ children, accent }) => (
   <div style={{
-    background: 'var(--bg-secondary)',
+    background: 'var(--bg-tertiary)',
     border: `1px solid ${accent ? 'rgba(255,214,10,0.3)' : 'var(--border-color)'}`,
     borderRadius: 10,
     padding: 'clamp(14px,3vw,20px)',
@@ -44,10 +44,10 @@ const Note = ({ children }) => (
 )
 
 const SectionHead = ({ n, title, sub }) => (
-  <div style={{ margin: '52px 0 20px' }}>
-    <div style={{ color: 'var(--accent-lime)', fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 4 }}>Раздел {n}</div>
-    <h2 style={{ color: 'var(--text-primary)', fontSize: 'clamp(20px,4vw,27px)', fontWeight: 800, fontFamily: 'var(--font-syne)', margin: '0 0 6px', borderBottom: '2px solid var(--accent-lime)', paddingBottom: 10 }}>{title}</h2>
-    {sub && <p style={{ color: 'var(--text-tertiary)', fontSize: 13, margin: '8px 0 0' }}>{sub}</p>}
+  <div style={{ marginBottom: 16 }}>
+    <div style={{ color: 'var(--accent-lime)', fontSize: 11, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 6 }}>Раздел {n}</div>
+    <h2 className="theory-heading-2" style={{ marginBottom: sub ? 6 : 0 }}>{title}</h2>
+    {sub && <p style={{ color: 'var(--text-tertiary)', fontSize: 13.5, margin: 0 }}>{sub}</p>}
   </div>
 )
 
@@ -100,18 +100,17 @@ export default function August1ResumeFlagsTheory() {
     <div className="theory-container">
       <section className="theory-section">
         <h1 className="theory-title">Резюме: шаблон, ред- и грин-флаги</h1>
-        <p className="theory-subtitle">Все треки</p>
-        <p className="theory-date">1 августа 2026</p>
         <p>
-          29 июня мы написали первый черновик резюме — с тех пор ты отправил(а) его ментору и, возможно, уже
-          откликался(лась) на вакансии. Сегодня — финальный проход: переносим резюме в нормальный шаблон,
+          Первый черновик резюме у тебя уже есть (если нет — начни с конспекта «Резюме IT-джуна»). Здесь —
+          финальный проход: переносим резюме в нормальный шаблон,
           разбираем что такое ATS-читаемость на практике и учимся видеть своё резюме глазами рекрутера — через
           ред-флаги (что отталкивает) и грин-флаги (что выделяет среди сотни таких же джунов).
         </p>
       </section>
 
       {/* ─── 1. Шаблон ─── */}
-      <SectionHead n="01" title="Шаблон, по которому собираем резюме" sub="Ссылка на .tex-файл — в материалах занятия. Дальше разбираем каждый блок" />
+      <section className="theory-section">
+        <SectionHead n="01" title="Шаблон, по которому собираем резюме" sub="Структура шаблона и разбор каждого блока" />
 
       <S>
         На платформе лежит готовый <B>LaTeX-шаблон</B> резюме (author: Jake Gutierrez, адаптирован под русский язык).
@@ -138,7 +137,9 @@ export default function August1ResumeFlagsTheory() {
         абзац. Так рекрутер сразу видит рост внутри одного места, а не пять разрозненных записей.</Note>
 
       {/* ─── 2. ATS ─── */}
-      <SectionHead n="02" title="ATS-читаемость: почему структура важна" sub="Резюме читает робот раньше, чем человек — и если он не смог его распарсить, HR его просто не увидит" />
+      </section>
+      <section className="theory-section">
+        <SectionHead n="02" title="ATS-читаемость: почему структура важна" sub="Резюме читает робот раньше, чем человек — и если он не смог его распарсить, HR его просто не увидит" />
 
       <S>
         <B>ATS (Applicant Tracking System)</B> парсит PDF построчно, ищет текст в линейном порядке — сверху вниз,
@@ -206,7 +207,9 @@ export default function August1ResumeFlagsTheory() {
       </div>
 
       {/* ─── 3. Ключевые слова ─── */}
-      <SectionHead n="03" title="Ключевые слова: как получить не просто хорошее, а идеально подходящее резюме" sub="Разница между резюме, которое проходит ATS в среднем, и резюме, которое проходит именно эту вакансию — в точности формулировок" />
+      </section>
+      <section className="theory-section">
+        <SectionHead n="03" title="Ключевые слова: как получить не просто хорошее, а идеально подходящее резюме" sub="Разница между резюме, которое проходит ATS в среднем, и резюме, которое проходит именно эту вакансию — в точности формулировок" />
 
       <S>
         «Хорошее» резюме — это правильная структура, достижения в цифрах и отсутствие ред-флагов из разделов 5–6.
@@ -279,7 +282,9 @@ export default function August1ResumeFlagsTheory() {
       </S>
 
       {/* ─── 4. Инструменты и формат ─── */}
-      <SectionHead n="04" title="Инструменты и формат файла" sub="Где собирать резюме и в каком виде отправлять" />
+      </section>
+      <section className="theory-section">
+        <SectionHead n="04" title="Инструменты и формат файла" sub="Где собирать резюме и в каком виде отправлять" />
 
       <S>Инструменты для составления резюме:</S>
       <Ul items={[
@@ -295,7 +300,9 @@ export default function August1ResumeFlagsTheory() {
       <Note>Формат файла — всегда <B>PDF</B>, никогда не Word, если явно не попросили. PDF из Overleaf/Google Docs/Notion — <B>текстовый</B>, не скан — именно такой файл ATS прочитает корректно. Название файла: <code style={{ background: 'var(--bg-tertiary)', borderRadius: 4, padding: '1px 6px', fontSize: 13 }}>Фамилия_Имя_Роль.pdf</code>.</Note>
 
       {/* ─── 5. Фото ─── */}
-      <SectionHead n="05" title="Фото: нужно ли" sub="Коротко — фото не обязательно, но если ставишь, оно должно работать на тебя" />
+      </section>
+      <section className="theory-section">
+        <SectionHead n="05" title="Фото: нужно ли" sub="Коротко — фото не обязательно, но если ставишь, оно должно работать на тебя" />
 
       <S>Фото в резюме — <B>необязательный</B> элемент. Резюме без фото ничем не хуже резюме с фото, если остальная
         структура сильная. Но если решил(а) добавить — оно должно быть к месту:</S>
@@ -305,11 +312,13 @@ export default function August1ResumeFlagsTheory() {
         <Bad>Фото с вечеринок, пляжа, в компании друзей, селфи в зеркало, тёмное или размытое фото — такое фото хуже, чем его отсутствие.</Bad>
       </div>
 
-      <Note>Подробный разбор фото и полный ATS-конструктор мы уже проходили 29 июня — если пропустил(а), загляни в
-        конспект того занятия перед тем, как собирать финальную версию.</Note>
+      <Note>Подробный разбор фото и полный ATS-конструктор есть в конспекте «Резюме IT-джуна» — загляни в него перед
+        тем, как собирать финальную версию.</Note>
 
       {/* ─── 6. Ред-флаги ─── */}
-      <SectionHead n="06" title="Ред-флаги" sub="То, что отталкивает рекрутера и снижает шанс дойти до собеседования" />
+      </section>
+      <section className="theory-section">
+        <SectionHead n="06" title="Ред-флаги" sub="То, что отталкивает рекрутера и снижает шанс дойти до собеседования" />
 
       <Bad><B>Нерелевантный опыт.</B> Подробное описание работы курьером или продавцом-консультантом в резюме на позицию разработчика — не помогает, а разбавляет резюме нерелевантной информацией. Упоминать можно кратко, если совсем нет другого опыта, но не выносить в фокус.</Bad>
 
@@ -329,7 +338,9 @@ export default function August1ResumeFlagsTheory() {
       ]} />
 
       {/* ─── 7. Грин-флаги ─── */}
-      <SectionHead n="07" title="Грин-флаги" sub="То, что выделяет резюме среди сотни таких же джунов" />
+      </section>
+      <section className="theory-section">
+        <SectionHead n="07" title="Грин-флаги" sub="То, что выделяет резюме среди сотни таких же джунов" />
 
       <Good><B>Достижения, а не обязанности — и обязательно в цифрах.</B> «Оптимизировал запрос к БД, сократив время ответа с 800 до 120 мс» — это факт, который невозможно не заметить. Формула XYZ из конспекта 29 июня работает и здесь.</Good>
 
@@ -355,7 +366,9 @@ export default function August1ResumeFlagsTheory() {
         конкретных достижений.</Note>
 
       {/* ─── 8. Контакты ─── */}
-      <SectionHead n="08" title="Контакты для связи" sub="По ним действительно попробуют связаться — указывай то, чем реально пользуешься" />
+      </section>
+      <section className="theory-section">
+        <SectionHead n="08" title="Контакты для связи" sub="По ним действительно попробуют связаться — указывай то, чем реально пользуешься" />
 
       <S>В шапке резюме указывай <B>рабочие</B> контакты — телефон, который берёшь, и почту, которую проверяешь
         регулярно. Если HR не дозвонится или не получит ответ на письмо в течение пары дней — просто перейдёт к
@@ -367,6 +380,7 @@ export default function August1ResumeFlagsTheory() {
         <><B>Telegram</B> — многие технические компании в СНГ сейчас общаются именно там, это ускоряет первый контакт.</>,
       ]} />
 
+      </section>
     </div>
   )
 }

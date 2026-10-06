@@ -18,7 +18,7 @@ const Ul = ({ items }) => (
 
 const Card = ({ children, accent }) => (
   <div style={{
-    background: 'var(--bg-secondary)',
+    background: 'var(--bg-tertiary)',
     border: `1px solid ${accent ? 'rgba(255,214,10,0.3)' : 'var(--border-color)'}`,
     borderRadius: 10,
     padding: 'clamp(14px,3vw,20px)',
@@ -28,25 +28,25 @@ const Card = ({ children, accent }) => (
 
 const Good = ({ children }) => (
   <div style={{ background: 'rgba(74,222,128,0.07)', border: '1px solid rgba(74,222,128,0.25)', borderRadius: 8, padding: '12px 16px', margin: '10px 0', fontSize: 13.5, lineHeight: 1.7, color: 'var(--text-secondary)' }}>
-    <span style={{ color: '#4ade80', fontWeight: 700, marginRight: 6 }}>✅</span>{children}
+    <span style={{ color: '#4ade80', fontWeight: 700, marginRight: 6 }}>✓</span>{children}
   </div>
 )
 const Bad = ({ children }) => (
   <div style={{ background: 'rgba(248,113,113,0.07)', border: '1px solid rgba(248,113,113,0.25)', borderRadius: 8, padding: '12px 16px', margin: '10px 0', fontSize: 13.5, lineHeight: 1.7, color: 'var(--text-secondary)' }}>
-    <span style={{ color: '#f87171', fontWeight: 700, marginRight: 6 }}>❌</span>{children}
+    <span style={{ color: '#f87171', fontWeight: 700, marginRight: 6 }}>✗</span>{children}
   </div>
 )
 const Note = ({ children }) => (
   <div style={{ background: 'rgba(255,214,10,0.05)', border: '1px solid rgba(255,214,10,0.18)', borderRadius: 8, padding: '12px 16px', margin: '14px 0', fontSize: 13.5, lineHeight: 1.7, color: 'var(--text-secondary)' }}>
-    <span style={{ color: 'var(--accent-lime)', fontWeight: 700, marginRight: 6 }}>💡</span>{children}
+    <span style={{ color: 'var(--accent-lime)', fontWeight: 700, marginRight: 6 }}></span>{children}
   </div>
 )
 
 const SectionHead = ({ n, title, sub }) => (
-  <div style={{ margin: '52px 0 20px' }}>
-    <div style={{ color: 'var(--accent-lime)', fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 4 }}>Раздел {n}</div>
-    <h2 style={{ color: 'var(--text-primary)', fontSize: 'clamp(20px,4vw,27px)', fontWeight: 800, fontFamily: 'var(--font-syne)', margin: '0 0 6px', borderBottom: '2px solid var(--accent-lime)', paddingBottom: 10 }}>{title}</h2>
-    {sub && <p style={{ color: 'var(--text-tertiary)', fontSize: 13, margin: '8px 0 0' }}>{sub}</p>}
+  <div style={{ marginBottom: 16 }}>
+    <div style={{ color: 'var(--accent-lime)', fontSize: 11, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 6 }}>Раздел {n}</div>
+    <h2 className="theory-heading-2" style={{ marginBottom: sub ? 6 : 0 }}>{title}</h2>
+    {sub && <p style={{ color: 'var(--text-tertiary)', fontSize: 13.5, margin: 0 }}>{sub}</p>}
   </div>
 )
 
@@ -189,7 +189,7 @@ function NoExpBuilder() {
   const [tab, setTab] = useState(0)
   const tabs = [
     {
-      label: '🎓 Учёба',
+      label: 'Учёба',
       items: [
         'Курсовой проект / диплом — опиши стек, что реализовал, какую проблему решал.',
         'Лабораторные по программированию — если реализовывал что-то интересное.',
@@ -199,7 +199,7 @@ function NoExpBuilder() {
       ],
     },
     {
-      label: '🛠️ Пет-проекты',
+      label: 'Пет-проекты',
       items: [
         'Телеграм-бот (даже простой) — расскажи что делает, сколько пользователей, стек.',
         'Сайт/SPA на React или Vue — портфолио, интернет-магазин, резюме-сайт.',
@@ -210,7 +210,7 @@ function NoExpBuilder() {
       ],
     },
     {
-      label: '💼 Внеучебное',
+      label: 'Внеучебное',
       items: [
         'Стажировка (даже неоплачиваемая, даже 1 месяц) — полноценная строчка в резюме.',
         'Фриланс — даже один заказ оформи как опыт с описанием задачи.',
@@ -291,17 +291,23 @@ export default function Day29ResumeTheory() {
     <div className="theory-container">
       <section className="theory-section">
         <h1 className="theory-title">Резюме IT-джуна: пишем первую версию</h1>
+        <p>
+          Резюме — первое, что видит работодатель, и у него есть несколько секунд, чтобы решить, звать ли тебя на собеседование. Пошагово собираем первую версию резюме IT-джуна и начинаем откликаться.
+        </p>
       </section>
 
       {/* ─── 1. Что такое ATS ─── */}
-      <SectionHead n="01" title="Что такое ATS и почему это важно" sub="Applicant Tracking System — первый фильтр, который читает твоё резюме вместо человека" />
+      <section className="theory-section">
+        <SectionHead n="01" title="Что такое ATS и почему это важно" sub="Applicant Tracking System — первый фильтр, который читает твоё резюме вместо человека" />
 
       <S><B>ATS (Applicant Tracking System)</B> — программа, которую используют большинство компаний с оформленным HR-процессом. Когда ты отправляешь резюме на hh.ru, LinkedIn или через сайт компании, первым его читает <Lime>не человек, а алгоритм</Lime>. Он парсит текст, ищет ключевые слова из описания вакансии и присваивает твоему резюме скоринговый балл.</S>
       <S>Если балл ниже порога — HR <B>никогда не увидит твоё резюме</B>, даже если ты идеальный кандидат. По данным Jobscan, более 75% резюме отсеиваются ещё на стадии ATS.</S>
 
       <ATSChecker />
 
-      <SectionHead n="02" title="Структура резюме: что и куда" sub="Порядок блоков влияет на то, как ATS и HR воспринимают документ" />
+      </section>
+      <section className="theory-section">
+        <SectionHead n="02" title="Структура резюме: что и куда" sub="Порядок блоков влияет на то, как ATS и HR воспринимают документ" />
 
       <ATSStructure />
 
@@ -309,7 +315,9 @@ export default function Day29ResumeTheory() {
       <Note>Формат файла: <B>PDF</B> — всегда. Word (.docx) только если явно просят. PDF сохраняет форматирование и не съезжает при открытии на другом компьютере. Название файла: <code style={{ background: 'var(--bg-tertiary)', borderRadius: 4, padding: '1px 6px', fontSize: 13 }}>Иванов_Иван_Junior_Python.pdf</code> — не "resume_final_v3.pdf".</Note>
 
       {/* ─── 3. Фото ─── */}
-      <SectionHead n="03" title="Фото: что ставить и что нет" sub="Первое что видит HR — это твоё лицо. Оно должно работать на тебя" />
+      </section>
+      <section className="theory-section">
+        <SectionHead n="03" title="Фото: что ставить и что нет" sub="Первое что видит HR — это твоё лицо. Оно должно работать на тебя" />
 
       <PhotoCheck />
 
@@ -324,7 +332,9 @@ export default function Day29ResumeTheory() {
       <Note>В некоторых странах (США, Великобритания) фото в резюме не принято вообще — чтобы избежать дискриминации. В России и СНГ — ставить фото нормально и даже ожидаемо.</Note>
 
       {/* ─── 4. Формула XYZ ─── */}
-      <SectionHead n="04" title="Формула Google XYZ для описания опыта" sub="Accomplished [X] as measured by [Y], by doing [Z]" />
+      </section>
+      <section className="theory-section">
+        <SectionHead n="04" title="Формула Google XYZ для описания опыта" sub="Accomplished [X] as measured by [Y], by doing [Z]" />
 
       <S>Google при составлении описаний вакансий и оценке кандидатов использует формулу <B>XYZ</B>. Суть проста: <Lime>что сделал</Lime> + <Lime>в каких цифрах это измерено</Lime> + <Lime>каким способом</Lime>.</S>
 
@@ -355,7 +365,9 @@ export default function Day29ResumeTheory() {
       <Good>«Покрыл unit-тестами (pytest) критические функции платёжного модуля, подняв test coverage с 34% до 81%»</Good>
 
       {/* ─── 5. Нет опыта ─── */}
-      <SectionHead n="05" title="Нет коммерческого опыта — что писать?" sub="Отсутствие опыта — не приговор. У всех джунов его нет. Важно правильно упаковать то, что есть" />
+      </section>
+      <section className="theory-section">
+        <SectionHead n="05" title="Нет коммерческого опыта — что писать?" sub="Отсутствие опыта — не приговор. У всех джунов его нет. Важно правильно упаковать то, что есть" />
 
       <S>Нет опыта работы — не проблема. Проблема — пустое резюме. Компании нанимают джунов именно за потенциал, а не за коммерческий стаж. Твоя задача показать, что ты <B>умеешь думать, учиться и что-то делаешь руками</B>.</S>
 
@@ -377,7 +389,9 @@ export default function Day29ResumeTheory() {
       </Card>
 
       {/* ─── 6. Summary / О себе ─── */}
-      <SectionHead n="06" title="Summary: как написать о себе" sub="2–4 предложения, которые HR читает в первую очередь" />
+      </section>
+      <section className="theory-section">
+        <SectionHead n="06" title="Summary: как написать о себе" sub="2–4 предложения, которые HR читает в первую очередь" />
 
       <S>Summary — это не "о себе" в смысле "я люблю путешествовать и читать книги". Это <B>профессиональный elevator pitch</B>: кто ты, что умеешь, чем полезен компании.</S>
 
@@ -403,7 +417,9 @@ export default function Day29ResumeTheory() {
       ]} />
 
       {/* ─── 7. Навыки ─── */}
-      <SectionHead n="07" title="Раздел «Навыки»: что и как писать" sub="ATS читает именно этот блок — здесь важна точность формулировок" />
+      </section>
+      <section className="theory-section">
+        <SectionHead n="07" title="Раздел «Навыки»: что и как писать" sub="ATS читает именно этот блок — здесь важна точность формулировок" />
 
       <S>Пиши технологии <B>так же как написано в вакансии</B>. ATS ищет точные совпадения: "PostgreSQL" ≠ "Postgres" ≠ "psql". Если в вакансии написано "React.js" — пиши "React.js", а не просто "React".</S>
 
@@ -436,7 +452,9 @@ export default function Day29ResumeTheory() {
       ]} />
 
       {/* ─── 8. Достижения ─── */}
-      <SectionHead n="08" title="Достижения: какие писать, какие нет" sub="Конкретные цифры всегда лучше общих слов" />
+      </section>
+      <section className="theory-section">
+        <SectionHead n="08" title="Достижения: какие писать, какие нет" sub="Конкретные цифры всегда лучше общих слов" />
 
       <S>Достижение в резюме — это измеримый результат, который ты создал. Без цифр это просто обязанность.</S>
 
@@ -458,7 +476,9 @@ export default function Day29ResumeTheory() {
       ]} />
 
       {/* ─── 9. ATS-оптимизация ─── */}
-      <SectionHead n="09" title="ATS-оптимизация: пройти роботов" sub="Как адаптировать резюме под конкретную вакансию" />
+      </section>
+      <section className="theory-section">
+        <SectionHead n="09" title="ATS-оптимизация: пройти роботов" sub="Как адаптировать резюме под конкретную вакансию" />
 
       <S>Одно резюме на все вакансии — плохая стратегия. ATS ищет ключевые слова <B>конкретной вакансии</B>. Алгоритм под каждую вакансию:</S>
 
@@ -470,7 +490,7 @@ export default function Day29ResumeTheory() {
           { n: '04', title: 'Пересмотри порядок навыков', desc: 'Технологии, упомянутые в вакансии, поставь выше. ATS и HR видят первые строки первыми.' },
           { n: '05', title: 'Проверь форматирование', desc: 'Никаких таблиц, колонок, SVG, хедеров/футеров. ATS парсит линейный текст — сложная вёрстка ломает парсер.' },
         ].map(step => (
-          <div key={step.n} style={{ display: 'flex', gap: 14, alignItems: 'flex-start', background: 'var(--bg-secondary)', border: '1px solid var(--border-color)', borderRadius: 8, padding: '12px 14px' }}>
+          <div key={step.n} style={{ display: 'flex', gap: 14, alignItems: 'flex-start', background: 'var(--bg-tertiary)', border: '1px solid var(--border-color)', borderRadius: 8, padding: '12px 14px' }}>
             <div style={{ fontFamily: 'var(--font-syne)', fontWeight: 800, fontSize: 18, color: 'var(--accent-lime)', flexShrink: 0, minWidth: 28 }}>{step.n}</div>
             <div>
               <div style={{ fontWeight: 700, color: 'var(--text-primary)', fontSize: 14, marginBottom: 3 }}>{step.title}</div>
@@ -483,7 +503,9 @@ export default function Day29ResumeTheory() {
       <Note>ATS не читает PDF как текст, если файл создан сканом или как изображение. Всегда делай <B>текстовый PDF</B> (экспорт из Google Docs, Notion, LaTeX) — не скан.</Note>
 
       {/* ─── 10. Формат и инструменты ─── */}
-      <SectionHead n="10" title="Формат, инструменты и чеклист" sub="Где создать резюме и как проверить перед отправкой" />
+      </section>
+      <section className="theory-section">
+        <SectionHead n="10" title="Формат, инструменты и чеклист" sub="Где создать резюме и как проверить перед отправкой" />
 
       <S>Лучшие инструменты для создания резюме:</S>
       <Ul items={[
@@ -513,10 +535,11 @@ export default function Day29ResumeTheory() {
           'Хронология обратная (новое сверху)',
           'GitHub профиль заполнен: фото, bio, закреплены лучшие репозитории',
         ].map((item, i) => (
-          <div key={i} style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border-color)', borderRadius: 6, padding: '8px 14px', fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.5 }}>{item}</div>
+          <div key={i} style={{ background: 'var(--bg-tertiary)', border: '1px solid var(--border-color)', borderRadius: 6, padding: '8px 14px', fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.5 }}>{item}</div>
         ))}
       </div>
 
+      </section>
       <section className="theory-section theory-section--closing" style={{ marginTop: 48 }}>
         <p className="theory-closing-text">Лучший способ улучшить резюме — отправить его, получить отказ и узнать причину.</p>
       </section>

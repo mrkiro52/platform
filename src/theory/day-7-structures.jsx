@@ -6,6 +6,9 @@ export default function Day7StructuresTheory({ videoUrl }) {
     <div className="theory-container">
       <section className="theory-section">
         <h1 className="theory-title">Структуры данных: массивы и связанные списки</h1>
+        <p>
+          Массив и связанный список — две базовые структуры для хранения последовательностей. Они по-разному устроены в памяти, и от этого зависит скорость операций. Понимание этой разницы — основа для всех остальных структур данных.
+        </p>
       </section>
 
       {videoUrl && <VideoPlayer src={videoUrl} />}
@@ -53,14 +56,14 @@ export default function Day7StructuresTheory({ videoUrl }) {
 
         <div className="theory-subsection">
           <h3 className="theory-heading-3">Плюсы и минусы</h3>
-          <p className="theory-intro"><strong>✅ Плюсы:</strong></p>
+          <p className="theory-intro"><strong>✓ Плюсы:</strong></p>
           <ul className="theory-list">
             <li className="theory-list-item">Быстрый доступ к элементу по индексу O(1)</li>
             <li className="theory-list-item">Экономит память (нет дополнительных указателей)</li>
             <li className="theory-list-item">Можно быстро итерировать</li>
           </ul>
 
-          <p className="theory-intro"><strong>❌ Минусы:</strong></p>
+          <p className="theory-intro"><strong>✗ Минусы:</strong></p>
           <ul className="theory-list">
             <li className="theory-list-item">Фиксированный размер (в большинстве языков)</li>
             <li className="theory-list-item">Вставка/удаление в середину O(n) — медленно</li>
@@ -198,9 +201,9 @@ ll.display()  # [10, 30]`} language="python" />
         <TheoryTable
           headers={['Критерий', 'Массив', 'Связный список']}
           rows={[
-            ['Доступ по индексу', 'O(1) ⚡', 'O(n) 🐢'],
-            ['Вставка/удаление в начало', 'O(n) 🐢', 'O(1) ⚡'],
-            ['Вставка/удаление в конец', 'O(1) ⚡', 'O(n) 🐢'],
+            ['Доступ по индексу', 'O(1) ', 'O(n) '],
+            ['Вставка/удаление в начало', 'O(n) ', 'O(1) '],
+            ['Вставка/удаление в конец', 'O(1) ', 'O(n) '],
             ['Поиск', 'O(n)', 'O(n)'],
             ['Память', 'Плотная', 'Дополнительная на указатели'],
             ['Использовать когда', 'Нужен быстрый доступ', 'Много вставок/удалений'],
@@ -253,6 +256,86 @@ while current:
             <li><strong>Двусвязный список:</strong> Плеер с кнопками "вперёд/назад" по плейлисту</li>
           </ul>
         </TheoryExample>
+      </section>
+
+      <section className="theory-section">
+        <h2 className="theory-heading-2">Как устроен list в Python</h2>
+        <p>
+          Список в Python — это динамический массив <strong>ссылок</strong> на объекты. Сам массив хранит адреса,
+          а значения лежат в памяти отдельно. Поэтому в один список можно положить данные разных типов, а
+          доступ по индексу всё равно O(1): адрес нужной ячейки вычисляется сразу.
+        </p>
+        <p>
+          Когда место заканчивается, Python выделяет новый массив с запасом (примерно в 1,125 раза больше плюс
+          небольшая константа) и копирует туда ссылки. Копирование — O(n), но происходит редко, поэтому
+          <code> append</code> в среднем занимает <strong>амортизированное O(1)</strong>.
+        </p>
+        <TheoryCode language="python" code={`import sys
+
+items = []
+for i in range(10):
+    items.append(i)
+    print(len(items), sys.getsizeof(items))
+# размер в байтах растёт скачками, а не на каждом append —
+# список заранее резервирует место под будущие элементы`} />
+      </section>
+
+      <section className="theory-section">
+        <h2 className="theory-heading-2">Приёмы для задач на связные списки</h2>
+        <h3 className="theory-heading-3">Фиктивный узел (dummy)</h3>
+        <p>
+          Чтобы не обрабатывать отдельно удаление первого элемента или пустой список, перед головой ставят
+          вспомогательный узел.
+        </p>
+        <TheoryCode language="python" code={`class Node:
+    def __init__(self, val, next=None):
+        self.val, self.next = val, next
+
+def remove_all(head, target):
+    dummy = Node(0, head)
+    cur = dummy
+    while cur.next:
+        if cur.next.val == target:
+            cur.next = cur.next.next     # пропускаем узел
+        else:
+            cur = cur.next
+    return dummy.next`} />
+        <h3 className="theory-heading-3">Медленный и быстрый указатели</h3>
+        <p>
+          Один указатель идёт на шаг, другой — на два. Когда быстрый дойдёт до конца, медленный будет в
+          середине. Если в списке есть цикл, указатели обязательно встретятся.
+        </p>
+        <TheoryCode language="python" code={`def middle(head):
+    slow = fast = head
+    while fast and fast.next:
+        slow = slow.next
+        fast = fast.next.next
+    return slow
+
+def has_cycle(head):
+    slow = fast = head
+    while fast and fast.next:
+        slow, fast = slow.next, fast.next.next
+        if slow is fast:
+            return True
+    return False`} />
+        <h3 className="theory-heading-3">Разворот списка</h3>
+        <TheoryCode language="python" code={`def reverse(head):
+    prev = None
+    while head:
+        head.next, prev, head = prev, head, head.next
+    return prev`} />
+      </section>
+
+      <section className="theory-section">
+        <h2 className="theory-heading-2">Задачи с собеседований</h2>
+        <ul className="theory-list">
+          <li className="theory-list-item"><strong>Reverse Linked List</strong> — развернуть список (три указателя).</li>
+          <li className="theory-list-item"><strong>Merge Two Sorted Lists</strong> — слить два отсортированных списка (фиктивный узел).</li>
+          <li className="theory-list-item"><strong>Linked List Cycle</strong> — есть ли цикл (медленный и быстрый указатели).</li>
+          <li className="theory-list-item"><strong>Remove Nth Node From End</strong> — удалить n-й с конца за один проход (указатели с отставанием на n).</li>
+          <li className="theory-list-item"><strong>Rotate Array</strong> — сдвинуть массив на k позиций за O(1) памяти (три разворота).</li>
+        </ul>
       </section>
 
       <section className="theory-section theory-section--closing">

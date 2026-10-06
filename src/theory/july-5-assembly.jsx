@@ -7,7 +7,7 @@ function Fig({ children, caption }) {
   return (
     <figure style={{ margin: '18px 0', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
       <div style={{
-        width: '100%', maxWidth: 640, background: '#12121e', border: '1px solid #2a2a3a',
+        width: '100%', maxWidth: 640, background: 'var(--bg-tertiary)', border: '1px solid var(--border-color)',
         borderRadius: 10, padding: '16px', display: 'flex', justifyContent: 'center', overflowX: 'auto',
       }}>{children}</div>
       {caption && <figcaption style={{ color: 'var(--text-tertiary)', fontSize: 12.5, textAlign: 'center', maxWidth: 640 }}>{caption}</figcaption>}
@@ -29,13 +29,11 @@ export default function July5AssemblyTheory() {
     <div className="theory-container">
       <section className="theory-section">
         <h1 className="theory-title">Ассемблер и кое-что до</h1>
-        <p className="theory-subtitle">Трек: Кибербезопасность</p>
-        <p className="theory-date">5 июля 2026</p>
         <p>
           Мы привыкли писать на Python и JavaScript, где одна строка делает много. Но процессор не понимает ни
           слова из этих языков — он исполняет крошечные бинарные команды. <strong>Ассемблер</strong> — это
           человекочитаемая форма этих самых команд, «язык самого железа». Для специалиста по безопасности он
-          критически важен: вредоносное ПО, эксплойты и прошивки живут именно на этом уровне. Сегодня разберём,{' '}
+          критически важен: вредоносное ПО, эксплойты и прошивки живут именно на этом уровне. В этом конспекте разберём,{' '}
           <strong>зачем вообще нужны низкоуровневые языки</strong>, какие задачи они решают, какие отделы
           кибербезопасности с ними работают, и напишем первые реальные программы на ассемблере.
         </p>

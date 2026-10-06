@@ -4,7 +4,7 @@ function Fig({ children, caption }) {
   return (
     <figure style={{ margin: '18px 0', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
       <div style={{
-        width: '100%', maxWidth: 640, background: '#12121e', border: '1px solid #2a2a3a',
+        width: '100%', maxWidth: 640, background: 'var(--bg-tertiary)', border: '1px solid var(--border-color)',
         borderRadius: 10, padding: '16px', display: 'flex', justifyContent: 'center', overflowX: 'auto',
       }}>{children}</div>
       {caption && <figcaption style={{ color: 'var(--text-tertiary)', fontSize: 12.5, textAlign: 'center', maxWidth: 640 }}>{caption}</figcaption>}
@@ -39,11 +39,9 @@ export default function July18OptimizationTheory() {
     <div className="theory-container">
       <section className="theory-section">
         <h1 className="theory-title">Оптимизация фронтенда и бэкенда веб-приложения</h1>
-        <p className="theory-subtitle">Треки: Frontend и Backend</p>
-        <p className="theory-date">18 июля 2026</p>
         <p>
           Медленное приложение теряет пользователей: даже задержка в одну секунду заметно снижает конверсию и
-          вовлечённость. Сегодня разберём, как ускорять фронтенд на JavaScript/React, как ускорять бэкенд на
+          вовлечённость. В этом конспекте разберём, как ускорять фронтенд на JavaScript/React, как ускорять бэкенд на
           Node.js, Python и Go, и какими инструментами измерять, насколько приложение уже оптимизировано, прежде
           чем что-либо чинить.
         </p>
@@ -165,7 +163,7 @@ function ProductList({ products, filter }) {
         <h2 className="theory-heading-2">4. Оптимизация фронтенда: сеть и рендеринг на сервере</h2>
         <P n={5}>
           Часть узких мест решается ещё до того, как код React вообще начинает выполняться. Здесь пригождаются
-          подходы, которые уже разбирались на занятии про SSR и SSG: серверный рендеринг отдаёт браузеру готовый
+          подходы из конспекта про SSR и SSG: серверный рендеринг отдаёт браузеру готовый
           HTML вместо пустой страницы, а статическая генерация вообще избавляет от рендеринга на каждый запрос.
         </P>
         <TheoryTable
@@ -174,7 +172,7 @@ function ProductList({ products, filter }) {
             ['CDN (Content Delivery Network)', 'статические файлы раздаются с сервера физически ближе к пользователю'],
             ['HTTP/2 или HTTP/3', 'параллельная загрузка нескольких файлов по одному соединению, меньше задержек'],
             ['Preload / prefetch критичных ресурсов', 'браузер заранее начинает грузить шрифты, ключевые скрипты'],
-            ['SSR / SSG (см. занятие 14 июля)', 'пользователь видит готовый контент, не дожидаясь загрузки всего JS'],
+            ['SSR / SSG (см. конспект «SSG и SSR»)', 'пользователь видит готовый контент, не дожидаясь загрузки всего JS'],
           ]}
         />
       </section>

@@ -7,7 +7,7 @@ const LinkCard = ({ href, title, desc, accent }) => (
     rel="noopener noreferrer"
     style={{
       display: 'block',
-      background: 'var(--bg-secondary)',
+      background: 'var(--bg-tertiary)',
       border: '1px solid var(--border-color)',
       borderRadius: 12,
       padding: 'clamp(16px, 3vw, 24px)',
@@ -59,7 +59,7 @@ const Code = ({ code }) => {
 function Problem({ n, title, href, children }) {
   return (
     <div style={{
-      background: 'var(--bg-secondary)', border: '1px solid var(--border-color)', borderRadius: 12,
+      background: 'var(--bg-tertiary)', border: '1px solid var(--border-color)', borderRadius: 12,
       padding: 'clamp(16px, 3vw, 24px)', marginBottom: 24,
     }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12, flexWrap: 'wrap' }}>
@@ -89,8 +89,8 @@ function AltSolution({ children }) {
       marginTop: 18, paddingTop: 16, borderTop: '1px dashed var(--border-color)',
     }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
-        <span style={{ fontSize: 16 }}>🙋</span>
-        <span style={{ color: '#818cf8', fontWeight: 700, fontSize: 13.5 }}>Решение с занятия</span>
+        <span style={{ fontSize: 16 }}></span>
+        <span style={{ color: '#818cf8', fontWeight: 700, fontSize: 13.5 }}>Разобранное решение</span>
       </div>
       {children}
     </div>
@@ -101,12 +101,11 @@ export default function July3LeetcodeTheory() {
   return (
     <div className="theory-container">
       <section className="theory-section">
-        <h1 className="theory-title">Нарешиваем LeetCode</h1>
-        <p className="theory-subtitle">Все треки</p>
-        <p className="theory-date">3 июля 2026</p>
+        <h1 className="theory-title">Разбор задач LeetCode · часть 1</h1>
         <p>
-          Сегодня практикуем алгоритмическую секцию технических собеседований — ту самую, которую спрашивают
-          в БигТехе. Будем разбирать классические задачи вместе на созвоне в 20:00.
+          Практика алгоритмической секции технических собеседований — той самой, которую спрашивают в БигТехе.
+          В конспекте разобраны классические задачи: условие, идея решения, код на Python и оценка сложности.
+          Сначала попробуй решить каждую задачу сам, и только потом сверяйся с разбором.
         </p>
       </section>
 
@@ -116,23 +115,23 @@ export default function July3LeetcodeTheory() {
       </section>
 
       <section className="theory-section">
-        <h2 className="theory-heading-2">Что нужно сделать перед занятием</h2>
+        <h2 className="theory-heading-2">Где тренироваться</h2>
         <p className="theory-text" style={{ marginBottom: 20 }}>
-          Заведи аккаунты на двух платформах — они понадобятся нам сегодня и в дальнейшем для тренировки
-          алгоритмических задач:
+          Заведи аккаунты на двух платформах — на них удобно решать задачи из этого конспекта и тренироваться
+          дальше:
         </p>
 
         <LinkCard
           href="https://leetcode.com"
           title="LeetCode"
-          desc="Главная международная площадка с задачами уровня технических собеседований в BigTech. Зарегистрируйся и будь готов(а) решать вместе с нами."
+          desc="Главная международная площадка с задачами уровня технических собеседований в BigTech. Задачи размечены по сложности и темам, у каждой есть обсуждения с разными решениями."
           accent="var(--accent-lime)"
         />
 
         <LinkCard
           href="https://coderun.yandex.ru/selections/algorithm-training-september-2025"
           title="Yandex CodeRun — Алгоритмический тренинг"
-          desc="Платформа Яндекса для тренировки алгоритмов. Тоже потребуется зарегистрироваться заранее."
+          desc="Платформа Яндекса для тренировки алгоритмов. Задачи на русском языке, удобно начинать с подборок алгоритмического тренинга."
           accent="#60a5fa"
         />
       </section>
@@ -141,7 +140,7 @@ export default function July3LeetcodeTheory() {
       <section className="theory-section">
         <h2 className="theory-heading-2">Разбор задач</h2>
         <p className="theory-text" style={{ marginBottom: 20 }}>
-          Ниже — 4 задачи, которые разбираем на сегодняшнем занятии, с условием и оптимальным решением на
+          Ниже — 4 задачи с условием и оптимальным решением на
           Python. Комментарии в коде объясняют каждый шаг.
         </p>
 
@@ -456,14 +455,6 @@ if __name__ == '__main__':
         </Problem>
       </section>
 
-      {/* Домашнее задание */}
-      <section className="theory-section">
-        <h2 className="theory-heading-2">Домашнее задание</h2>
-        <p className="theory-text">
-          Во вкладке <strong>«Домашние задания»</strong> дня 3 июля лежат ещё 2 задачи с CodeRun — реши их
-          самостоятельно, опираясь на подход из сегодняшнего разбора.
-        </p>
-      </section>
     </div>
   )
 }

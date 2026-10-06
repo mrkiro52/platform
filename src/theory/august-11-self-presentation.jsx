@@ -1,6 +1,6 @@
 import { TheoryTable } from './components/TheoryTable'
 
-/* ─── UI helpers (тот же язык, что и в конспекте 1 августа) ─── */
+/* ─── UI helpers (тот же язык, что и в конспекте про резюме) ─── */
 const S = ({ children, style }) => (
   <p style={{ color: 'var(--text-secondary)', fontSize: 14, lineHeight: 1.8, margin: '10px 0', ...style }}>{children}</p>
 )
@@ -26,7 +26,7 @@ const Ol = ({ items }) => (
 
 const Card = ({ children, accent }) => (
   <div style={{
-    background: 'var(--bg-secondary)',
+    background: 'var(--bg-tertiary)',
     border: `1px solid ${accent ? 'rgba(255,214,10,0.3)' : 'var(--border-color)'}`,
     borderRadius: 10,
     padding: 'clamp(14px,3vw,20px)',
@@ -51,10 +51,10 @@ const Note = ({ children }) => (
 )
 
 const SectionHead = ({ n, title, sub }) => (
-  <div style={{ margin: '52px 0 20px' }}>
-    <div style={{ color: 'var(--accent-lime)', fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 4 }}>Раздел {n}</div>
-    <h2 style={{ color: 'var(--text-primary)', fontSize: 'clamp(20px,4vw,27px)', fontWeight: 800, fontFamily: 'var(--font-syne)', margin: '0 0 6px', borderBottom: '2px solid var(--accent-lime)', paddingBottom: 10 }}>{title}</h2>
-    {sub && <p style={{ color: 'var(--text-tertiary)', fontSize: 13, margin: '8px 0 0' }}>{sub}</p>}
+  <div style={{ marginBottom: 16 }}>
+    <div style={{ color: 'var(--accent-lime)', fontSize: 11, fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 6 }}>Раздел {n}</div>
+    <h2 className="theory-heading-2" style={{ marginBottom: sub ? 6 : 0 }}>{title}</h2>
+    {sub && <p style={{ color: 'var(--text-tertiary)', fontSize: 13.5, margin: 0 }}>{sub}</p>}
   </div>
 )
 
@@ -70,10 +70,8 @@ export default function August11SelfPresentationTheory() {
     <div className="theory-container">
       <section className="theory-section">
         <h1 className="theory-title">Самопрезентация на собеседовании</h1>
-        <p className="theory-subtitle">Все треки</p>
-        <p className="theory-date">11 августа 2026</p>
         <p>
-          Резюме отправлено, отклик прошёл — дальше начинается живой разговор. Сегодня разбираем, пожалуй,
+          Резюме отправлено, отклик прошёл — дальше начинается живой разговор. Здесь разбираем, пожалуй,
           самый частый и одновременно самый недооценённый вопрос собеседования — «расскажите о себе»: какие
           методики использовать, как выстроить структуру ответа, и какие мелочи в подаче резко портят или
           резко улучшают впечатление у интервьюера.
@@ -81,7 +79,8 @@ export default function August11SelfPresentationTheory() {
       </section>
 
       {/* ─── 1. Зачем нужен блок «расскажите о себе» ─── */}
-      <SectionHead n="01" title="Зачем вообще нужен этот вопрос" sub="Интервьюер не проверяет память — он читает твоё резюме прямо перед звонком" />
+      <section className="theory-section">
+        <SectionHead n="01" title="Зачем вообще нужен этот вопрос" sub="Интервьюер не проверяет память — он читает твоё резюме прямо перед звонком" />
 
       <S>Это не тест на знание фактов о своей биографии — интервьюер уже видел резюме. Вопрос выполняет
         три функции сразу:</S>
@@ -95,7 +94,9 @@ export default function August11SelfPresentationTheory() {
       <Note>Главный принцип: ты не рассказываешь биографию — ты презентуешь короткий кейс <Lime>«почему я — низкий риск и высокая отдача для этой команды»</Lime>.</Note>
 
       {/* ─── 2. Методики ─── */}
-      <SectionHead n="02" title="Методики построения рассказа о себе" sub="Пять рабочих формул — под разные форматы вопроса и разную длину ответа" />
+      </section>
+      <section className="theory-section">
+        <SectionHead n="02" title="Методики построения рассказа о себе" sub="Пять рабочих формул — под разные форматы вопроса и разную длину ответа" />
 
       <SubHead n="2.1" title="Present – Past – Future" />
       <S>Золотой стандарт для открывающего ответа. Занимает 90–120 секунд.</S>
@@ -178,11 +179,13 @@ export default function August11SelfPresentationTheory() {
         <Note><Red>Плохо:</Red> «Работал над оптимизацией API»</Note>
         <Note><Lime>Хорошо:</Lime> «Оптимизировал API аутентификации (X), сократив время ответа на 40% (Y), за счёт кэширования сессий и пересмотра лишних запросов к базе (Z)»</Note>
       </div>
-      <S>Тот же приём уже применялся при подготовке резюме (конспект 1 августа) — просто перенеси эту логику
+      <S>Тот же приём уже применялся при подготовке резюме (конспект «Резюме: шаблон, ред- и грин-флаги») — просто перенеси эту логику
         из письменного резюме в устную речь.</S>
 
       {/* ─── 3. Личностный блок ─── */}
-      <SectionHead n="03" title="Рассказ о себе как о личности" sub="Soft-часть — сложность, в которой технари либо перегибают, либо игнорируют её вовсе" />
+      </section>
+      <section className="theory-section">
+        <SectionHead n="03" title="Рассказ о себе как о личности" sub="Soft-часть — сложность, в которой технари либо перегибают, либо игнорируют её вовсе" />
 
       <SubHead n="3.1" title="Что включать" />
       <Ul items={[
@@ -208,7 +211,9 @@ export default function August11SelfPresentationTheory() {
         другого кандидата — она бесполезна. Замени на что-то, что мог сказать только ты, со своими фактами.</S>
 
       {/* ─── 4. Как продать себя ─── */}
-      <SectionHead n="04" title="Как выгодно «продать» себя как кандидата" sub="Пять техник, которые превращают список навыков в убедительный кейс" />
+      </section>
+      <section className="theory-section">
+        <SectionHead n="04" title="Как выгодно «продать» себя как кандидата" sub="Пять техник, которые превращают список навыков в убедительный кейс" />
 
       <SubHead n="4.1" title="Принцип «доказательство, а не утверждение»" />
       <S>Каждое качество = цифра, факт, кейс или чьи-то слова (отзыв руководителя, повышение, награда).</S>
@@ -250,7 +255,9 @@ export default function August11SelfPresentationTheory() {
         финалом, который передаёт инициативу интервьюеру: <Lime>«…поэтому мне и интересна эта команда — расскажете, как у вас устроен этот процесс?»</Lime></S>
 
       {/* ─── 5. Red flags ─── */}
-      <SectionHead n="05" title="Red flags" sub="То, что резко портит впечатление у интервьюера" />
+      </section>
+      <section className="theory-section">
+        <SectionHead n="05" title="Red flags" sub="То, что резко портит впечатление у интервьюера" />
 
       <TheoryTable
         headers={['Red flag', 'Почему это плохо', 'Как звучит']}
@@ -271,7 +278,9 @@ export default function August11SelfPresentationTheory() {
         речь без пауз для мысли — всё это подрывает доверие к экспертизе даже при сильном содержании ответа.</S>
 
       {/* ─── 6. Green flags ─── */}
-      <SectionHead n="06" title="Green flags" sub="То, что резко выигрывает в глазах интервьюера" />
+      </section>
+      <section className="theory-section">
+        <SectionHead n="06" title="Green flags" sub="То, что резко выигрывает в глазах интервьюера" />
 
       <TheoryTable
         headers={['Green flag', 'Почему это работает']}
@@ -289,7 +298,9 @@ export default function August11SelfPresentationTheory() {
       />
 
       {/* ─── 7. Чек-лист ─── */}
-      <SectionHead n="07" title="Чек-лист подготовки перед конкретным собеседованием" />
+      </section>
+      <section className="theory-section">
+        <SectionHead n="07" title="Чек-лист подготовки перед конкретным собеседованием" />
 
       <Ol items={[
         'Разобрать описание вакансии на 4–6 ключевых требований → под каждое подготовить один мини-кейс по STAR.',
@@ -303,7 +314,9 @@ export default function August11SelfPresentationTheory() {
       ]} />
 
       {/* ─── 8. Пример ─── */}
-      <SectionHead n="08" title="Пример полного ответа «расскажите о себе»" sub="Собранный по всем методикам выше — вымышленный кандидат, Backend Developer" />
+      </section>
+      <section className="theory-section">
+        <SectionHead n="08" title="Пример полного ответа «расскажите о себе»" sub="Собранный по всем методикам выше — вымышленный кандидат, Backend Developer" />
 
       <Quote>
         «Коротко: я backend-разработчик, сейчас в продуктовой команде небольшого финтех-сервиса занимаюсь
@@ -323,6 +336,7 @@ export default function August11SelfPresentationTheory() {
       <S>Обрати внимание: около двух минут, чёткая структура, цифры и факты вместо прилагательных, явный
         мост к вакансии, финал с передачей инициативы собеседнику.</S>
 
+      </section>
       <section className="theory-section theory-section--closing" style={{ marginTop: 48 }}>
         <p className="theory-closing-text">Материал можно и нужно адаптировать под конкретную вакансию — под каждое собеседование заново проходи разделы 4.2 и 7 с новым описанием вакансии перед глазами.</p>
       </section>

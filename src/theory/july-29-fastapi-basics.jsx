@@ -4,7 +4,7 @@ function Fig({ children, caption }) {
   return (
     <figure style={{ margin: '18px 0', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
       <div style={{
-        width: '100%', maxWidth: 680, background: '#12121e', border: '1px solid #2a2a3a',
+        width: '100%', maxWidth: 680, background: 'var(--bg-tertiary)', border: '1px solid var(--border-color)',
         borderRadius: 10, padding: '16px', display: 'flex', justifyContent: 'center', overflowX: 'auto',
       }}>{children}</div>
       {caption && <figcaption style={{ color: 'var(--text-tertiary)', fontSize: 12.5, textAlign: 'center', maxWidth: 680 }}>{caption}</figcaption>}
@@ -39,11 +39,9 @@ export default function July29FastApiBasicsTheory() {
     <div className="theory-container">
       <section className="theory-section">
         <h1 className="theory-title">FastAPI: основы за час</h1>
-        <p className="theory-subtitle">Трек: Backend</p>
-        <p className="theory-date">29 июля 2026</p>
         <p>
-          FastAPI — один из самых популярных веб-фреймворков на Python для написания API. Сегодня — компактное
-          занятие на самые базовые вещи: как устроено простое FastAPI-приложение, какие бывают эндпоинты, как
+          FastAPI — один из самых популярных веб-фреймворков на Python для написания API. Этот конспект — про
+          самые базовые вещи: как устроено простое FastAPI-приложение, какие бывают эндпоинты, как
           валидировать данные через Pydantic, и как подключить к сервису простую встроенную файловую базу данных
           SQLite, чтобы данные не терялись при перезапуске.
         </p>
@@ -304,7 +302,7 @@ def delete_note(note_id: int):
         <TheoryExample title="Про знак вопроса в SQL-запросах">
           Вместо того чтобы подставлять значения прямо в строку запроса, используются параметризованные запросы
           (символ <code>?</code>, значения передаются вторым аргументом). Это защищает от SQL-инъекций — той самой
-          уязвимости, которую разбирали на занятии по кибербезопасности.
+          уязвимости, которая разобрана в конспекте «OWASP Top 10».
         </TheoryExample>
       </section>
 
@@ -333,7 +331,7 @@ curl http://127.0.0.1:8000/notes`} />
           <code>@app.post</code> и т.д.), а данные передаются через path-параметры, query-параметры и тело запроса.{' '}
           <strong>SQLite</strong> — встроенная файловая база данных, которую не нужно отдельно устанавливать: она
           подключается стандартным модулем <code>sqlite3</code> и хранит данные в одном файле, переживающем
-          перезапуск сервера. Вместе они дают полноценный минимальный CRUD-сервис за одно занятие.
+          перезапуск сервера. Вместе они дают полноценный минимальный CRUD-сервис за один вечер.
         </P>
       </section>
     </div>

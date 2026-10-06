@@ -5,7 +5,7 @@ function Fig({ children, caption }) {
   return (
     <figure style={{ margin: '18px 0', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
       <div style={{
-        width: '100%', maxWidth: 640, background: '#12121e', border: '1px solid #2a2a3a',
+        width: '100%', maxWidth: 640, background: 'var(--bg-tertiary)', border: '1px solid var(--border-color)',
         borderRadius: 10, padding: '16px', display: 'flex', justifyContent: 'center', overflowX: 'auto',
       }}>{children}</div>
       {caption && <figcaption style={{ color: 'var(--text-tertiary)', fontSize: 12.5, textAlign: 'center', maxWidth: 640 }}>{caption}</figcaption>}
@@ -51,12 +51,10 @@ export default function July16SecurityDevicesTheory({ videoUrl }) {
     <div className="theory-container">
       <section className="theory-section">
         <h1 className="theory-title">Технические средства охраны</h1>
-        <p className="theory-subtitle">Трек: Кибербезопасность</p>
-        <p className="theory-date">16 июля 2026</p>
         <p>
-          Видеонаблюдение (тема прошлого занятия) фиксирует происходящее, но не всегда мгновенно сигнализирует о
+          Видеонаблюдение (см. конспект «Технологии видеонаблюдения») фиксирует происходящее, но не всегда мгновенно сигнализирует о
           проникновении. Эту задачу решают <strong>охранные датчики</strong> — устройства, которые обнаруживают
-          вторжение и поднимают тревогу. Сегодня подробно разберём три базовых датчика охранной сигнализации:
+          вторжение и поднимают тревогу. В этом конспекте подробно разберём три базовых датчика охранной сигнализации:
           датчик разбития стекла, пассивный инфракрасный датчик (ИК) и датчик открытия двери — принципы их работы,
           настройку, правильную и неправильную установку, требования и то, как объединить их в единую систему.
         </p>

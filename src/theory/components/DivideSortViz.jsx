@@ -245,7 +245,7 @@ export default function DivideSortViz({ kind = 'merge' }) {
   return (
     <div
       style={{
-        background: 'var(--bg-secondary)',
+        background: 'var(--bg-tertiary)',
         border: '1px solid var(--border-color)',
         borderRadius: 14,
         padding: 'clamp(14px, 3vw, 22px)',
@@ -311,11 +311,11 @@ export default function DivideSortViz({ kind = 'merge' }) {
           }}
           style={btn({ background: 'var(--accent-lime)', color: '#0a0a14', borderColor: 'var(--accent-lime)', minWidth: 110 })}
         >
-          {playing ? '⏸ Пауза' : atEnd ? '↻ Заново' : '▶ Запустить'}
+          {playing ? 'Пауза' : atEnd ? '↻ Заново' : '▶ Запустить'}
         </button>
         <button onClick={() => { setPlaying(false); setStep((s) => Math.max(0, s - 1)) }} style={btn()}>‹ Шаг</button>
         <button onClick={() => { setPlaying(false); setStep((s) => Math.min(snaps.length - 1, s + 1)) }} style={btn()}>Шаг ›</button>
-        <button onClick={shuffle} style={btn()}>🎲 Новый массив</button>
+        <button onClick={shuffle} style={btn()}>Новый массив</button>
       </div>
 
       {/* легенда */}

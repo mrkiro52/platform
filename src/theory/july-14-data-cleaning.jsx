@@ -4,7 +4,7 @@ function Fig({ children, caption }) {
   return (
     <figure style={{ margin: '18px 0', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
       <div style={{
-        width: '100%', maxWidth: 640, background: '#12121e', border: '1px solid #2a2a3a',
+        width: '100%', maxWidth: 640, background: 'var(--bg-tertiary)', border: '1px solid var(--border-color)',
         borderRadius: 10, padding: '16px', display: 'flex', justifyContent: 'center', overflowX: 'auto',
       }}>{children}</div>
       {caption && <figcaption style={{ color: 'var(--text-tertiary)', fontSize: 12.5, textAlign: 'center', maxWidth: 640 }}>{caption}</figcaption>}
@@ -39,12 +39,10 @@ export default function July14DataCleaningTheory() {
     <div className="theory-container">
       <section className="theory-section">
         <h1 className="theory-title">Очистка данных для аналитика</h1>
-        <p className="theory-subtitle">Трек: Аналитика</p>
-        <p className="theory-date">14 июля 2026</p>
         <p>
           Прежде чем строить графики, считать метрики и обучать модели, данные нужно <strong>очистить</strong>. По
           опыту, на очистку и подготовку данных уходит до 80% времени аналитика — «грязные» данные приводят к
-          неверным выводам, каким бы точным ни был анализ дальше. Сегодня разберём максимально подробно: что вообще
+          неверным выводам, каким бы точным ни был анализ дальше. В этом конспекте разберём максимально подробно: что вообще
           считать «грязью», какие бывают проблемы и как их чинить — и в Excel, и в Python (pandas).
         </p>
       </section>

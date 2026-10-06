@@ -27,7 +27,7 @@ function P({ n, children }) {
 // Карточка идеи пет-проекта
 function Idea({ n, title, accent, essence, stack, features }) {
   return (
-    <div style={{ margin: '16px 0', padding: '16px 18px', background: 'var(--bg-secondary)', border: '1px solid var(--border-color)', borderRadius: 10 }}>
+    <div style={{ margin: '16px 0', padding: '16px 18px', background: 'var(--bg-tertiary)', border: '1px solid var(--border-color)', borderRadius: 10 }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
         <span style={{
           flexShrink: 0, width: 26, height: 26, borderRadius: '50%', background: `${accent}22`,
@@ -53,8 +53,9 @@ export default function July1112PetProjectTheory() {
     <div className="theory-container">
       <section className="theory-section">
         <h1 className="theory-title">Делаем пет-проект</h1>
-        <p className="theory-subtitle">Все треки</p>
-        <p className="theory-date">11–12 июля 2026</p>
+        <p>
+          Пет-проект — собственный проект, который показывает работодателю, что ты умеешь доводить дело до результата. Разбираем, как выбрать тему, спланировать работу и оформить проект так, чтобы его захотелось посмотреть.
+        </p>
       </section>
 
       <section className="theory-section">
@@ -139,7 +140,7 @@ X, y = make_regression(n_samples=300, n_features=3, noise=10, random_state=42)`}
 
 ![Скриншот или GIF с демо](docs/screenshot.png)
 
-🔗 Демо: https://my-project.vercel.app
+Демо: https://my-project.vercel.app
 
 ## Стек
 - Backend: Django REST Framework, PostgreSQL
@@ -261,7 +262,7 @@ docker compose up --build`} />
       <section className="theory-section">
         <h2 className="theory-heading-2">7. Идеи пет-проектов: Machine Learning</h2>
         <P n={7}>
-          Все пять проектов закрепляют то, что мы разбирали на занятиях: <strong>линейную регрессию</strong>,
+          Все пять проектов закрепляют то, что разобрано в конспектах по ML: <strong>линейную регрессию</strong>,
           реализованную двумя способами — <strong>аналитической формулой</strong> (w = (XᵀX)⁻¹Xᵀy) и{' '}
           <strong>градиентным спуском</strong> — с последующим сравнением по метрикам качества (MSE, R²) и
           скорости. Меняется только датасет и предметная область.

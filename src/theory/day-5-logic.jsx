@@ -5,6 +5,9 @@ export default function Day5LogicTheory() {
     <div className="theory-container">
       <section className="theory-section">
         <h1 className="theory-title">Дискретная математика: логика и множества</h1>
+        <p>
+          Логика и теория множеств — математическая основа программирования: условия в коде, запросы к базам данных, битовые флаги и операции над коллекциями опираются именно на них.
+        </p>
       </section>
 
       <section className="theory-section">
@@ -247,6 +250,104 @@ user_rights = user_rights | EXECUTE
 # Снимаем право писать
 user_rights = user_rights & ~WRITE`} language="python" />
         </TheoryExample>
+      </section>
+
+      <section className="theory-section">
+        <h2 className="theory-heading-2">Законы де Моргана</h2>
+        <p>
+          Два правила, которые позволяют «пронести» отрицание внутрь скобок. Они постоянно нужны, чтобы
+          упрощать условия в коде и делать их читаемыми.
+        </p>
+        <TheoryTable
+          headers={['Закон', 'Словами']}
+          rows={[
+            ['not (A and B) == (not A) or (not B)', 'Неверно, что оба истинны → хотя бы одно ложно'],
+            ['not (A or B) == (not A) and (not B)', 'Неверно, что хотя бы одно истинно → оба ложны'],
+          ]}
+        />
+        <TheoryCode language="python" code={`# Было: трудно читать
+if not (age >= 18 and has_passport):
+    deny()
+
+# Стало: то же самое по закону де Моргана
+if age < 18 or not has_passport:
+    deny()`} />
+      </section>
+
+      <section className="theory-section">
+        <h2 className="theory-heading-2">Ленивое вычисление условий</h2>
+        <p>
+          Python (как и большинство языков) вычисляет <code>and</code> и <code>or</code> слева направо и
+          останавливается, как только результат известен. Это называется <strong>short-circuit evaluation</strong>.
+        </p>
+        <ul className="theory-list">
+          <li className="theory-list-item"><code>A and B</code>: если A ложно, B даже не вычисляется.</li>
+          <li className="theory-list-item"><code>A or B</code>: если A истинно, B не вычисляется.</li>
+        </ul>
+        <TheoryCode language="python" code={`# Безопасно: деление не выполнится, если count == 0
+if count != 0 and total / count > 10:
+    print("Среднее больше 10")
+
+# Проверка, что список не пустой, перед обращением к элементу
+if items and items[0] == "start":
+    run()
+
+# Значение по умолчанию: если name пустое, возьмётся "Гость"
+display = name or "Гость"`} />
+        <p>
+          Отсюда практическое правило: в условиях ставь первыми дешёвые и «защитные» проверки, а дорогие
+          вычисления — после них.
+        </p>
+      </section>
+
+      <section className="theory-section">
+        <h2 className="theory-heading-2">Импликация: «если A, то B»</h2>
+        <p>
+          Импликация <code>A → B</code> ложна только в одном случае: когда A истинно, а B ложно. Во всех остальных
+          случаях она истинна. Это часто путают: если A ложно, импликация истинна независимо от B.
+        </p>
+        <TheoryTable
+          headers={['A', 'B', 'A → B']}
+          rows={[
+            ['True', 'True', 'True'],
+            ['True', 'False', 'False'],
+            ['False', 'True', 'True'],
+            ['False', 'False', 'True'],
+          ]}
+        />
+        <p>
+          В коде импликация записывается как <code>(not A) or B</code>. Пример правила: «если пользователь —
+          администратор, то у него включена двухфакторная защита»:
+        </p>
+        <TheoryCode language="python" code={`def rule_ok(user):
+    return (not user.is_admin) or user.has_2fa`} />
+      </section>
+
+      <section className="theory-section">
+        <h2 className="theory-heading-2">Свойства операций над множествами</h2>
+        <TheoryTable
+          headers={['Операция', 'Python', 'Сложность']}
+          rows={[
+            ['Проверка принадлежности x ∈ A', 'x in a', 'O(1) в среднем'],
+            ['Объединение A ∪ B', 'a | b', 'O(len(a) + len(b))'],
+            ['Пересечение A ∩ B', 'a & b', 'O(min(len(a), len(b)))'],
+            ['Разность A \\ B', 'a - b', 'O(len(a))'],
+            ['Симметрическая разность', 'a ^ b', 'O(len(a) + len(b))'],
+            ['Подмножество A ⊆ B', 'a <= b', 'O(len(a))'],
+          ]}
+        />
+        <TheoryExample title="Задача: какие студенты сдали оба экзамена и кто сдал только один">
+          <TheoryCode language="python" code={`math = {"Аня", "Борис", "Вера", "Глеб"}
+physics = {"Борис", "Глеб", "Дина"}
+
+both = math & physics          # {'Борис', 'Глеб'}
+only_one = math ^ physics      # {'Аня', 'Вера', 'Дина'}
+any_exam = math | physics      # все пятеро`} />
+        </TheoryExample>
+        <p>
+          Те же операции есть в SQL: <code>UNION</code>, <code>INTERSECT</code>, <code>EXCEPT</code>. А
+          <code> JOIN</code> по сути строит пересечение таблиц по ключу.
+        </p>
       </section>
 
       <section className="theory-section theory-section--closing">

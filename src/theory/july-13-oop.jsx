@@ -6,7 +6,7 @@ function Fig({ children, caption }) {
   return (
     <figure style={{ margin: '18px 0', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
       <div style={{
-        width: '100%', maxWidth: 640, background: '#12121e', border: '1px solid #2a2a3a',
+        width: '100%', maxWidth: 640, background: 'var(--bg-tertiary)', border: '1px solid var(--border-color)',
         borderRadius: 10, padding: '16px', display: 'flex', justifyContent: 'center', overflowX: 'auto',
       }}>{children}</div>
       {caption && <figcaption style={{ color: 'var(--text-tertiary)', fontSize: 12.5, textAlign: 'center', maxWidth: 640 }}>{caption}</figcaption>}
@@ -57,11 +57,9 @@ export default function July13OopTheory() {
     <div className="theory-container">
       <section className="theory-section">
         <h1 className="theory-title">ООП: основы</h1>
-        <p className="theory-subtitle">Треки: Frontend и Backend</p>
-        <p className="theory-date">13 июля 2026</p>
         <p>
           <strong>Объектно-ориентированное программирование (ООП)</strong> — способ организации кода, при котором
-          данные и функции, работающие с ними, объединяют в единые сущности — объекты. Сегодня разберём базовые
+          данные и функции, работающие с ними, объединяют в единые сущности — объекты. В этом конспекте разберём базовые
           понятия ООП и покажем каждое сразу на двух языках — <strong>JavaScript</strong> и{' '}
           <strong>Python</strong> — синтаксис отличается, но идеи одинаковые в любом объектно-ориентированном
           языке.

@@ -7,7 +7,7 @@ function Fig({ children, caption }) {
   return (
     <figure style={{ margin: '18px 0', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
       <div style={{
-        width: '100%', maxWidth: 640, background: '#12121e', border: '1px solid #2a2a3a',
+        width: '100%', maxWidth: 640, background: 'var(--bg-tertiary)', border: '1px solid var(--border-color)',
         borderRadius: 10, padding: '16px', display: 'flex', justifyContent: 'center', overflowX: 'auto',
       }}>{children}</div>
       {caption && <figcaption style={{ color: 'var(--text-tertiary)', fontSize: 12.5, textAlign: 'center', maxWidth: 640 }}>{caption}</figcaption>}
@@ -29,12 +29,10 @@ export default function July6AuthTheory() {
     <div className="theory-container">
       <section className="theory-section">
         <h1 className="theory-title">Аутентификация и авторизация</h1>
-        <p className="theory-subtitle">Трек: Backend-разработка</p>
-        <p className="theory-date">6 июля 2026</p>
         <p>
           Как только у приложения появляются пользователи, встаёт вопрос: «кто ты?» и «что тебе можно?». Это два
           разных процесса — <strong>аутентификация</strong> и <strong>авторизация</strong>. Их постоянно путают,
-          хотя решают они разные задачи. Сегодня разберём, что это такое в общем, как устроена проверка пароля,
+          хотя решают они разные задачи. В этом конспекте разберём, что это такое в общем, как устроена проверка пароля,
           зачем нужны сессии и токены, и как всё это делается на практике в <strong>Django</strong>.
         </p>
       </section>

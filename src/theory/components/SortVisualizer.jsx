@@ -223,7 +223,7 @@ export default function SortVisualizer() {
 
   return (
     <div style={{
-      background: 'var(--bg-secondary)', border: '1px solid var(--border-color)',
+      background: 'var(--bg-tertiary)', border: '1px solid var(--border-color)',
       borderRadius: 14, padding: 'clamp(14px, 3vw, 22px)', margin: '20px 0',
     }}>
       {/* выбор алгоритма */}
@@ -268,12 +268,12 @@ export default function SortVisualizer() {
         <button
           onClick={() => { if (atEnd) { setStep(0); setPlaying(true) } else setPlaying(p => !p) }}
           style={btn({ background: 'var(--accent-lime)', color: '#0a0a14', borderColor: 'var(--accent-lime)', minWidth: 96 })}
-        >{playing ? '⏸ Пауза' : atEnd ? '↻ Заново' : '▶ Запустить'}</button>
+        >{playing ? 'Пауза' : atEnd ? '↻ Заново' : '▶ Запустить'}</button>
 
         <button onClick={() => { setPlaying(false); setStep(s => Math.max(0, s - 1)) }} style={btn()}>‹ Шаг</button>
         <button onClick={() => { setPlaying(false); setStep(s => Math.min(frames.length - 1, s + 1)) }} style={btn()}>Шаг ›</button>
         <button onClick={reset} style={btn()}>⟲ Сброс</button>
-        <button onClick={shuffle} style={btn()}>🎲 Новый массив</button>
+        <button onClick={shuffle} style={btn()}>Новый массив</button>
 
         <div style={{ display: 'flex', gap: 4, marginLeft: 'auto' }}>
           {SPEEDS.map((s, i) => (

@@ -6,6 +6,9 @@ export default function Day3LoopsTheory() {
     <div className="theory-container">
       <section className="theory-section">
         <h1 className="theory-title">Основы программирования: циклы, функции, коллекции</h1>
+        <p>
+          Циклы позволяют повторять действия, функции — переиспользовать код, а коллекции — хранить много значений сразу. Вместе с переменными и условиями это полный базовый набор, из которого строится любая программа.
+        </p>
       </section>
 
       <section className="theory-section">
@@ -211,10 +214,10 @@ print(coords[0])  # 10
 print(colors[1])  # green
 
 # Это НЕЛЬЗЯ менять!
-coords[0] = 15  # ❌ Ошибка!
+coords[0] = 15  # ✗ Ошибка!
 
 # Но можно создать новый:
-coords = (15, 20)  # ✅ Это работает`} language="python" />
+coords = (15, 20)  # ✓ Это работает`} language="python" />
         </div>
 
         <div className="theory-subsection">
@@ -284,6 +287,133 @@ for i in range(limit):
           <li className="theory-list-item">Один блок кода = одна задача</li>
           <li className="theory-list-item">Комментарии только когда код неочевиден</li>
         </ul>
+      </section>
+
+      <section className="theory-section">
+        <h2 className="theory-heading-2">Цикл while, break и continue</h2>
+        <p>
+          <code>for</code> перебирает готовую последовательность, а <code>while</code> повторяет действия, пока
+          условие истинно. Его используют, когда заранее неизвестно, сколько будет повторений.
+        </p>
+        <TheoryCode language="python" code={`# Спрашиваем, пока не введут корректное число
+while True:
+    text = input("Введите возраст: ")
+    if text.isdigit():
+        age = int(text)
+        break            # выйти из цикла
+    print("Нужно целое число")
+
+# continue — пропустить остаток текущей итерации
+for n in range(10):
+    if n % 2 == 0:
+        continue         # чётные пропускаем
+    print(n)             # 1 3 5 7 9`} />
+        <p className="theory-highlight">
+          В <code>while</code> легко получить бесконечный цикл: убедись, что внутри цикла что-то меняется так,
+          что условие когда-нибудь станет ложным, или есть <code>break</code>.
+        </p>
+      </section>
+
+      <section className="theory-section">
+        <h2 className="theory-heading-2">enumerate и zip</h2>
+        <p>Две встроенные функции, которые избавляют от ручной работы с индексами:</p>
+        <TheoryCode language="python" code={`names = ["Аня", "Борис", "Вера"]
+scores = [90, 75, 88]
+
+# Нужен и индекс, и значение
+for i, name in enumerate(names, start=1):
+    print(i, name)          # 1 Аня, 2 Борис, 3 Вера
+
+# Идём по двум спискам параллельно
+for name, score in zip(names, scores):
+    print(f"{name}: {score}")
+
+# Собрать словарь из двух списков
+result = dict(zip(names, scores))   # {'Аня': 90, 'Борис': 75, 'Вера': 88}`} />
+      </section>
+
+      <section className="theory-section">
+        <h2 className="theory-heading-2">Аргументы функций подробнее</h2>
+        <TheoryCode language="python" code={`# Значение по умолчанию
+def greet(name, greeting="Привет"):
+    return f"{greeting}, {name}!"
+
+greet("Аня")                    # Привет, Аня!
+greet("Аня", greeting="Здравствуй")   # именованный аргумент
+
+# Произвольное число аргументов
+def total(*numbers):            # numbers — кортеж
+    return sum(numbers)
+
+total(1, 2, 3)                  # 6
+
+def build_user(**fields):       # fields — словарь
+    return fields
+
+build_user(name="Аня", age=25)  # {'name': 'Аня', 'age': 25}`} />
+        <p className="theory-highlight">
+          Никогда не используй изменяемый объект как значение по умолчанию: <code>def add(item, items=[])</code>.
+          Список создаётся один раз при определении функции и будет общим для всех вызовов. Правильно:
+          <code> items=None</code>, а внутри <code>if items is None: items = []</code>.
+        </p>
+      </section>
+
+      <section className="theory-section">
+        <h2 className="theory-heading-2">Область видимости</h2>
+        <p>
+          Переменная, созданная внутри функции, видна только внутри неё (локальная). Переменные снаружи функции
+          (глобальные) можно читать, но для изменения нужно ключевое слово <code>global</code> — и его стоит
+          избегать: функция, которая меняет внешние переменные, непредсказуема.
+        </p>
+        <TheoryCode language="python" code={`counter = 0
+
+def bad_increment():
+    global counter        # меняет внешнее состояние — так лучше не делать
+    counter += 1
+
+def good_increment(value):
+    return value + 1      # получает данные и возвращает результат
+
+counter = good_increment(counter)`} />
+      </section>
+
+      <section className="theory-section">
+        <h2 className="theory-heading-2">Рекурсия</h2>
+        <p>
+          Рекурсивная функция вызывает саму себя для задачи меньшего размера. У неё обязательно есть
+          <strong> базовый случай</strong> — условие, при котором она перестаёт вызывать себя.
+        </p>
+        <TheoryCode language="python" code={`def factorial(n):
+    if n <= 1:            # базовый случай
+        return 1
+    return n * factorial(n - 1)
+
+factorial(5)   # 5 * 4 * 3 * 2 * 1 = 120`} />
+        <p>
+          Каждый вызов занимает место в стеке вызовов. В Python глубина рекурсии по умолчанию ограничена
+          примерно 1000 вызовами, поэтому для больших n лучше цикл. Рекурсия удобна для деревьев, графов и задач
+          «разделяй и властвуй».
+        </p>
+      </section>
+
+      <section className="theory-section">
+        <h2 className="theory-heading-2">Полезные методы словарей</h2>
+        <TheoryTable
+          headers={['Метод', 'Что делает', 'Пример']}
+          rows={[
+            ['d.get(k, default)', 'Значение по ключу или default, если ключа нет', "ages.get('Глеб', 0)"],
+            ['d.items()', 'Пары (ключ, значение) для перебора', 'for k, v in d.items()'],
+            ['d.keys(), d.values()', 'Только ключи или только значения', 'sum(d.values())'],
+            ['d.setdefault(k, v)', 'Вернуть значение, а если ключа нет — сначала записать v', "groups.setdefault(city, []).append(name)"],
+            ['d.pop(k)', 'Удалить ключ и вернуть значение', "d.pop('temp')"],
+          ]}
+        />
+        <TheoryCode language="python" code={`# Подсчёт слов — классическая задача на словарь
+text = "кот пёс кот рыба кот пёс"
+counts = {}
+for word in text.split():
+    counts[word] = counts.get(word, 0) + 1
+print(counts)   # {'кот': 3, 'пёс': 2, 'рыба': 1}`} />
       </section>
 
       <section className="theory-section theory-section--closing">

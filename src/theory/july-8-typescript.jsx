@@ -6,7 +6,7 @@ function Fig({ children, caption }) {
   return (
     <figure style={{ margin: '18px 0', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
       <div style={{
-        width: '100%', maxWidth: 640, background: '#12121e', border: '1px solid #2a2a3a',
+        width: '100%', maxWidth: 640, background: 'var(--bg-tertiary)', border: '1px solid var(--border-color)',
         borderRadius: 10, padding: '16px', display: 'flex', justifyContent: 'center', overflowX: 'auto',
       }}>{children}</div>
       {caption && <figcaption style={{ color: 'var(--text-tertiary)', fontSize: 12.5, textAlign: 'center', maxWidth: 640 }}>{caption}</figcaption>}
@@ -69,8 +69,6 @@ export default function July8TypeScriptTheory() {
     <div className="theory-container">
       <section className="theory-section">
         <h1 className="theory-title">TypeScript</h1>
-        <p className="theory-subtitle">Трек: Frontend-разработка</p>
-        <p className="theory-date">8 июля 2026</p>
         <p>
           TypeScript — надстройка над JavaScript, добавляющая <strong>статическую типизацию</strong>. Код на
           TypeScript компилируется (транспилируется) в обычный JavaScript, поэтому работает везде, где работает
@@ -94,7 +92,7 @@ export default function July8TypeScriptTheory() {
             <text x="130" y="57" fill={C.sub} fontSize="11" textAnchor="middle">пишешь код</text>
             <line x1="130" y1="69" x2="130" y2="90" stroke={C.sub} markerEnd="url(#tsA)" />
             <rect x="30" y="92" width="200" height="34" rx="6" fill="rgba(248,113,113,0.10)" stroke="#f87171" />
-            <text x="130" y="114" fill="#f87171" fontSize="11" textAnchor="middle">ошибка находится в проде 💥</text>
+            <text x="130" y="114" fill="#f87171" fontSize="11" textAnchor="middle">ошибка находится в проде </text>
             <text x="390" y="20" fill={C.lime} fontSize="12" fontWeight="700" textAnchor="middle">TypeScript</text>
             <rect x="290" y="35" width="200" height="34" rx="6" fill="var(--bg-tertiary)" stroke={C.border} />
             <text x="390" y="57" fill={C.sub} fontSize="11" textAnchor="middle">пишешь код</text>
@@ -145,7 +143,7 @@ let never_: never              // never — значение никогда не
           параметры функций).
         </P>
         <TheoryCode language="ts" code={`let count = 5          // TS сам понял: count: number
-count = "текст"        // ❌ Ошибка: Type 'string' is not assignable to type 'number'
+count = "текст"        // ✗ Ошибка: Type 'string' is not assignable to type 'number'
 
 function double(x: number) {   // параметр — типизируем ОБЯЗАТЕЛЬНО
   return x * 2                 // а возврат TS выведет сам: number
@@ -165,7 +163,7 @@ function double(x: number) {   // параметр — типизируем ОБ
 }
 
 const user: User = { id: 1, name: 'Аня', email: 'anya@mail.com' }
-// user.age = 30   ❌ Ошибка: поля 'age' нет в интерфейсе User
+// user.age = 30   ✗ Ошибка: поля 'age' нет в интерфейсе User
 
 // type alias — альтернативный синтаксис
 type Point = { x: number; y: number }`} />
@@ -191,7 +189,7 @@ type Point = { x: number; y: number }`} />
 }
 
 const u: User = { id: 1, name: 'Аня', createdAt: '2026-07-08' }  // без age — ок
-u.createdAt = '2026-07-09'   // ❌ Ошибка: Cannot assign to 'createdAt' — readonly`} />
+u.createdAt = '2026-07-09'   // ✗ Ошибка: Cannot assign to 'createdAt' — readonly`} />
       </section>
 
       <section className="theory-section">
@@ -223,11 +221,11 @@ const multiply = (a: number, b: number): number => a * b`} />
         <TheoryCode language="ts" code={`let id: string | number   // id может быть строкой ИЛИ числом
 id = "abc"    // ок
 id = 42       // тоже ок
-id = true     // ❌ Ошибка
+id = true     // ✗ Ошибка
 
 type Status = 'idle' | 'loading' | 'success' | 'error'   // литеральный union
 let status: Status = 'loading'
-status = 'done'   // ❌ Ошибка: 'done' не входит в допустимые значения
+status = 'done'   // ✗ Ошибка: 'done' не входит в допустимые значения
 
 type Named = { name: string }
 type Aged = { age: number }

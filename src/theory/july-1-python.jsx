@@ -6,8 +6,6 @@ export default function July1PythonTheory() {
     <div className="theory-container">
       <section className="theory-section">
         <h1 className="theory-title">Основы Python</h1>
-        <p className="theory-subtitle">Треки: Аналитика данных и Machine Learning</p>
-        <p className="theory-date">1 июля 2026</p>
         <p>
           Перед стартом специализации вспоминаем фундамент Python — язык, на котором строится
           вся современная аналитика и ML. Здесь собрано всё базовое: типы данных, коллекции,
@@ -223,7 +221,90 @@ round(3.567, 1)  # 3.6`} />
 
       {/* Библиотеки */}
       <section className="theory-section">
-        <h2 className="theory-heading-2">9. Что дальше: библиотеки для аналитики и ML</h2>
+        <h2 className="theory-heading-2">9. Ошибки и исключения</h2>
+        <p>
+          Когда что-то идёт не так (деление на ноль, нет файла, неверный формат числа), Python выбрасывает
+          <strong> исключение</strong>. Если его не обработать, программа остановится с сообщением об ошибке.
+        </p>
+        <TheoryCode language="python" code={`try:
+    age = int(input("Возраст: "))
+    ratio = 100 / age
+except ValueError:
+    print("Нужно ввести целое число")
+except ZeroDivisionError:
+    print("Возраст не может быть нулём")
+else:
+    print("Всё хорошо:", ratio)    # если исключения не было
+finally:
+    print("Выполняется всегда")`} />
+        <TheoryTable
+          headers={['Исключение', 'Когда возникает']}
+          rows={[
+            ['ValueError', "int('abc') — значение неподходящего вида"],
+            ['TypeError', "'1' + 1 — операция с несовместимыми типами"],
+            ['KeyError', 'Обращение к несуществующему ключу словаря'],
+            ['IndexError', 'Индекс за пределами списка'],
+            ['FileNotFoundError', 'Открытие несуществующего файла'],
+            ['AttributeError', 'Обращение к несуществующему атрибуту или методу'],
+          ]}
+        />
+        <p className="theory-highlight">
+          Не пиши голый <code>except:</code> без типа исключения — он скроет любые ошибки, включая опечатки в
+          коде, и отлаживать программу станет очень трудно.
+        </p>
+      </section>
+
+      <section className="theory-section">
+        <h2 className="theory-heading-2">10. Работа с файлами</h2>
+        <TheoryCode language="python" code={`# Запись: with сам закроет файл, даже если случится ошибка
+with open("notes.txt", "w", encoding="utf-8") as f:
+    f.write("Первая строка\\n")
+
+# Чтение построчно
+with open("notes.txt", encoding="utf-8") as f:
+    for line in f:
+        print(line.strip())
+
+# CSV и JSON — через стандартные модули
+import json
+with open("data.json", encoding="utf-8") as f:
+    data = json.load(f)`} />
+        <p>
+          Всегда указывай <code>encoding="utf-8"</code>: иначе на Windows русский текст может прочитаться
+          неправильно.
+        </p>
+      </section>
+
+      <section className="theory-section">
+        <h2 className="theory-heading-2">11. Модули, pip и виртуальные окружения</h2>
+        <p>
+          Код разбивают на модули (файлы <code>.py</code>) и подключают через <code>import</code>. Сторонние
+          библиотеки ставят менеджером пакетов <code>pip</code>, а чтобы зависимости разных проектов не мешали
+          друг другу, для каждого проекта создают <strong>виртуальное окружение</strong>.
+        </p>
+        <TheoryCode language="bash" code={`python -m venv .venv              # создать окружение
+source .venv/bin/activate          # включить (Windows: .venv\\Scripts\\activate)
+pip install pandas requests        # установить библиотеки
+pip freeze > requirements.txt      # зафиксировать версии
+pip install -r requirements.txt    # установить всё на другом компьютере`} />
+      </section>
+
+      <section className="theory-section">
+        <h2 className="theory-heading-2">12. Частые ошибки новичков</h2>
+        <TheoryTable
+          headers={['Ошибка', 'Пример', 'Как правильно']}
+          rows={[
+            ['Сравнение через is', "if name is 'Аня'", "Для значений — ==, is только для None: if x is None"],
+            ['input() возвращает строку', "age = input(); age + 1", 'age = int(input())'],
+            ['Изменение списка во время перебора', 'for x in items: items.remove(x)', 'Перебирать копию или собрать новый список'],
+            ['Смешанные отступы', 'Табы и пробелы вперемешку', 'Всегда 4 пробела, редактор настроит сам'],
+            ['Целочисленное деление', '7 / 2 и 7 // 2', '/ даёт 3.5, // даёт 3'],
+          ]}
+        />
+      </section>
+
+      <section className="theory-section">
+        <h2 className="theory-heading-2">13. Что дальше: библиотеки для аналитики и ML</h2>
         <p>
           Дальше мы будем работать с классическим стеком Python для данных. Устанавливаются
           командой <code>pip install</code>, импортируются в код через <code>import</code>.
@@ -249,8 +330,8 @@ df = pd.DataFrame({"город": ["Мск", "Спб"], "население": [13
 df["население"].sum()   # 18`} />
         </TheoryExample>
         <p>
-          Не переживай, если библиотеки пока незнакомы — их разберём подробно на следующих
-          занятиях. Сегодня главное — уверенно владеть базовым синтаксисом.
+          Не переживай, если библиотеки пока незнакомы — им посвящены отдельные конспекты (NumPy, Pandas,
+          Matplotlib). Сейчас главное — уверенно владеть базовым синтаксисом.
         </p>
       </section>
     </div>

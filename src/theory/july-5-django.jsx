@@ -7,7 +7,7 @@ function Fig({ children, caption }) {
   return (
     <figure style={{ margin: '18px 0', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
       <div style={{
-        width: '100%', maxWidth: 640, background: '#12121e', border: '1px solid #2a2a3a',
+        width: '100%', maxWidth: 640, background: 'var(--bg-tertiary)', border: '1px solid var(--border-color)',
         borderRadius: 10, padding: '16px', display: 'flex', justifyContent: 'center', overflowX: 'auto',
       }}>{children}</div>
       {caption && <figcaption style={{ color: 'var(--text-tertiary)', fontSize: 12.5, textAlign: 'center', maxWidth: 640 }}>{caption}</figcaption>}
@@ -29,14 +29,12 @@ export default function July5DjangoTheory() {
     <div className="theory-container">
       <section className="theory-section">
         <h1 className="theory-title">REST API: создание на Python</h1>
-        <p className="theory-subtitle">Трек: Backend-разработка</p>
-        <p className="theory-date">5 июля 2026</p>
         <p>
           Фронтенд рисует интерфейс, но откуда он берёт данные — список товаров, профиль пользователя, заказы?
-          Их отдаёт <strong>бэкенд</strong> через <strong>API</strong>. Сегодня разберём, что такое{' '}
+          Их отдаёт <strong>бэкенд</strong> через <strong>API</strong>. В этом конспекте разберём, что такое{' '}
           <strong>REST API</strong>, по каким правилам он устроен, и напишем настоящее{' '}
           <strong>CRUD-приложение</strong> на Python с помощью фреймворка <strong>Django</strong> и{' '}
-          <strong>Django REST Framework (DRF)</strong>. К концу занятия у тебя будет работающий сервер, который
+          <strong>Django REST Framework (DRF)</strong>. К концу конспекта у тебя будет работающий сервер, который
           умеет создавать, читать, обновлять и удалять записи по HTTP.
         </p>
       </section>

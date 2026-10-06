@@ -5,8 +5,6 @@ export default function July2CssTheory() {
     <div className="theory-container">
       <section className="theory-section">
         <h1 className="theory-title">Основы CSS</h1>
-        <p className="theory-subtitle">Трек: Frontend-разработка</p>
-        <p className="theory-date">2 июля 2026</p>
         <p>
           CSS (Cascading Style Sheets) — язык, который отвечает за <strong>внешний вид</strong> HTML-страницы:
           цвета, отступы, шрифты, расположение блоков. HTML описывает структуру («что это»), а CSS — как это

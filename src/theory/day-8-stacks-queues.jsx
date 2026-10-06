@@ -5,6 +5,9 @@ export default function Day8StacksQueuesTheory() {
     <div className="theory-container">
       <section className="theory-section">
         <h1 className="theory-title">Структуры данных: стек и очередь</h1>
+        <p>
+          Стек и очередь — структуры с ограниченным доступом: элементы добавляются и извлекаются по строгим правилам. На них построены вызовы функций, отмена действий, обработка задач и поиск в ширину.
+        </p>
       </section>
 
       <section className="theory-section">
@@ -261,6 +264,91 @@ graph = {
 }
 
 print(bfs(graph, 'A'))  # ['A', 'B', 'C', 'D', 'E']`} language="python" />
+      </section>
+
+      <section className="theory-section">
+        <h2 className="theory-heading-2">Очередь с приоритетом</h2>
+        <p>
+          В обычной очереди первым выходит тот, кто раньше пришёл. В <strong>очереди с приоритетом</strong> —
+          элемент с наименьшим (или наибольшим) приоритетом. Так работают планировщики задач, алгоритм Дейкстры,
+          выбор «k самых больших» элементов. Внутри она обычно устроена как <strong>двоичная куча</strong>.
+        </p>
+        <TheoryCode language="python" code={`import heapq
+
+tasks = []
+heapq.heappush(tasks, (2, "написать тесты"))
+heapq.heappush(tasks, (1, "починить прод"))
+heapq.heappush(tasks, (3, "обновить README"))
+
+while tasks:
+    priority, task = heapq.heappop(tasks)   # всегда минимальный приоритет
+    print(priority, task)
+# 1 починить прод
+# 2 написать тесты
+# 3 обновить README`} />
+        <TheoryTable
+          headers={['Операция', 'Сложность']}
+          rows={[
+            ['Добавить элемент (heappush)', 'O(log n)'],
+            ['Извлечь минимум (heappop)', 'O(log n)'],
+            ['Посмотреть минимум (heap[0])', 'O(1)'],
+            ['Построить кучу из списка (heapify)', 'O(n)'],
+          ]}
+        />
+        <p>
+          <code>heapq</code> — это min-куча. Чтобы получить максимум, кладут числа со знаком минус:
+          <code> heapq.heappush(h, -x)</code>.
+        </p>
+      </section>
+
+      <section className="theory-section">
+        <h2 className="theory-heading-2">Монотонный стек</h2>
+        <p>
+          Приём для задач вида «для каждого элемента найти ближайший больший справа». Наивное решение — два
+          вложенных цикла за O(n²). Монотонный стек решает за O(n): в стеке хранятся индексы элементов, для
+          которых ответ ещё не найден, и значения в нём всегда убывают.
+        </p>
+        <TheoryCode language="python" code={`def next_greater(nums):
+    result = [-1] * len(nums)
+    stack = []                       # индексы, ждущие ответа
+    for i, x in enumerate(nums):
+        while stack and nums[stack[-1]] < x:
+            result[stack.pop()] = x  # нашли больший элемент справа
+        stack.append(i)
+    return result
+
+next_greater([2, 1, 5, 3, 6])   # [5, 5, 6, 6, -1]`} />
+        <p>
+          Каждый индекс один раз попадает в стек и один раз из него извлекается — поэтому общая сложность O(n),
+          хотя внутри есть цикл <code>while</code>.
+        </p>
+      </section>
+
+      <section className="theory-section">
+        <h2 className="theory-heading-2">Где стек и очередь встречаются в реальных системах</h2>
+        <TheoryTable
+          headers={['Система', 'Структура', 'Зачем']}
+          rows={[
+            ['Стек вызовов функций', 'Стек', 'Возврат из функции в место, откуда её вызвали'],
+            ['Undo в редакторе', 'Стек', 'Отмена последнего действия'],
+            ['История браузера «назад»', 'Стек', 'Возврат на предыдущую страницу'],
+            ['Очереди сообщений (RabbitMQ, Kafka)', 'Очередь', 'Обработка задач по порядку поступления'],
+            ['Буфер печати, обработка запросов сервером', 'Очередь', 'Справедливый порядок обслуживания'],
+            ['Планировщик задач ОС', 'Очередь с приоритетом', 'Сначала важные процессы'],
+          ]}
+        />
+      </section>
+
+      <section className="theory-section">
+        <h2 className="theory-heading-2">Задачи с собеседований на стек и очередь</h2>
+        <ul className="theory-list">
+          <li className="theory-list-item"><strong>Valid Parentheses</strong> — проверить правильность скобочной последовательности (стек).</li>
+          <li className="theory-list-item"><strong>Min Stack</strong> — стек, который возвращает минимум за O(1) (второй стек минимумов).</li>
+          <li className="theory-list-item"><strong>Implement Queue using Stacks</strong> — очередь на двух стеках с амортизированной O(1).</li>
+          <li className="theory-list-item"><strong>Daily Temperatures</strong> — через сколько дней будет теплее (монотонный стек).</li>
+          <li className="theory-list-item"><strong>Kth Largest Element</strong> — k-й по величине элемент (куча размера k).</li>
+          <li className="theory-list-item"><strong>Binary Tree Level Order Traversal</strong> — обход дерева по уровням (очередь).</li>
+        </ul>
       </section>
 
       <section className="theory-section theory-section--closing">

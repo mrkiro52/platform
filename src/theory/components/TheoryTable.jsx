@@ -35,7 +35,7 @@ export function TheoryCode({ code, language = 'js' }) {
 export function TheoryExample({ title, children }) {
   return (
     <div className="theory-example">
-      <div className="theory-example-title">💡 {title}</div>
+      <div className="theory-example-title">{title}</div>
       <div className="theory-example-content">{children}</div>
     </div>
   )

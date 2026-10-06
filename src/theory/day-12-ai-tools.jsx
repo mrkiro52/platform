@@ -5,6 +5,9 @@ export default function Day12AiToolsTheory() {
     <div className="theory-container">
       <section className="theory-section">
         <h1 className="theory-title">ИИ-инструменты разработчика</h1>
+        <p>
+          ИИ-ассистенты стали обычным рабочим инструментом разработчика: они пишут шаблонный код, объясняют ошибки, помогают с тестами и документацией. В конспекте — какие бывают инструменты, как писать промпты, которые дают хороший результат, и где ИИ ошибается.
+        </p>
       </section>
 
       <section className="theory-section">
@@ -26,7 +29,7 @@ export default function Day12AiToolsTheory() {
           <h3 className="theory-heading-3">Основные параметры LLM</h3>
           <ul className="theory-list">
             <li className="theory-list-item"><strong>Токены</strong> — куски текста (примерно 1 токен = 4 символа). При работе с Claude API нужно знать: входные токены дешевле, выходные дороже</li>
-            <li className="theory-list-item"><strong>Контекстное окно</strong> — сколько токенов модель может обработать одновременно. Claude 3.5 Sonnet: 200k входных, может вывести до 4k. Это целая книга!</li>
+            <li className="theory-list-item"><strong>Контекстное окно</strong> — сколько токенов модель может обработать одновременно. У современных моделей это сотни тысяч токенов, а у некоторых — до миллиона: в контекст помещается целая книга или крупный модуль проекта.</li>
             <li className="theory-list-item"><strong>Температура</strong> — 0 = всегда выбирает самый вероятный ответ (логичный), 1 = выбирает случайно (творческий). Для кода используй 0-0.3, для идей 0.7-1</li>
             <li className="theory-list-item"><strong>Max tokens</strong> — максимальная длина ответа. Ограничивает стоимость</li>
             <li className="theory-list-item"><strong>Top-p</strong> — выбирает из верхних N% вероятных вариантов (альтернатива температуре)</li>
@@ -35,54 +38,34 @@ export default function Day12AiToolsTheory() {
       </section>
 
       <section className="theory-section">
-        <h2 className="theory-heading-2">Модели Claude: какую использовать?</h2>
+        <h2 className="theory-heading-2">Какие бывают модели и как выбрать</h2>
         <p className="theory-intro">
-          Claude выпускает несколько версий модели. Каждая имеет разные характеристики, цену и скорость.
+          Крупные компании выпускают модели линейками: большая и самая сильная, средняя универсальная и
+          маленькая быстрая. Конкретные названия и версии меняются несколько раз в год, а принцип выбора остаётся
+          тем же.
         </p>
-
-        <div className="theory-subsection">
-          <h3 className="theory-heading-3">Claude 3.5 Sonnet (Рекомендуется 🚀)</h3>
-          <ul className="theory-list">
-            <li className="theory-list-item">🏆 Лучшее соотношение цена/производительность</li>
-            <li className="theory-list-item">💪 Отличное для программирования (анализ кода, рефакторинг, исправление ошибок)</li>
-            <li className="theory-list-item">⚡ Быстрая (2x быстрее чем Opus)</li>
-            <li className="theory-list-item">📚 200k контекстное окно = целые проекты можно скармливать</li>
-            <li className="theory-list-item">💰 Средняя цена</li>
-            <li className="theory-list-item">✅ Лучше всего для ежедневной разработки</li>
+        <TheoryTable
+          headers={['Класс модели', 'Сильные стороны', 'Когда брать']}
+          rows={[
+            ['Флагманская (самая большая)', 'Лучшая на сложной логике, архитектуре, длинных задачах', 'Проектирование, сложные баги, рефакторинг большого кода'],
+            ['Средняя', 'Хороший баланс качества, скорости и цены', 'Ежедневная разработка: код, тесты, объяснения'],
+            ['Маленькая (быстрая)', 'Очень быстрая и дешёвая', 'Автодополнение, простые преобразования, массовая обработка текста'],
+            ['Открытые модели', 'Можно запустить у себя, данные не уходят наружу', 'Работа с закрытыми данными, эксперименты'],
+          ]}
+        />
+        <p>
+          Основные семейства моделей: <strong>Claude</strong> (Anthropic), <strong>GPT</strong> (OpenAI),
+          <strong> Gemini</strong> (Google), а также открытые модели — Llama, Qwen, DeepSeek, Mistral. Для
+          программирования важнее всего не название, а то, насколько хорошо модель работает с кодом именно
+          твоего стека: попробуй две-три на своих реальных задачах и сравни.
+        </p>
+        <TheoryExample title="На что смотреть при выборе">
+          <ul>
+            <li><strong>Размер контекста</strong> — сколько кода и текста модель видит за раз. Сотни тысяч токенов позволяют загрузить целый модуль проекта.</li>
+            <li><strong>Качество на коде</strong> — ориентируйся на собственный опыт, а не только на рейтинги.</li>
+            <li><strong>Цена и скорость</strong> — для автодополнения нужна быстрая модель, для сложной задачи можно подождать.</li>
+            <li><strong>Где хранятся данные</strong> — рабочий код компании можно отправлять только в разрешённые сервисы.</li>
           </ul>
-        </div>
-
-        <div className="theory-subsection">
-          <h3 className="theory-heading-3">Claude 3 Opus</h3>
-          <ul className="theory-list">
-            <li className="theory-list-item">🧠 Самая "умная" модель (чуть лучше в сложной логике)</li>
-            <li className="theory-list-item">⏱️ Медленнее чем Sonnet</li>
-            <li className="theory-list-item">💰 Дороже</li>
-            <li className="theory-list-item">📚 200k контекст</li>
-            <li className="theory-list-item">✅ Для очень сложных задач, когда нужна максимальная точность</li>
-          </ul>
-        </div>
-
-        <div className="theory-subsection">
-          <h3 className="theory-heading-3">Claude 3 Haiku</h3>
-          <ul className="theory-list">
-            <li className="theory-list-item">⚡ Самая быстрая</li>
-            <li className="theory-list-item">💰 Самая дешёвая (в 10x раз дешевле Sonnet)</li>
-            <li className="theory-list-item">🧠 Менее умная, но достаточна для простых задач</li>
-            <li className="theory-list-item">📚 100k контекст</li>
-            <li className="theory-list-item">✅ Для быстрых ответов и прототипирования</li>
-          </ul>
-        </div>
-
-        <TheoryExample title="Таблица сравнения">
-          <TheoryTable
-            headers={['Модель', 'Разум', 'Скорость', 'Цена', 'Контекст', 'Лучше всего для']}
-            rows={[
-              ['Claude 3.5 Sonnet', '⭐⭐⭐⭐', '⚡⚡⚡⚡⚡', '💰💰', '200k', 'Разработка (ВЫБЕРИ ЭТО)'],
-              ['Claude 3 Opus', '⭐⭐⭐⭐⭐', '⚡⚡⚡', '💰💰💰💰', '200k', 'Очень сложные задачи'],
-              ['Claude 3 Haiku', '⭐⭐⭐', '⚡⚡⚡⚡⚡', '💰', '100k', 'Быстрые ответы'],
-            ]}
-          />
         </TheoryExample>
       </section>
 
@@ -93,21 +76,21 @@ export default function Day12AiToolsTheory() {
         </p>
 
         <div className="theory-subsection">
-          <h3 className="theory-heading-3">❌ Плохой промпт vs ✅ Хороший промпт</h3>
+          <h3 className="theory-heading-3">✗ Плохой промпт vs ✓ Хороший промпт</h3>
 
           <TheoryExample title="Пример 1: Простая задача">
-            <p><strong>❌ Плохо:</strong> "Напиши код"</p>
-            <p><strong>✅ Хорошо:</strong> "Напиши функцию на Python, которая проверяет, является ли число простым. Входной параметр: целое число n. Выходной параметр: True если простое, False иначе. Используй эффективный алгоритм O(√n)"</p>
+            <p><strong>✗ Плохо:</strong> "Напиши код"</p>
+            <p><strong>✓ Хорошо:</strong> "Напиши функцию на Python, которая проверяет, является ли число простым. Входной параметр: целое число n. Выходной параметр: True если простое, False иначе. Используй эффективный алгоритм O(√n)"</p>
           </TheoryExample>
 
           <TheoryExample title="Пример 2: Анализ кода">
-            <p><strong>❌ Плохо:</strong> "Почему это не работает?"</p>
-            <p><strong>✅ Хорошо:</strong> "Вот мой код: [код]. Ошибка: TypeError: NoneType. Я ожидаю, что функция должна вернуть список. Объясни, в чём проблема, и покажи исправленный вариант"</p>
+            <p><strong>✗ Плохо:</strong> "Почему это не работает?"</p>
+            <p><strong>✓ Хорошо:</strong> "Вот мой код: [код]. Ошибка: TypeError: NoneType. Я ожидаю, что функция должна вернуть список. Объясни, в чём проблема, и покажи исправленный вариант"</p>
           </TheoryExample>
         </div>
 
         <div className="theory-subsection">
-          <h3 className="theory-heading-3">📋 Структура хорошего промпта</h3>
+          <h3 className="theory-heading-3">Структура хорошего промпта</h3>
           <ol style={{ paddingLeft: '20px', color: 'var(--text-secondary)', fontSize: '13px', lineHeight: '1.8' }}>
             <li><strong>Контекст:</strong> Для чего это нужно? Кто будет использовать?</li>
             <li><strong>Задача:</strong> Что ровно нужно сделать? (Глагол: напиши, объясни, исправь)</li>
@@ -119,19 +102,19 @@ export default function Day12AiToolsTheory() {
         </div>
 
         <div className="theory-subsection">
-          <h3 className="theory-heading-3">🎯 Техника: Chain of Thought (думай пошагово)</h3>
+          <h3 className="theory-heading-3">Техника: Chain of Thought (думай пошагово)</h3>
           <p className="theory-intro">Явно попроси ИИ думать пошагово для сложных задач:</p>
-          <TheoryCode code={`❌ Плохо:
+          <TheoryCode code={`✗ Плохо:
 "Реши задачу с массивом"
 
-✅ Хорошо:
+✓ Хорошо:
 "Решение: тебе нужно найти два числа в массиве, которые в сумме дают target.
 Сначала объясни алгоритм (что будет твой подход?), потом напиши код.
 Покажи пример для массива [2, 7, 11, 15], target = 9"`} />
         </div>
 
         <div className="theory-subsection">
-          <h3 className="theory-heading-3">📚 Техника: Few-shot Learning (показывай примеры)</h3>
+          <h3 className="theory-heading-3">Техника: Few-shot Learning (показывай примеры)</h3>
           <p className="theory-intro">Приведи примеры ПЕРЕД основным вопросом:</p>
           <TheoryCode code={`Перевод названий переменных из camelCase в snake_case:
 
@@ -147,8 +130,8 @@ calculateHashValue → ?`} />
         </div>
 
         <div className="theory-subsection">
-          <h3 className="theory-heading-3">🎭 Техника: Role-based prompting (задай роль)</h3>
-          <TheoryCode code={`✅ Хороший промпт:
+          <h3 className="theory-heading-3">Техника: Role-based prompting (задай роль)</h3>
+          <TheoryCode code={`✓ Хороший промпт:
 "Ты опытный разработчик Python с 10 лет опыта.
 Напиши код для валидации email адреса.
 Используй лучшие практики и обработку исключений.
@@ -160,12 +143,12 @@ calculateHashValue → ?`} />
       <section className="theory-section">
         <h2 className="theory-heading-2">Контекст: самое важное правило</h2>
         <p className="theory-intro">
-          Чем больше контекста ты даешь ИИ, тем лучше ответ. Claude может "помнить" 200k токенов (целую книгу!), используй это!
+          Чем больше контекста ты даешь ИИ, тем лучше ответ. Модель может держать в контексте сотни тысяч токенов — давай ей нужные файлы, описание задачи и примеры.
         </p>
 
         <div className="theory-subsection">
-          <h3 className="theory-heading-3">1️⃣ Указывай файлы и папки для работы</h3>
-          <TheoryCode code={`✅ Хорошо:
+          <h3 className="theory-heading-3">1. Указывай файлы и папки для работы</h3>
+          <TheoryCode code={`✓ Хорошо:
 "Я использую инструмент Claude Code.
 Давай вместе работать с проектом React.
 Файлы находятся в src/components/
@@ -179,8 +162,8 @@ calculateHashValue → ?`} />
         </div>
 
         <div className="theory-subsection">
-          <h3 className="theory-heading-3">2️⃣ Давай информацию о структуре проекта</h3>
-          <TheoryCode code={`✅ Полезно сказать:
+          <h3 className="theory-heading-3">2. Давай информацию о структуре проекта</h3>
+          <TheoryCode code={`✓ Полезно сказать:
 "У меня есть структура:
 - src/
   - pages/
@@ -196,8 +179,8 @@ calculateHashValue → ?`} />
         </div>
 
         <div className="theory-subsection">
-          <h3 className="theory-heading-3">3️⃣ Скармливай весь релевантный код</h3>
-          <TheoryCode code={`✅ Вместо:
+          <h3 className="theory-heading-3">3. Скармливай весь релевантный код</h3>
+          <TheoryCode code={`✓ Вместо:
 "Почему ошибка?"
 
 Напиши:
@@ -236,8 +219,8 @@ def calculate_sum(arr):
 - backend/api.js   ← API endpoints
 
 ## Правила кода
-✅ ДЕЛАЙ: Используй React Hooks, типизируй с PropTypes
-❌ НЕ ДЕЛАЙ: Class components, глобальные переменные
+✓ ДЕЛАЙ: Используй React Hooks, типизируй с PropTypes
+✗ НЕ ДЕЛАЙ: Class components, глобальные переменные
 
 ## Примеры хороших компонентов
 [Вставь примеры]
@@ -300,16 +283,16 @@ npm install && npm start`} />
           <h3 className="theory-heading-3">Как это работает</h3>
           <ul className="theory-list">
             <li className="theory-list-item">Смотрит на контекст: названия переменных, функций, импорты</li>
-            <li className="theory-list-item">Предлагает код на основе миллионов примеров с GitHub</li>
+            <li className="theory-list-item">Предлагает продолжение кода на основе модели, обученной на большом объёме открытого кода</li>
             <li className="theory-list-item">Работает в VS Code, JetBrains IDE, Neovim</li>
-            <li className="theory-list-item">Платно: $10/месяц (но бесплатно для студентов и open-source разработчиков)</li>
+            <li className="theory-list-item">Есть бесплатный тариф с ограничениями и платные подписки; для студентов действуют льготы</li>
           </ul>
         </div>
 
         <TheoryExample title="Как писать, чтобы Copilot помог">
-          <p><strong>❌ Плохо:</strong></p>
+          <p><strong>✗ Плохо:</strong></p>
           <p>def f(a, b):</p>
-          <p><strong>✅ Хорошо:</strong></p>
+          <p><strong>✓ Хорошо:</strong></p>
           <p>def validate_email_address(email: str) -> bool:</p>
           <p>    # проверяет что email содержит @</p>
           <p style={{ marginTop: '8px' }}>Copilot видит название + комментарий и предложит нужную функцию!</p>
@@ -317,36 +300,40 @@ npm install && npm start`} />
       </section>
 
       <section className="theory-section">
-        <h2 className="theory-heading-2">Claude Code: IDE расширение</h2>
+        <h2 className="theory-heading-2">ИИ-агенты для программирования: Claude Code, Cursor и другие</h2>
         <p className="theory-intro">
-          Самое мощное: Claudeде может читать и редактировать файлы прямо в твоём проекте. Используй это максимально!
+          Агент не просто подсказывает строчку кода, а сам выполняет задачу целиком: читает файлы проекта,
+          вносит правки в несколько файлов, запускает тесты и команды в терминале и исправляет найденные ошибки.
+          Так работают Claude Code (в терминале, IDE и десктоп-приложении), Cursor, а также агентные режимы
+          GitHub Copilot и других редакторов.
         </p>
 
         <div className="theory-subsection">
           <h3 className="theory-heading-3">Что он может делать</h3>
           <ul className="theory-list">
-            <li className="theory-list-item">📖 <strong>Читать файлы:</strong> "Покажи мне файл Button.jsx"</li>
-            <li className="theory-list-item">✏️ <strong>Редактировать файлы:</strong> Автоматически изменяет и сохраняет</li>
-            <li className="theory-list-item">🔍 <strong>Поиск:</strong> "Найди все функции которые проверяют email"</li>
-            <li className="theory-list-item">🔧 <strong>Рефакторинг:</strong> "Переведи этот компонент на Hooks"</li>
-            <li className="theory-list-item">🐛 <strong>Исправление ошибок:</strong> Видит error и исправляет</li>
-            <li className="theory-list-item">🧪 <strong>Написание тестов:</strong> Генерирует unit tests</li>
+            <li className="theory-list-item"><strong>Читать файлы:</strong> "Покажи мне файл Button.jsx"</li>
+            <li className="theory-list-item"><strong>Редактировать файлы:</strong> Автоматически изменяет и сохраняет</li>
+            <li className="theory-list-item"><strong>Поиск:</strong> "Найди все функции которые проверяют email"</li>
+            <li className="theory-list-item"><strong>Рефакторинг:</strong> "Переведи этот компонент на Hooks"</li>
+            <li className="theory-list-item"><strong>Исправление ошибок:</strong> Видит error и исправляет</li>
+            <li className="theory-list-item"><strong>Написание тестов:</strong> Генерирует unit tests</li>
           </ul>
         </div>
 
         <div className="theory-subsection">
           <h3 className="theory-heading-3">Как использовать эффективно</h3>
           <ol style={{ paddingLeft: '20px', color: 'var(--text-secondary)', fontSize: '13px', lineHeight: '1.8' }}>
-            <li>Скажи "Показать мне файл [путь]" чтобы ИИ прочитал файл</li>
-            <li>После того как ИИ прочитал контекст, пиши запросы: "Рефакторь этот компонент"</li>
-            <li>ИИ видит ошибки в терминале и может их исправлять автоматически</li>
-            <li>Для больших задач - скажи ИИ про всю структуру папки</li>
+            <li>Формулируй задачу как тикет: что сделать, где, как проверить результат.</li>
+            <li>Для большой задачи сначала попроси план и согласуй его, и только потом — реализацию.</li>
+            <li>Попроси агента запустить тесты или программу после изменений — пусть сам проверит работу.</li>
+            <li>Всегда читай diff перед коммитом: ответственность за код остаётся на тебе.</li>
+            <li>Опиши правила проекта в файле инструкций (например, CLAUDE.md) — агент будет учитывать их в каждой задаче.</li>
           </ol>
         </div>
 
         <TheoryExample title="Практический пример">
           <p><strong>Ты:</strong> "У меня есть проект React в папке src/. Есть ошибка в консоли: 'Cannot read property of undefined'. Помоги найти и исправить"</p>
-          <p><strong>Claude (через IDE):</strong> Откроет файлы, увидит проблему, исправит, сохранит</p>
+          <p><strong>Агент:</strong> найдёт место ошибки, покажет причину, предложит исправление, внесёт его и запустит проект, чтобы убедиться, что ошибка ушла</p>
         </TheoryExample>
       </section>
 
@@ -357,7 +344,7 @@ npm install && npm start`} />
         </p>
 
         <div className="theory-subsection">
-          <h3 className="theory-heading-3">🚫 Галлюцинации</h3>
+          <h3 className="theory-heading-3">Галлюцинации</h3>
           <p className="theory-intro">Модель может выдумать с полной уверенностью.</p>
           <ul className="theory-list">
             <li className="theory-list-item">Факты которых нет ("Это функция была добавлена в Python 3.12")</li>
@@ -368,7 +355,7 @@ npm install && npm start`} />
         </div>
 
         <div className="theory-subsection">
-          <h3 className="theory-heading-3">📅 Знания устаревают</h3>
+          <h3 className="theory-heading-3">Знания устаревают</h3>
           <ul className="theory-list">
             <li className="theory-list-item">Claude обучена до определённой даты</li>
             <li className="theory-list-item">О новых версиях библиотек может не знать</li>
@@ -378,7 +365,7 @@ npm install && npm start`} />
         </div>
 
         <div className="theory-subsection">
-          <h3 className="theory-heading-3">🧮 Ошибки в точных вычислениях</h3>
+          <h3 className="theory-heading-3">Ошибки в точных вычислениях</h3>
           <ul className="theory-list">
             <li className="theory-list-item">Может неправильно считать математику</li>
             <li className="theory-list-item">Путается в больших числах</li>
@@ -387,7 +374,7 @@ npm install && npm start`} />
         </div>
 
         <div className="theory-subsection">
-          <h3 className="theory-heading-3">🎭 Может ошибаться в сложной логике</h3>
+          <h3 className="theory-heading-3">Может ошибаться в сложной логике</h3>
           <ul className="theory-list">
             <li className="theory-list-item">Сложные алгоритмы может напереть неправильно</li>
             <li className="theory-list-item">Может забыть edge case в коде</li>
@@ -396,7 +383,7 @@ npm install && npm start`} />
         </div>
 
         <div className="theory-subsection">
-          <h3 className="theory-heading-3">🧠 Контекст конечен (хоть 200k большой)</h3>
+          <h3 className="theory-heading-3">Контекст конечен</h3>
           <ul className="theory-list">
             <li className="theory-list-item">Если скармливаешь ОЧЕНЬ много текста, может потеря качество</li>
             <li className="theory-list-item">Может забыть начало длинной беседы</li>
@@ -408,11 +395,11 @@ npm install && npm start`} />
       <section className="theory-section">
         <h2 className="theory-heading-2">Этика использования ИИ</h2>
         <ul className="theory-list">
-          <li className="theory-list-item">✅ <strong>ВСЕГДА</strong> проверяй код перед использованием в production</li>
-          <li className="theory-list-item">✅ Указывай что ты использовал ИИ (в коде, в документации, в резюме)</li>
-          <li className="theory-list-item">✅ Проверяй лицензии и авторские права (не копируй чужой чужой лицензированный код)</li>
-          <li className="theory-list-item">✅ ИИ — помощник, а не замена. Ты должен понимать что пишешь</li>
-          <li className="theory-list-item">❌ Не полагайся полностью на ИИ для критических систем</li>
+          <li className="theory-list-item">✓ <strong>ВСЕГДА</strong> проверяй код перед использованием в production</li>
+          <li className="theory-list-item">✓ Указывай что ты использовал ИИ (в коде, в документации, в резюме)</li>
+          <li className="theory-list-item">✓ Проверяй лицензии и авторские права (не копируй чужой чужой лицензированный код)</li>
+          <li className="theory-list-item">✓ ИИ — помощник, а не замена. Ты должен понимать что пишешь</li>
+          <li className="theory-list-item">✗ Не полагайся полностью на ИИ для критических систем</li>
         </ul>
       </section>
 
@@ -420,7 +407,7 @@ npm install && npm start`} />
         <h2 className="theory-heading-2">Практические советы для разработчика</h2>
 
         <div className="theory-subsection">
-          <h3 className="theory-heading-3">💡 ТОП-5 способов использовать ИИ каждый день</h3>
+          <h3 className="theory-heading-3">ТОП-5 способов использовать ИИ каждый день</h3>
           <ol style={{ paddingLeft: '20px', color: 'var(--text-secondary)', fontSize: '13px', lineHeight: '1.8' }}>
             <li><strong>Рефакторинг кода:</strong> "Переделай этот код чтобы он был более читаемым"</li>
             <li><strong>Объяснение чужого кода:</strong> "Объясни что делает эта функция пошагово"</li>
@@ -431,11 +418,11 @@ npm install && npm start`} />
         </div>
 
         <div className="theory-subsection">
-          <h3 className="theory-heading-3">🎯 Когда НЕ использовать ИИ</h3>
+          <h3 className="theory-heading-3">Когда НЕ использовать ИИ</h3>
           <ul className="theory-list">
-            <li className="theory-list-item">❌ Для изучения основ (ты должен сам учиться, не копировать ответы)</li>
-            <li className="theory-list-item">❌ Для хранения секретной информации (в бесплатных сервисах данные могут видеть)</li>
-            <li className="theory-list-item">❌ Для очень специфичного знания про твой проект (ИИ может не знать деталей)</li>
+            <li className="theory-list-item">✗ Для изучения основ (ты должен сам учиться, не копировать ответы)</li>
+            <li className="theory-list-item">✗ Для хранения секретной информации (в бесплатных сервисах данные могут видеть)</li>
+            <li className="theory-list-item">✗ Для очень специфичного знания про твой проект (ИИ может не знать деталей)</li>
           </ul>
         </div>
       </section>

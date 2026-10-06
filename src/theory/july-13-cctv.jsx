@@ -6,7 +6,7 @@ function Fig({ children, caption }) {
   return (
     <figure style={{ margin: '18px 0', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
       <div style={{
-        width: '100%', maxWidth: 640, background: '#12121e', border: '1px solid #2a2a3a',
+        width: '100%', maxWidth: 640, background: 'var(--bg-tertiary)', border: '1px solid var(--border-color)',
         borderRadius: 10, padding: '16px', display: 'flex', justifyContent: 'center', overflowX: 'auto',
       }}>{children}</div>
       {caption && <figcaption style={{ color: 'var(--text-tertiary)', fontSize: 12.5, textAlign: 'center', maxWidth: 640 }}>{caption}</figcaption>}
@@ -52,8 +52,6 @@ export default function July13CctvTheory() {
     <div className="theory-container">
       <section className="theory-section">
         <h1 className="theory-title">Технологии видеонаблюдения</h1>
-        <p className="theory-subtitle">Трек: Кибербезопасность</p>
-        <p className="theory-date">13 июля 2026</p>
         <p>
           Системы видеонаблюдения (CCTV) — физический слой безопасности, с которым специалист по ИБ сталкивается
           при защите объектов: от офиса до дата-центра. Разберём уровни задач видеонаблюдения (от простого
@@ -286,7 +284,7 @@ export default function July13CctvTheory() {
         />
         <TheoryExample title="Примеры реального ПО">
           Промышленные примеры: Milestone XProtect, Hikvision iVMS, Dahua SmartPSS, открытая платформа ZoneMinder.
-          Для учебного веб-приложения, которое ты будешь строить в домашнем задании, речь идёт именно о
+          Для учебного веб-приложения из задач к этому конспекту речь идёт именно о
           проектировочной части VMS — расстановке камер и расчёте зон покрытия, а не о реальном видеопотоке.
         </TheoryExample>
         <Photo
@@ -319,7 +317,7 @@ export default function July13CctvTheory() {
         <h2 className="theory-heading-2">9. Что фиксируют в плане камеры (для проекта)</h2>
         <P n={10}>
           Для каждой камеры на схеме объекта в профессиональном проекте фиксируют одинаковый набор параметров —
-          именно его нужно будет заполнить в домашнем задании по станции метро:
+          именно его нужно будет заполнить в задаче по станции метро:
         </P>
         <TheoryTable
           headers={['Параметр', 'Что указывать']}

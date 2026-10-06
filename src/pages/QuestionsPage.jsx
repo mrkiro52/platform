@@ -467,7 +467,7 @@ export function QuestionsInline({ selectedDay }) {
   }
 
   if (!questions.length) {
-    return <p style={{ color: 'var(--text-tertiary)' }}>Задач для этого дня нет или они еще готовятся...</p>
+    return <p style={{ color: 'var(--text-tertiary)' }}>Для этой темы тест пока не подготовлен.</p>
   }
 
   const currentQuestion = questions[currentIndex]
@@ -475,7 +475,7 @@ export function QuestionsInline({ selectedDay }) {
   return (
     <div className="questions-container">
       <div className="questions-header">
-        <h2 className="questions-title">Задачи для тренировки</h2>
+        <h2 className="questions-title">Тест на проверку знаний по теме</h2>
         <TaskIndicators
           totalTasks={questions.length}
           taskStatuses={taskStatuses}

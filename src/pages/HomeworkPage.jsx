@@ -51,7 +51,7 @@ const JULY_TRACK_LABELS = {
   165: '29 июля · Кибербезопасность — Основы сетевой безопасности',
 }
 
-// Ядро домашних заданий — без брейдкрамбов и обёртки страницы, чтобы можно
+// Ядро задач для самостоятельной работы — без брейдкрамбов и обёртки страницы, чтобы можно
 // было встраивать прямо в конспект теории, а не только показывать отдельной страницей.
 export function HomeworkInline({ selectedDay }) {
   const [homeworkContent, setHomeworkContent] = useState(null)
@@ -70,7 +70,7 @@ export function HomeworkInline({ selectedDay }) {
   }, [])
 
   const currentDay = selectedDay || 1
-  const homework = (homeworkContent && homeworkContent[currentDay]) || { title: 'Домашние задания', tasks: [] }
+  const homework = (homeworkContent && homeworkContent[currentDay]) || { tasks: [] }
 
   if (loading) {
     return <p style={{ color: 'var(--text-secondary)' }}>Загрузка...</p>
@@ -78,10 +78,13 @@ export function HomeworkInline({ selectedDay }) {
 
   return (
     <div style={{ width: '100%' }}>
-      <h2 style={{ fontSize: '18px', marginBottom: '16px' }}>{homework.title}</h2>
+      <h2 className="questions-title" style={{ marginBottom: 6 }}>Задачи для самостоятельной работы</h2>
+      <p style={{ color: 'var(--text-secondary)', fontSize: 14, margin: '0 0 20px' }}>
+        Реши их, чтобы закрепить материал конспекта. Решения можно проверить с помощью ИИ-ассистента или сравнить с примерами из конспекта.
+      </p>
 
       {homework.tasks.length === 0 ? (
-        <p style={{ color: 'var(--text-tertiary)' }}>Домашние задания еще не добавлены</p>
+        <p style={{ color: 'var(--text-tertiary)' }}>Задачи для этой темы пока не подготовлены.</p>
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           {homework.tasks.map((task, idx) => (
@@ -108,7 +111,7 @@ export function HomeworkInline({ selectedDay }) {
   )
 }
 
-// Полноценная страница домашних заданий (отдельный маршрут /library/homework/:day) —
+// Полноценная страница задач для самостоятельной работы (отдельный маршрут /library/homework/:day) —
 // обёртка над HomeworkInline с брейдкрамбами и кнопкой назад.
 export default function HomeworkPage({ selectedDay, onBack }) {
   const [schedule, setSchedule] = useState(SCHEDULE)

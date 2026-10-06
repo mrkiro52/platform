@@ -5,6 +5,9 @@ export default function Day18TestingTheory() {
     <div className="theory-container">
       <section className="theory-section">
         <h1 className="theory-title">Тестирование, комментарии и документация · SQL часть 2</h1>
+        <p>
+          Тесты, комментарии и документация — то, что отличает код, который можно поддерживать годами, от кода «на один раз». Во второй части конспекта продолжаем SQL: агрегатные функции, группировку и изменение данных.
+        </p>
       </section>
 
       <section className="theory-section">
@@ -38,8 +41,8 @@ export default function Day18TestingTheory() {
         <h2 className="theory-heading-2">TDD (Test-Driven Development)</h2>
         <p className="theory-intro">Красный → Зелёный → Рефакторинг</p>
         <ol style={{ paddingLeft: '20px', color: 'var(--text-secondary)', fontSize: '13px' }}>
-          <li>Напиши тест (сейчас fails) 🔴</li>
-          <li>Напиши код чтобы тест passed ✅</li>
+          <li>Напиши тест (сейчас fails) </li>
+          <li>Напиши код чтобы тест passed ✓</li>
           <li>Рефакторь код (тесты всё ещё работают)</li>
           <li>Повтори</li>
         </ol>
@@ -113,17 +116,17 @@ function sortArray(arr) {
       <section className="theory-section">
         <h2 className="theory-heading-2">Хорошие привычки</h2>
         <ul className="theory-list">
-          <li className="theory-list-item">✅ Пиши код для людей, компилятор уже поймёт</li>
-          <li className="theory-list-item">✅ Тесты это документация (показывают как использовать)</li>
-          <li className="theory-list-item">✅ Код должен быть понятен без комментариев</li>
-          <li className="theory-list-item">❌ Не комментируй очевидное</li>
-          <li className="theory-list-item">❌ Не оставляй старый код в комментариях (это Git!)</li>
+          <li className="theory-list-item">✓ Пиши код для людей, компилятор уже поймёт</li>
+          <li className="theory-list-item">✓ Тесты это документация (показывают как использовать)</li>
+          <li className="theory-list-item">✓ Код должен быть понятен без комментариев</li>
+          <li className="theory-list-item">✗ Не комментируй очевидное</li>
+          <li className="theory-list-item">✗ Не оставляй старый код в комментариях (это Git!)</li>
         </ul>
       </section>
 
       {/* ─────────── SQL ЧАСТЬ 2 ─────────── */}
       <section className="theory-section">
-        <h2 className="theory-heading-2">📊 SQL — часть 2: агрегатные функции</h2>
+        <h2 className="theory-heading-2">SQL — часть 2: агрегатные функции</h2>
         <p className="theory-intro">
           Агрегатные функции считают что-то по целой группе строк и возвращают одно число. Используем ту же таблицу <strong>users</strong> из части 1.
         </p>
@@ -222,14 +225,14 @@ UPDATE users SET city = 'Сочи' WHERE id = 1;
 
 -- Удалить пользователя с id=6
 DELETE FROM users WHERE id = 6;`} />
-        <TheoryExample title="⚠️ Главное правило безопасности">
+        <TheoryExample title="Главное правило безопасности">
           <p>ВСЕГДА пиши WHERE в UPDATE и DELETE! Без условия команда изменит или удалит <strong>ВСЕ</strong> строки таблицы.</p>
           <p style={{ marginTop: '8px', color: '#ff5f5f' }}>DELETE FROM users; — удалит вообще всех пользователей!</p>
         </TheoryExample>
       </section>
 
       <section className="theory-section theory-section--closing">
-        <p className="theory-closing-text">Качество &gt; количество кода. А GROUP BY и агрегаты превращают тысячи строк в осмысленные цифры! 🎯</p>
+        <p className="theory-closing-text">Качество &gt; количество кода. А GROUP BY и агрегаты превращают тысячи строк в осмысленные цифры! </p>
       </section>
     </div>
   )
