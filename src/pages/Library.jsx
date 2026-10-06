@@ -204,10 +204,7 @@ export default function Library({ onOpenTheory }) {
         <div className="lib-sections">
           {sections.map(s => (
             <section key={s.key} className="lib-section">
-              <div className="lib-section-head">
-                <h2 className="lib-section-title">{s.title}</h2>
-                <span className="lib-section-count">{s.items.length}</span>
-              </div>
+              <h2 className="lib-section-title">{s.title}</h2>
               <p className="lib-section-about">{s.about}</p>
               <div className="lib-grid">
                 {s.items.map((item, n) => (
