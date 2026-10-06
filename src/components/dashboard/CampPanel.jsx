@@ -4,11 +4,12 @@ import { api } from '../../api'
 import { currentAutumnWeek } from '../../data/autumnWeeks'
 import { nextMathSession, MATH_SESSIONS } from '../../data/mathCourse'
 import { dayLabel } from '../../lib/dashEvents'
+import { PROGRAM_PERIOD, directionOf } from '../../data/programs'
 
 // Блок только для участников осеннего лагеря: текущая неделя,
 // статус домашних заданий и быстрые действия.
 
-export default function CampPanel() {
+export default function CampPanel({ user }) {
   const navigate = useNavigate()
   const [hw, setHw] = useState(null)
 
@@ -21,6 +22,9 @@ export default function CampPanel() {
   }, [])
 
   const week = currentAutumnWeek()
+  // В октябре вместо недель — индивидуальная программа по направлению
+  const programMonth = week?.monthIdx === 9
+  const dir = directionOf(user)
   const math = nextMathSession()
   const mathNumber = math ? MATH_SESSIONS.indexOf(math) + 1 : null
 
@@ -37,15 +41,27 @@ export default function CampPanel() {
       </div>
 
       <div className="dsh-camp-grid">
-        <button
-          type="button"
-          className="dsh-camp-card is-week"
-          onClick={() => navigate(week ? `/autumn-camp/${week.slug}` : '/autumn-camp')}
-        >
-          <span className="dsh-camp-label">Эта неделя</span>
-          <span className="dsh-camp-value">{week ? `${week.monthLabel}, неделя ${week.indexInMonth}` : 'Лагерь на паузе'}</span>
-          <span className="dsh-camp-sub">{week ? `${week.rangeText} · материалы →` : 'все материалы →'}</span>
-        </button>
+        {programMonth ? (
+          <button
+            type="button"
+            className="dsh-camp-card is-week"
+            onClick={() => navigate(dir ? '/autumn-camp/program' : '/autumn-camp')}
+          >
+            <span className="dsh-camp-label">Индивидуальная программа</span>
+            <span className="dsh-camp-value">{dir ? dir.name : 'Ещё готовится'}</span>
+            <span className="dsh-camp-sub">{PROGRAM_PERIOD}{dir ? ' · открыть →' : ''}</span>
+          </button>
+        ) : (
+          <button
+            type="button"
+            className="dsh-camp-card is-week"
+            onClick={() => navigate(week ? `/autumn-camp/${week.slug}` : '/autumn-camp')}
+          >
+            <span className="dsh-camp-label">Эта неделя</span>
+            <span className="dsh-camp-value">{week ? `${week.monthLabel}, неделя ${week.indexInMonth}` : 'Лагерь на паузе'}</span>
+            <span className="dsh-camp-sub">{week ? `${week.rangeText} · материалы →` : 'все материалы →'}</span>
+          </button>
+        )}
 
         <button
           type="button"

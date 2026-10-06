@@ -19,12 +19,13 @@ const upload = multer({
 
 // GET /api/users/me — current user's own profile
 router.get('/me', verifyToken, (req, res) => {
-  const user = db.prepare('SELECT id, name, nickname, email, bio, position, birthday, avatar_url, is_summer_camp_2026, is_autumn_camp_2026 FROM users WHERE id = ?').get(req.user.id)
+  const user = db.prepare('SELECT id, name, nickname, email, bio, position, birthday, avatar_url, is_summer_camp_2026, is_autumn_camp_2026, autumn_direction FROM users WHERE id = ?').get(req.user.id)
   if (!user) return res.status(404).json({ message: 'Пользователь не найден' })
   res.json({
     ...user,
     isSummerCamp2026: !!user.is_summer_camp_2026,
     isAutumnCamp2026: !!user.is_autumn_camp_2026,
+    autumnDirection: user.is_autumn_camp_2026 ? (user.autumn_direction || null) : null,
   })
 })
 
@@ -83,11 +84,12 @@ router.put('/me', verifyToken, (req, res) => {
 router.get('/', requireAdmin, (req, res) => {
   const last = lastActiveDays()
   const users = db.prepare(`
-    SELECT id, name, nickname, points, streak, created_at, is_autumn_camp_2026
+    SELECT id, name, nickname, points, streak, created_at, is_autumn_camp_2026, autumn_direction
       FROM users ORDER BY created_at DESC`).all()
   res.json(users.map(u => ({
     ...u,
     autumnCamp: !!u.is_autumn_camp_2026,
+    autumnDirection: u.autumn_direction || null,
     lastActiveDay: last.get(u.id) || null,
   })))
 })
@@ -99,6 +101,19 @@ router.patch('/:id/camp', requireAdmin, (req, res) => {
   const r = db.prepare('UPDATE users SET is_autumn_camp_2026 = ? WHERE id = ?').run(autumnCamp ? 1 : 0, req.params.id)
   if (!r.changes) return res.status(404).json({ message: 'Пользователь не найден' })
   res.json({ id: Number(req.params.id), autumnCamp })
+})
+
+// PATCH /api/users/:id/direction — направление индивидуальной программы
+// осеннего лагеря; null — программа ещё готовится
+const DIRECTIONS = ['product', 'system', 'business']
+router.patch('/:id/direction', requireAdmin, (req, res) => {
+  const { direction } = req.body || {}
+  if (direction !== null && !DIRECTIONS.includes(direction)) {
+    return res.status(400).json({ message: 'Неизвестное направление' })
+  }
+  const r = db.prepare('UPDATE users SET autumn_direction = ? WHERE id = ?').run(direction, req.params.id)
+  if (!r.changes) return res.status(404).json({ message: 'Пользователь не найден' })
+  res.json({ id: Number(req.params.id), direction })
 })
 
 // POST /api/users — create user (login + password)

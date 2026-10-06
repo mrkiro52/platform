@@ -27,6 +27,7 @@ function userResponse(user) {
     // В SQLite booleans хранятся как 0/1 — наружу отдаём настоящие true/false
     isSummerCamp2026: !!user.is_summer_camp_2026,
     isAutumnCamp2026: !!user.is_autumn_camp_2026,
+    autumnDirection: user.is_autumn_camp_2026 ? (user.autumn_direction || null) : null,
   }
 }
 

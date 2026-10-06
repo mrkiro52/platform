@@ -84,7 +84,7 @@ export default function Dashboard({ user }) {
       <div className="dsh-grid">
         <div className="dsh-col dsh-col-main">
           <DashCalendar events={events} isCamp={isCamp} />
-          {isCamp && <CampPanel />}
+          {isCamp && <CampPanel user={user} />}
         </div>
         <div className="dsh-col dsh-col-side">
           <SqlProgress user={user} />

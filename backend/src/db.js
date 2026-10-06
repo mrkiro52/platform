@@ -951,6 +951,29 @@ function migrate() {
       console.error('❌ Migration 28 failed:', err.message)
     }
   }
+
+  // Migration 29: направление индивидуальной программы осеннего лагеря
+  // (product / system / business). NULL — программа ещё готовится.
+  // Сразу проставляем направления первым участникам.
+  if (schemaVersion < 29) {
+    try {
+      const cols = db.prepare('PRAGMA table_info(users)').all().map(c => c.name)
+      if (!cols.includes('autumn_direction')) db.exec('ALTER TABLE users ADD COLUMN autumn_direction TEXT')
+      const set = db.prepare('UPDATE users SET autumn_direction = ? WHERE nickname = ? COLLATE NOCASE')
+      const initial = [
+        ['aeaelita', 'product'],
+        ['JulShit', 'system'],
+        ['seeraafiimaa', 'system'],
+        ['Kiiiiuuuuii', 'business'],
+      ]
+      let assigned = 0
+      for (const [nickname, direction] of initial) assigned += set.run(direction, nickname).changes
+      db.pragma('user_version = 29')
+      console.log(`✅ Migration 29 completed: added users.autumn_direction (assigned ${assigned} of ${initial.length})`)
+    } catch (err) {
+      console.error('❌ Migration 29 failed:', err.message)
+    }
+  }
 }
 
 migrate()

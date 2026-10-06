@@ -6,6 +6,7 @@ import HomeworkReview from '../components/HomeworkReview'
 import { AUTUMN_MONTHS, CALL_MONTHS } from '../data/autumnCalls'
 import { MATH_SESSIONS, nextMathSession, dayOf } from '../data/mathCourse'
 import { materialsOf } from '../data/math'
+import { PROGRAM_CONTACT, PROGRAM_PERIOD, directionOf } from '../data/programs'
 
 // Даты созвонов мини-курса кружками. Ближайший выделен, прошедшие и будущие —
 // приглушённые.
@@ -126,10 +127,43 @@ function GroupCalls() {
   )
 }
 
-function WeekMaterials({ onOpenWeek, currentSlug }) {
+// Октябрь — не пять недель, а один месяц индивидуальной программы
+// по направлению, которое выбрал участник
+const PROGRAM_MONTH = 'Октябрь'
+
+function ProgramPlaque({ user, onOpen }) {
+  const dir = directionOf(user)
+  const ready = dir && dir.chapters.length > 0
+  return (
+    <div className={`wk-program${dir ? '' : ' is-pending'}`}>
+      <span className="wk-program-tag">Целый месяц</span>
+      <span className="wk-program-title">
+        {dir ? `Индивидуальная программа по ${dir.dative}` : 'Твоя индивидуальная программа ещё готовится'}
+      </span>
+      <span className="wk-program-range">{PROGRAM_PERIOD}</span>
+      {dir && !ready && <span className="wk-program-sub">Первая глава скоро появится</span>}
+      {ready && (
+        <button type="button" className="wk-program-open" onClick={onOpen}>
+          Открыть <span aria-hidden="true">→</span>
+        </button>
+      )}
+      <span className="wk-program-note">
+        Для смены направления и индивидуальной программы напиши в Telegram{' '}
+        <a href={PROGRAM_CONTACT.url} target="_blank" rel="noopener noreferrer">{PROGRAM_CONTACT.text}</a>
+      </span>
+    </div>
+  )
+}
+
+function WeekMaterials({ onOpenWeek, currentSlug, user, onOpenProgram }) {
   return (
     <div className="wk-grid">
-      {AUTUMN_WEEK_MONTHS.map(month => (
+      {AUTUMN_WEEK_MONTHS.map(month => month.label === PROGRAM_MONTH ? (
+        <div key={month.label} className="wk-month">
+          <div className="wk-month-label">{month.label}</div>
+          <ProgramPlaque user={user} onOpen={onOpenProgram} />
+        </div>
+      ) : (
         <div key={month.label} className="wk-month">
           <div className="wk-month-label">{month.label}</div>
           <div className="wk-list">
@@ -175,7 +209,7 @@ function Block({ slot, title, action, children }) {
   )
 }
 
-export default function AutumnCampPage() {
+export default function AutumnCampPage({ user }) {
   const navigate = useNavigate()
   const currentSlug = currentAutumnWeek()?.slug || null
 
@@ -230,7 +264,7 @@ export default function AutumnCampPage() {
               </a>
             )}
           >
-            <WeekMaterials onOpenWeek={slug => navigate(`/autumn-camp/${slug}`)} currentSlug={currentSlug} />
+            <WeekMaterials onOpenWeek={slug => navigate(`/autumn-camp/${slug}`)} currentSlug={currentSlug} user={user} onOpenProgram={() => navigate('/autumn-camp/program')} />
           </Block>
 
           <Block slot="review" title="Проверка домашних заданий">

@@ -98,6 +98,7 @@ export default function App() {
           ...prev,
           isSummerCamp2026: !!p.isSummerCamp2026,
           isAutumnCamp2026: !!p.isAutumnCamp2026,
+          autumnDirection: p.autumnDirection || null,
         }
         localStorage.setItem('kiro_user', JSON.stringify(updated))
         return updated

@@ -152,6 +152,9 @@ const UsersPage = {
             <span class="switch-track"><span class="switch-knob"></span></span>
             <span class="switch-label">${u.autumnCamp ? 'участник' : 'нет'}</span>
           </label>
+          ${u.autumnCamp ? `<select class="dir-select" aria-label="Направление программы" onchange="UsersPage.setDirection(${u.id}, this)">
+            ${UsersPage.DIRECTIONS.map(([v, l]) => `<option value="${v}" ${(u.autumnDirection || '') === v ? 'selected' : ''}>${l}</option>`).join('')}
+          </select>` : ''}
         </td>
         <td class="nowrap">${created}</td>
         <td class="nowrap">${active ? (active === 'сегодня' ? `<span class="badge badge-green">сегодня</span>` : esc(active)) : '<span class="muted">—</span>'}</td>
@@ -162,6 +165,27 @@ const UsersPage = {
           <button class="btn-icon btn-sm is-danger" onclick="UsersPage.remove(${u.id})" title="Удалить" aria-label="Удалить">${icon('trash-2', 15)}</button>
         </div></td>
       </tr>`
+  },
+
+  // Направление индивидуальной программы на октябрь; пусто — программа ещё готовится
+  DIRECTIONS: [['', 'Направление не выбрано'], ['product', 'Продуктовая аналитика'], ['system', 'Системная аналитика'], ['business', 'Бизнес-аналитика']],
+
+  async setDirection(id, select) {
+    const user = UsersPage.list.find(u => u.id === id)
+    if (!user) return
+    const direction = select.value || null
+    select.disabled = true
+    try {
+      await api(`/api/users/${id}/direction`, { method: 'PATCH', body: { direction } })
+      user.autumnDirection = direction
+      const label = UsersPage.DIRECTIONS.find(([v]) => v === (direction || ''))[1]
+      toast(`${user.nickname || user.name}: ${direction ? label : 'направление снято'}`)
+    } catch (e) {
+      select.value = user.autumnDirection || ''
+      toast(e.message, 'err')
+    } finally {
+      select.disabled = false
+    }
   },
 
   async toggleCamp(id, input) {
