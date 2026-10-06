@@ -1911,7 +1911,6 @@ img { max-width: 100%; display: block; }
 /* Контейнер теории: каждая секция — панель, как виджеты на дэшборде */
 .theory-container {
   width: 100%;
-  max-width: 1040px;
   line-height: 1.75;
   display: flex;
   flex-direction: column;
@@ -1937,7 +1936,7 @@ img { max-width: 100%; display: block; }
 }
 
 /* Блоки теста и задач после конспекта */
-.theory-section--extra { max-width: 1040px; margin-top: 16px; }
+.theory-section--extra { margin-top: 16px; }
 
 .theory-section--closing { text-align: center; }
 
@@ -2117,7 +2116,6 @@ img { max-width: 100%; display: block; }
 .theory-footer {
   display: flex;
   justify-content: flex-start;
-  max-width: 1040px;
   margin-top: 8px;
 }
 
