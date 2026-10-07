@@ -105,7 +105,7 @@ router.patch('/:id/camp', requireAdmin, (req, res) => {
 
 // PATCH /api/users/:id/direction — направление индивидуальной программы
 // осеннего лагеря; null — программа ещё готовится
-const DIRECTIONS = ['product', 'system', 'business', 'security']
+const DIRECTIONS = ['product', 'system', 'business', 'security', 'backend']
 router.patch('/:id/direction', requireAdmin, (req, res) => {
   const { direction } = req.body || {}
   if (direction !== null && !DIRECTIONS.includes(direction)) {

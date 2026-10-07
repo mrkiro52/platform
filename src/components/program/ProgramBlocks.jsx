@@ -119,6 +119,8 @@ function Block({ b }) {
           ))}
         </div>
       )
+    case 'code':
+      return <pre className="prg-code"><code>{b.text}</code></pre>
     case 'note':
       return <div className="prg-note"><Rich text={b.text} /></div>
     case 'example':

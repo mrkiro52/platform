@@ -999,6 +999,20 @@ function migrate() {
       console.error('❌ Migration 31 failed:', err.message)
     }
   }
+
+  if (schemaVersion < 32) {
+    try {
+      const set = db.prepare('UPDATE users SET autumn_direction = ? WHERE nickname = ? COLLATE NOCASE')
+      const nicknames = ['muhokot', 'Kim_Alexaander', 'sanzharS_2', 'avemariaavemariaa', 'Baiszzz', 'abozhkoo', 'ibraabs',
+        'Uamkill22', 'mkkz7', 'vadimkuznetsov_11', 'AlievLN', 'dndndnglq', 'MrDavidoska', 'ZayaArtemovich']
+      let assigned = 0
+      for (const nickname of nicknames) assigned += set.run('backend', nickname).changes
+      db.pragma('user_version = 32')
+      console.log(`✅ Migration 32 completed: backend direction for ${assigned} of ${nicknames.length} users`)
+    } catch (err) {
+      console.error('❌ Migration 32 failed:', err.message)
+    }
+  }
 }
 
 migrate()

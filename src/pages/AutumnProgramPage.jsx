@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { PROGRAM_CONTACT, PROGRAM_PERIOD, directionOf } from '../data/programs'
 import ProgramBlocks, { Rich } from '../components/program/ProgramBlocks'
@@ -195,10 +195,13 @@ function Chapter({ dir, chapterNum }) {
             </button>
           )}
           {chapter.sections.map(s => (
-            <button key={s.id} type="button" className="prg-toc-item" onClick={() => jump(`prg-${s.id}`)}>
-              <span className="prg-toc-num">{s.num}</span>
-              <span>{s.title}</span>
-            </button>
+            <Fragment key={s.id}>
+              {s.divider && <div className="prg-toc-divider">{s.divider}</div>}
+              <button type="button" className="prg-toc-item" onClick={() => jump(`prg-${s.id}`)}>
+                <span className="prg-toc-num">{s.num}</span>
+                <span>{s.title}</span>
+              </button>
+            </Fragment>
           ))}
           {chapter.assignment && (
             <button type="button" className="prg-toc-item is-task" onClick={() => jump('prg-assignment')}>
@@ -211,14 +214,17 @@ function Chapter({ dir, chapterNum }) {
         <div className="prg-content">
           <StartPanel start={dir.start} />
           {chapter.sections.map(s => (
-            <section key={s.id} id={`prg-${s.id}`} className="prg-section">
-              <div className="prg-section-head">
-                <span className="prg-section-num">{s.num}</span>
-                <h2 className="prg-section-title">{s.title}</h2>
-              </div>
-              <ProgramBlocks blocks={s.blocks} />
-              <Terms terms={s.terms} />
-            </section>
+            <Fragment key={s.id}>
+              {s.divider && <div className="prg-divider">{s.divider}</div>}
+              <section id={`prg-${s.id}`} className="prg-section">
+                <div className="prg-section-head">
+                  <span className="prg-section-num">{s.num}</span>
+                  <h2 className="prg-section-title">{s.title}</h2>
+                </div>
+                <ProgramBlocks blocks={s.blocks} />
+                <Terms terms={s.terms} />
+              </section>
+            </Fragment>
           ))}
           {chapter.assignment && <Assignment a={chapter.assignment} />}
         </div>

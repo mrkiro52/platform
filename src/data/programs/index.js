@@ -1,5 +1,5 @@
 // Индивидуальные программы осеннего лагеря на октябрь.
-// Направление хранится у пользователя в users.autumn_direction (product / system / business / security).
+// Направление хранится у пользователя в users.autumn_direction (product / system / business / security / backend).
 // Главы подгружаются лениво: у каждой — разделы теории и задание в конце.
 
 export const PROGRAM_PERIOD = '1–31 октября'
@@ -31,6 +31,15 @@ export const DIRECTIONS = {
     goal: 'Путь к офферу junior бизнес-аналитика',
     chapters: [
       { num: 1, title: 'Профессия', sections: 4, load: () => import('./business-1') },
+    ],
+  },
+  backend: {
+    key: 'backend',
+    name: 'Backend-разработка',
+    dative: 'backend-разработке',
+    goal: 'Путь к офферу intern / junior Python backend-разработчика',
+    chapters: [
+      { num: 1, title: 'Профессия, конкурентность, сети и проектирование API', sections: 9, load: () => import('./backend-1') },
     ],
   },
   security: {
