@@ -291,6 +291,7 @@ const NAV = [
   { label: 'Домашние задания', items: [
     { id: 'homework', path: '/homework', label: 'Проверка ДЗ', icon: 'clipboard-check', scopes: BOTH, badge: 'homework' },
     { id: 'homework-stats', path: '/homework/stats', label: 'Аналитика проверки', icon: 'chart-column', scopes: BOTH },
+    { id: 'homework-october', path: '/homework/october', label: 'ДЗ второго месяца', icon: 'list-todo', scopes: BOTH, badge: 'programHomework' },
   ] },
 ]
 
@@ -306,6 +307,8 @@ const ROUTES = [
   { re: /^\/calls\/calendar$/, page: 'callsCalendar', nav: 'calls-calendar', title: 'Календарь записей', scopes: MAIN },
   { re: /^\/homework$/, page: 'homework', nav: 'homework', title: 'Проверка ДЗ', scopes: BOTH },
   { re: /^\/homework\/stats$/, page: 'homeworkStats', nav: 'homework-stats', title: 'Аналитика проверки', scopes: BOTH },
+  { re: /^\/homework\/october$/, page: 'programHomework', nav: 'homework-october', title: 'ДЗ второго месяца', scopes: BOTH },
+  { re: /^\/homework\/october\/(\d+)$/, page: 'programHomeworkItem', nav: 'homework-october', title: 'ДЗ второго месяца', scopes: BOTH, keys: ['id'] },
   { re: /^\/homework\/(\d+)$/, page: 'homeworkStudent', nav: 'homework', title: 'Проверка ДЗ', scopes: BOTH, keys: ['id'] },
 ]
 
@@ -426,7 +429,7 @@ document.addEventListener('click', e => {
 })
 
 // ═══ Оболочка ══════════════════════════════════════════════════════════
-const Badges = { homework: 0, tasks: 0 }
+const Badges = { homework: 0, tasks: 0, programHomework: 0 }
 
 const Shell = {
   renderNav() {
@@ -479,6 +482,10 @@ const Shell = {
       const students = await api('/api/homework/admin/students')
       Badges.homework = students.reduce((sum, s) => sum + (s.pending || 0), 0)
     } catch { /* раздел сам покажет ошибку */ }
+    if (BOTH.includes(Session.scope)) try {
+      const list = await api('/api/programs/admin/homework')
+      Badges.programHomework = list.filter(h => h.status === 'submitted').length
+    } catch { /* до миграции таблицы ещё нет — бейдж просто не появится */ }
     try {
       const { me, tasks } = await api('/api/admin-tasks')
       Badges.tasks = tasksNeedingAttention(tasks, me)

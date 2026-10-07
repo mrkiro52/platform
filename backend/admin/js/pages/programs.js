@@ -31,6 +31,10 @@ const ProgramsData = {
   async chapter(dirKey, num) {
     return (await ProgramsData.load(`${dirKey}-${num}`)).default
   },
+
+  async quiz(dirKey, num) {
+    return (await ProgramsData.load(`${dirKey}-${num}-quiz`)).default
+  },
 }
 
 // ═══ Отрисовка блоков главы (повторяет src/components/program/ProgramBlocks.jsx) ═══
@@ -73,6 +77,7 @@ function prgBlock(b) {
     case 'frac': return `<div class="prg-formula"><div>${esc(b.label)} = ${esc(b.num)} / ${esc(b.den)}</div></div>`
     case 'tree': return `<div class="prg-tree">${b.lines.map(([level, text]) => `<div style="padding-left:${level * 22}px">${prgRich(text)}</div>`).join('')}</div>`
     case 'code': return `<pre class="prg-code"><code>${esc(b.text)}</code></pre>`
+    case 'files': return `<div class="prg-files-admin">${b.label ? `<div class="prg-label" style="width:100%">${esc(b.label)}</div>` : ''}${b.items.map(it => `<span class="badge badge-orange" title="${esc(it.title || '')}">${icon('file-text', 12)}${esc(it.name)}</span>`).join('')}</div>`
     case 'note': return `<div class="prg-note">${prgRich(b.text)}</div>`
     case 'example': return `<div class="prg-example"><div class="prg-label">${esc(b.label || 'Пример задачи')}</div>${prgRich(b.text)}</div>`
     case 'split': return `<div class="prg-split">${b.columns.map(c => `
@@ -196,7 +201,7 @@ const ProgramDirectionPage = {
             <a class="prog-chapter" href="${BASE}/programs/${esc(d.key)}/${ch.num}">
               <span class="prog-chapter-num">Глава ${ch.num}</span>
               <span class="prog-chapter-title">${esc(ch.title)}</span>
-              <span class="prog-chapter-meta">${ch.sections} ${plural(ch.sections, 'раздел', 'раздела', 'разделов')}${d.practice ? ` · ${esc(d.practice)}` : ''}</span>
+              <span class="prog-chapter-meta">${ch.sections} ${plural(ch.sections, 'раздел', 'раздела', 'разделов')} · ${ch.quiz ? 'задание: вопросы, сдаётся на платформе' : 'задание выполняется самостоятельно'}</span>
               ${icon('chevron-right', 16)}
             </a>`).join('') : emptyState('book-open', 'Материал ещё готовится', 'Студенты видят «Первая глава программы скоро появится»', true)}
         </section>
@@ -237,7 +242,10 @@ const ProgramChapterPage = {
       return
     }
 
-    const ch = await ProgramsData.chapter(dir, chapter)
+    const [ch, quiz] = await Promise.all([
+      ProgramsData.chapter(dir, chapter),
+      meta.quiz ? ProgramsData.quiz(dir, chapter) : Promise.resolve(null),
+    ])
     if (ctx.stale()) return
     const a = ch.assignment
     view.innerHTML = pageHead({
@@ -251,7 +259,7 @@ const ProgramChapterPage = {
           ${ch.sections.map(s => `
             ${s.divider ? `<div class="prg-toc-div">${esc(s.divider)}</div>` : ''}
             <a href="#sec-${esc(s.id)}" class="prg-toc-item"><b>${esc(s.num)}</b>${esc(s.title)}</a>`).join('')}
-          ${a ? `<a href="#sec-assignment" class="prg-toc-item"><b>✓</b>Задание</a>` : ''}
+          ${a || quiz ? `<a href="#sec-assignment" class="prg-toc-item"><b>✓</b>Задание к главе</a>` : ''}
         </nav>
         <div class="prg-body">
           ${d.start ? `<section class="card prg-sec is-accent" id="sec-start"><div class="prg-sec-head"><span class="badge badge-orange">Старт</span><h2>${esc(d.start.title)}</h2></div>${prgBlocks(d.start.blocks)}</section>` : ''}
@@ -262,7 +270,7 @@ const ProgramChapterPage = {
               ${prgBlocks(s.blocks)}
               ${prgTerms(s.terms)}
             </section>`).join('')}
-          ${a ? ProgramChapterPage.assignment(a) : ''}
+          ${quiz ? ProgramChapterPage.quiz(quiz) : a ? ProgramChapterPage.assignment(a) : ''}
         </div>
       </div>`
     // Якоря оглавления: прокрутка без смены адреса раздела
@@ -272,13 +280,24 @@ const ProgramChapterPage = {
     }))
   },
 
+  quiz(q) {
+    const base = q.questions.filter(x => !x.python).length
+    return `
+      <section class="card prg-sec is-accent" id="sec-assignment">
+        <div class="prg-sec-head"><span class="badge badge-orange">Задание</span><h2>${esc(q.title)} · сдаётся на платформе</h2></div>
+        <p class="prg-p">${esc(q.intro)}</p>
+        ${q.variants ? `<p class="prg-p"><b>Варианты:</b> ${q.variants.map(v => `${esc(v.title)} — ${v.id === 'base' ? base : q.questions.length} вопр.`).join('; ')}. Вопросы с пометкой Python входят только во второй вариант.</p>` : ''}
+        ${q.questions.map((x, i) => `<div class="prg-quiz-q"><b>${i + 1}</b><span>${esc(x.text)}${x.python ? ' <span class="badge badge-orange">Python</span>' : ''} <span class="muted">· ${esc(x.topic)}</span></span></div>`).join('')}
+      </section>`
+  },
+
   assignment(a) {
     return `
       <section class="card prg-sec is-accent" id="sec-assignment">
         <div class="prg-sec-head"><span class="badge badge-orange">Задание</span><h2>Задание для самостоятельной работы</h2></div>
         <div class="prg-p"><b>Время:</b> ${esc(a.time)}${a.format ? ` · <b>Формат:</b> ${esc(a.format)}` : ''}</div>
         ${a.situation?.length ? `<div class="prg-example"><div class="prg-label">Ситуация</div>${a.situation.map(p => `<p class="prg-p">${prgRich(p)}</p>`).join('')}</div>` : ''}
-        ${(a.parts || []).map(p => `<h3 class="prg-h3">${esc(p.title)}${p.minutes ? ` <span class="muted">· ${p.minutes} мин</span>` : ''}</h3>${prgBlocks(p.blocks)}`).join('')}
+        ${(a.parts || []).map(p => `<h3 class="prg-h3">${esc(p.title)}${p.minutes ? ` <span class="muted">· ${p.minutes} мин</span>` : ''}${p.time ? ` <span class="muted">· ${esc(p.time)}</span>` : ''}</h3>${prgBlocks(p.blocks)}`).join('')}
         ${a.selfCheck?.length ? `<h3 class="prg-h3">${esc(a.selfCheckTitle || 'Вопросы для самопроверки')}${a.selfCheckMinutes ? ` <span class="muted">· ${a.selfCheckMinutes} мин</span>` : ''}</h3>${a.selfCheckIntro ? `<p class="prg-p">${prgRich(a.selfCheckIntro)}</p>` : ''}<ol class="prg-ol">${a.selfCheck.map(q => `<li>${prgRich(q)}</li>`).join('')}</ol>` : ''}
         ${a.criteria?.length ? `<h3 class="prg-h3">${esc(a.criteriaTitle || 'Критерии оценки')}</h3><ul class="prg-ul">${a.criteria.map(c => `<li>${prgRich(c)}</li>`).join('')}</ul>` : ''}
       </section>`

@@ -1,11 +1,17 @@
 import { Fragment, useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { PROGRAM_CONTACT, PROGRAM_PERIOD, directionOf } from '../data/programs'
-import ProgramBlocks, { Rich } from '../components/program/ProgramBlocks'
+import ProgramBlocks, { ProgramContext, Rich } from '../components/program/ProgramBlocks'
+import ProgramQuiz from '../components/program/ProgramQuiz'
+import { api } from '../api'
 
 // Индивидуальная программа осеннего лагеря на октябрь:
 // /autumn-camp/program — обзор программы и список глав,
-// /autumn-camp/program/:chapter — глава: разделы теории и задание в конце.
+// /autumn-camp/program/:chapter — конспект главы,
+// /autumn-camp/program/:chapter/task — задание к главе. Задание из вопросов
+// (quiz) сдаётся на платформе, остальные выполняются самостоятельно.
+
+const HW_STATUS = { submitted: 'на проверке', approved: 'принято', rework: 'нужны правки' }
 
 function plural(n, one, few, many) {
   const m10 = n % 10, m100 = n % 100
@@ -53,15 +59,34 @@ function StartPanel({ start }) {
   )
 }
 
+// Статусы сданных заданий — для карточек глав
+function useProgramHomework(enabled) {
+  const [list, setList] = useState([])
+  useEffect(() => {
+    if (!enabled) return
+    let alive = true
+    api.programHomework().then(l => { if (alive) setList(l || []) }).catch(() => {})
+    return () => { alive = false }
+  }, [enabled])
+  return list
+}
+
+function taskLabel(ch, hw) {
+  if (!ch.quiz) return 'выполняется самостоятельно'
+  if (hw) return `сдано · ${HW_STATUS[hw.status] || hw.status}`
+  return 'вопросы · сдаётся на платформе'
+}
+
 function Overview({ dir }) {
   const navigate = useNavigate()
+  const homework = useProgramHomework(dir.chapters.some(c => c.quiz))
   return (
     <section className="page active prg-page">
       <BackLink to="/autumn-camp">Осенний лагерь</BackLink>
       <div className="prg-hero">
         <span className="prg-tag">Индивидуальная программа · {PROGRAM_PERIOD}</span>
         <h1 className="prg-title">{dir.name}</h1>
-        <p className="prg-lead">{dir.goal}. Программа состоит из глав: в каждой — теория по разделам{dir.practice ? `, ${dir.practice}` : ' и задание для самостоятельной работы в конце'}.</p>
+        <p className="prg-lead">{dir.goal}. Программа состоит из глав: у каждой есть конспект с теорией по разделам и задание к главе{dir.practice ? `, а ещё ${dir.practice}` : ''}.</p>
         <ContactNote />
       </div>
 
@@ -72,14 +97,27 @@ function Overview({ dir }) {
         <div className="prg-empty">Первая глава программы скоро появится.</div>
       ) : (
         <div className="prg-chapters">
-          {dir.chapters.map(ch => (
-            <button key={ch.num} type="button" className="prg-chapter-card" onClick={() => navigate(`/autumn-camp/program/${ch.num}`)}>
-              <span className="prg-chapter-num">Глава {ch.num}</span>
-              <span className="prg-chapter-title">{ch.title}</span>
-              <span className="prg-chapter-meta">{ch.sections} {plural(ch.sections, 'раздел', 'раздела', 'разделов')} · {dir.practice || 'задание в конце'}</span>
-              <span className="prg-chapter-open">Открыть →</span>
-            </button>
-          ))}
+          {dir.chapters.map(ch => {
+            const hw = homework.find(h => h.direction === dir.key && h.chapter === ch.num)
+            return (
+              <div key={ch.num} className="prg-chapter-card">
+                <span className="prg-chapter-num">Глава {ch.num}</span>
+                <span className="prg-chapter-title">{ch.title}</span>
+                <div className="prg-chapter-links">
+                  <button type="button" className="prg-chapter-link" onClick={() => navigate(`/autumn-camp/program/${ch.num}`)}>
+                    <span className="prg-chapter-link-name">Конспект</span>
+                    <span className="prg-chapter-link-meta">{ch.sections} {plural(ch.sections, 'раздел', 'раздела', 'разделов')}</span>
+                    <span className="prg-chapter-link-go">→</span>
+                  </button>
+                  <button type="button" className={`prg-chapter-link is-task${hw ? ` is-${hw.status}` : ''}`} onClick={() => navigate(`/autumn-camp/program/${ch.num}/task`)}>
+                    <span className="prg-chapter-link-name">Задание к главе</span>
+                    <span className="prg-chapter-link-meta">{taskLabel(ch, hw)}</span>
+                    <span className="prg-chapter-link-go">→</span>
+                  </button>
+                </div>
+              </div>
+            )
+          })}
         </div>
       )}
     </section>
@@ -112,7 +150,7 @@ function Assignment({ a }) {
       </div>
       <div className="prg-assign-meta">
         <div><span>Время выполнения</span><b>{a.time}</b></div>
-        <div><span>Формат сдачи</span><b>{a.format}</b></div>
+        <div><span>Формат</span><b>{a.format}</b></div>
       </div>
 
       {a.situation.length > 0 && (
@@ -128,6 +166,7 @@ function Assignment({ a }) {
             <div className="prg-part-head">
               <h3>{part.title}</h3>
               {part.minutes && <span className="prg-chip">{part.minutes} минут</span>}
+              {part.time && <span className="prg-chip">{part.time}</span>}
             </div>
             <ProgramBlocks blocks={part.blocks} />
           </div>
@@ -147,15 +186,34 @@ function Assignment({ a }) {
         )}
       </div>
 
-      <div className="prg-criteria">
-        <div className="prg-criteria-title">{a.criteriaTitle || 'Критерии оценки'}</div>
-        <ul>{a.criteria.map((c, i) => <li key={i}>{c}</li>)}</ul>
+      {a.criteria?.length > 0 && (
+        <div className="prg-criteria">
+          <div className="prg-criteria-title">{a.criteriaTitle || 'Критерии оценки'}</div>
+          <ul>{a.criteria.map((c, i) => <li key={i}>{c}</li>)}</ul>
+        </div>
+      )}
+    </section>
+  )
+}
+
+function TaskCta({ meta }) {
+  const navigate = useNavigate()
+  return (
+    <section className="prg-section prg-task-cta">
+      <div>
+        <div className="prg-task-cta-kicker">Конспект прочитан?</div>
+        <h2 className="prg-section-title">Задание к главе {meta.num}</h2>
+        <p className="prg-p">{meta.quiz
+          ? 'Вопросы по темам главы: ответь своими словами и отправь на проверку прямо на платформе.'
+          : 'Самостоятельная работа по материалам главы — сдавать её на платформе не нужно.'}</p>
       </div>
+      <button type="button" className="prg-task-cta-btn" onClick={() => navigate(`/autumn-camp/program/${meta.num}/task`)}>Перейти к заданию →</button>
     </section>
   )
 }
 
 function Chapter({ dir, chapterNum }) {
+  const navigate = useNavigate()
   const meta = dir.chapters.find(c => c.num === chapterNum)
   const [chapter, setChapter] = useState(null)
 
@@ -181,7 +239,7 @@ function Chapter({ dir, chapterNum }) {
         <p className="prg-lead">{chapter.intro || chapter.summary}</p>
         <div className="prg-hero-meta">
           <span className="prg-chip">{chapter.sections.length} {plural(chapter.sections.length, 'раздел', 'раздела', 'разделов')}</span>
-          {chapter.assignment && <span className="prg-chip">Задание: {chapter.assignment.time}</span>}
+          <button type="button" className="prg-chip is-link" onClick={() => navigate(`/autumn-camp/program/${chapter.num}/task`)}>Задание к главе →</button>
         </div>
       </div>
 
@@ -203,12 +261,10 @@ function Chapter({ dir, chapterNum }) {
               </button>
             </Fragment>
           ))}
-          {chapter.assignment && (
-            <button type="button" className="prg-toc-item is-task" onClick={() => jump('prg-assignment')}>
-              <span className="prg-toc-num">✓</span>
-              <span>Задание</span>
-            </button>
-          )}
+          <button type="button" className="prg-toc-item is-task" onClick={() => navigate(`/autumn-camp/program/${chapter.num}/task`)}>
+            <span className="prg-toc-num">✓</span>
+            <span>Задание к главе</span>
+          </button>
         </nav>
 
         <div className="prg-content">
@@ -226,19 +282,70 @@ function Chapter({ dir, chapterNum }) {
               </section>
             </Fragment>
           ))}
-          {chapter.assignment && <Assignment a={chapter.assignment} />}
+          <TaskCta meta={meta} />
         </div>
       </div>
     </section>
   )
 }
 
-export default function AutumnProgramPage({ user }) {
+function Task({ dir, chapterNum, user }) {
+  const meta = dir.chapters.find(c => c.num === chapterNum)
+  const [chapter, setChapter] = useState(null)
+  const [quiz, setQuiz] = useState(null)
+
+  useEffect(() => {
+    let alive = true
+    setChapter(null)
+    setQuiz(null)
+    if (meta) {
+      Promise.all([meta.load(), meta.quiz ? meta.quiz() : Promise.resolve(null)])
+        .then(([c, q]) => { if (alive) { setChapter(c.default); setQuiz(q?.default || null) } })
+    }
+    window.scrollTo(0, 0)
+    return () => { alive = false }
+  }, [meta])
+
+  if (!meta) return <Overview dir={dir} />
+  if (!chapter) return <section className="page active prg-page"><p className="prg-loading">Загружаем задание…</p></section>
+
+  const count = quiz ? (quiz.variants ? `${quiz.questions.filter(q => !q.python).length} или ${quiz.questions.length}` : quiz.questions.length) : 0
+
+  return (
+    <section className="page active prg-page">
+      <BackLink to={`/autumn-camp/program/${chapter.num}`}>Конспект главы {chapter.num}</BackLink>
+      <div className="prg-hero">
+        <span className="prg-tag">Глава {chapter.num} · задание</span>
+        <h1 className="prg-title">Задание к главе {chapter.num}</h1>
+        <p className="prg-lead">{quiz ? quiz.intro : `${chapter.title}. Самостоятельная работа по материалам главы.`}</p>
+        <div className="prg-hero-meta">
+          {quiz
+            ? <span className="prg-chip">{count} вопросов · сдаётся на платформе</span>
+            : <span className="prg-chip">Сдавать на платформе не нужно</span>}
+          {!quiz && chapter.assignment?.time && <span className="prg-chip">{chapter.assignment.time}</span>}
+        </div>
+      </div>
+
+      <ProgramContext.Provider value={{ direction: dir.key, chapter: chapter.num }}>
+        <div className="prg-task-body">
+          {quiz
+            ? <ProgramQuiz quiz={quiz} direction={dir.key} chapter={chapter.num} user={user} />
+            : chapter.assignment
+              ? <Assignment a={chapter.assignment} />
+              : <div className="prg-empty">Задание к этой главе скоро появится.</div>}
+        </div>
+      </ProgramContext.Provider>
+    </section>
+  )
+}
+
+export default function AutumnProgramPage({ user, task = false }) {
   const { chapter } = useParams()
   const dir = directionOf(user)
 
   if (!user?.isAutumnCamp2026) return <Pending title="Программа доступна участникам осеннего лагеря" />
   if (!dir) return <Pending title="Твоя индивидуальная программа ещё готовится" />
+  if (chapter && task) return <Task dir={dir} chapterNum={Number(chapter)} user={user} />
   if (chapter) return <Chapter dir={dir} chapterNum={Number(chapter)} />
   return <Overview dir={dir} />
 }

@@ -1013,6 +1013,52 @@ function migrate() {
       console.error('❌ Migration 32 failed:', err.message)
     }
   }
+
+  if (schemaVersion < 33) {
+    try {
+      const set = db.prepare('UPDATE users SET autumn_direction = ? WHERE nickname = ? COLLATE NOCASE')
+      const nicknames = ['Budman5', 'Alyalua', 'slavaivn', 'mavikulov', 'Ti_mo_sha_0', 'p_alexandr', 'a_duisembayev', 'baZZZilek',
+        'pavjokem', 'nod9xp0', 'der_viggen', 'dan_miko', 'vbs0861', 'p4vmil', 'aixristina', 'anbulaeva', 'Science369', 'pachpol',
+        'bugevugge', 'Ali_jsf', 'scaili13', 'Kapir_field', 'annplv']
+      let assigned = 0
+      for (const nickname of nicknames) assigned += set.run('ml', nickname).changes
+      db.pragma('user_version = 33')
+      console.log(`✅ Migration 33 completed: machine learning direction for ${assigned} of ${nicknames.length} users`)
+    } catch (err) {
+      console.error('❌ Migration 33 failed:', err.message)
+    }
+  }
+
+  // Migration 34: домашние задания второго месяца — задания к главам
+  // индивидуальных программ. Одна строка — одна работа студента по главе:
+  // ответы лежат единым JSON-массивом [{ id, question, answer }], вопрос
+  // сохраняется рядом с ответом, как условие в homework_submissions.
+  if (schemaVersion < 34) {
+    try {
+      db.prepare(`
+        CREATE TABLE IF NOT EXISTS program_homework (
+          id           INTEGER PRIMARY KEY AUTOINCREMENT,
+          user_id      INTEGER NOT NULL,
+          direction    TEXT    NOT NULL,
+          chapter      INTEGER NOT NULL,
+          variant      TEXT,
+          answers      TEXT    NOT NULL DEFAULT '[]',
+          status       TEXT    NOT NULL DEFAULT 'submitted',
+          comment      TEXT,
+          reviewer     TEXT,
+          submitted_at TEXT,
+          reviewed_at  TEXT,
+          UNIQUE(user_id, direction, chapter),
+          FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+        )
+      `).run()
+      db.prepare('CREATE INDEX IF NOT EXISTS idx_prg_hw_status ON program_homework(status)').run()
+      db.pragma('user_version = 34')
+      console.log('✅ Migration 34 completed: added program_homework')
+    } catch (err) {
+      console.error('❌ Migration 34 failed:', err.message)
+    }
+  }
 }
 
 migrate()

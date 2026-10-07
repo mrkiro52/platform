@@ -1,6 +1,8 @@
 // Индивидуальные программы осеннего лагеря на октябрь.
 // Направление хранится у пользователя в users.autumn_direction (product / system / business / backend / security / ml).
-// Главы подгружаются лениво: у каждой — разделы теории и задание в конце.
+// Главы подгружаются лениво. У каждой главы два экрана: конспект и задание к главе.
+// quiz — задание из вопросов, которое сдаётся на платформе (ответы уходят в админку);
+// у остальных глав задание лежит в самой главе (assignment) и выполняется самостоятельно.
 
 export const PROGRAM_PERIOD = '1–31 октября'
 export const PROGRAM_CONTACT = { handle: '@x_tap', url: 'https://t.me/x_tap', text: 't.me/x_tap' }
@@ -39,7 +41,7 @@ export const DIRECTIONS = {
     dative: 'backend-разработке',
     goal: 'Путь к офферу intern / junior Python backend-разработчика',
     chapters: [
-      { num: 1, title: 'Профессия, конкурентность, сети и проектирование API', sections: 9, load: () => import('./backend-1') },
+      { num: 1, title: 'Профессия, конкурентность, сети и проектирование API', sections: 9, load: () => import('./backend-1'), quiz: () => import('./backend-1-quiz') },
     ],
   },
   ml: {
@@ -47,7 +49,9 @@ export const DIRECTIONS = {
     name: 'Машинное обучение',
     dative: 'машинному обучению',
     goal: 'Путь к офферу intern / junior ML-инженера',
-    chapters: [],
+    chapters: [
+      { num: 1, title: 'Основы NumPy, pandas и Matplotlib', sections: 6, load: () => import('./ml-1') },
+    ],
   },
   security: {
     key: 'security',
@@ -79,7 +83,7 @@ export const DIRECTIONS = {
       ],
     },
     chapters: [
-      { num: 1, title: 'Фундамент, стандарты и регуляторика', sections: 5, load: () => import('./security-1') },
+      { num: 1, title: 'Фундамент, стандарты и регуляторика', sections: 5, load: () => import('./security-1'), quiz: () => import('./security-1-quiz') },
     ],
   },
 }

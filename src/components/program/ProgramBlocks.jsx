@@ -1,6 +1,55 @@
 // Отрисовка блоков главы индивидуальной программы.
 // Разметка в тексте: **жирный**, _курсив_, перевод строки — \n.
 
+import { createContext, useContext, useState } from 'react'
+import { api } from '../../api'
+
+// Направление и глава — нужны блоку files, чтобы скачать файл задания
+export const ProgramContext = createContext(null)
+
+function DownloadIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M12 4v11m0 0l-4.5-4.5M12 15l4.5-4.5M5 19h14" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  )
+}
+
+// Файлы к заданию (ноутбуки, датасеты) отдаются только по токену студента
+function Files({ b }) {
+  const ctx = useContext(ProgramContext)
+  const [busy, setBusy] = useState(null)
+  const [error, setError] = useState('')
+  const get = async (name) => {
+    if (!ctx || busy) return
+    setBusy(name)
+    setError('')
+    try {
+      await api.downloadProgramFile(ctx.direction, ctx.chapter, name)
+    } catch (e) {
+      setError(e.message || 'Не получилось скачать файл')
+    } finally {
+      setBusy(null)
+    }
+  }
+  return (
+    <div className="prg-files">
+      {b.label && <div className="prg-files-label">{b.label}</div>}
+      {b.items.map(it => (
+        <button key={it.name} type="button" className="prg-file" onClick={() => get(it.name)} disabled={busy === it.name}>
+          <span className="prg-file-icon"><DownloadIcon /></span>
+          <span className="prg-file-text">
+            <span className="prg-file-name">{it.name}</span>
+            {it.title && <span className="prg-file-title">{it.title}</span>}
+          </span>
+          <span className="prg-file-action">{busy === it.name ? 'Скачиваем…' : 'Скачать'}</span>
+        </button>
+      ))}
+      {error && <div className="prg-files-error" role="alert">{error}</div>}
+    </div>
+  )
+}
+
 // Курсив — только _слово_ на границе слов, чтобы не ломать created_at и __name__
 const RICH = /(\*\*[^*]+\*\*|(?<![\p{L}\p{N}_])_[^_\n]+_(?![\p{L}\p{N}_]))/gu
 
@@ -122,6 +171,8 @@ function Block({ b }) {
           ))}
         </div>
       )
+    case 'files':
+      return <Files b={b} />
     case 'code':
       return <pre className="prg-code"><code>{b.text}</code></pre>
     case 'note':

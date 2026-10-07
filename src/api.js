@@ -40,6 +40,25 @@ async function reqForm(path, formData) {
   return res.json()
 }
 
+// Скачать файл, доступный только по токену: обычная ссылка заголовок
+// авторизации не передаст, поэтому файл забираем fetch-ем и отдаём браузеру
+async function download(path, filename) {
+  const t = token()
+  const res = await fetch(`${BASE}${path}`, { headers: t ? { Authorization: `Bearer ${t}` } : {} })
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}))
+    throw Object.assign(new Error(body.message || res.statusText), { status: res.status })
+  }
+  const url = URL.createObjectURL(await res.blob())
+  const a = document.createElement('a')
+  a.href = url
+  a.download = filename
+  document.body.appendChild(a)
+  a.click()
+  a.remove()
+  setTimeout(() => URL.revokeObjectURL(url), 1000)
+}
+
 export const api = {
   login:         (email, pw) => req('/api/auth/login', { method: 'POST', body: JSON.stringify({ email, password: pw }) }),
   register:      (nickname, password, passwordConfirm) => req('/api/auth/register', { method: 'POST', body: JSON.stringify({ nickname, password, passwordConfirm }) }),
@@ -87,6 +106,11 @@ export const api = {
   // Домашние задания осеннего лагеря
   myHomework:   ()        => req('/api/homework/mine'),
   saveHomework: (payload) => req('/api/homework/task', { method: 'PUT', body: JSON.stringify(payload) }),
+
+  // Задания к главам индивидуальных программ октября
+  programHomework:       ()                              => req('/api/programs/homework/mine'),
+  submitProgramHomework: (direction, chapter, payload)   => req(`/api/programs/homework/${direction}/${chapter}`, { method: 'PUT', body: JSON.stringify(payload) }),
+  downloadProgramFile:   (direction, chapter, name)      => download(`/api/programs/files/${direction}/${chapter}/${encodeURIComponent(name)}`, name),
   bookSlot:     (slotId) => req(`/api/calls/slots/${slotId}/book`, { method: 'POST' }),
   cancelSlot:   (slotId) => req(`/api/calls/slots/${slotId}/book`, { method: 'DELETE' }),
   unreadNotifications:()  => req('/api/notifications/unread-count'),

@@ -549,6 +549,19 @@ a.kpi:hover{border-color:var(--lime-line)}
   .prg-sec{padding:18px 16px}
 }
 
+/* ═══ ДЗ ВТОРОГО МЕСЯЦА ═══════════════════════════════════════════════ */
+.phw-review{margin-bottom:16px}
+.phw-review-status{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:12.5px}
+.phw-answers{list-style:none;display:flex;flex-direction:column;gap:10px}
+.phw-answer{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-lg);padding:16px 18px}
+.phw-q{display:flex;gap:12px;font-weight:700;color:var(--text);line-height:1.5}
+.phw-num{flex-shrink:0;min-width:26px;height:26px;border-radius:var(--r-sm);background:rgba(255,159,80,.14);color:var(--orange);display:grid;place-items:center;font-size:12px;font-variant-numeric:tabular-nums}
+.phw-a{margin-top:10px;padding:12px 14px;border-radius:var(--r-md);background:var(--bg3);color:var(--text2);font-size:14px;line-height:1.7;white-space:pre-wrap;overflow-wrap:anywhere}
+.prg-quiz-q{display:flex;gap:10px;padding:10px 0;border-top:1px solid var(--border);font-size:13.5px;line-height:1.6;color:var(--text2)}
+.prg-quiz-q:first-of-type{border-top:none}
+.prg-quiz-q b{color:var(--orange);min-width:28px}
+.prg-files-admin{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 14px}
+
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
 }
