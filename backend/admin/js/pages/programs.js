@@ -57,7 +57,7 @@ function prgBlock(b) {
     case 'small': return `<p class="prg-small">${prgRich(b.text)}</p>`
     case 'ul': return `<ul class="prg-ul">${b.items.map(it => `<li>${prgRich(it)}</li>`).join('')}</ul>`
     case 'ol': return `<ol class="prg-ol" start="${b.start || 1}">${b.items.map(it => `<li>${prgRich(it)}</li>`).join('')}</ol>`
-    case 'letters': return `<ul class="prg-letters">${b.items.map((it, i) => `<li><span class="prg-letter">${PRG_LETTERS[i]})</span><span>${prgRich(it)}</span></li>`).join('')}</ul>`
+    case 'letters': return `<ul class="prg-letters">${b.items.map((it, i) => `<li><span class="prg-letter">${PRG_LETTERS[(b.start || 0) + i]})</span><span>${prgRich(it)}</span></li>`).join('')}</ul>`
     case 'table': return `
       <figure class="prg-table">
         ${b.caption ? `<figcaption>${esc(b.caption)}</figcaption>` : ''}
@@ -77,6 +77,7 @@ function prgBlock(b) {
     case 'frac': return `<div class="prg-formula"><div>${esc(b.label)} = ${esc(b.num)} / ${esc(b.den)}</div></div>`
     case 'tree': return `<div class="prg-tree">${b.lines.map(([level, text]) => `<div style="padding-left:${level * 22}px">${prgRich(text)}</div>`).join('')}</div>`
     case 'code': return `<pre class="prg-code"><code>${esc(b.text)}</code></pre>`
+    case 'trainer': return `<div class="prg-note">На этом месте студент видит свой прогресс в SQL-тренажёре по темам и кнопку «Открыть тренажёр».</div>`
     case 'files': return `<div class="prg-files-admin">${b.label ? `<div class="prg-label" style="width:100%">${esc(b.label)}</div>` : ''}${b.items.map(it => `<span class="badge badge-orange" title="${esc(it.title || '')}">${icon('file-text', 12)}${esc(it.name)}</span>`).join('')}</div>`
     case 'note': return `<div class="prg-note">${prgRich(b.text)}</div>`
     case 'example': return `<div class="prg-example"><div class="prg-label">${esc(b.label || 'Пример задачи')}</div>${prgRich(b.text)}</div>`
@@ -201,7 +202,7 @@ const ProgramDirectionPage = {
             <a class="prog-chapter" href="${BASE}/programs/${esc(d.key)}/${ch.num}">
               <span class="prog-chapter-num">Глава ${ch.num}</span>
               <span class="prog-chapter-title">${esc(ch.title)}</span>
-              <span class="prog-chapter-meta">${ch.sections} ${plural(ch.sections, 'раздел', 'раздела', 'разделов')} · ${ch.quiz ? 'задание: вопросы, сдаётся на платформе' : 'задание выполняется самостоятельно'}</span>
+              <span class="prog-chapter-meta">${ch.sections} ${plural(ch.sections, 'раздел', 'раздела', 'разделов')} · ${ch.quiz ? 'задание: вопросы, сдаётся на платформе' : ch.submit === 'trainer' ? 'задание: SQL-тренажёр' : d.submit === 'file' ? 'задание: файлом в личные сообщения' : 'задание выполняется самостоятельно'}</span>
               ${icon('chevron-right', 16)}
             </a>`).join('') : emptyState('book-open', 'Материал ещё готовится', 'Студенты видят «Первая глава программы скоро появится»', true)}
         </section>

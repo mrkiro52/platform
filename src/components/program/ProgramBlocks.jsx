@@ -1,7 +1,8 @@
 // Отрисовка блоков главы индивидуальной программы.
 // Разметка в тексте: **жирный**, _курсив_, перевод строки — \n.
 
-import { createContext, useContext, useState } from 'react'
+import { createContext, useContext, useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { api } from '../../api'
 
 // Направление и глава — нужны блоку files, чтобы скачать файл задания
@@ -12,6 +13,52 @@ function DownloadIcon() {
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
       <path d="M12 4v11m0 0l-4.5-4.5M12 15l4.5-4.5M5 19h14" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
+  )
+}
+
+// Прогресс в SQL-тренажёре: сколько задач решено в каждой теме
+function TrainerProgress() {
+  const navigate = useNavigate()
+  const [data, setData] = useState(null)
+  useEffect(() => {
+    let alive = true
+    api.sqlTrainer().then(d => { if (alive) setData(d) }).catch(() => { if (alive) setData({ failed: true }) })
+    return () => { alive = false }
+  }, [])
+
+  const categories = data?.categories || []
+  const solved = new Set(data?.solved || [])
+  const total = categories.reduce((n, c) => n + c.tasks.length, 0)
+  const done = categories.reduce((n, c) => n + c.tasks.filter(t => solved.has(t.id)).length, 0)
+
+  return (
+    <div className="prg-trainer">
+      <div className="prg-trainer-head">
+        <div>
+          <div className="prg-files-label">SQL-тренажёр</div>
+          <div className="prg-trainer-count">
+            {!data ? 'Загружаем прогресс…' : data.failed ? 'Не удалось загрузить прогресс' : `Решено ${done} из ${total}`}
+          </div>
+        </div>
+        <button type="button" className="prg-task-cta-btn" onClick={() => navigate('/trainings/sql')}>Открыть тренажёр →</button>
+      </div>
+      {total > 0 && (
+        <>
+          <div className="pq-progress" aria-hidden="true"><span style={{ width: `${(done / total) * 100}%` }} /></div>
+          <div className="prg-trainer-grid">
+            {categories.map(c => {
+              const n = c.tasks.filter(t => solved.has(t.id)).length
+              return (
+                <div key={c.id} className={`prg-trainer-cat${n === c.tasks.length ? ' is-done' : ''}`}>
+                  <span className="prg-trainer-cat-title">{c.title.split(':')[0]}</span>
+                  <span className="prg-trainer-cat-count">{n} / {c.tasks.length}</span>
+                </div>
+              )
+            })}
+          </div>
+        </>
+      )}
+    </div>
   )
 }
 
@@ -91,7 +138,7 @@ function Block({ b }) {
       return (
         <ul className="prg-letters">
           {b.items.map((it, i) => (
-            <li key={i}><span className="prg-letter">{LETTERS[i]})</span><span><Rich text={it} /></span></li>
+            <li key={i}><span className="prg-letter">{LETTERS[(b.start || 0) + i]})</span><span><Rich text={it} /></span></li>
           ))}
         </ul>
       )
@@ -173,6 +220,8 @@ function Block({ b }) {
       )
     case 'files':
       return <Files b={b} />
+    case 'trainer':
+      return <TrainerProgress />
     case 'code':
       return <pre className="prg-code"><code>{b.text}</code></pre>
     case 'note':

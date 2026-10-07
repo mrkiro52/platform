@@ -2,7 +2,9 @@
 // Направление хранится у пользователя в users.autumn_direction (product / system / business / backend / security / ml).
 // Главы подгружаются лениво. У каждой главы два экрана: конспект и задание к главе.
 // quiz — задание из вопросов, которое сдаётся на платформе (ответы уходят в админку);
-// у остальных глав задание лежит в самой главе (assignment) и выполняется самостоятельно.
+// у остальных глав задание лежит в самой главе (assignment). submit: 'file' — аналитики
+// оформляют задание в файле и присылают в личные сообщения (PROGRAM_CONTACT);
+// у задания главы может быть свой способ сдачи (assignment.submit, например 'trainer').
 
 export const PROGRAM_PERIOD = '1–31 октября'
 export const PROGRAM_CONTACT = { handle: '@x_tap', url: 'https://t.me/x_tap', text: 't.me/x_tap' }
@@ -13,8 +15,10 @@ export const DIRECTIONS = {
     name: 'Продуктовая аналитика',
     dative: 'продуктовой аналитике',
     goal: 'Путь к офферу junior продуктового аналитика',
+    submit: 'file',
     chapters: [
       { num: 1, title: 'Профессия, продуктовое мышление и метрики', sections: 6, load: () => import('./product-1') },
+      { num: 2, title: 'SQL для продуктового аналитика', sections: 8, load: () => import('./product-2'), submit: 'trainer', taskHint: 'все задачи SQL-тренажёра' },
     ],
   },
   system: {
@@ -22,8 +26,10 @@ export const DIRECTIONS = {
     name: 'Системная аналитика',
     dative: 'системной аналитике',
     goal: 'Путь к офферу junior системного аналитика',
+    submit: 'file',
     chapters: [
       { num: 1, title: 'Профессия и процесс разработки', sections: 4, load: () => import('./system-1') },
+      { num: 2, title: 'Требования — ядро профессии', sections: 8, load: () => import('./system-2') },
     ],
   },
   business: {
@@ -31,8 +37,10 @@ export const DIRECTIONS = {
     name: 'Бизнес-аналитика',
     dative: 'бизнес-аналитике',
     goal: 'Путь к офферу junior бизнес-аналитика',
+    submit: 'file',
     chapters: [
       { num: 1, title: 'Профессия', sections: 4, load: () => import('./business-1') },
+      { num: 2, title: 'Бизнес-основы и экономика', sections: 6, load: () => import('./business-2') },
     ],
   },
   backend: {
@@ -86,6 +94,13 @@ export const DIRECTIONS = {
       { num: 1, title: 'Фундамент, стандарты и регуляторика', sections: 5, load: () => import('./security-1'), quiz: () => import('./security-1-quiz') },
     ],
   },
+}
+
+// Как сдаётся задание главы: quiz — вопросы на платформе, trainer — задачи
+// тренажёра, file — файлом в личные сообщения, self — сдавать не нужно
+export function taskKind(dir, meta, chapter) {
+  if (meta?.quiz) return 'quiz'
+  return chapter?.assignment?.submit || meta?.submit || dir?.submit || 'self'
 }
 
 export function directionOf(user) {

@@ -4661,6 +4661,12 @@ body.reels-lock {
 .prg-chip.is-link { cursor: pointer; color: var(--prg-text); border-color: rgba(255,140,66,0.45); background: var(--prg-dim); font-family: inherit; }
 .prg-chip.is-link:hover { border-color: var(--prg-text); }
 
+/* Как сдать задание */
+.prg-submit { padding: 14px 18px; border-radius: var(--radius-md); border: 1px solid rgba(255,140,66,0.45); background: var(--prg-dim); }
+.prg-submit-label { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--prg-text); margin-bottom: 6px; }
+.prg-submit p { margin: 0; font-size: 14.5px; line-height: 1.65; color: var(--text-secondary); }
+.prg-submit a { color: var(--prg-text); font-weight: 700; }
+
 /* Конец конспекта: переход к заданию */
 .prg-task-cta { display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap;
   border-color: rgba(255,140,66,0.5); background: linear-gradient(180deg, rgba(255,140,66,0.07), transparent 200px), var(--bg-secondary); }
@@ -4688,6 +4694,17 @@ body.reels-lock {
 .prg-file-title { font-size: 12.5px; color: var(--text-tertiary); }
 .prg-file-action { font-size: 13px; font-weight: 700; color: var(--prg-text); white-space: nowrap; }
 .prg-files-error { font-size: 13px; color: #FF5F5F; }
+
+/* Прогресс SQL-тренажёра в задании */
+.prg-trainer { padding: 16px 18px; border-radius: var(--radius-md); border: 1px solid var(--border-color); background: var(--bg-tertiary); margin: 4px 0 14px; }
+.prg-trainer-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.prg-trainer-count { font-family: var(--font-syne); font-size: 18px; font-weight: 700; color: var(--text-primary); margin-top: 4px; }
+.prg-trainer-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 170px), 1fr)); gap: 6px; }
+.prg-trainer-cat { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 8px 12px; border-radius: var(--radius-sm); border: 1px solid var(--border-color); background: var(--bg-secondary); font-size: 13px; }
+.prg-trainer-cat-title { color: var(--text-secondary); font-weight: 600; min-width: 0; overflow-wrap: anywhere; }
+.prg-trainer-cat-count { color: var(--text-tertiary); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.prg-trainer-cat.is-done { border-color: rgba(63,185,80,0.45); }
+.prg-trainer-cat.is-done .prg-trainer-cat-count { color: #3FB950; font-weight: 700; }
 
 /* Задание из вопросов */
 .pq { display: flex; flex-direction: column; gap: 16px; scroll-margin-top: 20px; }
@@ -4745,6 +4762,10 @@ body.reels-lock {
 .pq-btn:disabled { opacity: .4; cursor: not-allowed; }
 .pq-btn.is-ghost { color: var(--text-primary); background: transparent; border-color: var(--border-color); }
 .pq-btn.is-ghost:hover:not(:disabled) { border-color: var(--prg); filter: none; }
+.pq-review-head { display: flex; align-items: center; justify-content: space-between; gap: 12px 20px; flex-wrap: wrap; margin-bottom: 10px; }
+.pq-review-head .pq-confirm { justify-content: flex-end; }
+.pq-review-head .prg-section-title { flex: 1 1 240px; min-width: 0; }
+.pq-review-head > .pq-btn { flex-shrink: 0; }
 .pq-confirm { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; font-size: 14px; color: var(--text-secondary); }
 .pq-review, .pq-sent { list-style: none; margin: 12px 0 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
 .pq-review-item {
@@ -4925,6 +4946,7 @@ body.reels-lock {
 .hwup-month-sep { margin: 4px 0 10px; color: var(--text-tertiary); }
 .hwup-month-title { font-family: var(--font-syne); font-size: 18px; font-weight: 700; color: var(--text-primary); margin: 0; }
 .hwup-month-text { margin: 0; font-size: 14px; line-height: 1.6; color: var(--text-secondary); }
+.hwup-month-text a { color: #FFB870; font-weight: 700; }
 .hwup-month-row {
   display: flex; align-items: center; gap: 12px; flex-wrap: wrap; width: 100%; text-align: left; cursor: pointer; font: inherit; color: inherit;
   padding: 12px 14px; border-radius: var(--radius-sm); border: 1px solid var(--border-color); background: var(--bg-tertiary); transition: border-color .15s;

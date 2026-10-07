@@ -4,7 +4,7 @@ import SqlDataset from '../components/SqlDataset'
 import TaskCard, { keyOf, StatusSquares, chapterStats, useMyHomework, SQL_CHAPTER } from '../components/HomeworkTaskCard'
 import { usePythonState } from '../lib/python/runner'
 import { AUTUMN_WEEKS } from '../data/autumnWeeks'
-import { directionOf } from '../data/programs'
+import { PROGRAM_CONTACT, directionOf, taskKind } from '../data/programs'
 import { api } from '../api'
 import {
   OPEN_WEEKS, WEEK_TITLES, hasLevels, WEEK_LEVELS,
@@ -82,15 +82,21 @@ function OctoberHomework({ user }) {
       {dir && !quizChapters.length && (
         <>
           <p className="hwup-month-text">
-            В программе «{dir.name}» задание к главе выполняется самостоятельно — сдавать его на платформе не нужно.
+            {dir.submit === 'file'
+              ? <>Задания к главам на платформе не сдаются: оформи выполненное задание в одном файле и отправь его в личные сообщения в Telegram — <a href={PROGRAM_CONTACT.url} target="_blank" rel="noopener noreferrer">{PROGRAM_CONTACT.text}</a>.</>
+              : <>В программе «{dir.name}» задание к главе выполняется самостоятельно — сдавать его на платформе не нужно.</>}
           </p>
-          {dir.chapters.length > 0 && (
-            <button type="button" className="hwup-month-row" onClick={() => navigate(`/autumn-camp/program/${dir.chapters[0].num}/task`)}>
-              <span className="hwup-month-num">Глава {dir.chapters[0].num}</span>
-              <span className="hwup-month-name">Задание к главе «{dir.chapters[0].title}»</span>
-              <span className="hwup-month-go">Открыть →</span>
-            </button>
-          )}
+          {dir.chapters.map(ch => {
+            const kind = taskKind(dir, ch)
+            return (
+              <button key={ch.num} type="button" className="hwup-month-row" onClick={() => navigate(`/autumn-camp/program/${ch.num}/task`)}>
+                <span className="hwup-month-num">Глава {ch.num}</span>
+                <span className="hwup-month-name">{ch.title}</span>
+                <span className="hwup-month-status">{kind === 'trainer' ? 'SQL-тренажёр' : kind === 'file' ? 'файлом в Telegram' : 'самостоятельно'}</span>
+                <span className="hwup-month-go">Открыть →</span>
+              </button>
+            )
+          })}
         </>
       )}
       {quizChapters.map((ch, i) => {

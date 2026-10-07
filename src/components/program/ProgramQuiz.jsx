@@ -148,6 +148,18 @@ export default function ProgramQuiz({ quiz, direction, chapter, user }) {
     }
   }
 
+  // Кнопка отправки стоит и в шапке проверки, и внизу списка: подтверждение
+  // раскрывается там, где нажали
+  const sendControls = (place) => (confirming !== place ? (
+    <button type="button" className="pq-btn" disabled={missing > 0 || Boolean(confirming)} onClick={() => setConfirming(place)}>Отправить на проверку</button>
+  ) : (
+    <span className="pq-confirm">
+      <span>Отправить {questions.length} {plural(questions.length, 'ответ', 'ответа', 'ответов')} на проверку?</span>
+      <button type="button" className="pq-btn is-ghost" onClick={() => setConfirming(false)} disabled={sending}>Отмена</button>
+      <button type="button" className="pq-btn" onClick={submit} disabled={sending}>{sending ? 'Отправляем…' : 'Да, отправить'}</button>
+    </span>
+  ))
+
   if (server === undefined || !mode) {
     return <div className="prg-section"><p className="prg-loading">Загружаем задание…</p></div>
   }
@@ -251,9 +263,9 @@ export default function ProgramQuiz({ quiz, direction, chapter, user }) {
       {/* ── Проверка перед отправкой ── */}
       {mode === 'review' && (
         <section className="prg-section">
-          <div className="prg-section-head">
-            <span className="prg-section-num">Отправка</span>
+          <div className="pq-review-head">
             <h2 className="prg-section-title">Проверь ответы перед отправкой</h2>
+            {sendControls('top')}
           </div>
           <p className="prg-p">
             {missing
@@ -276,15 +288,7 @@ export default function ProgramQuiz({ quiz, direction, chapter, user }) {
           {sendError && <div className="pq-alert" role="alert">{sendError}</div>}
           <div className="pq-nav">
             <button type="button" className="pq-btn is-ghost" onClick={() => goTo(questions.length - 1)}>← К вопросам</button>
-            {!confirming ? (
-              <button type="button" className="pq-btn" disabled={missing > 0} onClick={() => setConfirming(true)}>Отправить на проверку</button>
-            ) : (
-              <span className="pq-confirm">
-                <span>Отправить {questions.length} {plural(questions.length, 'ответ', 'ответа', 'ответов')} на проверку?</span>
-                <button type="button" className="pq-btn is-ghost" onClick={() => setConfirming(false)} disabled={sending}>Отмена</button>
-                <button type="button" className="pq-btn" onClick={submit} disabled={sending}>{sending ? 'Отправляем…' : 'Да, отправить'}</button>
-              </span>
-            )}
+            {sendControls('bottom')}
           </div>
         </section>
       )}

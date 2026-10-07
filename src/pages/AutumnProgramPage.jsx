@@ -1,6 +1,6 @@
 import { Fragment, useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import { PROGRAM_CONTACT, PROGRAM_PERIOD, directionOf } from '../data/programs'
+import { PROGRAM_CONTACT, PROGRAM_PERIOD, directionOf, taskKind } from '../data/programs'
 import ProgramBlocks, { ProgramContext, Rich } from '../components/program/ProgramBlocks'
 import ProgramQuiz from '../components/program/ProgramQuiz'
 import { api } from '../api'
@@ -71,10 +71,38 @@ function useProgramHomework(enabled) {
   return list
 }
 
-function taskLabel(ch, hw) {
-  if (!ch.quiz) return 'выполняется самостоятельно'
-  if (hw) return `сдано · ${HW_STATUS[hw.status] || hw.status}`
-  return 'вопросы · сдаётся на платформе'
+function taskLabel(dir, ch, hw) {
+  const kind = taskKind(dir, ch)
+  if (kind === 'quiz') return hw ? `сдано · ${HW_STATUS[hw.status] || hw.status}` : 'вопросы · сдаётся на платформе'
+  if (kind === 'trainer') return ch.taskHint || 'задачи SQL-тренажёра'
+  if (kind === 'file') return 'файлом в личные сообщения'
+  return 'выполняется самостоятельно'
+}
+
+// Как сдавать задание, которое не сдаётся на платформе
+function SubmitPanel({ kind }) {
+  if (kind === 'file') {
+    return (
+      <div className="prg-submit">
+        <div className="prg-submit-label">Как сдать</div>
+        <p>
+          Оформи выполненное задание в одном файле — Google Docs, Word, PDF или таблица, если в задании есть расчёты —
+          и отправь его в личные сообщения в Telegram:{' '}
+          <a href={PROGRAM_CONTACT.url} target="_blank" rel="noopener noreferrer">{PROGRAM_CONTACT.text}</a>.
+          В сообщении укажи свой ник на платформе и номер главы.
+        </p>
+      </div>
+    )
+  }
+  if (kind === 'trainer') {
+    return (
+      <div className="prg-submit">
+        <div className="prg-submit-label">Как сдать</div>
+        <p>Отправлять ничего не нужно: тренажёр проверяет каждое решение автоматически, а прогресс сохраняется в твоём профиле.</p>
+      </div>
+    )
+  }
+  return null
 }
 
 function Overview({ dir }) {
@@ -111,7 +139,7 @@ function Overview({ dir }) {
                   </button>
                   <button type="button" className={`prg-chapter-link is-task${hw ? ` is-${hw.status}` : ''}`} onClick={() => navigate(`/autumn-camp/program/${ch.num}/task`)}>
                     <span className="prg-chapter-link-name">Задание к главе</span>
-                    <span className="prg-chapter-link-meta">{taskLabel(ch, hw)}</span>
+                    <span className="prg-chapter-link-meta">{taskLabel(dir, ch, hw)}</span>
                     <span className="prg-chapter-link-go">→</span>
                   </button>
                 </div>
@@ -196,16 +224,21 @@ function Assignment({ a }) {
   )
 }
 
-function TaskCta({ meta }) {
+const CTA_TEXT = {
+  quiz: 'Вопросы по темам главы: ответь своими словами и отправь на проверку прямо на платформе.',
+  trainer: 'Задачи SQL-тренажёра по всем темам главы: решения проверяются автоматически.',
+  file: 'Самостоятельная работа по материалам главы: оформи её в одном файле и отправь в личные сообщения в Telegram.',
+  self: 'Самостоятельная работа по материалам главы — сдавать её на платформе не нужно.',
+}
+
+function TaskCta({ dir, meta }) {
   const navigate = useNavigate()
   return (
     <section className="prg-section prg-task-cta">
       <div>
         <div className="prg-task-cta-kicker">Конспект прочитан?</div>
         <h2 className="prg-section-title">Задание к главе {meta.num}</h2>
-        <p className="prg-p">{meta.quiz
-          ? 'Вопросы по темам главы: ответь своими словами и отправь на проверку прямо на платформе.'
-          : 'Самостоятельная работа по материалам главы — сдавать её на платформе не нужно.'}</p>
+        <p className="prg-p">{CTA_TEXT[taskKind(dir, meta)]}</p>
       </div>
       <button type="button" className="prg-task-cta-btn" onClick={() => navigate(`/autumn-camp/program/${meta.num}/task`)}>Перейти к заданию →</button>
     </section>
@@ -282,7 +315,7 @@ function Chapter({ dir, chapterNum }) {
               </section>
             </Fragment>
           ))}
-          <TaskCta meta={meta} />
+          <TaskCta dir={dir} meta={meta} />
         </div>
       </div>
     </section>
@@ -310,6 +343,8 @@ function Task({ dir, chapterNum, user }) {
   if (!chapter) return <section className="page active prg-page"><p className="prg-loading">Загружаем задание…</p></section>
 
   const count = quiz ? (quiz.variants ? `${quiz.questions.filter(q => !q.python).length} или ${quiz.questions.length}` : quiz.questions.length) : 0
+  const kind = taskKind(dir, meta, chapter)
+  const KIND_CHIP = { trainer: 'Проверяется в тренажёре', file: 'Сдаётся файлом в Telegram', self: 'Сдавать на платформе не нужно' }
 
   return (
     <section className="page active prg-page">
@@ -321,7 +356,7 @@ function Task({ dir, chapterNum, user }) {
         <div className="prg-hero-meta">
           {quiz
             ? <span className="prg-chip">{count} вопросов · сдаётся на платформе</span>
-            : <span className="prg-chip">Сдавать на платформе не нужно</span>}
+            : <span className="prg-chip">{KIND_CHIP[kind]}</span>}
           {!quiz && chapter.assignment?.time && <span className="prg-chip">{chapter.assignment.time}</span>}
         </div>
       </div>
@@ -331,7 +366,11 @@ function Task({ dir, chapterNum, user }) {
           {quiz
             ? <ProgramQuiz quiz={quiz} direction={dir.key} chapter={chapter.num} user={user} />
             : chapter.assignment
-              ? <Assignment a={chapter.assignment} />
+              ? <>
+                  <SubmitPanel kind={kind} />
+                  <Assignment a={chapter.assignment} />
+                  {kind === 'file' && <SubmitPanel kind={kind} />}
+                </>
               : <div className="prg-empty">Задание к этой главе скоро появится.</div>}
         </div>
       </ProgramContext.Provider>
