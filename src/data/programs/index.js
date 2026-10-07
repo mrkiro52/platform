@@ -1,5 +1,5 @@
 // Индивидуальные программы осеннего лагеря на октябрь.
-// Направление хранится у пользователя в users.autumn_direction (product / system / business / security / backend).
+// Направление хранится у пользователя в users.autumn_direction (product / system / business / backend / security / ml).
 // Главы подгружаются лениво: у каждой — разделы теории и задание в конце.
 
 export const PROGRAM_PERIOD = '1–31 октября'
@@ -41,6 +41,13 @@ export const DIRECTIONS = {
     chapters: [
       { num: 1, title: 'Профессия, конкурентность, сети и проектирование API', sections: 9, load: () => import('./backend-1') },
     ],
+  },
+  ml: {
+    key: 'ml',
+    name: 'Машинное обучение',
+    dative: 'машинному обучению',
+    goal: 'Путь к офферу intern / junior ML-инженера',
+    chapters: [],
   },
   security: {
     key: 'security',

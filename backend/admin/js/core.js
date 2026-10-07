@@ -282,6 +282,7 @@ const NAV = [
   { label: 'Платформа', items: [
     { id: 'users', path: '/users', label: 'Пользователи', icon: 'users', scopes: MAIN },
     { id: 'announcements', path: '/announcements', label: 'Объявления', icon: 'megaphone', scopes: MAIN },
+    { id: 'programs', path: '/programs', label: 'Программы октября', icon: 'graduation-cap', scopes: MAIN },
   ] },
   { label: 'Созвоны', items: [
     { id: 'calls', path: '/calls', label: 'Слоты созвонов', icon: 'calendar-plus', scopes: MAIN },
@@ -298,6 +299,9 @@ const ROUTES = [
   { re: /^\/tasks$/, page: 'tasks', nav: 'tasks', title: 'Задачи', scopes: ALL },
   { re: /^\/users$/, page: 'users', nav: 'users', title: 'Пользователи', scopes: MAIN },
   { re: /^\/announcements$/, page: 'announcements', nav: 'announcements', title: 'Объявления', scopes: MAIN },
+  { re: /^\/programs$/, page: 'programs', nav: 'programs', title: 'Программы октября', scopes: MAIN },
+  { re: /^\/programs\/([a-z]+)$/, page: 'programDirection', nav: 'programs', title: 'Программы октября', scopes: MAIN, keys: ['dir'] },
+  { re: /^\/programs\/([a-z]+)\/(\d+|start)$/, page: 'programChapter', nav: 'programs', title: 'Программы октября', scopes: MAIN, keys: ['dir', 'chapter'] },
   { re: /^\/calls$/, page: 'calls', nav: 'calls', title: 'Слоты созвонов', scopes: MAIN },
   { re: /^\/calls\/calendar$/, page: 'callsCalendar', nav: 'calls-calendar', title: 'Календарь записей', scopes: MAIN },
   { re: /^\/homework$/, page: 'homework', nav: 'homework', title: 'Проверка ДЗ', scopes: BOTH },

@@ -1,12 +1,15 @@
 // Отрисовка блоков главы индивидуальной программы.
 // Разметка в тексте: **жирный**, _курсив_, перевод строки — \n.
 
+// Курсив — только _слово_ на границе слов, чтобы не ломать created_at и __name__
+const RICH = /(\*\*[^*]+\*\*|(?<![\p{L}\p{N}_])_[^_\n]+_(?![\p{L}\p{N}_]))/gu
+
 export function Rich({ text }) {
   const lines = String(text).split('\n')
   return lines.map((line, li) => (
     <span key={li}>
       {li > 0 && <br />}
-      {line.split(/(\*\*[^*]+\*\*|_[^_]+_)/g).map((part, i) => {
+      {line.split(RICH).map((part, i) => {
         if (part.startsWith('**') && part.endsWith('**') && part.length > 4) return <strong key={i}>{part.slice(2, -2)}</strong>
         if (part.startsWith('_') && part.endsWith('_') && part.length > 2) return <em key={i}>{part.slice(1, -1)}</em>
         return part
