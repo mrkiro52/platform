@@ -11,7 +11,9 @@ export const DIRECTIONS = {
     name: 'Продуктовая аналитика',
     dative: 'продуктовой аналитике',
     goal: 'Путь к офферу junior продуктового аналитика',
-    chapters: [],
+    chapters: [
+      { num: 1, title: 'Профессия, продуктовое мышление и метрики', sections: 6, load: () => import('./product-1') },
+    ],
   },
   system: {
     key: 'system',

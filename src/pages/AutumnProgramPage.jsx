@@ -118,20 +118,22 @@ function Assignment({ a }) {
           </div>
         ))}
 
-        <div className="prg-part">
-          <div className="prg-part-head">
-            <h3>{a.selfCheckTitle || 'Вопросы для самопроверки'}</h3>
-            {a.selfCheckMinutes && <span className="prg-chip">{a.selfCheckMinutes} минут</span>}
+        {a.selfCheck?.length > 0 && (
+          <div className="prg-part">
+            <div className="prg-part-head">
+              <h3>{a.selfCheckTitle || 'Вопросы для самопроверки'}</h3>
+              {a.selfCheckMinutes && <span className="prg-chip">{a.selfCheckMinutes} минут</span>}
+            </div>
+            <p className="prg-p">{a.selfCheckIntro}</p>
+            <ol className="prg-ol">
+              {a.selfCheck.map((q, i) => <li key={i}>{q}</li>)}
+            </ol>
           </div>
-          <p className="prg-p">{a.selfCheckIntro}</p>
-          <ol className="prg-ol">
-            {a.selfCheck.map((q, i) => <li key={i}>{q}</li>)}
-          </ol>
-        </div>
+        )}
       </div>
 
       <div className="prg-criteria">
-        <div className="prg-criteria-title">Критерии оценки</div>
+        <div className="prg-criteria-title">{a.criteriaTitle || 'Критерии оценки'}</div>
         <ul>{a.criteria.map((c, i) => <li key={i}>{c}</li>)}</ul>
       </div>
     </section>
@@ -161,7 +163,7 @@ function Chapter({ dir, chapterNum }) {
       <div className="prg-hero">
         <span className="prg-tag">Глава {chapter.num}</span>
         <h1 className="prg-title">{chapter.title}</h1>
-        <p className="prg-lead">{chapter.summary}</p>
+        <p className="prg-lead">{chapter.intro || chapter.summary}</p>
         <div className="prg-hero-meta">
           <span className="prg-chip">{chapter.sections.length} {plural(chapter.sections.length, 'раздел', 'раздела', 'разделов')}</span>
           <span className="prg-chip">Задание: {chapter.assignment.time}</span>

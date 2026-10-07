@@ -974,6 +974,19 @@ function migrate() {
       console.error('❌ Migration 29 failed:', err.message)
     }
   }
+
+  // Migration 30: ещё один участник программы по продуктовой аналитике
+  if (schemaVersion < 30) {
+    try {
+      const set = db.prepare('UPDATE users SET autumn_direction = ? WHERE nickname = ? COLLATE NOCASE')
+      let assigned = 0
+      for (const nickname of ['Cheroketo', 'aeaelita']) assigned += set.run('product', nickname).changes
+      db.pragma('user_version = 30')
+      console.log(`✅ Migration 30 completed: product analytics direction for ${assigned} of 2 users`)
+    } catch (err) {
+      console.error('❌ Migration 30 failed:', err.message)
+    }
+  }
 }
 
 migrate()

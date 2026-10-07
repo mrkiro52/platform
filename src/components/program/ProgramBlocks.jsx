@@ -99,12 +99,32 @@ function Block({ b }) {
           ))}
         </div>
       )
+    case 'frac':
+      return (
+        <div className="prg-frac">
+          <span className="prg-frac-label">{b.label} =</span>
+          <span className="prg-frac-body">
+            <span className="prg-frac-num">{b.num}</span>
+            <span className="prg-frac-den">{b.den}</span>
+          </span>
+        </div>
+      )
+    case 'tree':
+      return (
+        <div className="prg-tree">
+          {b.lines.map(([level, text], i) => (
+            <div key={i} className={`prg-tree-row lvl-${level}`} style={{ paddingLeft: level * 22 }}>
+              <Rich text={text} />
+            </div>
+          ))}
+        </div>
+      )
     case 'note':
       return <div className="prg-note"><Rich text={b.text} /></div>
     case 'example':
       return (
         <div className="prg-example">
-          <span className="prg-example-label">Пример задачи</span>
+          <span className="prg-example-label">{b.label || 'Пример задачи'}</span>
           <span><Rich text={b.text} /></span>
         </div>
       )
