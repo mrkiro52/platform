@@ -40,6 +40,19 @@ function Pending({ title }) {
   )
 }
 
+function StartPanel({ start }) {
+  if (!start) return null
+  return (
+    <section id="prg-start" className="prg-section prg-start">
+      <div className="prg-section-head">
+        <span className="prg-section-num">Старт</span>
+        <h2 className="prg-section-title">{start.title}</h2>
+      </div>
+      <ProgramBlocks blocks={start.blocks} />
+    </section>
+  )
+}
+
 function Overview({ dir }) {
   const navigate = useNavigate()
   return (
@@ -48,9 +61,11 @@ function Overview({ dir }) {
       <div className="prg-hero">
         <span className="prg-tag">Индивидуальная программа · {PROGRAM_PERIOD}</span>
         <h1 className="prg-title">{dir.name}</h1>
-        <p className="prg-lead">{dir.goal}. Программа состоит из глав: в каждой — теория по разделам и задание для самостоятельной работы в конце.</p>
+        <p className="prg-lead">{dir.goal}. Программа состоит из глав: в каждой — теория по разделам{dir.practice ? `, ${dir.practice}` : ' и задание для самостоятельной работы в конце'}.</p>
         <ContactNote />
       </div>
+
+      <StartPanel start={dir.start} />
 
       <h2 className="prg-list-title">Главы программы</h2>
       {dir.chapters.length === 0 ? (
@@ -61,7 +76,7 @@ function Overview({ dir }) {
             <button key={ch.num} type="button" className="prg-chapter-card" onClick={() => navigate(`/autumn-camp/program/${ch.num}`)}>
               <span className="prg-chapter-num">Глава {ch.num}</span>
               <span className="prg-chapter-title">{ch.title}</span>
-              <span className="prg-chapter-meta">{ch.sections} {plural(ch.sections, 'раздел', 'раздела', 'разделов')} · задание в конце</span>
+              <span className="prg-chapter-meta">{ch.sections} {plural(ch.sections, 'раздел', 'раздела', 'разделов')} · {dir.practice || 'задание в конце'}</span>
               <span className="prg-chapter-open">Открыть →</span>
             </button>
           ))}
@@ -166,26 +181,35 @@ function Chapter({ dir, chapterNum }) {
         <p className="prg-lead">{chapter.intro || chapter.summary}</p>
         <div className="prg-hero-meta">
           <span className="prg-chip">{chapter.sections.length} {plural(chapter.sections.length, 'раздел', 'раздела', 'разделов')}</span>
-          <span className="prg-chip">Задание: {chapter.assignment.time}</span>
+          {chapter.assignment && <span className="prg-chip">Задание: {chapter.assignment.time}</span>}
         </div>
       </div>
 
       <div className="prg-layout">
         <nav className="prg-toc" aria-label="Содержание главы">
           <div className="prg-toc-label">Содержание</div>
+          {dir.start && (
+            <button type="button" className="prg-toc-item is-start" onClick={() => jump('prg-start')}>
+              <span className="prg-toc-num">→</span>
+              <span>{dir.start.title}</span>
+            </button>
+          )}
           {chapter.sections.map(s => (
             <button key={s.id} type="button" className="prg-toc-item" onClick={() => jump(`prg-${s.id}`)}>
               <span className="prg-toc-num">{s.num}</span>
               <span>{s.title}</span>
             </button>
           ))}
-          <button type="button" className="prg-toc-item is-task" onClick={() => jump('prg-assignment')}>
-            <span className="prg-toc-num">✓</span>
-            <span>Задание</span>
-          </button>
+          {chapter.assignment && (
+            <button type="button" className="prg-toc-item is-task" onClick={() => jump('prg-assignment')}>
+              <span className="prg-toc-num">✓</span>
+              <span>Задание</span>
+            </button>
+          )}
         </nav>
 
         <div className="prg-content">
+          <StartPanel start={dir.start} />
           {chapter.sections.map(s => (
             <section key={s.id} id={`prg-${s.id}`} className="prg-section">
               <div className="prg-section-head">
@@ -196,7 +220,7 @@ function Chapter({ dir, chapterNum }) {
               <Terms terms={s.terms} />
             </section>
           ))}
-          <Assignment a={chapter.assignment} />
+          {chapter.assignment && <Assignment a={chapter.assignment} />}
         </div>
       </div>
     </section>

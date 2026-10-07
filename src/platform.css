@@ -4701,6 +4701,7 @@ body.reels-lock {
 .prg-formula { margin: 12px 0 16px; padding: 14px 18px; background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-md); display: inline-flex; flex-direction: column; gap: 4px; max-width: 100%; }
 .prg-formula-row { display: grid; grid-template-columns: 18px minmax(0, 1fr); gap: 8px; font: 500 14px/1.6 var(--font-mono); color: var(--text-primary); }
 .prg-formula-op { color: var(--prg-text); font-weight: 700; }
+.prg-formula-row > span:last-child { overflow-wrap: anywhere; }
 
 .prg-flow { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 10px 0 16px; }
 .prg-flow-item { display: inline-flex; align-items: center; gap: 6px; }
@@ -4754,6 +4755,10 @@ body.reels-lock {
 .prg-term dd { margin: 0; font-size: 13px; line-height: 1.55; color: var(--text-secondary); }
 
 /* Задание */
+.prg-start { border-color: rgba(255,140,66,0.5); background: linear-gradient(180deg, rgba(255,140,66,0.06), transparent 240px), var(--bg-secondary); }
+.prg-start .prg-section-num { color: var(--prg-text); }
+.prg-page > .prg-start { margin-bottom: 28px; }
+.prg-toc-item.is-start { color: var(--text-primary); font-weight: 600; }
 .prg-assignment { border-color: rgba(255,140,66,0.5); background: linear-gradient(180deg, rgba(255,140,66,0.06), transparent 240px), var(--bg-secondary); }
 .prg-assign-meta { display: grid; grid-template-columns: minmax(0, 200px) minmax(0, 1fr); gap: 10px; margin-bottom: 16px; }
 .prg-assign-meta > div { background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 12px 14px; display: flex; flex-direction: column; gap: 4px; }

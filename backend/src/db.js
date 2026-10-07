@@ -987,6 +987,18 @@ function migrate() {
       console.error('❌ Migration 30 failed:', err.message)
     }
   }
+
+  if (schemaVersion < 31) {
+    try {
+      const set = db.prepare('UPDATE users SET autumn_direction = ? WHERE nickname = ? COLLATE NOCASE')
+      let assigned = 0
+      for (const nickname of ['pomakhrova', 'linusya_vl', 'Tyda7Syda']) assigned += set.run('security', nickname).changes
+      db.pragma('user_version = 31')
+      console.log(`✅ Migration 31 completed: information security direction for ${assigned} of 3 users`)
+    } catch (err) {
+      console.error('❌ Migration 31 failed:', err.message)
+    }
+  }
 }
 
 migrate()
