@@ -244,7 +244,7 @@ const ProgramChapterPage = {
     }
 
     const [ch, quiz] = await Promise.all([
-      ProgramsData.chapter(dir, chapter),
+      meta.source ? ProgramsData.load(meta.source).then(m => ({ ...m.default, num: meta.num })) : ProgramsData.chapter(dir, chapter),
       meta.quiz ? ProgramsData.quiz(dir, chapter) : Promise.resolve(null),
     ])
     if (ctx.stale()) return

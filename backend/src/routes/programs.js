@@ -21,6 +21,8 @@ const DIRECTION_NAMES = {
   ml: 'Машинное обучение',
 }
 // Задания, которые сдаются на платформе: направление → главы
+// Глава одного направления может повторять главу другого — тогда и файлы общие
+const FILE_ALIASES = { 'product-3': 'ml-1' }
 const SUBMITTABLE = { backend: [1, 2], security: [1] }
 // Варианты вопросов есть не у всех заданий: ключ — направление и глава
 const VARIANTS = { 'backend-1': ['base', 'python'] }
@@ -151,7 +153,8 @@ router.get('/files/:direction/:chapter/:name', verifyToken, (req, res) => {
       return res.status(403).json({ message: 'Файл доступен студентам этой программы' })
     }
   }
-  const file = path.join(FILES_DIR, `${direction}-${chapter}`, name)
+  const key = `${direction}-${chapter}`
+  const file = path.join(FILES_DIR, FILE_ALIASES[key] || key, name)
   if (!file.startsWith(FILES_DIR + path.sep) || !fs.existsSync(file)) {
     return res.status(404).json({ message: 'Файл не найден' })
   }

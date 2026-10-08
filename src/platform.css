@@ -4844,6 +4844,7 @@ body.reels-lock {
 .prg-formula-op { color: var(--prg-text); font-weight: 700; }
 .prg-code { margin: 12px 0 16px; padding: 14px 18px; background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-md); overflow-x: auto; font: 500 13px/1.6 var(--font-mono); color: var(--text-primary); white-space: pre; tab-size: 4; }
 .prg-code code { font: inherit; background: none; padding: 0; }
+.prg-code, .prg-code code { font-variant-ligatures: none; font-feature-settings: 'liga' 0, 'calt' 0; }
 .prg-divider { display: flex; align-items: center; gap: 14px; margin: 14px 0 0; color: var(--prg-text); font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
 .prg-divider::before, .prg-divider::after { content: ''; flex: 1; height: 1px; background: rgba(255,140,66,0.35); }
 .prg-toc-divider { margin: 8px 0 2px; padding: 10px 10px 4px; border-top: 1px solid var(--border-color); color: var(--prg-text); font-size: 10.5px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }

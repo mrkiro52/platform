@@ -19,6 +19,8 @@ export const DIRECTIONS = {
     chapters: [
       { num: 1, title: 'Профессия, продуктовое мышление и метрики', sections: 6, load: () => import('./product-1') },
       { num: 2, title: 'SQL для продуктового аналитика', sections: 8, load: () => import('./product-2'), submit: 'trainer', taskHint: 'все задачи SQL-тренажёра' },
+      // Глава 3 — та же, что глава 1 программы ML; ноутбуки и датасеты общие (FILE_ALIASES на бэкенде)
+      { num: 3, title: 'Основы NumPy, pandas и Matplotlib', sections: 6, source: 'ml-1', load: () => import('./ml-1').then(m => ({ default: { ...m.default, num: 3 } })) },
     ],
   },
   system: {
@@ -30,6 +32,7 @@ export const DIRECTIONS = {
     chapters: [
       { num: 1, title: 'Профессия и процесс разработки', sections: 4, load: () => import('./system-1') },
       { num: 2, title: 'Требования — ядро профессии', sections: 8, load: () => import('./system-2') },
+      { num: 3, title: 'Моделирование и нотации', sections: 9, load: () => import('./system-3') },
     ],
   },
   business: {
@@ -41,6 +44,7 @@ export const DIRECTIONS = {
     chapters: [
       { num: 1, title: 'Профессия', sections: 4, load: () => import('./business-1') },
       { num: 2, title: 'Бизнес-основы и экономика', sections: 6, load: () => import('./business-2') },
+      { num: 3, title: 'Метрики', sections: 8, load: () => import('./business-3') },
     ],
   },
   backend: {
