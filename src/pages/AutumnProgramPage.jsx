@@ -76,6 +76,7 @@ function taskLabel(dir, ch, hw) {
   if (kind === 'quiz') return hw ? `сдано · ${HW_STATUS[hw.status] || hw.status}` : 'вопросы · сдаётся на платформе'
   if (kind === 'trainer') return ch.taskHint || 'задачи SQL-тренажёра'
   if (kind === 'file') return 'файлом в личные сообщения'
+  if (kind === 'soon') return 'скоро появится'
   return 'выполняется самостоятельно'
 }
 
@@ -229,6 +230,7 @@ const CTA_TEXT = {
   trainer: 'Задачи SQL-тренажёра по всем темам главы: решения проверяются автоматически.',
   file: 'Самостоятельная работа по материалам главы: оформи её в одном файле и отправь в личные сообщения в Telegram.',
   self: 'Самостоятельная работа по материалам главы — сдавать её на платформе не нужно.',
+  soon: 'Задание к этой главе скоро появится — а пока проверь себя по вопросам в конце конспекта.',
 }
 
 function TaskCta({ dir, meta }) {
@@ -344,7 +346,7 @@ function Task({ dir, chapterNum, user }) {
 
   const count = quiz ? (quiz.variants ? `${quiz.questions.filter(q => !q.python).length} или ${quiz.questions.length}` : quiz.questions.length) : 0
   const kind = taskKind(dir, meta, chapter)
-  const KIND_CHIP = { trainer: 'Проверяется в тренажёре', file: 'Сдаётся файлом в Telegram', self: 'Сдавать на платформе не нужно' }
+  const KIND_CHIP = { trainer: 'Проверяется в тренажёре', file: 'Сдаётся файлом в Telegram', self: 'Сдавать на платформе не нужно', soon: 'Задание скоро появится' }
 
   return (
     <section className="page active prg-page">

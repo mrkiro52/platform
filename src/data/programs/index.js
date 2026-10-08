@@ -60,6 +60,7 @@ export const DIRECTIONS = {
     goal: 'Путь к офферу intern / junior ML-инженера',
     chapters: [
       { num: 1, title: 'Основы NumPy, pandas и Matplotlib', sections: 6, load: () => import('./ml-1') },
+      { num: 2, title: 'Классическое машинное обучение: базовые понятия', sections: 8, load: () => import('./ml-2'), submit: 'soon' },
     ],
   },
   security: {
@@ -98,7 +99,8 @@ export const DIRECTIONS = {
 }
 
 // Как сдаётся задание главы: quiz — вопросы на платформе, trainer — задачи
-// тренажёра, file — файлом в личные сообщения, self — сдавать не нужно
+// тренажёра, file — файлом в личные сообщения, self — сдавать не нужно,
+// soon — задание к главе ещё не опубликовано
 export function taskKind(dir, meta, chapter) {
   if (meta?.quiz) return 'quiz'
   return chapter?.assignment?.submit || meta?.submit || dir?.submit || 'self'

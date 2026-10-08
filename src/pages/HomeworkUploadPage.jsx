@@ -92,7 +92,7 @@ function OctoberHomework({ user }) {
               <button key={ch.num} type="button" className="hwup-month-row" onClick={() => navigate(`/autumn-camp/program/${ch.num}/task`)}>
                 <span className="hwup-month-num">Глава {ch.num}</span>
                 <span className="hwup-month-name">{ch.title}</span>
-                <span className="hwup-month-status">{kind === 'trainer' ? 'SQL-тренажёр' : kind === 'file' ? 'файлом в Telegram' : 'самостоятельно'}</span>
+                <span className="hwup-month-status">{kind === 'trainer' ? 'SQL-тренажёр' : kind === 'file' ? 'файлом в Telegram' : kind === 'soon' ? 'скоро появится' : 'самостоятельно'}</span>
                 <span className="hwup-month-go">Открыть →</span>
               </button>
             )

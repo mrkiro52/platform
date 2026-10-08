@@ -202,7 +202,7 @@ const ProgramDirectionPage = {
             <a class="prog-chapter" href="${BASE}/programs/${esc(d.key)}/${ch.num}">
               <span class="prog-chapter-num">Глава ${ch.num}</span>
               <span class="prog-chapter-title">${esc(ch.title)}</span>
-              <span class="prog-chapter-meta">${ch.sections} ${plural(ch.sections, 'раздел', 'раздела', 'разделов')} · ${ch.quiz ? 'задание: вопросы, сдаётся на платформе' : ch.submit === 'trainer' ? 'задание: SQL-тренажёр' : d.submit === 'file' ? 'задание: файлом в личные сообщения' : 'задание выполняется самостоятельно'}</span>
+              <span class="prog-chapter-meta">${ch.sections} ${plural(ch.sections, 'раздел', 'раздела', 'разделов')} · ${ch.quiz ? 'задание: вопросы, сдаётся на платформе' : ch.submit === 'trainer' ? 'задание: SQL-тренажёр' : ch.submit === 'soon' ? 'задание ещё не опубликовано' : d.submit === 'file' ? 'задание: файлом в личные сообщения' : 'задание выполняется самостоятельно'}</span>
               ${icon('chevron-right', 16)}
             </a>`).join('') : emptyState('book-open', 'Материал ещё готовится', 'Студенты видят «Первая глава программы скоро появится»', true)}
         </section>
