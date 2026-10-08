@@ -21,8 +21,9 @@ const DIRECTION_NAMES = {
   ml: 'Машинное обучение',
 }
 // Задания, которые сдаются на платформе: направление → главы
-const SUBMITTABLE = { backend: [1], security: [1] }
-const VARIANTS = { backend: ['base', 'python'] }
+const SUBMITTABLE = { backend: [1, 2], security: [1] }
+// Варианты вопросов есть не у всех заданий: ключ — направление и глава
+const VARIANTS = { 'backend-1': ['base', 'python'] }
 const MAX_ANSWERS = 200
 const MAX_ANSWER_LENGTH = 20000
 
@@ -89,7 +90,7 @@ router.put('/homework/:direction/:chapter', requireCampStudent, (req, res) => {
     }
 
     const { variant, answers } = req.body
-    const variants = VARIANTS[direction]
+    const variants = VARIANTS[`${direction}-${chapter}`]
     if (variants && !variants.includes(variant)) {
       return res.status(400).json({ message: 'Выбери вариант вопросов' })
     }
@@ -102,9 +103,12 @@ router.put('/homework/:direction/:chapter', requireCampStudent, (req, res) => {
       const question = String(item?.question || '').trim()
       const answer = String(item?.answer || '').trim()
       if (!id || !question) return res.status(400).json({ message: 'Некорректный вопрос в работе' })
-      if (!answer) return res.status(400).json({ message: 'Ответь на все вопросы — пустых ответов быть не должно' })
       if (answer.length > MAX_ANSWER_LENGTH) return res.status(400).json({ message: 'Один из ответов слишком длинный' })
       clean.push({ id, question: question.slice(0, 2000), answer })
+    }
+    // Пустые ответы разрешены, но совсем пустую работу не принимаем
+    if (!clean.some(a => a.answer)) {
+      return res.status(400).json({ message: 'Ответь хотя бы на один вопрос' })
     }
 
     const existing = db.prepare('SELECT status FROM program_homework WHERE user_id = ? AND direction = ? AND chapter = ?')
@@ -183,6 +187,7 @@ router.get('/admin/homework', requireHomeworkReview, (req, res) => {
     res.json(rows.map(r => {
       const item = mapAdminRow(r)
       item.answersCount = item.answers.length
+      item.answeredCount = item.answers.filter(a => a.answer).length
       delete item.answers
       return item
     }))

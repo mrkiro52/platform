@@ -135,7 +135,7 @@ export default function ProgramQuiz({ quiz, direction, chapter, user }) {
     try {
       const saved = await api.submitProgramHomework(direction, chapter, {
         variant: draft.variant || undefined,
-        answers: questions.map(q => ({ id: q.id, question: q.text, answer: draft.answers[q.id].trim() })),
+        answers: questions.map(q => ({ id: q.id, question: q.text, answer: (draft.answers[q.id] || '').trim() })),
       })
       setServer(saved)
       setMode('done')
@@ -151,10 +151,13 @@ export default function ProgramQuiz({ quiz, direction, chapter, user }) {
   // Кнопка отправки стоит и в шапке проверки, и внизу списка: подтверждение
   // раскрывается там, где нажали
   const sendControls = (place) => (confirming !== place ? (
-    <button type="button" className="pq-btn" disabled={missing > 0 || Boolean(confirming)} onClick={() => setConfirming(place)}>Отправить на проверку</button>
+    <button type="button" className="pq-btn" disabled={answered === 0 || Boolean(confirming)} onClick={() => setConfirming(place)}>Отправить на проверку</button>
   ) : (
     <span className="pq-confirm">
-      <span>Отправить {questions.length} {plural(questions.length, 'ответ', 'ответа', 'ответов')} на проверку?</span>
+      <span>
+        Отправить на проверку?
+        {missing > 0 && ` Без ответа останется ${missing} ${plural(missing, 'вопрос', 'вопроса', 'вопросов')}.`}
+      </span>
       <button type="button" className="pq-btn is-ghost" onClick={() => setConfirming(false)} disabled={sending}>Отмена</button>
       <button type="button" className="pq-btn" onClick={submit} disabled={sending}>{sending ? 'Отправляем…' : 'Да, отправить'}</button>
     </span>
@@ -269,7 +272,7 @@ export default function ProgramQuiz({ quiz, direction, chapter, user }) {
           </div>
           <p className="prg-p">
             {missing
-              ? `Осталось ответить на ${missing} ${plural(missing, 'вопрос', 'вопроса', 'вопросов')} — они отмечены ниже. Нажми на вопрос, чтобы вернуться к нему.`
+              ? `Без ответа ${missing} ${plural(missing, 'вопрос', 'вопроса', 'вопросов')} — они отмечены ниже. Отправить можно и так, но лучше вернуться и ответить: нажми на вопрос.`
               : 'На все вопросы есть ответы. Нажми на вопрос, если хочешь что-то поправить.'}
           </p>
           <ol className="pq-review">
@@ -307,7 +310,7 @@ export default function ProgramQuiz({ quiz, direction, chapter, user }) {
             {server.answers.map((a, i) => (
               <li key={a.id}>
                 <div className="pq-sent-q"><span>{i + 1}</span>{a.question}</div>
-                <div className="pq-sent-a">{a.answer}</div>
+                <div className={`pq-sent-a${a.answer ? '' : ' is-empty'}`}>{a.answer || 'Без ответа'}</div>
               </li>
             ))}
           </ol>

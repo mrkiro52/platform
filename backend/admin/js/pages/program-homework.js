@@ -18,7 +18,7 @@ function prgHwMarkdown(h) {
   if (h.submittedAt) lines.push(`Отправлено: ${stampLabel(h.submittedAt)}`)
   lines.push(`Статус: ${(HW_STATUS[h.status] || HW_STATUS.submitted).label}`, '')
   h.answers.forEach((a, i) => {
-    lines.push('---', '', `## Вопрос ${i + 1}`, '', `**Вопрос:** ${a.question}`, '', `**Ответ:** ${a.answer}`, '')
+    lines.push('---', '', `## Вопрос ${i + 1}`, '', `**Вопрос:** ${a.question}`, '', `**Ответ:** ${a.answer || '— (без ответа)'}`, '')
   })
   return lines.join('\n')
 }
@@ -104,7 +104,7 @@ const ProgramHomeworkPage = {
                   <div><div class="cell-main">${esc(login)}</div>${h.user.name && h.user.name !== h.user.nickname ? `<div class="cell-sub">${esc(h.user.name)}</div>` : ''}</div>
                 </div></td>
                 <td><div class="cell-main">${esc(h.directionName)} · глава ${h.chapter}</div>${h.variant ? `<div class="cell-sub">${esc(PRG_HW_VARIANTS[h.variant] || h.variant)}</div>` : ''}</td>
-                <td class="r num">${fmt(h.answersCount)}</td>
+                <td class="r num">${h.answeredCount ?? h.answersCount} из ${fmt(h.answersCount)}</td>
                 <td class="nowrap">${h.submittedAt ? stampLabel(h.submittedAt) : '—'}</td>
                 <td><span class="badge ${st.badge}">${st.label}</span></td>
                 <td class="actions"><div><a class="btn btn-tint btn-sm" href="${BASE}/homework/october/${h.id}" onclick="event.stopPropagation()">Открыть${icon('arrow-right', 14)}</a></div></td>
@@ -163,7 +163,7 @@ const ProgramHomeworkItemPage = {
         ${h.answers.map((a, i) => `
           <li class="phw-answer">
             <div class="phw-q"><span class="phw-num">${i + 1}</span><span>${esc(a.question)}</span></div>
-            <div class="phw-a">${esc(a.answer)}</div>
+            ${a.answer ? `<div class="phw-a">${esc(a.answer)}</div>` : '<div class="phw-a is-empty">Без ответа</div>'}
           </li>`).join('')}
       </ol>`
   },

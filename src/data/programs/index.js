@@ -50,6 +50,7 @@ export const DIRECTIONS = {
     goal: 'Путь к офферу intern / junior Python backend-разработчика',
     chapters: [
       { num: 1, title: 'Профессия, конкурентность, сети и проектирование API', sections: 9, load: () => import('./backend-1'), quiz: () => import('./backend-1-quiz') },
+      { num: 2, title: 'Базы данных', sections: 12, load: () => import('./backend-2'), quiz: () => import('./backend-2-quiz') },
     ],
   },
   ml: {
