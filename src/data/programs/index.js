@@ -64,7 +64,7 @@ export const DIRECTIONS = {
     goal: 'Путь к офферу intern / junior ML-инженера',
     chapters: [
       { num: 1, title: 'Основы NumPy, pandas и Matplotlib', sections: 6, load: () => import('./ml-1') },
-      { num: 2, title: 'Классическое машинное обучение: базовые понятия', sections: 8, load: () => import('./ml-2'), submit: 'soon' },
+      { num: 2, title: 'Классическое машинное обучение: базовые понятия', sections: 8, load: () => import('./ml-2') },
     ],
   },
   security: {
