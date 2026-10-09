@@ -1,6 +1,6 @@
 import { Fragment, useEffect, useState } from 'react'
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
-import { PROGRAM_CONTACT, PROGRAM_PERIOD, combineTrack, directionOf, taskKind } from '../data/programs'
+import { PROGRAM_CONTACT, PROGRAM_PERIOD, chapterName, chapterRef, combineTrack, directionOf, findChapter, taskKind } from '../data/programs'
 import ProgramBlocks, { ProgramContext, Rich } from '../components/program/ProgramBlocks'
 import ProgramQuiz from '../components/program/ProgramQuiz'
 import { api } from '../api'
@@ -108,7 +108,6 @@ function SubmitPanel({ kind }) {
 }
 
 function Overview({ dir }) {
-  const navigate = useNavigate()
   const homework = useProgramHomework(dir.chapters.some(c => c.quiz))
   return (
     <section className="page active prg-page">
@@ -127,30 +126,43 @@ function Overview({ dir }) {
         <div className="prg-empty">Первая глава программы скоро появится.</div>
       ) : (
         <div className="prg-chapters">
-          {dir.chapters.map(ch => {
-            const hw = homework.find(h => h.direction === dir.key && h.chapter === ch.num)
-            return (
-              <div key={ch.num} className="prg-chapter-card">
-                <span className="prg-chapter-num">Глава {ch.num}</span>
-                <span className="prg-chapter-title">{ch.title}</span>
-                <div className="prg-chapter-links">
-                  <button type="button" className="prg-chapter-link" onClick={() => navigate(`/autumn-camp/program/${ch.num}`)}>
-                    <span className="prg-chapter-link-name">Конспект</span>
-                    <span className="prg-chapter-link-meta">{ch.tracks ? `на выбор: ${ch.tracks.map(t => t.name).join(' или ')}` : `${ch.sections} ${plural(ch.sections, 'раздел', 'раздела', 'разделов')}`}</span>
-                    <span className="prg-chapter-link-go">→</span>
-                  </button>
-                  <button type="button" className={`prg-chapter-link is-task${hw ? ` is-${hw.status}` : ''}`} onClick={() => navigate(`/autumn-camp/program/${ch.num}/task`)}>
-                    <span className="prg-chapter-link-name">Задание к главе</span>
-                    <span className="prg-chapter-link-meta">{taskLabel(dir, ch, hw)}</span>
-                    <span className="prg-chapter-link-go">→</span>
-                  </button>
-                </div>
-              </div>
-            )
-          })}
+          {dir.chapters.map(ch => <ChapterCard key={chapterRef(ch)} dir={dir} ch={ch} homework={homework} />)}
         </div>
       )}
+
+      {dir.extra?.length > 0 && (
+        <>
+          <h2 className="prg-list-title">Дополнительные главы</h2>
+          <div className="prg-chapters">
+            {dir.extra.map(ch => <ChapterCard key={chapterRef(ch)} dir={dir} ch={ch} homework={homework} />)}
+          </div>
+        </>
+      )}
     </section>
+  )
+}
+
+function ChapterCard({ dir, ch, homework }) {
+  const navigate = useNavigate()
+  const ref = chapterRef(ch)
+  const hw = homework.find(h => h.direction === dir.key && h.chapter === ch.num)
+  return (
+    <div className={`prg-chapter-card${ch.key ? ' is-extra' : ''}`}>
+      <span className="prg-chapter-num">{chapterName(ch)}</span>
+      <span className="prg-chapter-title">{ch.title}</span>
+      <div className="prg-chapter-links">
+        <button type="button" className="prg-chapter-link" onClick={() => navigate(`/autumn-camp/program/${ref}`)}>
+          <span className="prg-chapter-link-name">Конспект</span>
+          <span className="prg-chapter-link-meta">{ch.tracks ? `на выбор: ${ch.tracks.map(t => t.name).join(' или ')}` : `${ch.sections} ${plural(ch.sections, 'раздел', 'раздела', 'разделов')}`}</span>
+          <span className="prg-chapter-link-go">→</span>
+        </button>
+        <button type="button" className={`prg-chapter-link is-task${hw ? ` is-${hw.status}` : ''}`} onClick={() => navigate(`/autumn-camp/program/${ref}/task`)}>
+          <span className="prg-chapter-link-name">Задание к главе</span>
+          <span className="prg-chapter-link-meta">{taskLabel(dir, ch, hw)}</span>
+          <span className="prg-chapter-link-go">→</span>
+        </button>
+      </div>
+    </div>
   )
 }
 
@@ -240,16 +252,16 @@ function TaskCta({ dir, meta }) {
     <section className="prg-section prg-task-cta">
       <div>
         <div className="prg-task-cta-kicker">Конспект прочитан?</div>
-        <h2 className="prg-section-title">Задание к главе {meta.num}</h2>
+        <h2 className="prg-section-title">Задание к главе</h2>
         <p className="prg-p">{CTA_TEXT[taskKind(dir, meta)]}</p>
       </div>
-      <button type="button" className="prg-task-cta-btn" onClick={() => navigate(`/autumn-camp/program/${meta.num}/task`)}>Перейти к заданию →</button>
+      <button type="button" className="prg-task-cta-btn" onClick={() => navigate(`/autumn-camp/program/${chapterRef(meta)}/task`)}>Перейти к заданию →</button>
     </section>
   )
 }
 
 // Выбранный трек главы: из адреса (?lang=), иначе из прошлого выбора в этом браузере
-function trackStorageKey(dir, meta) { return `kiro-prg-track-${dir.key}-${meta.num}` }
+function trackStorageKey(dir, meta) { return `kiro-prg-track-${dir.key}-${chapterRef(meta)}` }
 function readSavedTrack(key) { try { return localStorage.getItem(key) } catch { return null } }
 function saveTrack(key, value) { try { localStorage.setItem(key, value) } catch { /* без сохранения */ } }
 
@@ -258,7 +270,7 @@ function TrackPicker({ dir, meta, onPick }) {
     <section className="page active prg-page">
       <BackLink to="/autumn-camp/program">{dir.name}</BackLink>
       <div className="prg-hero">
-        <span className="prg-tag">Глава {meta.num}</span>
+        <span className="prg-tag">{chapterName(meta)}</span>
         <h1 className="prg-title">{meta.title}</h1>
         <p className="prg-lead">{meta.pickIntro || 'В этой главе есть выбор: выбери язык, который будешь изучать. Общие темы одинаковы для обоих треков.'}</p>
       </div>
@@ -276,10 +288,10 @@ function TrackPicker({ dir, meta, onPick }) {
   )
 }
 
-function Chapter({ dir, chapterNum }) {
+function Chapter({ dir, chapterRef: ref }) {
   const navigate = useNavigate()
   const [params, setParams] = useSearchParams()
-  const meta = dir.chapters.find(c => c.num === chapterNum)
+  const meta = findChapter(dir, ref)
   const [chapter, setChapter] = useState(null)
   const storageKey = meta?.tracks ? trackStorageKey(dir, meta) : null
   const track = meta?.tracks?.find(t => t.key === (params.get('lang') || readSavedTrack(storageKey))) || null
@@ -312,12 +324,12 @@ function Chapter({ dir, chapterNum }) {
     <section className="page active prg-page">
       <BackLink to="/autumn-camp/program">{dir.name}</BackLink>
       <div className="prg-hero">
-        <span className="prg-tag">Глава {chapter.num}</span>
+        <span className="prg-tag">{chapterName(meta)}</span>
         <h1 className="prg-title">{chapter.title}</h1>
         <p className="prg-lead">{chapter.intro || chapter.summary}</p>
         <div className="prg-hero-meta">
           <span className="prg-chip">{chapter.sections.length} {plural(chapter.sections.length, 'раздел', 'раздела', 'разделов')}</span>
-          <button type="button" className="prg-chip is-link" onClick={() => navigate(`/autumn-camp/program/${chapter.num}/task`)}>Задание к главе →</button>
+          <button type="button" className="prg-chip is-link" onClick={() => navigate(`/autumn-camp/program/${chapterRef(meta)}/task`)}>Задание к главе →</button>
         </div>
         {meta.tracks && (
           <div className="prg-track-switch" role="group" aria-label="Язык">
@@ -347,7 +359,7 @@ function Chapter({ dir, chapterNum }) {
               </button>
             </Fragment>
           ))}
-          <button type="button" className="prg-toc-item is-task" onClick={() => navigate(`/autumn-camp/program/${chapter.num}/task`)}>
+          <button type="button" className="prg-toc-item is-task" onClick={() => navigate(`/autumn-camp/program/${chapterRef(meta)}/task`)}>
             <span className="prg-toc-num">✓</span>
             <span>Задание к главе</span>
           </button>
@@ -375,8 +387,8 @@ function Chapter({ dir, chapterNum }) {
   )
 }
 
-function Task({ dir, chapterNum, user }) {
-  const meta = dir.chapters.find(c => c.num === chapterNum)
+function Task({ dir, chapterRef: ref, user }) {
+  const meta = findChapter(dir, ref)
   const [chapter, setChapter] = useState(null)
   const [quiz, setQuiz] = useState(null)
 
@@ -401,10 +413,10 @@ function Task({ dir, chapterNum, user }) {
 
   return (
     <section className="page active prg-page">
-      <BackLink to={`/autumn-camp/program/${chapter.num}`}>Конспект главы {chapter.num}</BackLink>
+      <BackLink to={`/autumn-camp/program/${chapterRef(meta)}`}>Конспект: {chapterName(meta)}</BackLink>
       <div className="prg-hero">
-        <span className="prg-tag">Глава {chapter.num} · задание</span>
-        <h1 className="prg-title">Задание к главе {chapter.num}</h1>
+        <span className="prg-tag">{chapterName(meta)} · задание</span>
+        <h1 className="prg-title">Задание к главе</h1>
         <p className="prg-lead">{quiz ? quiz.intro : `${chapter.title}. Самостоятельная работа по материалам главы.`}</p>
         <div className="prg-hero-meta">
           {quiz
@@ -437,8 +449,8 @@ export default function AutumnProgramPage({ user, task = false }) {
 
   if (!user?.isAutumnCamp2026) return <Pending title="Программа доступна участникам осеннего лагеря" />
   if (!dir) return <Pending title="Твоя индивидуальная программа ещё готовится" />
-  if (chapter && task) return <Task dir={dir} chapterNum={Number(chapter)} user={user} />
-  if (chapter) return <Chapter dir={dir} chapterNum={Number(chapter)} />
+  if (chapter && task) return <Task dir={dir} chapterRef={chapter} user={user} />
+  if (chapter) return <Chapter dir={dir} chapterRef={chapter} />
   return <Overview dir={dir} />
 }
 

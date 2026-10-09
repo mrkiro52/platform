@@ -23,7 +23,7 @@ const DIRECTION_NAMES = {
 // Задания, которые сдаются на платформе: направление → главы
 // Глава одного направления может повторять главу другого — тогда и файлы общие
 const FILE_ALIASES = { 'product-3': 'ml-1' }
-const SUBMITTABLE = { backend: [1, 2], security: [1] }
+const SUBMITTABLE = { backend: [1, 2], security: [1], system: [5] }
 // Варианты вопросов есть не у всех заданий: ключ — направление и глава
 const VARIANTS = { 'backend-1': ['base', 'python'] }
 const MAX_ANSWERS = 200

@@ -179,6 +179,18 @@ const ProgramsPage = {
 
 // Направление: студенты и главы
 const ProgramDirectionPage = {
+  // Ссылка на главу: у основных глав — номер, у дополнительных — key и label
+  chapterLink(d, ch) {
+    const ref = ch.key ?? ch.num
+    return `
+            <a class="prog-chapter" href="${BASE}/programs/${esc(d.key)}/${esc(ref)}">
+              <span class="prog-chapter-num">${esc(ch.label || `Глава ${ch.num}`)}</span>
+              <span class="prog-chapter-title">${esc(ch.title)}</span>
+              <span class="prog-chapter-meta">${ch.tracks ? `треки: ${ch.tracks.map(t => esc(t.name)).join(' или ')}` : `${ch.sections} ${plural(ch.sections, 'раздел', 'раздела', 'разделов')}`} · ${ch.quiz ? 'задание: вопросы, сдаётся на платформе' : ch.submit === 'trainer' ? 'задание: SQL-тренажёр' : ch.submit === 'soon' ? 'задание ещё не опубликовано' : d.submit === 'file' ? 'задание: файлом в личные сообщения' : 'задание выполняется самостоятельно'}</span>
+              ${icon('chevron-right', 16)}
+            </a>`
+  },
+
   async render(view, ctx) {
     view.innerHTML = pageHead({ title: 'Программа', crumb: { path: '/programs', label: 'Программы октября' } }) + skeleton({ rows: 6 })
     const [{ list, period }, users] = await Promise.all([ProgramsData.directions(), api('/api/users')])
@@ -210,13 +222,8 @@ const ProgramDirectionPage = {
               <span class="prog-chapter-meta">Блок в начале программы и каждой главы</span>
               ${icon('chevron-right', 16)}
             </a>` : ''}
-          ${d.chapters.length ? d.chapters.map(ch => `
-            <a class="prog-chapter" href="${BASE}/programs/${esc(d.key)}/${ch.num}">
-              <span class="prog-chapter-num">Глава ${ch.num}</span>
-              <span class="prog-chapter-title">${esc(ch.title)}</span>
-              <span class="prog-chapter-meta">${ch.tracks ? `треки: ${ch.tracks.map(t => esc(t.name)).join(' или ')}` : `${ch.sections} ${plural(ch.sections, 'раздел', 'раздела', 'разделов')}`} · ${ch.quiz ? 'задание: вопросы, сдаётся на платформе' : ch.submit === 'trainer' ? 'задание: SQL-тренажёр' : ch.submit === 'soon' ? 'задание ещё не опубликовано' : d.submit === 'file' ? 'задание: файлом в личные сообщения' : 'задание выполняется самостоятельно'}</span>
-              ${icon('chevron-right', 16)}
-            </a>`).join('') : emptyState('book-open', 'Материал ещё готовится', 'Студенты видят «Первая глава программы скоро появится»', true)}
+          ${d.chapters.length ? d.chapters.map(ch => ProgramDirectionPage.chapterLink(d, ch)).join('') : emptyState('book-open', 'Материал ещё готовится', 'Студенты видят «Первая глава программы скоро появится»', true)}
+          ${d.extra?.length ? `<div class="prog-extra-title">Дополнительные главы</div>${d.extra.map(ch => ProgramDirectionPage.chapterLink(d, ch)).join('')}` : ''}
         </section>
         <section class="card">
           <div class="card-head">
@@ -242,7 +249,7 @@ const ProgramChapterPage = {
     view.innerHTML = pageHead({ title: 'Материал', crumb }) + skeleton({ rows: 8 })
     const { list } = await ProgramsData.directions()
     const d = list.find(x => x.key === dir)
-    const meta = d && (chapter === 'start' ? d.start : d.chapters.find(c => String(c.num) === chapter))
+    const meta = d && (chapter === 'start' ? d.start : [...d.chapters, ...(d.extra || [])].find(c => String(c.key ?? c.num) === chapter))
     if (!meta) {
       if (ctx.stale()) return
       view.innerHTML = pageHead({ title: 'Материал', crumb }) + `<div class="card">${emptyState('search', 'Такой главы нет')}</div>`
@@ -259,16 +266,16 @@ const ProgramChapterPage = {
 
     const track = meta.tracks && (meta.tracks.find(t => t.key === ProgramChapterPage.tracks[`${dir}-${chapter}`]) || meta.tracks[0])
     const [ch, quiz] = await Promise.all([
-      meta.source ? ProgramsData.load(meta.source).then(m => ({ ...m.default, num: meta.num }))
-        : track ? Promise.all([ProgramsData.chapter(dir, chapter), ProgramsData.load(track.file), ProgramsData.load('index')])
+      track ? Promise.all([meta.source ? ProgramsData.load(meta.source).then(m => m.default) : ProgramsData.chapter(dir, chapter), ProgramsData.load(track.file), ProgramsData.load('index')])
           .then(([base, t, idx]) => idx.combineTrack(base, { ...t.default, key: track.key, name: track.name }))
+        : meta.source ? ProgramsData.load(meta.source).then(m => ({ ...m.default, num: meta.num }))
         : ProgramsData.chapter(dir, chapter),
       meta.quiz ? ProgramsData.quiz(dir, chapter) : Promise.resolve(null),
     ])
     if (ctx.stale()) return
     const a = ch.assignment
     view.innerHTML = pageHead({
-      title: `Глава ${ch.num}. ${esc(ch.title)}`,
+      title: `${esc(meta.label || `Глава ${ch.num}`)}. ${esc(ch.title)}`,
       sub: esc(ch.intro || ch.summary),
       crumb,
     }) + `

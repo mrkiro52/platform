@@ -5,6 +5,7 @@
 // у остальных глав задание лежит в самой главе (assignment). submit: 'file' — аналитики
 // оформляют задание в файле и присылают в личные сообщения (PROGRAM_CONTACT);
 // у задания главы может быть свой способ сдачи (assignment.submit, например 'trainer').
+// extra — дополнительные главы вне основной нумерации (key вместо num, label вместо «Глава N»).
 // tracks — глава с выбором языка: студент выбирает трек, разделы трека идут перед общими (combineTrack).
 
 export const PROGRAM_PERIOD = '1–31 октября'
@@ -37,6 +38,7 @@ export const DIRECTIONS = {
       { num: 2, title: 'Требования — ядро профессии', sections: 8, load: () => import('./system-2') },
       { num: 3, title: 'Моделирование и нотации', sections: 9, load: () => import('./system-3') },
       { num: 4, title: 'Разбор вопросов с собеседований на аналитика в бигтех', sections: 10, source: 'analyst-4', load: () => import('./analyst-4'), submit: 'self' },
+      { num: 5, title: 'Сети и как работает веб', sections: 9, load: () => import('./system-5'), quiz: () => import('./system-5-quiz') },
     ],
   },
   business: {
@@ -60,8 +62,11 @@ export const DIRECTIONS = {
     chapters: [
       { num: 1, title: 'Профессия, конкурентность, сети и проектирование API', sections: 9, load: () => import('./backend-1'), quiz: () => import('./backend-1-quiz') },
       { num: 2, title: 'Базы данных', sections: 12, load: () => import('./backend-2'), quiz: () => import('./backend-2-quiz') },
-      // Глава 3 — с выбором языка: темы трека (Go или Java) + общие темы из backend-3.js (combineTrack)
-      { num: 3, title: 'Go или Java: язык под капотом и общие темы backend', sections: 16, submit: 'soon', load: () => import('./backend-3'), tracks: [
+    ],
+    // Дополнительные главы — вне основной нумерации: адрес /autumn-camp/program/<key>
+    extra: [
+      // Дополнительная глава — с выбором языка: темы трека (Go или Java) + общие темы из backend-3.js (combineTrack)
+      { key: 'x1', label: 'Дополнительная глава 1', source: 'backend-3', title: 'Go или Java: язык под капотом и общие темы backend', submit: 'soon', load: () => import('./backend-3'), tracks: [
         { key: 'go', name: 'Go', file: 'backend-3-go', load: () => import('./backend-3-go'),
           about: 'Простой компилируемый язык с горутинами и каналами. Его выбирают для высоконагруженных сервисов, инфраструктуры и облачных инструментов: на Go пишут в Яндексе, Авито, Ozon, VK, Т-Банке, на нём написаны Docker и Kubernetes.' },
         { key: 'java', name: 'Java', file: 'backend-3-java', load: () => import('./backend-3-java'),
@@ -122,12 +127,21 @@ export const DIRECTIONS = {
 // Номера общих разделов продолжают нумерацию трека, поэтому в их заголовках h3 номеров нет.
 export function combineTrack(base, track) {
   const own = track.sections
+  const prefix = base.sectionPrefix ?? base.num
   const common = base.sections.map((s, i) => ({
     ...s,
-    num: `${base.num}.${own.length + i + 1}`,
+    num: `${prefix}.${own.length + i + 1}`,
     divider: i === 0 ? (base.commonDivider || 'Общие темы') : s.divider,
   }))
   return { ...base, track: track.key, trackName: track.name, intro: track.intro || base.intro, summary: track.summary || base.summary, sections: [...own, ...common] }
+}
+
+// Адрес главы (/autumn-camp/program/<ref>) и её название: у основных — номер,
+// у дополнительных — key и label
+export function chapterRef(meta) { return String(meta.key ?? meta.num) }
+export function chapterName(meta) { return meta.label || `Глава ${meta.num}` }
+export function findChapter(dir, ref) {
+  return [...dir.chapters, ...(dir.extra || [])].find(c => chapterRef(c) === String(ref)) || null
 }
 
 export function taskKind(dir, meta, chapter) {
