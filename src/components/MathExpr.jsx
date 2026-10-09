@@ -1,5 +1,8 @@
 // Мини-рендерер формул. Понимает подмножество LaTeX, которого хватает курсу:
 // \frac{}{}, \sqrt{}, степени и индексы (^ и _), плюс набор символов.
+// Для линейной алгебры: матрицы \begin{pmatrix}…\end{pmatrix} (а также bmatrix, vmatrix и
+// расширенная матрица \begin{amatrix}{k} с чертой после k-го столбца), стрелки над векторами
+// \vec{a} и \overrightarrow{AB}, подписанная стрелка \xrightarrow{…}.
 // Полноценный KaTeX сюда тянуть незачем — это лишние 300 КБ ради девяти тем.
 
 const SYMBOLS = {
@@ -16,10 +19,13 @@ const SYMBOLS = {
   land: '∧', lor: '∨', neg: '¬', lnot: '¬',
   leftrightarrow: '↔', Leftrightarrow: '⟺',
   nabla: '∇', partial: '∂', eta: 'η', mu: 'μ', sigma: 'σ',
+  neq: '≠', Longrightarrow: '⟹', mid: '∣', vdots: '⋮', cdots: '⋯', ddots: '⋱',
 }
 
 // Имена функций пишутся прямым шрифтом, а не курсивом переменных
-const UPRIGHT = new Set(['ln', 'log', 'lim', 'max', 'min', 'sin', 'cos', 'exp'])
+const UPRIGHT = new Set(['ln', 'log', 'lim', 'max', 'min', 'sin', 'cos', 'exp', 'det'])
+
+const MATRIX_ENVS = new Set(['pmatrix', 'bmatrix', 'vmatrix', 'amatrix'])
 
 function parse(src) {
   let i = 0
@@ -41,6 +47,9 @@ function parse(src) {
         if (name === 'frac') { flush(); const a = group(); const b = group(); out.push({ t: 'frac', a, b }); continue }
         if (name === 'sqrt') { flush(); out.push({ t: 'sqrt', a: group() }); continue }
         if (name === 'text') { flush(); out.push({ t: 'text', a: group() }); continue }
+        if (name === 'vec' || name === 'overrightarrow') { flush(); out.push({ t: 'vec', a: group() }); continue }
+        if (name === 'xrightarrow') { flush(); out.push({ t: 'xarrow', a: group() }); continue }
+        if (name === 'begin') { flush(); out.push(matrix()); continue }
         // \left( и \right) — только подсказка размера скобки, сама скобка идёт следом
         if (name === 'left' || name === 'right') continue
         if (UPRIGHT.has(name)) { flush(); out.push({ t: 'text', a: [{ t: 'txt', v: name }] }); continue }
@@ -69,6 +78,27 @@ function parse(src) {
   function group() {
     if (src[i] === '{') { i += 1; const nodes = seq('}'); i += 1; return nodes }
     return arg()
+  }
+
+  // \begin{env}[{k}] строки через \\, ячейки через & \end{env}; вложенных матриц не бывает
+  function matrix() {
+    const env = rawGroup()
+    if (!MATRIX_ENVS.has(env)) return { t: 'txt', v: '' }
+    const bar = env === 'amatrix' ? Number(rawGroup()) : 0
+    const end = src.indexOf(`\\end{${env}}`, i)
+    const body = src.slice(i, end < 0 ? src.length : end)
+    i = end < 0 ? src.length : end + `\\end{${env}}`.length
+    const rows = body.split('\\\\').map(r => r.trim()).filter(Boolean)
+      .map(r => r.split('&').map(cell => parse(cell.trim())))
+    return { t: 'matrix', env, bar, rows }
+  }
+
+  function rawGroup() {
+    if (src[i] !== '{') return ''
+    const close = src.indexOf('}', i)
+    const v = src.slice(i + 1, close)
+    i = close + 1
+    return v
   }
 
   function arg() {
@@ -105,6 +135,27 @@ function Node({ n }) {
           <span className="mx-sqrt-body"><Nodes nodes={n.a} /></span>
         </span>
       )
+    case 'vec':
+      return <span className="mx-vec"><Nodes nodes={n.a} /></span>
+    case 'xarrow':
+      return (
+        <span className="mx-xarrow">
+          <span className="mx-xarrow-label"><Nodes nodes={n.a} /></span>
+          <span className="mx-xarrow-line" aria-hidden="true" />
+        </span>
+      )
+    case 'matrix': {
+      const cols = Math.max(...n.rows.map(r => r.length))
+      return (
+        <span className={`mx-mat is-${n.env}`}>
+          <span className="mx-mat-grid" style={{ gridTemplateColumns: `repeat(${cols}, auto)` }}>
+            {n.rows.flatMap((row, r) => row.map((cell, c) => (
+              <span key={`${r}-${c}`} className={`mx-mat-cell${n.bar && c === n.bar ? ' is-bar' : ''}`}><Nodes nodes={cell} /></span>
+            )))}
+          </span>
+        </span>
+      )
+    }
     case 'sup':
       return <sup className="mx-sup"><Nodes nodes={n.a} /></sup>
     case 'sub':
