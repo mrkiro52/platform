@@ -5,6 +5,7 @@
 // у остальных глав задание лежит в самой главе (assignment). submit: 'file' — аналитики
 // оформляют задание в файле и присылают в личные сообщения (PROGRAM_CONTACT);
 // у задания главы может быть свой способ сдачи (assignment.submit, например 'trainer').
+// tracks — глава с выбором языка: студент выбирает трек, разделы трека идут перед общими (combineTrack).
 
 export const PROGRAM_PERIOD = '1–31 октября'
 export const PROGRAM_CONTACT = { handle: '@x_tap', url: 'https://t.me/x_tap', text: 't.me/x_tap' }
@@ -59,6 +60,13 @@ export const DIRECTIONS = {
     chapters: [
       { num: 1, title: 'Профессия, конкурентность, сети и проектирование API', sections: 9, load: () => import('./backend-1'), quiz: () => import('./backend-1-quiz') },
       { num: 2, title: 'Базы данных', sections: 12, load: () => import('./backend-2'), quiz: () => import('./backend-2-quiz') },
+      // Глава 3 — с выбором языка: темы трека (Go или Java) + общие темы из backend-3.js (combineTrack)
+      { num: 3, title: 'Go или Java: язык под капотом и общие темы backend', sections: 16, submit: 'soon', load: () => import('./backend-3'), tracks: [
+        { key: 'go', name: 'Go', file: 'backend-3-go', load: () => import('./backend-3-go'),
+          about: 'Простой компилируемый язык с горутинами и каналами. Его выбирают для высоконагруженных сервисов, инфраструктуры и облачных инструментов: на Go пишут в Яндексе, Авито, Ozon, VK, Т-Банке, на нём написаны Docker и Kubernetes.' },
+        { key: 'java', name: 'Java', file: 'backend-3-java', load: () => import('./backend-3-java'),
+          about: 'Зрелый язык на JVM с огромной экосистемой и Spring. Стандарт для банков, финтеха, крупных корпоративных систем и маркетплейсов: Сбер, Т-Банк, Альфа-Банк, Ozon, Яндекс, МТС.' },
+      ], pickIntro: 'Эта глава — про язык, на котором ты будешь писать бэкенд, и про темы, которые спрашивают на собеседованиях у любого бэкендера. Выбери Go или Java: в треке — устройство языка до уровня «как это работает под капотом», а после него — общие темы, одинаковые для обоих треков. Выбор можно поменять в любой момент.' },
     ],
   },
   ml: {
@@ -109,6 +117,18 @@ export const DIRECTIONS = {
 // Как сдаётся задание главы: quiz — вопросы на платформе, trainer — задачи
 // тренажёра, file — файлом в личные сообщения, self — сдавать не нужно,
 // soon — задание к главе ещё не опубликовано
+// Глава с выбором трека: сначала разделы трека, затем общие разделы базовой главы.
+// Номера общих разделов продолжают нумерацию трека, поэтому в их заголовках h3 номеров нет.
+export function combineTrack(base, track) {
+  const own = track.sections
+  const common = base.sections.map((s, i) => ({
+    ...s,
+    num: `${base.num}.${own.length + i + 1}`,
+    divider: i === 0 ? (base.commonDivider || 'Общие темы') : s.divider,
+  }))
+  return { ...base, track: track.key, trackName: track.name, intro: track.intro || base.intro, summary: track.summary || base.summary, sections: [...own, ...common] }
+}
+
 export function taskKind(dir, meta, chapter) {
   if (meta?.quiz) return 'quiz'
   return chapter?.assignment?.submit || meta?.submit || dir?.submit || 'self'

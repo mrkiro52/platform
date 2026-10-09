@@ -202,7 +202,7 @@ const ProgramDirectionPage = {
             <a class="prog-chapter" href="${BASE}/programs/${esc(d.key)}/${ch.num}">
               <span class="prog-chapter-num">Глава ${ch.num}</span>
               <span class="prog-chapter-title">${esc(ch.title)}</span>
-              <span class="prog-chapter-meta">${ch.sections} ${plural(ch.sections, 'раздел', 'раздела', 'разделов')} · ${ch.quiz ? 'задание: вопросы, сдаётся на платформе' : ch.submit === 'trainer' ? 'задание: SQL-тренажёр' : ch.submit === 'soon' ? 'задание ещё не опубликовано' : d.submit === 'file' ? 'задание: файлом в личные сообщения' : 'задание выполняется самостоятельно'}</span>
+              <span class="prog-chapter-meta">${ch.tracks ? `треки: ${ch.tracks.map(t => esc(t.name)).join(' или ')}` : `${ch.sections} ${plural(ch.sections, 'раздел', 'раздела', 'разделов')}`} · ${ch.quiz ? 'задание: вопросы, сдаётся на платформе' : ch.submit === 'trainer' ? 'задание: SQL-тренажёр' : ch.submit === 'soon' ? 'задание ещё не опубликовано' : d.submit === 'file' ? 'задание: файлом в личные сообщения' : 'задание выполняется самостоятельно'}</span>
               ${icon('chevron-right', 16)}
             </a>`).join('') : emptyState('book-open', 'Материал ещё готовится', 'Студенты видят «Первая глава программы скоро появится»', true)}
         </section>
@@ -220,8 +220,10 @@ const ProgramDirectionPage = {
   },
 }
 
-// Материал главы целиком — как у студента
+// Материал главы целиком — как у студента. У главы с треками (Go / Java) — переключатель трека
 const ProgramChapterPage = {
+  tracks: {},
+
   async render(view, ctx) {
     const { dir, chapter } = ctx.params
     const crumb = { path: `/programs/${dir}`, label: 'Направление' }
@@ -243,8 +245,12 @@ const ProgramChapterPage = {
       return
     }
 
+    const track = meta.tracks && (meta.tracks.find(t => t.key === ProgramChapterPage.tracks[`${dir}-${chapter}`]) || meta.tracks[0])
     const [ch, quiz] = await Promise.all([
-      meta.source ? ProgramsData.load(meta.source).then(m => ({ ...m.default, num: meta.num })) : ProgramsData.chapter(dir, chapter),
+      meta.source ? ProgramsData.load(meta.source).then(m => ({ ...m.default, num: meta.num }))
+        : track ? Promise.all([ProgramsData.chapter(dir, chapter), ProgramsData.load(track.file), ProgramsData.load('index')])
+          .then(([base, t, idx]) => idx.combineTrack(base, { ...t.default, key: track.key, name: track.name }))
+        : ProgramsData.chapter(dir, chapter),
       meta.quiz ? ProgramsData.quiz(dir, chapter) : Promise.resolve(null),
     ])
     if (ctx.stale()) return
@@ -254,6 +260,7 @@ const ProgramChapterPage = {
       sub: esc(ch.intro || ch.summary),
       crumb,
     }) + `
+      ${track ? `<div class="prg-track-switch">Трек: ${meta.tracks.map(t => `<button type="button" class="btn ${t.key === track.key ? 'btn-primary' : 'btn-secondary'} btn-sm" data-track="${esc(t.key)}">${esc(t.name)}</button>`).join('')}</div>` : ''}
       <div class="prg-admin">
         <nav class="prg-toc card">
           ${d.start ? `<a href="#sec-start" class="prg-toc-item"><b>→</b>${esc(d.start.title)}</a>` : ''}
@@ -274,6 +281,10 @@ const ProgramChapterPage = {
           ${quiz ? ProgramChapterPage.quiz(quiz) : a ? ProgramChapterPage.assignment(a) : ''}
         </div>
       </div>`
+    view.querySelectorAll('[data-track]').forEach(btn => btn.addEventListener('click', () => {
+      ProgramChapterPage.tracks[`${dir}-${chapter}`] = btn.dataset.track
+      ProgramChapterPage.render(view, ctx)
+    }))
     // Якоря оглавления: прокрутка без смены адреса раздела
     view.querySelectorAll('.prg-toc a').forEach(link => link.addEventListener('click', (e) => {
       e.preventDefault()

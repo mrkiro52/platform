@@ -1,6 +1,6 @@
 import { Fragment, useEffect, useState } from 'react'
-import { Link, useNavigate, useParams } from 'react-router-dom'
-import { PROGRAM_CONTACT, PROGRAM_PERIOD, directionOf, taskKind } from '../data/programs'
+import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
+import { PROGRAM_CONTACT, PROGRAM_PERIOD, combineTrack, directionOf, taskKind } from '../data/programs'
 import ProgramBlocks, { ProgramContext, Rich } from '../components/program/ProgramBlocks'
 import ProgramQuiz from '../components/program/ProgramQuiz'
 import { api } from '../api'
@@ -10,6 +10,7 @@ import { api } from '../api'
 // /autumn-camp/program/:chapter — конспект главы,
 // /autumn-camp/program/:chapter/task — задание к главе. Задание из вопросов
 // (quiz) сдаётся на платформе, остальные выполняются самостоятельно.
+// У главы с треками (meta.tracks) студент выбирает язык: ?lang=go, выбор запоминается в браузере.
 
 const HW_STATUS = { submitted: 'на проверке', approved: 'принято', rework: 'нужны правки' }
 
@@ -135,7 +136,7 @@ function Overview({ dir }) {
                 <div className="prg-chapter-links">
                   <button type="button" className="prg-chapter-link" onClick={() => navigate(`/autumn-camp/program/${ch.num}`)}>
                     <span className="prg-chapter-link-name">Конспект</span>
-                    <span className="prg-chapter-link-meta">{ch.sections} {plural(ch.sections, 'раздел', 'раздела', 'разделов')}</span>
+                    <span className="prg-chapter-link-meta">{ch.tracks ? `на выбор: ${ch.tracks.map(t => t.name).join(' или ')}` : `${ch.sections} ${plural(ch.sections, 'раздел', 'раздела', 'разделов')}`}</span>
                     <span className="prg-chapter-link-go">→</span>
                   </button>
                   <button type="button" className={`prg-chapter-link is-task${hw ? ` is-${hw.status}` : ''}`} onClick={() => navigate(`/autumn-camp/program/${ch.num}/task`)}>
@@ -247,20 +248,62 @@ function TaskCta({ dir, meta }) {
   )
 }
 
+// Выбранный трек главы: из адреса (?lang=), иначе из прошлого выбора в этом браузере
+function trackStorageKey(dir, meta) { return `kiro-prg-track-${dir.key}-${meta.num}` }
+function readSavedTrack(key) { try { return localStorage.getItem(key) } catch { return null } }
+function saveTrack(key, value) { try { localStorage.setItem(key, value) } catch { /* без сохранения */ } }
+
+function TrackPicker({ dir, meta, onPick }) {
+  return (
+    <section className="page active prg-page">
+      <BackLink to="/autumn-camp/program">{dir.name}</BackLink>
+      <div className="prg-hero">
+        <span className="prg-tag">Глава {meta.num}</span>
+        <h1 className="prg-title">{meta.title}</h1>
+        <p className="prg-lead">{meta.pickIntro || 'В этой главе есть выбор: выбери язык, который будешь изучать. Общие темы одинаковы для обоих треков.'}</p>
+      </div>
+      <h2 className="prg-list-title">Выбери язык</h2>
+      <div className="prg-tracks">
+        {meta.tracks.map(t => (
+          <button key={t.key} type="button" className="prg-track-card" onClick={() => onPick(t.key)}>
+            <span className="prg-track-name">{t.name}</span>
+            {t.about && <span className="prg-track-about">{t.about}</span>}
+            <span className="prg-track-go">Открыть трек {t.name} →</span>
+          </button>
+        ))}
+      </div>
+    </section>
+  )
+}
+
 function Chapter({ dir, chapterNum }) {
   const navigate = useNavigate()
+  const [params, setParams] = useSearchParams()
   const meta = dir.chapters.find(c => c.num === chapterNum)
   const [chapter, setChapter] = useState(null)
+  const storageKey = meta?.tracks ? trackStorageKey(dir, meta) : null
+  const track = meta?.tracks?.find(t => t.key === (params.get('lang') || readSavedTrack(storageKey))) || null
 
   useEffect(() => {
     let alive = true
     setChapter(null)
-    meta?.load().then(m => { if (alive) setChapter(m.default) })
+    if (meta && (!meta.tracks || track)) {
+      const loading = track
+        ? Promise.all([meta.load(), track.load()]).then(([b, t]) => combineTrack(b.default, { ...t.default, key: track.key, name: track.name }))
+        : meta.load().then(m => m.default)
+      loading.then(c => { if (alive) setChapter(c) })
+    }
     window.scrollTo(0, 0)
     return () => { alive = false }
-  }, [meta])
+  }, [meta, track])
+
+  const pickTrack = (key) => {
+    saveTrack(storageKey, key)
+    setParams({ lang: key }, { replace: true })
+  }
 
   if (!meta) return <Overview dir={dir} />
+  if (meta.tracks && !track) return <TrackPicker dir={dir} meta={meta} onPick={pickTrack} />
   if (!chapter) return <section className="page active prg-page"><p className="prg-loading">Загружаем главу…</p></section>
 
   const jump = (id) => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
@@ -276,6 +319,14 @@ function Chapter({ dir, chapterNum }) {
           <span className="prg-chip">{chapter.sections.length} {plural(chapter.sections.length, 'раздел', 'раздела', 'разделов')}</span>
           <button type="button" className="prg-chip is-link" onClick={() => navigate(`/autumn-camp/program/${chapter.num}/task`)}>Задание к главе →</button>
         </div>
+        {meta.tracks && (
+          <div className="prg-track-switch" role="group" aria-label="Язык">
+            <span>Язык:</span>
+            {meta.tracks.map(t => (
+              <button key={t.key} type="button" className={t.key === track.key ? 'is-active' : ''} aria-pressed={t.key === track.key} onClick={() => pickTrack(t.key)}>{t.name}</button>
+            ))}
+          </div>
+        )}
       </div>
 
       <div className="prg-layout">
