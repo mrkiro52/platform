@@ -77,6 +77,7 @@ export const DIRECTIONS = {
     chapters: [
       { num: 1, title: 'Основы NumPy, pandas и Matplotlib', sections: 6, load: () => import('./ml-1') },
       { num: 2, title: 'Классическое машинное обучение: базовые понятия', sections: 8, load: () => import('./ml-2') },
+      { num: 3, title: 'Линейные модели', sections: 10, load: () => import('./ml-3') },
     ],
   },
   security: {
