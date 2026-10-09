@@ -80,6 +80,7 @@ function prgBlock(b) {
       const labeled = rows.some(([label]) => label)
       return `<div class="prg-texblock${labeled ? ' is-labeled' : ''}">${rows.map(([label, tex]) => `<div class="prg-texrow">${labeled ? `<span class="prg-texlabel">${prgRich(label)}</span>` : ''}<div class="prg-tex-display">${prgTex(tex, true)}</div></div>`).join('')}</div>`
     }
+    case 'plot': return `<figure class="prg-plot">${window.PRG_PLOT ? window.PRG_PLOT.plotSvg(b) : ''}${b.caption ? `<figcaption>${prgRich(b.caption)}</figcaption>` : ''}</figure>`
     case 'flow': return `<div class="prg-flow">${b.steps.map(s => `<span class="prg-flow-step">${esc(s)}</span>`).join('<span class="prg-flow-arrow">→</span>')}</div>`
     case 'reading': return `
       <div class="prg-reading">
@@ -264,6 +265,8 @@ const ProgramChapterPage = {
       return
     }
 
+    // Модуль графиков нужен синхронной отрисовке блоков plot
+    if (!window.PRG_PLOT) window.PRG_PLOT = await ProgramsData.load('plot').catch(() => null)
     const track = meta.tracks && (meta.tracks.find(t => t.key === ProgramChapterPage.tracks[`${dir}-${chapter}`]) || meta.tracks[0])
     const [ch, quiz] = await Promise.all([
       track ? Promise.all([meta.source ? ProgramsData.load(meta.source).then(m => m.default) : ProgramsData.chapter(dir, chapter), ProgramsData.load(track.file), ProgramsData.load('index')])

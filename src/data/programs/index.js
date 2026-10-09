@@ -52,6 +52,7 @@ export const DIRECTIONS = {
       { num: 2, title: 'Бизнес-основы и экономика', sections: 6, load: () => import('./business-2') },
       { num: 3, title: 'Метрики', sections: 8, load: () => import('./business-3') },
       { num: 4, title: 'Разбор вопросов с собеседований на аналитика в бигтех', sections: 10, source: 'analyst-4', load: () => import('./analyst-4'), submit: 'self' },
+      { num: 5, title: 'Математика и статистика', sections: 8, load: () => import('./business-5') },
     ],
   },
   backend: {

@@ -5,6 +5,7 @@
 import { createContext, useContext, useEffect, useState } from 'react'
 import katex from 'katex'
 import 'katex/dist/katex.min.css'
+import { plotSvg } from '../../data/programs/plot'
 import { useNavigate } from 'react-router-dom'
 import { api } from '../../api'
 
@@ -199,6 +200,13 @@ function Block({ b }) {
         </div>
       )
     }
+    case 'plot':
+      return (
+        <figure className="prg-plot">
+          <div className="prg-plot-svg" dangerouslySetInnerHTML={{ __html: plotSvg(b) }} />
+          {b.caption && <figcaption><Rich text={b.caption} /></figcaption>}
+        </figure>
+      )
     case 'flow':
       return (
         <div className="prg-flow" role="list">
