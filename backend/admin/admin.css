@@ -571,3 +571,11 @@ a.kpi:hover{border-color:var(--lime-line)}
 /* Направление индивидуальной программы под переключателем лагеря */
 .dir-select{display:block;margin-top:8px;max-width:220px;width:100%;appearance:none;background:var(--bg3) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%238B8B96' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") no-repeat right 8px center;border:1px solid var(--border);border-radius:var(--r-sm, 8px);padding:6px 28px 6px 10px;color:var(--text);font-size:12.5px;font-family:var(--font-inter);outline:none;cursor:pointer}
 .dir-select:focus{border-color:var(--lime)}
+
+/* Формулы LaTeX в материалах программ */
+.prg-texblock{margin:10px 0 14px;padding:10px 16px;background:var(--bg3);border:1px solid var(--border);border-radius:10px;display:grid;gap:4px}
+.prg-texrow{display:grid;grid-template-columns:minmax(0,1fr);align-items:center}
+.prg-texblock.is-labeled .prg-texrow{grid-template-columns:minmax(120px,210px) minmax(0,1fr);column-gap:18px}
+.prg-texlabel{color:var(--orange);font-size:12.5px;font-weight:600}
+.prg-tex-display{min-width:0;overflow-x:auto}
+.prg-tex-display .katex-display{margin:6px 0;text-align:left}

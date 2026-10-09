@@ -1,7 +1,10 @@
 // Отрисовка блоков главы индивидуальной программы.
-// Разметка в тексте: **жирный**, _курсив_, перевод строки — \n.
+// Разметка в тексте: **жирный**, _курсив_, перевод строки — \n, формула LaTeX — \( … \).
+// Выключные формулы — блок tex: строки 'формула' или ['подпись слева', 'формула'].
 
 import { createContext, useContext, useEffect, useState } from 'react'
+import katex from 'katex'
+import 'katex/dist/katex.min.css'
 import { useNavigate } from 'react-router-dom'
 import { api } from '../../api'
 
@@ -97,8 +100,14 @@ function Files({ b }) {
   )
 }
 
-// Курсив — только _слово_ на границе слов, чтобы не ломать created_at и __name__
-const RICH = /(\*\*[^*]+\*\*|(?<![\p{L}\p{N}_])_[^_\n]+_(?![\p{L}\p{N}_]))/gu
+// Курсив — только _слово_ на границе слов, чтобы не ломать created_at и __name__.
+// Формула \( … \) стоит первой в альтернативе: подчёркивания внутри LaTeX курсивом не считаются.
+const RICH = /(\\\(.+?\\\)|\*\*[^*]+\*\*|(?<![\p{L}\p{N}_])_[^_\n]+_(?![\p{L}\p{N}_]))/gu
+
+export function Tex({ tex, display = false }) {
+  const html = katex.renderToString(tex, { displayMode: display, throwOnError: false, strict: false, output: 'html' })
+  return <span className={display ? 'prg-tex-display' : 'prg-tex'} dangerouslySetInnerHTML={{ __html: html }} />
+}
 
 export function Rich({ text }) {
   const lines = String(text).split('\n')
@@ -106,6 +115,7 @@ export function Rich({ text }) {
     <span key={li}>
       {li > 0 && <br />}
       {line.split(RICH).map((part, i) => {
+        if (part.startsWith('\\(') && part.endsWith('\\)')) return <Tex key={i} tex={part.slice(2, -2)} />
         if (part.startsWith('**') && part.endsWith('**') && part.length > 4) return <strong key={i}>{part.slice(2, -2)}</strong>
         if (part.startsWith('_') && part.endsWith('_') && part.length > 2) return <em key={i}>{part.slice(1, -1)}</em>
         return part
@@ -175,6 +185,20 @@ function Block({ b }) {
           ))}
         </div>
       )
+    case 'tex': {
+      const rows = b.rows.map(r => (Array.isArray(r) ? r : ['', r]))
+      const labeled = rows.some(([label]) => label)
+      return (
+        <div className={`prg-texblock${labeled ? ' is-labeled' : ''}`}>
+          {rows.map(([label, tex], i) => (
+            <div key={i} className="prg-texrow">
+              {labeled && <span className="prg-texlabel"><Rich text={label} /></span>}
+              <Tex tex={tex} display />
+            </div>
+          ))}
+        </div>
+      )
+    }
     case 'flow':
       return (
         <div className="prg-flow" role="list">

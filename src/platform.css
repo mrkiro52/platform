@@ -4880,7 +4880,24 @@ body.reels-lock {
 .prg-quote p:last-child { margin-bottom: 0; }
 
 .prg-formula { margin: 12px 0 16px; padding: 14px 18px; background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-md); display: inline-flex; flex-direction: column; gap: 4px; max-width: 100%; }
-.prg-formula-row { display: grid; grid-template-columns: 18px minmax(0, 1fr); gap: 8px; font: 500 14px/1.6 var(--font-mono); color: var(--text-primary); }
+.prg-formula-row { display: grid; grid-template-columns: minmax(18px, max-content) minmax(0, 1fr); gap: 10px; font: 500 14px/1.6 var(--font-mono); color: var(--text-primary); }
+.prg-formula-op:empty { width: 0; }
+
+/* Формулы LaTeX (KaTeX): подпись слева отдельной колонкой, формула справа */
+.prg-tex .katex { font-size: 1.06em; }
+.prg-texblock { margin: 12px 0 16px; padding: 12px 18px; background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-md); display: grid; gap: 4px; color: var(--text-primary); }
+.prg-texrow { display: grid; grid-template-columns: minmax(0, 1fr); align-items: center; }
+.prg-texblock.is-labeled .prg-texrow { grid-template-columns: minmax(120px, 210px) minmax(0, 1fr); column-gap: 18px; }
+.prg-texblock.is-labeled .prg-texrow + .prg-texrow { border-top: 1px dashed var(--border-color); padding-top: 4px; }
+.prg-texlabel { color: var(--prg-text); font-size: 13px; font-weight: 600; line-height: 1.45; }
+.prg-tex-display { display: block; min-width: 0; overflow-x: auto; overflow-y: hidden; padding: 2px 0; }
+.prg-tex-display .katex-display { margin: 6px 0; text-align: left; }
+.prg-tex-display .katex-display > .katex { text-align: left; font-size: 1.12em; }
+.prg-texblock:not(.is-labeled) .prg-tex-display .katex-display, .prg-texblock:not(.is-labeled) .prg-tex-display .katex-display > .katex { text-align: center; }
+@media (max-width: 640px) {
+  .prg-texblock.is-labeled .prg-texrow { grid-template-columns: minmax(0, 1fr); }
+  .prg-texlabel { padding-top: 6px; }
+}
 .prg-formula-op { color: var(--prg-text); font-weight: 700; }
 .prg-code { margin: 12px 0 16px; padding: 14px 18px; background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-md); overflow-x: auto; font: 500 13px/1.6 var(--font-mono); color: var(--text-primary); white-space: pre; tab-size: 4; }
 .prg-code code { font: inherit; background: none; padding: 0; }

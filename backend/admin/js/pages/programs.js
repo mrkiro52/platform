@@ -38,11 +38,18 @@ const ProgramsData = {
 }
 
 // ═══ Отрисовка блоков главы (повторяет src/components/program/ProgramBlocks.jsx) ═══
-const PRG_RICH = /(\*\*[^*]+\*\*|(?<![\p{L}\p{N}_])_[^_\n]+_(?![\p{L}\p{N}_]))/gu
+const PRG_RICH = /(\\\(.+?\\\)|\*\*[^*]+\*\*|(?<![\p{L}\p{N}_])_[^_\n]+_(?![\p{L}\p{N}_]))/gu
+
+// Формулы LaTeX — через KaTeX (подключён в index.html); без него показываем исходник
+function prgTex(tex, display) {
+  if (window.katex) return window.katex.renderToString(tex, { displayMode: display, throwOnError: false, strict: false, output: 'html' })
+  return `<code>${esc(tex)}</code>`
+}
 const PRG_LETTERS = 'абвгдежзик'
 
 function prgRich(text) {
   return String(text).split('\n').map(line => line.split(PRG_RICH).map(part => {
+    if (part.startsWith('\\(') && part.endsWith('\\)')) return prgTex(part.slice(2, -2), false)
     if (part.startsWith('**') && part.endsWith('**') && part.length > 4) return `<strong>${esc(part.slice(2, -2))}</strong>`
     if (part.startsWith('_') && part.endsWith('_') && part.length > 2) return `<em>${esc(part.slice(1, -1))}</em>`
     return esc(part)
@@ -68,6 +75,11 @@ function prgBlock(b) {
       </figure>`
     case 'quote': return `<blockquote class="prg-quote">${b.paras.map(p => `<p>${prgRich(p)}</p>`).join('')}</blockquote>`
     case 'formula': return `<div class="prg-formula">${b.lines.map(([op, text]) => `<div><span class="prg-op">${esc(op)}</span>${esc(text)}</div>`).join('')}</div>`
+    case 'tex': {
+      const rows = b.rows.map(r => (Array.isArray(r) ? r : ['', r]))
+      const labeled = rows.some(([label]) => label)
+      return `<div class="prg-texblock${labeled ? ' is-labeled' : ''}">${rows.map(([label, tex]) => `<div class="prg-texrow">${labeled ? `<span class="prg-texlabel">${prgRich(label)}</span>` : ''}<div class="prg-tex-display">${prgTex(tex, true)}</div></div>`).join('')}</div>`
+    }
     case 'flow': return `<div class="prg-flow">${b.steps.map(s => `<span class="prg-flow-step">${esc(s)}</span>`).join('<span class="prg-flow-arrow">→</span>')}</div>`
     case 'reading': return `
       <div class="prg-reading">
