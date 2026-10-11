@@ -39,6 +39,7 @@ export const DIRECTIONS = {
       { num: 3, title: 'Моделирование и нотации', sections: 9, load: () => import('./system-3') },
       { num: 4, title: 'Разбор вопросов с собеседований на аналитика в бигтех', sections: 10, source: 'analyst-4', load: () => import('./analyst-4'), submit: 'self' },
       { num: 5, title: 'Сети и как работает веб', sections: 9, load: () => import('./system-5'), quiz: () => import('./system-5-quiz') },
+      { num: 6, title: 'Форматы данных', sections: 9, load: () => import('./system-6'), submit: 'soon' },
     ],
   },
   business: {
