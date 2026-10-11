@@ -5050,3 +5050,31 @@ body.reels-lock {
 .plot-note { font-size: 12px; font-weight: 700; }
 .plot-legend { fill: var(--text-primary); font-size: 12px; }
 .prg-plot figcaption { margin-top: 6px; color: var(--text-tertiary); font-size: 13px; line-height: 1.5; text-align: center; }
+
+/* Шапка программы с плашкой вопросов с собеседований справа */
+.prg-hero-row { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 16px; align-items: stretch; margin-bottom: 20px; }
+.prg-hero-row > .prg-hero { margin-bottom: 0; }
+.prg-interview {
+  display: flex; flex-direction: column; gap: 8px; min-width: 0;
+  background: radial-gradient(420px 180px at 0% 0%, rgba(255,140,66,0.12), transparent 70%), var(--bg-secondary);
+  border: 1px solid rgba(255,140,66,0.4); border-radius: var(--radius-lg); padding: 22px 22px 18px;
+}
+.prg-interview-kicker {
+  align-self: flex-start; font-family: var(--font-syne); font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+  color: #3FB950; background: rgba(63,185,80,0.12); border: 1px solid rgba(63,185,80,0.4); border-radius: var(--radius-pill); padding: 4px 10px;
+}
+.prg-interview-title { font-family: var(--font-syne); font-size: 18px; font-weight: 700; line-height: 1.3; color: var(--text-primary); margin: 4px 0 0; }
+.prg-interview-lead { margin: 0; color: var(--text-secondary); font-size: 13.5px; line-height: 1.55; }
+.prg-interview-sec { margin-top: 6px; background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-md); }
+.prg-interview-sec summary { display: flex; align-items: center; gap: 10px; padding: 11px 14px; cursor: pointer; list-style: none; }
+.prg-interview-sec summary::-webkit-details-marker { display: none; }
+.prg-interview-sec summary::after { content: '▾'; margin-left: 4px; color: var(--prg-text); transition: transform .15s; }
+.prg-interview-sec:not([open]) summary::after { transform: rotate(-90deg); }
+.prg-interview-num { display: inline-grid; place-items: center; width: 24px; height: 24px; border-radius: 7px; background: var(--prg-dim); color: var(--prg-text); font-weight: 700; font-size: 13px; flex-shrink: 0; }
+.prg-interview-name { flex: 1; font-weight: 700; font-size: 14.5px; color: var(--text-primary); }
+.prg-interview-count { font-size: 12px; color: var(--text-tertiary); }
+.prg-interview-list { margin: 0; padding: 4px 16px 14px 38px; max-height: 340px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; color: var(--text-secondary); font-size: 13.5px; line-height: 1.5; }
+.prg-interview-list li::marker { color: var(--prg-text); font-weight: 700; }
+@media (max-width: 960px) {
+  .prg-hero-row { grid-template-columns: minmax(0, 1fr); }
+}

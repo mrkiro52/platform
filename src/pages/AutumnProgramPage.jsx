@@ -112,11 +112,14 @@ function Overview({ dir }) {
   return (
     <section className="page active prg-page">
       <BackLink to="/autumn-camp">Осенний лагерь</BackLink>
-      <div className="prg-hero">
-        <span className="prg-tag">Индивидуальная программа · {PROGRAM_PERIOD}</span>
-        <h1 className="prg-title">{dir.name}</h1>
-        <p className="prg-lead">{dir.goal}. Программа состоит из глав: у каждой есть конспект с теорией по разделам и задание к главе{dir.practice ? `, а ещё ${dir.practice}` : ''}.</p>
-        <ContactNote />
+      <div className={dir.interview ? 'prg-hero-row' : undefined}>
+        <div className="prg-hero">
+          <span className="prg-tag">Индивидуальная программа · {PROGRAM_PERIOD}</span>
+          <h1 className="prg-title">{dir.name}</h1>
+          <p className="prg-lead">{dir.goal}. Программа состоит из глав: у каждой есть конспект с теорией по разделам и задание к главе{dir.practice ? `, а ещё ${dir.practice}` : ''}.</p>
+          <ContactNote />
+        </div>
+        {dir.interview && <InterviewPanel data={dir.interview} />}
       </div>
 
       <StartPanel start={dir.start} />
@@ -139,6 +142,30 @@ function Overview({ dir }) {
         </>
       )}
     </section>
+  )
+}
+
+// Плашка с вопросами с собеседований: разделы открываются по мере программы
+function InterviewPanel({ data }) {
+  const opened = data.sections.filter(sec => sec.open).length
+  return (
+    <aside className="prg-interview" aria-label={data.title}>
+      <span className="prg-interview-kicker">{opened === 1 ? 'Открыт первый раздел' : `Открыто разделов: ${opened}`}</span>
+      <h2 className="prg-interview-title">{data.title}</h2>
+      <p className="prg-interview-lead">{data.lead}</p>
+      {data.sections.map((sec, i) => (
+        <details key={sec.title} className="prg-interview-sec" open={sec.open && i === 0}>
+          <summary>
+            <span className="prg-interview-num">{i + 1}</span>
+            <span className="prg-interview-name">{sec.title}</span>
+            <span className="prg-interview-count">{sec.questions.length} {plural(sec.questions.length, 'вопрос', 'вопроса', 'вопросов')}</span>
+          </summary>
+          <ol className="prg-interview-list">
+            {sec.questions.map((q, j) => <li key={j}>{q}</li>)}
+          </ol>
+        </details>
+      ))}
+    </aside>
   )
 }
 
