@@ -5078,3 +5078,44 @@ body.reels-lock {
 @media (max-width: 960px) {
   .prg-hero-row { grid-template-columns: minmax(0, 1fr); }
 }
+
+/* Вакансии и контакты (VacanciesPage) */
+.vac-hero { background: radial-gradient(640px 220px at 100% 0%, rgba(255,140,66,0.14), transparent 70%), var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 26px 30px; margin-bottom: 18px; display: flex; flex-direction: column; align-items: flex-start; gap: 10px; }
+.vac-filters { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+.vac-filters button { cursor: pointer; font: inherit; font-size: 13px; font-weight: 600; color: var(--text-secondary); background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-pill); padding: 6px 14px; }
+.vac-filters button:hover { border-color: rgba(255,140,66,0.6); }
+.vac-filters button.is-active { color: var(--prg-text); border-color: var(--prg-text); background: var(--prg-dim); }
+.vac-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: 14px; align-items: stretch; }
+.vac-card {
+  display: flex; flex-direction: column; gap: 10px; text-align: left; cursor: pointer; color: inherit; font: inherit;
+  background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 18px 18px 16px;
+  height: 100%; transition: border-color .15s, transform .15s;
+}
+.vac-card:hover { border-color: rgba(255,140,66,0.6); transform: translateY(-1px); }
+.vac-card:focus-visible { outline: 2px solid var(--prg-text); outline-offset: 2px; }
+.vac-badge { align-self: flex-start; font-size: 11.5px; font-weight: 700; letter-spacing: 0.03em; color: var(--vac); background: color-mix(in srgb, var(--vac) 14%, transparent); border: 1px solid color-mix(in srgb, var(--vac) 45%, transparent); border-radius: var(--radius-pill); padding: 3px 10px; }
+.vac-card-title { font-family: var(--font-syne); font-size: 17px; font-weight: 700; line-height: 1.3; color: var(--text-primary); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; min-height: 2.6em; }
+.vac-card-desc { flex: 1; color: var(--text-secondary); font-size: 14px; line-height: 1.55; white-space: normal; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; min-height: 6.2em; }
+.vac-card-foot { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding-top: 10px; border-top: 1px solid var(--border-color); font-size: 13px; }
+.vac-card-contact { color: var(--text-tertiary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+.vac-card-go { color: var(--prg-text); font-weight: 700; white-space: nowrap; }
+.vac-item { background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 28px 32px; display: flex; flex-direction: column; align-items: flex-start; gap: 14px; }
+.vac-item-desc { color: var(--text-secondary); font-size: 15px; line-height: 1.75; white-space: pre-line; max-width: 75ch; }
+.vac-item-contact { display: flex; flex-direction: column; gap: 4px; padding: 14px 18px; border-radius: var(--radius-md); border: 1px solid rgba(255,140,66,0.45); background: var(--prg-dim); font-size: 15px; font-weight: 600; color: var(--text-primary); }
+.vac-item-contact a { color: var(--prg-text); text-decoration: underline; text-underline-offset: 3px; word-break: break-all; }
+.vac-item-contact-label { font-size: 11.5px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-tertiary); }
+.vac-pin { max-width: 380px; margin: 40px auto 0; text-align: center; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 32px 28px; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.vac-pin-icon { font-size: 30px; }
+.vac-pin-title { font-family: var(--font-syne); font-size: 20px; font-weight: 700; color: var(--text-primary); margin: 0; }
+.vac-pin-text { margin: 0; color: var(--text-secondary); font-size: 14px; }
+.vac-pin-boxes { position: relative; display: flex; gap: 10px; margin-top: 8px; cursor: text; }
+.vac-pin-input { position: absolute; inset: 0; opacity: 0; width: 100%; height: 100%; font-size: 16px; caret-color: transparent; }
+.vac-pin-box { width: 48px; height: 56px; display: grid; place-items: center; font-size: 26px; color: var(--text-primary); background: var(--bg-tertiary); border: 1.5px solid var(--border-color); border-radius: 12px; }
+.vac-pin-input:focus ~ .vac-pin-box.is-active { border-color: var(--prg-text); box-shadow: 0 0 0 3px var(--prg-dim); }
+.vac-pin-boxes.is-error .vac-pin-box { border-color: #F85149; animation: vac-shake .3s; }
+@keyframes vac-shake { 25% { transform: translateX(-4px); } 75% { transform: translateX(4px); } }
+.vac-pin-error { min-height: 18px; color: #F85149; font-size: 13px; font-weight: 600; }
+.vac-pin-back { margin-top: 4px; background: none; border: none; color: var(--prg-text); font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; }
+@media (max-width: 640px) {
+  .vac-hero, .vac-item { padding: 20px 18px; }
+}

@@ -1059,6 +1059,41 @@ function migrate() {
       console.error('❌ Migration 34 failed:', err.message)
     }
   }
+
+  // Migration 35: вакансии для участников лагеря. Категория — ключ из
+  // VACANCY_CATEGORIES в routes/vacancies.js. Три тестовые вакансии, чтобы
+  // посмотреть визуал, — их можно удалить в админке.
+  if (schemaVersion < 35) {
+    try {
+      db.prepare(`
+        CREATE TABLE IF NOT EXISTS vacancies (
+          id          INTEGER PRIMARY KEY AUTOINCREMENT,
+          title       TEXT NOT NULL,
+          description TEXT NOT NULL DEFAULT '',
+          category    TEXT NOT NULL DEFAULT 'other',
+          contact     TEXT NOT NULL DEFAULT '',
+          created_at  TEXT NOT NULL DEFAULT (datetime('now')),
+          updated_at  TEXT NOT NULL DEFAULT (datetime('now'))
+        )
+      `).run()
+      if (db.prepare('SELECT COUNT(*) AS n FROM vacancies').get().n === 0) {
+        const add = db.prepare('INSERT INTO vacancies (title, description, category, contact) VALUES (?, ?, ?, ?)')
+        add.run('Стажёр Python-разработчик (тест)',
+          'Тестовая вакансия для проверки внешнего вида.\n\nКоманда платёжного сервиса ищет стажёра на backend. Задачи: доработка REST API на FastAPI, интеграции с внешними сервисами, покрытие кода тестами, работа с PostgreSQL и Redis.\n\nЖдём: уверенный Python, основы SQL и HTTP, умение работать с Git. Будет плюсом: опыт с Docker и асинхронным кодом.\n\nУсловия: 20–40 часов в неделю, гибрид в Москве или удалёнка, наставник и код-ревью каждой задачи.',
+          'backend', '@x_tap')
+        add.run('Junior-аналитик данных (тест)',
+          'Тестовая вакансия для проверки внешнего вида.\n\nАналитика маркетплейса: метрики продукта, A/B-тесты, отчёты для команд категорий. SQL каждый день, Python для исследований, дашборды в Superset.\n\nЖдём: SQL с оконными функциями, базовую статистику, аккуратность в расчётах и умение объяснять выводы простым языком.',
+          'analytics', 'https://t.me/x_tap')
+        add.run('Стажёр ML-инженер (тест)',
+          'Тестовая вакансия для проверки внешнего вида.\n\nКоманда рекомендаций: обучение и оценка моделей ранжирования, подготовка признаков, эксперименты. Стек: Python, pandas, CatBoost, PyTorch.',
+          'ml', 'hr@example.ru')
+      }
+      db.pragma('user_version = 35')
+      console.log('✅ Migration 35 completed: added vacancies')
+    } catch (err) {
+      console.error('❌ Migration 35 failed:', err.message)
+    }
+  }
 }
 
 migrate()

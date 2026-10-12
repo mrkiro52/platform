@@ -110,6 +110,8 @@ export const api = {
   // Задания к главам индивидуальных программ октября
   programHomework:       ()                              => req('/api/programs/homework/mine'),
   submitProgramHomework: (direction, chapter, payload)   => req(`/api/programs/homework/${direction}/${chapter}`, { method: 'PUT', body: JSON.stringify(payload) }),
+  vacancies:             ()                              => req('/api/vacancies'),
+  vacancy:               (id)                            => req(`/api/vacancies/${id}`),
   downloadProgramFile:   (direction, chapter, name)      => download(`/api/programs/files/${direction}/${chapter}/${encodeURIComponent(name)}`, name),
   bookSlot:     (slotId) => req(`/api/calls/slots/${slotId}/book`, { method: 'POST' }),
   cancelSlot:   (slotId) => req(`/api/calls/slots/${slotId}/book`, { method: 'DELETE' }),

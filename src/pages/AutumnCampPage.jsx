@@ -215,7 +215,7 @@ export default function AutumnCampPage({ user }) {
 
   return (
     <section className="page active camp-page">
-      {/* Шапка лагеря: название, онбординг и мини-курс. На пк — три плашки
+      {/* Шапка лагеря: название, вакансии и контакты, мини-курс. На пк — три плашки
           в ряд, уже — название с онбордингом в первой строке, курс под ними. */}
       <div className="camp-heroes">
         <div className="camp-brand">
@@ -228,10 +228,10 @@ export default function AutumnCampPage({ user }) {
         <button
           type="button"
           className="camp-hero camp-hero-onboarding"
-          onClick={() => navigate('/autumn-camp/onboarding-autumn-2026')}
-          aria-label="Открыть онбординг участника"
+          onClick={() => navigate('/autumn-camp/vacancies')}
+          aria-label="Открыть вакансии и контакты"
         >
-          <span className="camp-hero-title">Онбординг участника</span>
+          <span className="camp-hero-title">Вакансии и контакты</span>
           <span className="camp-hero-arrow" aria-hidden="true">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
               <path d="M5 12h14M13 6l6 6-6 6" />

@@ -30,6 +30,7 @@ app.use('/api/analytics',     require('./src/routes/analytics'))
 app.use('/api/admin-tasks',   require('./src/routes/adminTasks'))
 app.use('/api/sql-trainer',   require('./src/routes/sqlTrainer'))
 app.use('/api/programs',      require('./src/routes/programs'))
+app.use('/api/vacancies',     require('./src/routes/vacancies'))
 
 // ── Admin Panel ──────────────────────────────────────────────────────────────
 app.use('/admin', express.static(path.join(__dirname, 'admin')))
