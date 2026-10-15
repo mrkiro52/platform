@@ -4698,6 +4698,7 @@ body.reels-lock {
 .prg-chapter-link.is-submitted .prg-chapter-link-meta { color: var(--accent-lime); }
 .prg-chapter-link.is-approved .prg-chapter-link-meta { color: #3FB950; }
 .prg-chapter-link.is-rework .prg-chapter-link-meta { color: var(--prg-text); }
+a.prg-chapter-link, a.prg-chip { text-decoration: none; }
 .prg-chip.is-link { cursor: pointer; color: var(--prg-text); border-color: rgba(255,140,66,0.45); background: var(--prg-dim); font-family: inherit; }
 .prg-chip.is-link:hover { border-color: var(--prg-text); }
 

@@ -188,6 +188,13 @@ function ChapterCard({ dir, ch, homework }) {
           <span className="prg-chapter-link-meta">{taskLabel(dir, ch, hw)}</span>
           <span className="prg-chapter-link-go">→</span>
         </button>
+        {ch.video && (
+          <a className="prg-chapter-link is-video" href={ch.video} target="_blank" rel="noopener noreferrer">
+            <span className="prg-chapter-link-name">Запись встречи</span>
+            <span className="prg-chapter-link-meta">видео на YouTube</span>
+            <span className="prg-chapter-link-go">↗</span>
+          </a>
+        )}
       </div>
     </div>
   )
@@ -357,6 +364,7 @@ function Chapter({ dir, chapterRef: ref }) {
         <div className="prg-hero-meta">
           <span className="prg-chip">{chapter.sections.length} {plural(chapter.sections.length, 'раздел', 'раздела', 'разделов')}</span>
           <button type="button" className="prg-chip is-link" onClick={() => navigate(`/autumn-camp/program/${chapterRef(meta)}/task`)}>Задание к главе →</button>
+          {meta.video && <a className="prg-chip is-link" href={meta.video} target="_blank" rel="noopener noreferrer">▶ Запись встречи</a>}
         </div>
         {meta.tracks && (
           <div className="prg-track-switch" role="group" aria-label="Язык">

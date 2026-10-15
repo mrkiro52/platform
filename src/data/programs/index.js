@@ -6,6 +6,7 @@
 // оформляют задание в файле и присылают в личные сообщения (PROGRAM_CONTACT);
 // у задания главы может быть свой способ сдачи (assignment.submit, например 'trainer').
 // extra — дополнительные главы вне основной нумерации (key вместо num, label вместо «Глава N»).
+// video — запись встречи по главе (ссылка на YouTube): кнопка в карточке главы и в шапке конспекта.
 // tracks — глава с выбором языка: студент выбирает трек, разделы трека идут перед общими (combineTrack).
 
 export const PROGRAM_PERIOD = '1–31 октября'
@@ -25,6 +26,7 @@ export const DIRECTIONS = {
       { num: 3, title: 'Основы NumPy, pandas и Matplotlib', sections: 6, source: 'ml-1', load: () => import('./ml-1').then(m => ({ default: { ...m.default, num: 3 } })) },
       // Глава 4 — общая для трёх направлений аналитиков
       { num: 4, title: 'Разбор вопросов с собеседований на аналитика в бигтех', sections: 10, source: 'analyst-4', load: () => import('./analyst-4'), submit: 'self' },
+      { num: 5, title: 'Математика и статистика', sections: 14, load: () => import('./product-5') },
     ],
   },
   system: {
@@ -122,7 +124,7 @@ export const DIRECTIONS = {
       { num: 1, title: 'Основы NumPy, pandas и Matplotlib', sections: 6, load: () => import('./ml-1') },
       { num: 2, title: 'Классическое машинное обучение: базовые понятия', sections: 8, load: () => import('./ml-2') },
       { num: 3, title: 'Линейные модели', sections: 10, load: () => import('./ml-3') },
-      { num: 4, title: 'Линейные модели. Линейная регрессия', sections: 11, load: () => import('./ml-4') },
+      { num: 4, title: 'Линейные модели. Линейная регрессия', sections: 11, load: () => import('./ml-4'), video: 'https://youtu.be/0jTY6KkkOsw' },
     ],
   },
   security: {
