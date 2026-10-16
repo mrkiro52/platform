@@ -2977,6 +2977,7 @@ body.reels-lock {
 .mx-mat-cell.is-bar { border-left: 1.2px solid currentColor; padding-left: 0.85em; margin-left: -0.42em; }
 
 /* Вектор: стрелка над буквой */
+.mx-over { display: inline-block; border-top: 1.2px solid currentColor; padding-top: 1px; line-height: 1.1; }
 .mx-vec { position: relative; display: inline-block; padding-top: 0.32em; }
 .mx-vec::before {
   content: ''; position: absolute; left: 0.05em; right: 0; top: 0.12em;

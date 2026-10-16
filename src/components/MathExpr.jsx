@@ -3,6 +3,7 @@
 // Для линейной алгебры: матрицы \begin{pmatrix}…\end{pmatrix} (а также bmatrix, vmatrix и
 // расширенная матрица \begin{amatrix}{k} с чертой после k-го столбца), стрелки над векторами
 // \vec{a} и \overrightarrow{AB}, подписанная стрелка \xrightarrow{…}.
+// Для вероятностей: черта над противоположным событием \overline{A}.
 // Полноценный KaTeX сюда тянуть незачем — это лишние 300 КБ ради девяти тем.
 
 const SYMBOLS = {
@@ -20,6 +21,7 @@ const SYMBOLS = {
   leftrightarrow: '↔', Leftrightarrow: '⟺',
   nabla: '∇', partial: '∂', eta: 'η', mu: 'μ', sigma: 'σ',
   neq: '≠', Longrightarrow: '⟹', mid: '∣', vdots: '⋮', cdots: '⋯', ddots: '⋱',
+  Omega: 'Ω', Longleftrightarrow: '⟺',
 }
 
 // Имена функций пишутся прямым шрифтом, а не курсивом переменных
@@ -33,11 +35,12 @@ function parse(src) {
   function seq(stop) {
     const out = []
     let buf = ''
+    let depth = 0  // вложенные {…} без команды — например, 0{,}01 внутри \frac{…}
     const flush = () => { if (buf) { out.push({ t: 'txt', v: buf }); buf = '' } }
 
     while (i < src.length) {
       const c = src[i]
-      if (stop && c === stop) break
+      if (stop && c === stop && depth === 0) break
 
       if (c === '\\') {
         const m = /^\\([a-zA-Z]+|,|;)/.exec(src.slice(i))
@@ -48,6 +51,7 @@ function parse(src) {
         if (name === 'sqrt') { flush(); out.push({ t: 'sqrt', a: group() }); continue }
         if (name === 'text') { flush(); out.push({ t: 'text', a: group() }); continue }
         if (name === 'vec' || name === 'overrightarrow') { flush(); out.push({ t: 'vec', a: group() }); continue }
+        if (name === 'overline') { flush(); out.push({ t: 'over', a: group() }); continue }
         if (name === 'xrightarrow') { flush(); out.push({ t: 'xarrow', a: group() }); continue }
         if (name === 'begin') { flush(); out.push(matrix()); continue }
         // \left( и \right) — только подсказка размера скобки, сама скобка идёт следом
@@ -58,7 +62,8 @@ function parse(src) {
       }
 
       // Одиночные скобки в тексте — группировка вида 1{,}5, сами по себе не печатаются
-      if (c === '{' || c === '}') { i += 1; continue }
+      if (c === '{') { depth += 1; i += 1; continue }
+      if (c === '}') { if (depth > 0) depth -= 1; i += 1; continue }
 
       if (c === '^' || c === '_') {
         flush(); i += 1
@@ -137,6 +142,8 @@ function Node({ n }) {
       )
     case 'vec':
       return <span className="mx-vec"><Nodes nodes={n.a} /></span>
+    case 'over':
+      return <span className="mx-over"><Nodes nodes={n.a} /></span>
     case 'xarrow':
       return (
         <span className="mx-xarrow">

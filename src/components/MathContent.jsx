@@ -113,6 +113,25 @@ function VectorGrid({ kind }) {
   )
 }
 
+// Диаграмма Венна: события A и B в пространстве исходов Ω — рисунок к занятию 4
+function VennFigure() {
+  return (
+    <svg className="math-svg" viewBox="0 0 300 200" role="img" aria-label="Диаграмма Венна: события A и B внутри Ω, пересечение A ∩ B">
+      <rect x="20" y="12" width="260" height="176" rx="4" fill="none" stroke="currentColor" strokeWidth="1.2" opacity="0.55" />
+      <circle cx="122" cy="100" r="58" fill="#FFB870" fillOpacity="0.16" stroke="#FFB870" strokeWidth="2" />
+      <circle cx="178" cy="100" r="58" fill="#79C0FF" fillOpacity="0.16" stroke="#79C0FF" strokeWidth="2" />
+      <g fontSize="14" fontFamily="Georgia, serif" fontStyle="italic" fill="currentColor">
+        <text x="32" y="34">Ω</text>
+        <text x="92" y="105" fill="#FFB870">A</text>
+        <text x="200" y="105" fill="#79C0FF">B</text>
+        <text x="150" y="178" textAnchor="middle" fontSize="12">A ∩ B</text>
+      </g>
+      <path d="M150 164 V108" stroke="currentColor" strokeWidth="1" opacity="0.6" />
+      <circle cx="150" cy="100" r="2.6" fill="currentColor" />
+    </svg>
+  )
+}
+
 export default function MathBlocks({ blocks }) {
   return blocks.map((block, i) => {
     if (block.t === 'p') {
@@ -156,6 +175,7 @@ export default function MathBlocks({ blocks }) {
         <figure key={i} className="math-figure">
           {block.kind === 'tangent' && <TangentFigure />}
           {(block.kind === 'vector' || block.kind === 'parallelogram') && <VectorGrid kind={block.kind} />}
+          {block.kind === 'venn' && <VennFigure />}
           {block.caption && <figcaption><MathText>{block.caption}</MathText></figcaption>}
         </figure>
       )
