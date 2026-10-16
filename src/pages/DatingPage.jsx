@@ -7,7 +7,7 @@ import { api, assetUrl } from '../api'
 // актуальны (или отредактировать). Показанная анкета идёт первой в сетке.
 
 const LIMITS = { name: 60, about: 600, contact: 300 }
-const ABOUT_HINT = 'Например: ищу напарника на хакатон, друзей в Москве или просто интересных людей из IT'
+const ABOUT_HINT = 'Например: Junior ML-разработчик, ищу напарника на хакатон, друзей в Москве или просто интересных людей из IT'
 
 const isComplete = p => !!(p && p.name && p.about && p.contact && p.photoUrl)
 
@@ -46,7 +46,7 @@ function DatingCard({ p, mine }) {
         <div className="dt-card-name">{p.name}</div>
       </div>
       <div className="dt-card-body">
-        <div className="dt-card-label">Ищу</div>
+        <div className="dt-card-label">Обо мне и кого ищу</div>
         <p className="dt-card-about">{p.about}</p>
         <a className="dt-card-contact" href={p.contact} target="_blank" rel="noopener noreferrer">
           <span className="dt-card-contact-text">{contactLabel(p.contact)}</span>
@@ -149,7 +149,7 @@ function Editor({ me, publish, onClose, onSaved }) {
             </label>
             <label className="dt-field">
               <span className="dt-label">
-                Кого или что ищу
+                Обо мне и кого/что ищу
                 <span className="dt-count">{form.about.length}/{LIMITS.about}</span>
               </span>
               <textarea
@@ -253,8 +253,8 @@ export default function DatingPage() {
         <div className="dt-hero-text">
           <span className="dt-tag">Сообщество KIRO</span>
           <h1 className="dt-title">Знакомства</h1>
-          <p className="dt-lead">Найди напарника на хакатон, друзей по учёбе или единомышленников. Опубликуй анкету — и тебе смогут написать.</p>
-          <p className="dt-lead dt-lead-more">Найти единомышленников сейчас непросто. Здесь собрались ребята, которые тоже идут в IT: с ними можно вместе учиться, обсуждать интересные темы, встречаться, чтобы поучиться или поработать рядом, собрать команду на хакатон или соревнование — и завести ещё много полезных знакомств.</p>
+          <p className="dt-lead">Опубликуй анкету — и тебе смогут написать.</p>
+          <p className="dt-lead dt-lead-more">Найти единомышленников сейчас непросто. Здесь собрались ребята, которые тоже развиваются, изучают IT и другие направления: с ними можно вместе учиться, обсуждать интересные темы, встречаться, чтобы поучиться или поработать вместе, собрать команду на хакатон или соревнование — и завести ещё много полезных знакомств.</p>
         </div>
         {me && (
           <div className="dt-hero-actions">
@@ -264,9 +264,9 @@ export default function DatingPage() {
             </div>
             <div className="dt-hero-buttons">
               {me.visible
-                ? <button type="button" className="dt-btn-hide" onClick={() => setVisible(false)} disabled={busy}>{busy ? 'Скрываем…' : 'Скрыть мой профиль'}</button>
-                : <button type="button" className="btn-primary" onClick={onShow}>Показать мой профиль</button>}
-              {isComplete(me) && <button type="button" className="btn-ghost" onClick={() => setModal('edit')}>Редактировать анкету</button>}
+                ? <button type="button" className="dt-btn-hide dt-hero-btn" onClick={() => setVisible(false)} disabled={busy}>{busy ? 'Скрываем…' : 'Скрыть мой профиль'}</button>
+                : <button type="button" className="btn-primary dt-hero-btn" onClick={onShow}>Показать мой профиль</button>}
+              {isComplete(me) && <button type="button" className="dt-btn-edit dt-hero-btn" onClick={() => setModal('edit')}>Редактировать анкету</button>}
             </div>
             {!modal && actionError && <div className="dt-error" role="alert">{actionError}</div>}
           </div>

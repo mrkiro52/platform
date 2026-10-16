@@ -4,7 +4,8 @@ const { verifyToken } = require('../middleware/auth')
 const { notify } = require('../notify')
 
 // Публичные поля профиля. Намеренно НЕ отдаём email и nickname в листингах —
-// nickname используется как логин при входе. Поля "трек", "план" и "тариф"
+// nickname используется как логин при входе. Исключение — страница профиля
+// (GET /users/:id): её адрес /u/никнейм, поэтому никнейм там и так виден. Поля "трек", "план" и "тариф"
 // в продукте больше не используются (колонки в БД сохранены нетронутыми
 // ради истории данных, просто больше не выбираются и не показываются).
 const PUBLIC_FIELDS = `
@@ -49,11 +50,17 @@ router.get('/find', verifyToken, (req, res) => {
   res.json(withCounts(user, req.user.id))
 })
 
-// GET /api/social/users/:id — публичный профиль
+// GET /api/social/users/:id — публичный профиль. :id — никнейм (адрес профиля
+// /u/никнейм) или числовой id (старые ссылки). Сначала ищем по никнейму: ник
+// может состоять из одних цифр. В ответе есть nickname — по нему фронтенд
+// строит адрес страницы, который можно скопировать.
 router.get('/users/:id', verifyToken, (req, res) => {
-  const user = db.prepare(`SELECT ${PUBLIC_FIELDS} FROM users WHERE users.id = ?`).get(req.params.id)
-  if (!user) return res.status(404).json({ message: 'Пользователь не найден' })
-  res.json(withCounts(user, req.user.id))
+  const param = String(req.params.id)
+  let row = db.prepare('SELECT id, nickname FROM users WHERE nickname = ? COLLATE NOCASE').get(param)
+  if (!row && /^\d+$/.test(param)) row = db.prepare('SELECT id, nickname FROM users WHERE id = ?').get(Number(param))
+  if (!row) return res.status(404).json({ message: 'Пользователь не найден' })
+  const user = db.prepare(`SELECT ${PUBLIC_FIELDS} FROM users WHERE users.id = ?`).get(row.id)
+  res.json({ ...withCounts(user, req.user.id), nickname: row.nickname })
 })
 
 // POST /api/social/users/:id/follow — подписаться / отписаться (переключатель)

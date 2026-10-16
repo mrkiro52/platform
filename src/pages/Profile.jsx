@@ -60,12 +60,16 @@ export default function Profile({ user, onAvatarChange }) {
   const [myPosts, setMyPosts] = useState([])
   const [postsLoading, setPostsLoading] = useState(true)
   const [editingProfile, setEditingProfile] = useState(false)
+  // Сохранённый никнейм — для ссылки на профиль (поле nickname меняется при редактировании)
+  const [savedNickname, setSavedNickname] = useState('')
+  const [linkCopied, setLinkCopied] = useState(false)
 
   useEffect(() => {
     api.profile().then(p => {
       setName(p.name || '')
       setEmail(p.email || '')
       setNickname(p.nickname || '')
+      setSavedNickname(p.nickname || '')
       setBio(p.bio || '')
       setPosition(p.position || '')
       setIsSummerCamp2026(!!p.isSummerCamp2026)
@@ -115,6 +119,24 @@ export default function Profile({ user, onAvatarChange }) {
     setConfirmOpen(true)
   }
 
+  const profileLink = `${window.location.origin}/u/${savedNickname}`
+
+  const copyProfileLink = async () => {
+    try {
+      await navigator.clipboard.writeText(profileLink)
+    } catch {
+      // запасной вариант для браузеров без Clipboard API
+      const ta = document.createElement('textarea')
+      ta.value = profileLink
+      document.body.appendChild(ta)
+      ta.select()
+      document.execCommand('copy')
+      ta.remove()
+    }
+    setLinkCopied(true)
+    setTimeout(() => setLinkCopied(false), 2000)
+  }
+
   const handleConfirmSave = async () => {
     setConfirmOpen(false)
     setSaving(true)
@@ -125,6 +147,7 @@ export default function Profile({ user, onAvatarChange }) {
       const payload = { name, email, nickname, bio, birthday, position }
       if (password) payload.password = password
       await api.updateProfile(payload)
+      setSavedNickname(nickname)
       setPassword('')
       setSaved(true)
       setTimeout(() => setSaved(false), 2000)
@@ -175,6 +198,11 @@ export default function Profile({ user, onAvatarChange }) {
           <div className="profile-name">{name || user.name}</div>
           <div className="profile-email">{email || user.email}</div>
           {avatarError && <div style={{ fontSize: 12, color: 'var(--danger)', marginTop: 8 }}>{avatarError}</div>}
+          {savedNickname && (
+            <button type="button" className={`profile-copy-link${linkCopied ? ' is-done' : ''}`} onClick={copyProfileLink}>
+              {linkCopied ? '✓ Ссылка скопирована' : 'Скопировать ссылку на профиль'}
+            </button>
+          )}
         </div>
 
         <div className="profile-info-trophies">

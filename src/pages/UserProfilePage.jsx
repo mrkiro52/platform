@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { api } from '../api'
 import { Avatar, Btn, UserRow, formatDate } from '../components/social'
@@ -24,7 +24,8 @@ function Stat({ value, label, onClick, active }) {
 }
 
 export default function UserProfilePage({ user, avatarUrl }) {
-  const { id } = useParams()
+  // В адресе — никнейм (/u/никнейм) или, в старых ссылках, числовой id
+  const { id: handle } = useParams()
   const navigate = useNavigate()
 
   const [profile, setProfile] = useState(null)
@@ -35,20 +36,35 @@ export default function UserProfilePage({ user, avatarUrl }) {
   const [people, setPeople] = useState([])
   const [busy, setBusy] = useState(false)
 
+  // Никнейм уже загруженного профиля: после замены адреса на /u/никнейм
+  // загружать профиль второй раз не нужно
+  const loadedNick = useRef(null)
+
   useEffect(() => {
+    if (loadedNick.current && loadedNick.current.toLowerCase() === String(handle).toLowerCase()) return
     setLoading(true)
     setNotFound(false)
     setTab('posts')
-    api.userProfile(id)
-      .then(p => { setProfile(p); setLoading(false) })
+    api.userProfile(handle)
+      .then(p => {
+        loadedNick.current = p.nickname || null
+        setProfile(p)
+        setLoading(false)
+        // Ссылки внутри платформы ведут по id — заменяем адрес на /u/никнейм,
+        // чтобы его можно было скопировать и отправить
+        if (p.nickname && p.nickname !== handle) navigate(`/u/${p.nickname}`, { replace: true })
+      })
       .catch(() => { setNotFound(true); setLoading(false) })
-  }, [id])
+  }, [handle, navigate])
+
+  const id = profile?.id
 
   const reload = useCallback(() => {
-    api.posts({ userId: id }).then(setPosts).catch(() => {})
+    if (id) api.posts({ userId: id }).then(setPosts).catch(() => {})
   }, [id])
 
   useEffect(() => {
+    if (!id) return
     if (tab === 'posts') reload()
     if (tab === 'followers') api.followers(id).then(setPeople).catch(() => setPeople([]))
     if (tab === 'following') api.following(id).then(setPeople).catch(() => setPeople([]))
