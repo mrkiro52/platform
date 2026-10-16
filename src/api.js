@@ -22,6 +22,11 @@ async function req(path, opts = {}) {
   return res.json()
 }
 
+// Адрес файла с бэкенда: относительные пути (локальные фото) — от адреса API
+export function assetUrl(url) {
+  return url && url.startsWith('/') ? `${BASE}${url}` : url
+}
+
 async function reqForm(path, formData) {
   const t = token()
   const headers = {}
@@ -111,6 +116,11 @@ export const api = {
   programHomework:       ()                              => req('/api/programs/homework/mine'),
   submitProgramHomework: (direction, chapter, payload)   => req(`/api/programs/homework/${direction}/${chapter}`, { method: 'PUT', body: JSON.stringify(payload) }),
   vacancies:             ()                              => req('/api/vacancies'),
+  // Знакомства: анкеты, своя анкета, фото, показать / скрыть
+  dating:                ()                              => req('/api/dating'),
+  saveDating:            (data)                          => req('/api/dating/me', { method: 'PUT', body: JSON.stringify(data) }),
+  uploadDatingPhoto:     (file)                          => { const fd = new FormData(); fd.append('photo', file); return reqForm('/api/dating/me/photo', fd) },
+  setDatingVisible:      (visible)                       => req('/api/dating/me/visibility', { method: 'POST', body: JSON.stringify({ visible }) }),
   vacancy:               (id)                            => req(`/api/vacancies/${id}`),
   downloadProgramFile:   (direction, chapter, name)      => download(`/api/programs/files/${direction}/${chapter}/${encodeURIComponent(name)}`, name),
   bookSlot:     (slotId) => req(`/api/calls/slots/${slotId}/book`, { method: 'POST' }),

@@ -1094,6 +1094,29 @@ function migrate() {
       console.error('❌ Migration 35 failed:', err.message)
     }
   }
+
+  // Migration 36: анкеты раздела «Знакомства». Анкета есть у каждого пользователя
+  // неявно: пока строки нет, она пустая и скрыта. is_visible = 1 — анкета показана всем.
+  if (schemaVersion < 36) {
+    try {
+      db.prepare(`
+        CREATE TABLE IF NOT EXISTS dating_profiles (
+          user_id      INTEGER PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
+          name         TEXT NOT NULL DEFAULT '',
+          about        TEXT NOT NULL DEFAULT '',
+          contact      TEXT NOT NULL DEFAULT '',
+          photo_url    TEXT NOT NULL DEFAULT '',
+          is_visible   INTEGER NOT NULL DEFAULT 0,
+          published_at TEXT,
+          updated_at   TEXT NOT NULL DEFAULT (datetime('now'))
+        )
+      `).run()
+      db.pragma('user_version = 36')
+      console.log('✅ Migration 36 completed: added dating_profiles')
+    } catch (err) {
+      console.error('❌ Migration 36 failed:', err.message)
+    }
+  }
 }
 
 migrate()

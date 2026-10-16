@@ -22,6 +22,7 @@ import AntiReels from './pages/AntiReels'
 import AutumnCampPage from './pages/AutumnCampPage'
 import AutumnOnboardingPage from './pages/AutumnOnboardingPage'
 import VacanciesPage from './pages/VacanciesPage'
+import DatingPage from './pages/DatingPage'
 import MathCoursePage from './pages/MathCoursePage'
 import MathTheoryPage from './pages/MathTheoryPage'
 import MathHomeworkPage from './pages/MathHomeworkPage'
@@ -154,6 +155,7 @@ export default function AppShell({ user, onLogout }) {
             <Route path="/messages/:userId" element={
               <MessagesPage user={user} onUnreadChange={refreshBadges} />
             } />
+            <Route path="/dating" element={<DatingPage />} />
             <Route path="/notifications" element={<NotificationsPage onRead={refreshBadges} />} />
             <Route path="/likebezy"   element={<LikebezyPage />} />
             <Route path="/likebezy/:id" element={<LikebezyPage />} />
