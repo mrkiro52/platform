@@ -78,10 +78,8 @@ router.get('/', verifyToken, (req, res) => {
      ORDER BY (user_id = ?) DESC, published_at DESC
   `).all(req.user.id)
   const me = getProfile(req.user.id)
-  const user = db.prepare('SELECT name FROM users WHERE id = ?').get(req.user.id)
   res.json({
     me: me ? toJson(me) : { userId: req.user.id, name: '', about: '', contact: '', photoUrl: '', visible: false, publishedAt: null },
-    defaultName: user?.name || '',
     profiles: rows.map(toJson),
   })
 })

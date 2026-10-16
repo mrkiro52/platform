@@ -7,7 +7,7 @@ import { api, assetUrl } from '../api'
 // актуальны (или отредактировать). Показанная анкета идёт первой в сетке.
 
 const LIMITS = { name: 60, about: 600, contact: 300 }
-const ABOUT_HINT = 'Например: ищу напарника на хакатон, ментора по SQL, друзей в Москве или просто интересных людей из IT'
+const ABOUT_HINT = 'Например: ищу напарника на хакатон, друзей в Москве или просто интересных людей из IT'
 
 const isComplete = p => !!(p && p.name && p.about && p.contact && p.photoUrl)
 
@@ -57,8 +57,8 @@ function DatingCard({ p, mine }) {
   )
 }
 
-function Editor({ me, defaultName, publish, onClose, onSaved }) {
-  const [form, setForm] = useState({ name: me.name || defaultName || '', about: me.about || '', contact: me.contact || '' })
+function Editor({ me, publish, onClose, onSaved }) {
+  const [form, setForm] = useState({ name: me.name || '', about: me.about || '', contact: me.contact || '' })
   const [photoUrl, setPhotoUrl] = useState(me.photoUrl || '')
   const [uploading, setUploading] = useState(false)
   const [saving, setSaving] = useState(false)
@@ -253,7 +253,8 @@ export default function DatingPage() {
         <div className="dt-hero-text">
           <span className="dt-tag">Сообщество KIRO</span>
           <h1 className="dt-title">Знакомства</h1>
-          <p className="dt-lead">Найди напарника на хакатон, друзей по учёбе, ментора или единомышленников. Опубликуй анкету — и тебе смогут написать.</p>
+          <p className="dt-lead">Найди напарника на хакатон, друзей по учёбе или единомышленников. Опубликуй анкету — и тебе смогут написать.</p>
+          <p className="dt-lead dt-lead-more">Найти единомышленников сейчас непросто. Здесь собрались ребята, которые тоже идут в IT: с ними можно вместе учиться, обсуждать интересные темы, встречаться, чтобы поучиться или поработать рядом, собрать команду на хакатон или соревнование — и завести ещё много полезных знакомств.</p>
         </div>
         {me && (
           <div className="dt-hero-actions">
@@ -310,7 +311,6 @@ export default function DatingPage() {
       {(modal === 'publish' || modal === 'edit') && (
         <Editor
           me={me}
-          defaultName={data?.defaultName}
           publish={modal === 'publish'}
           onClose={close}
           onSaved={onSaved}

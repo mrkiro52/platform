@@ -5125,7 +5125,7 @@ a.prg-chapter-link, a.prg-chip { text-decoration: none; }
 /* ════════════════════════════════════════════════════════════════
    ЗНАКОМСТВА — анкеты карточками (DatingPage.jsx)
 ═════════════════════════════════════════════════════════════════ */
-.dt-page { max-width: 1320px; }
+.dt-page { max-width: none; width: 100%; }
 .dt-hero {
   position: relative; overflow: hidden; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: end; gap: 24px;
   padding: 30px 32px; margin-bottom: 26px; border: 1px solid var(--border-color); border-radius: var(--radius-xl);
@@ -5134,10 +5134,11 @@ a.prg-chapter-link, a.prg-chip { text-decoration: none; }
     radial-gradient(420px 220px at 0% 100%, rgba(255,95,145,0.10), transparent 70%),
     var(--bg-secondary);
 }
-.dt-hero-text { max-width: 620px; display: flex; flex-direction: column; gap: 10px; }
+.dt-hero-text { max-width: 760px; display: flex; flex-direction: column; gap: 10px; }
 .dt-tag { align-self: flex-start; font-size: 11.5px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent-lime); background: var(--accent-dim); border: 1px solid rgba(255,214,10,0.35); border-radius: var(--radius-pill); padding: 4px 11px; }
 .dt-title { font-family: var(--font-syne); font-size: 34px; font-weight: 700; letter-spacing: -0.5px; color: var(--text-primary); margin: 0; }
 .dt-lead { margin: 0; color: var(--text-secondary); font-size: 15px; line-height: 1.6; }
+.dt-lead-more { font-size: 14px; color: var(--text-tertiary); }
 .dt-hero-actions { display: flex; flex-direction: column; align-items: flex-end; gap: 12px; }
 .dt-hero-buttons { display: flex; gap: 10px; flex-wrap: wrap; justify-content: flex-end; align-items: center; }
 .dt-status { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; color: var(--text-tertiary); }
