@@ -25,6 +25,8 @@ function getTitle(pathname) {
   if (pathname.startsWith('/likebezy'))          return 'Полные ликбезы'
   if (pathname.startsWith('/messages'))          return 'Сообщения'
   if (pathname.startsWith('/u/'))                return 'Профиль участника'
+  if (pathname.startsWith('/courses'))           return 'Курсы'
+  if (pathname.startsWith('/dating'))            return 'Знакомства'
   return PATH_TITLES[pathname] || ''
 }
 

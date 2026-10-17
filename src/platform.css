@@ -5306,3 +5306,155 @@ a.prg-chapter-link, a.prg-chip { text-decoration: none; }
   .dt-overlay { padding: 10px; align-items: flex-end; }
   .dt-modal { max-height: calc(100vh - 20px); }
 }
+
+/* ════════════════════════════════════════════════════════════════
+   КУРСЫ — витрина и покупка (CoursesPage.jsx). Модальные окна — dt-overlay / dt-modal
+═════════════════════════════════════════════════════════════════ */
+.cs-page { width: 100%; }
+.cs-hero {
+  position: relative; overflow: hidden; display: flex; flex-direction: column; align-items: flex-start; gap: 12px;
+  padding: 30px 32px; margin-bottom: 18px; border: 1px solid var(--border-color); border-radius: var(--radius-xl);
+  background: radial-gradient(560px 260px at 100% 0%, rgba(255,214,10,0.14), transparent 70%), var(--bg-secondary);
+}
+.cs-title { font-family: var(--font-syne); font-size: 34px; font-weight: 700; letter-spacing: -0.5px; color: var(--text-primary); margin: 0; }
+.cs-lead { margin: 0; max-width: 760px; color: var(--text-secondary); font-size: 15px; line-height: 1.6; }
+
+.cs-credit {
+  display: flex; gap: 12px; align-items: flex-start; max-width: 760px; padding: 12px 16px; border-radius: var(--radius-md);
+  background: var(--accent-dim); border: 1px solid rgba(255,214,10,0.35); color: var(--text-secondary); font-size: 14px; line-height: 1.5;
+}
+.cs-credit b { color: var(--accent-lime); }
+.cs-credit-icon { font-size: 20px; line-height: 1.2; }
+.cs-credit.is-compact { font-size: 13px; padding: 10px 13px; }
+
+.cs-bundles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-bottom: 18px; }
+.cs-bundle {
+  position: relative; display: flex; flex-direction: column; gap: 4px; padding: 18px 20px;
+  background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-lg);
+}
+.cs-bundle.is-best { border-color: var(--accent-lime); box-shadow: 0 0 0 1px rgba(255,214,10,0.3), 0 12px 36px rgba(255,214,10,0.08); background: linear-gradient(160deg, rgba(255,214,10,0.10), transparent 60%), var(--bg-secondary); }
+.cs-bundle-flag { position: absolute; top: -11px; right: 16px; font-size: 11.5px; font-weight: 800; color: var(--on-accent); background: var(--accent-lime); border-radius: var(--radius-pill); padding: 4px 11px; }
+.cs-bundle-name { font-size: 13px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--text-tertiary); }
+.cs-bundle-price { font-family: var(--font-syne); font-size: 26px; font-weight: 700; color: var(--text-primary); }
+.cs-bundle.is-best .cs-bundle-price { color: var(--accent-lime); }
+.cs-bundle-sub { font-size: 13px; color: var(--success); font-weight: 600; }
+.cs-bundle-sub s, .cs-option-price s, .cs-total-price s { color: var(--text-tertiary); font-weight: 500; }
+.cs-bundle-btn { margin-top: 10px; align-self: stretch; }
+
+.cs-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.cs-card {
+  display: flex; flex-direction: column; gap: 10px; padding: 22px; border-radius: var(--radius-lg);
+  background: radial-gradient(360px 180px at 100% 0%, color-mix(in srgb, var(--c) 14%, transparent), transparent 70%), var(--bg-secondary);
+  border: 1px solid var(--border-color); transition: border-color .2s, transform .2s;
+}
+.cs-card:hover { border-color: color-mix(in srgb, var(--c) 55%, transparent); transform: translateY(-2px); }
+.cs-card-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.cs-icon {
+  display: grid; place-items: center; width: 46px; height: 46px; border-radius: 13px; font-family: var(--font-mono); font-weight: 700; font-size: 16px;
+  color: var(--c); background: color-mix(in srgb, var(--c) 14%, transparent); border: 1px solid color-mix(in srgb, var(--c) 40%, transparent);
+}
+.cs-icon--lg { width: 58px; height: 58px; font-size: 20px; border-radius: 16px; }
+.cs-free { font-size: 11.5px; font-weight: 700; color: var(--success); background: var(--success-dim); border: 1px solid rgba(63,185,80,0.4); border-radius: var(--radius-pill); padding: 4px 10px; }
+.cs-card-title { margin: 6px 0 0; font-family: var(--font-syne); font-size: 19px; font-weight: 700; line-height: 1.3; color: var(--text-primary); }
+.cs-card-tagline { margin: 0; color: var(--text-secondary); font-size: 14px; line-height: 1.55; }
+.cs-card-meta { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+.cs-card-meta li { font-size: 12px; font-weight: 600; color: var(--text-tertiary); background: var(--bg-tertiary); border-radius: var(--radius-pill); padding: 4px 10px; }
+.cs-card-foot { margin-top: auto; padding-top: 14px; border-top: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 12px; }
+.cs-card-price { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.cs-card-price b { font-family: var(--font-syne); font-size: 22px; color: var(--text-primary); }
+.cs-card-price span { font-size: 12.5px; color: var(--success); font-weight: 600; }
+.cs-card-actions { display: flex; flex-direction: column; gap: 8px; }
+.cs-card-actions > * { justify-content: center; height: 44px; padding: 0 14px; font-size: 14.5px; border-radius: var(--radius-md); }
+
+/* Покупка */
+.cs-modal { max-width: 620px; }
+.cs-checkout { padding: 0 22px 22px; display: flex; flex-direction: column; gap: 12px; }
+.cs-options { display: flex; flex-direction: column; gap: 10px; }
+.cs-option {
+  position: relative; display: flex; flex-direction: column; gap: 8px; padding: 15px 16px; cursor: pointer; outline: none;
+  background: var(--bg-tertiary); border: 1.5px solid var(--border-color); border-radius: var(--radius-md); transition: border-color .15s, background .15s;
+}
+.cs-option:hover { border-color: #3a3a44; }
+.cs-option:focus-visible { box-shadow: 0 0 0 3px var(--accent-dim); }
+.cs-option.is-on { border-color: var(--accent-lime); background: linear-gradient(160deg, rgba(255,214,10,0.08), transparent 60%), var(--bg-tertiary); }
+.cs-option.is-best { padding-top: 20px; }
+.cs-option-flag { position: absolute; top: -10px; left: 14px; font-size: 11px; font-weight: 800; color: var(--on-accent); background: var(--accent-lime); border-radius: var(--radius-pill); padding: 3px 10px; }
+.cs-option-head { display: flex; align-items: center; gap: 10px; }
+.cs-radio { flex-shrink: 0; width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--text-tertiary); }
+.cs-option.is-on .cs-radio { border-color: var(--accent-lime); box-shadow: inset 0 0 0 3px var(--bg-tertiary); background: var(--accent-lime); }
+.cs-option-title { flex: 1; font-weight: 700; font-size: 15px; color: var(--text-primary); }
+.cs-option-price { display: flex; align-items: baseline; gap: 8px; white-space: nowrap; }
+.cs-option-price b { font-family: var(--font-syne); font-size: 18px; color: var(--text-primary); }
+.cs-option.is-best .cs-option-price b { color: var(--accent-lime); }
+.cs-option-sub { padding-left: 28px; font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
+.cs-save { margin-left: 28px; align-self: flex-start; font-size: 12px; font-weight: 800; color: var(--success); background: var(--success-dim); border-radius: var(--radius-pill); padding: 3px 10px; }
+.cs-option.is-plain .cs-option-title { font-weight: 600; color: var(--text-secondary); }
+.cs-chips { display: flex; flex-wrap: wrap; gap: 6px; padding-left: 28px; }
+.cs-chip { font: inherit; font-size: 13px; font-weight: 700; cursor: pointer; color: var(--text-secondary); background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-pill); padding: 5px 12px; }
+.cs-chip.is-on { color: var(--accent-lime); border-color: rgba(255,214,10,0.55); background: var(--accent-dim); }
+.cs-nudge { font-size: 13.5px; line-height: 1.5; color: var(--text-primary); padding: 10px 13px; border-radius: var(--radius-md); border: 1px dashed rgba(255,214,10,0.5); }
+.cs-go { width: 100%; height: 50px; font-size: 16px; }
+.cs-summary { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.cs-summary li { display: flex; align-items: center; gap: 10px; font-weight: 600; color: var(--text-primary); }
+.cs-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--c); flex-shrink: 0; }
+.cs-total { display: flex; align-items: baseline; justify-content: space-between; padding-top: 12px; border-top: 1px solid var(--border-color); font-weight: 700; color: var(--text-secondary); }
+.cs-total-price { display: flex; align-items: baseline; gap: 10px; }
+.cs-total-price b { font-family: var(--font-syne); font-size: 26px; color: var(--accent-lime); }
+.cs-total-save { align-self: flex-end; font-size: 13px; font-weight: 700; color: var(--success); margin-top: -6px; }
+.cs-note { margin: 0; font-size: 13.5px; line-height: 1.55; color: var(--text-secondary); }
+.cs-actions { display: flex; justify-content: flex-end; flex-wrap: wrap; gap: 10px; }
+
+/* Страница курса */
+.cs-detail { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 20px; align-items: start; }
+.cs-hero--course { background: radial-gradient(560px 260px at 100% 0%, color-mix(in srgb, var(--c) 16%, transparent), transparent 70%), var(--bg-secondary); }
+.cs-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.cs-tags span { font-size: 12.5px; font-weight: 600; color: var(--text-secondary); background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-pill); padding: 4px 11px; }
+.cs-tags .is-free { color: var(--success); border-color: rgba(63,185,80,0.4); background: var(--success-dim); }
+.cs-start { margin-top: 6px; }
+.cs-block { padding: 22px 24px; margin-bottom: 14px; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); scroll-margin-top: 80px; }
+.cs-block h2 { margin: 0 0 12px; font-family: var(--font-syne); font-size: 18px; font-weight: 700; color: var(--text-primary); }
+.cs-block p, .cs-block li { color: var(--text-secondary); font-size: 15px; line-height: 1.65; }
+.cs-block p { margin: 0; }
+.cs-block ul { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 6px; }
+.cs-module { padding: 16px 18px; border-radius: var(--radius-md); border: 1px solid var(--border-color); background: var(--bg-tertiary); margin-bottom: 10px; }
+.cs-module.is-free { border-color: rgba(63,185,80,0.45); }
+.cs-module.is-locked { opacity: .75; }
+.cs-module-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 4px; }
+.cs-module-num { font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-tertiary); }
+.cs-module-badge { font-size: 12px; font-weight: 700; color: var(--success); }
+.cs-module-badge.is-lock { color: var(--text-tertiary); }
+.cs-module-title { font-weight: 700; font-size: 15.5px; color: var(--text-primary); }
+.cs-lesson { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-top: 12px; }
+.cs-lesson-part { display: flex; flex-direction: column; gap: 2px; padding: 10px 12px; border-radius: var(--radius-sm); background: var(--bg-secondary); border: 1px solid var(--border-color); font-weight: 600; font-size: 14px; color: var(--text-primary); }
+.cs-lesson-part small { font-size: 12px; font-weight: 500; color: var(--text-tertiary); }
+.cs-module-note { margin-top: 10px !important; font-size: 13.5px !important; }
+
+.cs-buy {
+  display: flex; flex-direction: column; gap: 10px; padding: 20px;
+  background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-lg);
+}
+.cs-buy-price { font-family: var(--font-syne); font-size: 30px; font-weight: 700; color: var(--text-primary); }
+.cs-buy-sub { margin-top: -8px; font-size: 13px; color: var(--text-tertiary); }
+.cs-buy-bundles { display: flex; flex-direction: column; gap: 6px; padding: 10px 0; border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); }
+.cs-buy-bundles div { display: flex; align-items: baseline; gap: 8px; font-size: 14px; color: var(--text-secondary); }
+.cs-buy-bundles span { flex: 1; }
+.cs-buy-bundles b { color: var(--text-primary); }
+.cs-buy-bundles em { font-style: normal; font-size: 12px; font-weight: 700; color: var(--success); }
+.cs-buy-bundles .is-best b { color: var(--accent-lime); }
+.cs-buy-all { font: inherit; font-size: 14px; font-weight: 700; color: var(--accent-lime); background: none; border: none; cursor: pointer; padding: 2px 0; text-align: left; }
+.cs-buy-all:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+@media (max-width: 1100px) {
+  .cs-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .cs-detail { grid-template-columns: minmax(0, 1fr); }
+  .cs-buy { order: -1; }
+}
+@media (max-width: 768px) {
+  .cs-hero { padding: 22px 20px; }
+  .cs-title { font-size: 26px; }
+  .cs-bundles, .cs-grid { grid-template-columns: minmax(0, 1fr); }
+  .cs-bundles .is-best { order: -1; }
+  .cs-lesson { grid-template-columns: minmax(0, 1fr); }
+  .cs-option-head { flex-wrap: wrap; }
+  .cs-actions > * { flex: 1; justify-content: center; }
+}

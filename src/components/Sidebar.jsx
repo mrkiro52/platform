@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
+import { canSeeCourses } from '../data/courses'
 
 function getInitials(name) {
   return (name || '').split(' ').map(p => p[0] || '').join('').toUpperCase().slice(0, 2) || '?'
@@ -10,6 +11,8 @@ const NAV_ITEMS = [
   { path: '/wall',          label: 'Стена' },
   { path: '/messages',      label: 'Сообщения', badge: 'messages' },
   { path: '/dating',        label: 'Знакомства' },
+  // Курсы пока видны только пользователям из COURSES_PREVIEW_USERS (data/courses.js)
+  { path: '/courses',       label: 'Курсы', visible: canSeeCourses },
   { path: '/library',       label: 'Библиотека знаний' },
   { path: '/trainings',     label: 'Тренировки' },
   { path: '/links',         label: 'Полезные ссылки' },
@@ -104,6 +107,7 @@ export default function Sidebar({
     if (path === '/likebezy') return location.pathname.startsWith('/likebezy')
     if (path === '/trainings') return location.pathname.startsWith('/trainings')
     if (path === '/messages') return location.pathname.startsWith('/messages')
+    if (path === '/courses') return location.pathname.startsWith('/courses')
     if (path === '/autumn-camp') return location.pathname.startsWith('/autumn-camp')
     return location.pathname === path
   }
@@ -160,7 +164,7 @@ export default function Sidebar({
             <div className="nav-divider" />
           </>
         )}
-        {NAV_ITEMS.map(item => (
+        {NAV_ITEMS.filter(item => !item.visible || item.visible(user)).map(item => (
           <button
             key={item.path}
             className={`nav-item${isActive(item.path) ? ' active' : ''}`}
