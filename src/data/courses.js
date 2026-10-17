@@ -1,12 +1,56 @@
-// Мини-курсы платформы. Пока это каркас: описание, цены и структура.
-// Темы модулей, теорию, задачи и ссылки на видео добавим позже — в modules.
+// Мини-курсы платформы: описание, цены, структура и доступ.
+// Содержимое уроков — в src/data/courses/<курс>/ (пока готов курс по Python).
 // Раздел временно виден только пользователю с логином из COURSES_PREVIEW_USERS
 // (проверка на фронтенде: это витрина в разработке, а не защита данных).
 
+import { PYTHON_WEEKS, loadPythonLesson } from './courses/python'
+
 export const COURSES_PREVIEW_USERS = ['khani']
 
+// Полный доступ к курсам (как после покупки). Пока оплаты нет — выдаётся вручную.
+// Проверка на фронтенде: когда появится оплата, доступ нужно хранить и проверять на сервере
+const FULL_ACCESS = {
+  khani: ['python', 'math-ml', 'algorithms'],
+}
+
+function nick(user) {
+  return String(user?.nickname || '').toLowerCase()
+}
+
 export function canSeeCourses(user) {
-  return COURSES_PREVIEW_USERS.includes(String(user?.nickname || '').toLowerCase())
+  return COURSES_PREVIEW_USERS.includes(nick(user))
+}
+
+export function hasFullAccess(user, slug) {
+  return (FULL_ACCESS[nick(user)] || []).includes(slug)
+}
+
+export function canOpenLesson(user, course, lesson) {
+  return !!lesson?.free || hasFullAccess(user, course.slug)
+}
+
+// Прогресс по задачам и черновики решений — в браузере, у каждого пользователя свои
+const progressKey = user => `kiro-course-progress:${nick(user)}`
+
+export function loadProgress(user) {
+  try { return JSON.parse(localStorage.getItem(progressKey(user))) || {} } catch { return {} }
+}
+
+export function markSolved(user, taskId) {
+  const progress = loadProgress(user)
+  progress[taskId] = true
+  try { localStorage.setItem(progressKey(user), JSON.stringify(progress)) } catch { /* без сохранения */ }
+  return progress
+}
+
+const draftKey = (user, taskId) => `kiro-course-code:${nick(user)}:${taskId}`
+
+export function loadDraft(user, taskId) {
+  try { return localStorage.getItem(draftKey(user, taskId)) } catch { return null }
+}
+
+export function saveDraft(user, taskId, code) {
+  try { localStorage.setItem(draftKey(user, taskId), code) } catch { /* без сохранения */ }
 }
 
 // Цена зависит от числа курсов в покупке
@@ -47,8 +91,10 @@ export const COURSES = [
       'В конце — финальный проект.',
     ],
     lesson: ['Видеоурок', 'Теория', '5 задач'],
-    free: 'Видеоурок модуля 1, теория и 5 первых задач к нему',
+    free: 'Видеоурок первого урока, теория и 5 задач к нему',
     finalProject: true,
+    weeks: PYTHON_WEEKS,
+    loadLesson: loadPythonLesson,
     modules: [],
   },
   {

@@ -46,7 +46,7 @@ function cleanTraceback(message) {
 }
 
 self.onmessage = async (event) => {
-  const { id, type, code, stdin } = event.data
+  const { id, type, code, stdin, prelude, epilogue } = event.data
   const post = (msg) => self.postMessage({ id, ...msg })
 
   if (type === 'warmup') {
@@ -129,19 +129,43 @@ self.onmessage = async (event) => {
 
   post({ type: 'stage', stage: 'running' })
   const started = performance.now()
+  // prelude и epilogue — служебный код автопроверки задач: prelude выполняется
+  // до кода студента (например, input() без подсказки), epilogue — после
+  // (проверки результата). У каждого своё имя файла, чтобы номера строк
+  // в ошибках кода студента не сдвигались
+  let phase = 'main'
   try {
+    if (prelude) {
+      phase = 'prelude'
+      await py.runPythonAsync(prelude, { globals, filename: 'prelude.py' })
+    }
+    phase = 'main'
     await py.runPythonAsync(code, { globals, filename: 'main.py' })
+    if (epilogue) {
+      phase = 'check'
+      await py.runPythonAsync(epilogue, { globals, filename: 'check.py' })
+    }
+    flushPython(py)
     flush()
     post({ type: 'done', ok: true, ms: performance.now() - started, truncated })
   } catch (err) {
+    flushPython(py)
     flush()
-    const text = cleanTraceback(err && err.message ? err.message : String(err))
+    const raw = err && err.message ? err.message : String(err)
+    const text = phase === 'main' ? cleanTraceback(raw) : raw
     post({
       type: 'done', ok: false, ms: performance.now() - started, truncated,
       error: text,
-      needsInput: /EOFError/.test(text),
+      phase,
+      needsInput: phase === 'main' && /EOFError/.test(text),
     })
   } finally {
     globals.destroy()
   }
+}
+
+// Python держит в буфере текст без перевода строки в конце: print(x, end=" ")
+// иначе не появится в выводе — а в следующем запуске всплывёт в чужом выводе
+function flushPython(py) {
+  try { py.runPython('import sys\nsys.stdout.flush()\nsys.stderr.flush()') } catch { /* нечего сбрасывать */ }
 }

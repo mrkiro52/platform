@@ -1,11 +1,14 @@
 import { useEffect, useState } from 'react'
 import { Link, Navigate, useNavigate, useParams } from 'react-router-dom'
 import {
-  COURSES, COURSE_PRICE, MANAGER_URL, canSeeCourses, courseBySlug, priceFor, rub, savingFor,
+  COURSES, COURSE_PRICE, MANAGER_URL, canSeeCourses, canOpenLesson, courseBySlug, hasFullAccess,
+  loadProgress, priceFor, rub, savingFor,
 } from '../data/courses'
+import CourseLessonPage from './CourseLessonPage'
 
 // Раздел «Курсы»: витрина трёх мини-курсов и покупка.
-// /courses — карточки и комплекты, /courses/:slug — страница курса.
+// /courses — карточки и комплекты, /courses/:slug — страница курса,
+// /courses/:slug/:lessonId — урок (CourseLessonPage).
 // Покупка ведёт к комплекту: после «Купить» предлагаем добавить курсы со скидкой,
 // комплект из трёх выбран по умолчанию и подписан как самый выгодный.
 // Онлайн-оплаты пока нет — заказ оформляется через менеджера.
@@ -247,12 +250,60 @@ function CoursesList({ onBuy }) {
   )
 }
 
-function CourseDetail({ c, onBuy }) {
+// Программа курса с уроками: доступные — ссылками, закрытые — с замком
+function Program({ c, user }) {
+  const progress = loadProgress(user)
+  return c.weeks.map(w => (
+    <div key={w.week} className="cs-week">
+      <div className="cs-week-head">
+        <span className="cs-module-num">Неделя {w.week}</span>
+        <span className="cs-week-title">{w.title}</span>
+      </div>
+      <ol className="cs-lessons">
+        {w.lessons.map(l => {
+          const open = canOpenLesson(user, c, l)
+          const solved = [1, 2, 3, 4, 5].filter(n => progress[`${l.id}t${n}`]).length
+          const body = (
+            <>
+              <span className="cs-lesson-day">{l.day}</span>
+              <span className="cs-lesson-title">{l.title}</span>
+              <span className="cs-lesson-meta">
+                {l.free && <span className="cs-lesson-free">Бесплатно</span>}
+                {open
+                  ? <span className={`cs-lesson-progress${solved === 5 ? ' is-done' : ''}`}>{solved}/5</span>
+                  : <span className="cs-lesson-lock" aria-label="Откроется после покупки">🔒</span>}
+              </span>
+            </>
+          )
+          return (
+            <li key={l.id}>
+              {open
+                ? <Link className="cs-lesson" to={`/courses/${c.slug}/${l.id}`}>{body}</Link>
+                : <span className="cs-lesson is-locked">{body}</span>}
+            </li>
+          )
+        })}
+      </ol>
+    </div>
+  )).concat(c.finalProject ? [(
+    <div key="final" className="cs-module is-locked">
+      <div className="cs-module-head">
+        <span className="cs-module-num">Финал</span>
+        <span className="cs-module-badge is-lock">Скоро</span>
+      </div>
+      <div className="cs-module-title">Финальный проект</div>
+    </div>
+  )] : [])
+}
+
+function CourseDetail({ c, user, onBuy }) {
+  const owned = hasFullAccess(user, c.slug)
+  const firstLesson = c.weeks?.[0]?.lessons?.[0]
   useEffect(() => { window.scrollTo(0, 0) }, [c.slug])
   return (
     <section className="page active cs-page" style={{ '--c': c.accent }}>
       <Link className="prg-back" to="/courses">← Все курсы</Link>
-      <div className="cs-detail">
+      <div className={`cs-detail${owned ? ' is-owned' : ''}`}>
         <div className="cs-detail-main">
           <div className="cs-hero cs-hero--course">
             <span className="cs-icon cs-icon--lg">{c.icon}</span>
@@ -263,7 +314,10 @@ function CourseDetail({ c, onBuy }) {
               <span className="is-free">Модуль 1 бесплатно</span>
               {c.finalProject && <span>Финальный проект</span>}
             </div>
-            <a className="btn-primary cs-start" href="#free">Начать бесплатно</a>
+            {firstLesson
+              ? <Link className="btn-primary cs-start" to={`/courses/${c.slug}/${firstLesson.id}`}>{owned ? 'Начать обучение' : 'Начать бесплатно'}</Link>
+              : <a className="btn-primary cs-start" href="#free">Начать бесплатно</a>}
+            {owned && <span className="cs-owned">✓ Курс открыт полностью</span>}
           </div>
 
           <div className="cs-block">
@@ -281,6 +335,7 @@ function CourseDetail({ c, onBuy }) {
 
           <div className="cs-block" id="free">
             <h2>Программа</h2>
+            {c.weeks ? <Program c={c} user={user} /> : (<>
             <div className="cs-module is-free">
               <div className="cs-module-head">
                 <span className="cs-module-num">Модуль 1</span>
@@ -313,10 +368,11 @@ function CourseDetail({ c, onBuy }) {
                 <div className="cs-module-title">Финальный проект</div>
               </div>
             )}
+            </>)}
           </div>
         </div>
 
-        <aside className="cs-buy">
+        {!owned && <aside className="cs-buy">
           <div className="cs-buy-price">{rub(COURSE_PRICE)}</div>
           <div className="cs-buy-sub">за курс «{c.short}»</div>
           <button type="button" className="btn-primary cs-go" onClick={() => onBuy(c.slug)}>Купить курс</button>
@@ -326,24 +382,28 @@ function CourseDetail({ c, onBuy }) {
           </div>
           <button type="button" className="cs-buy-all" onClick={() => onBuy('all')}>Взять все 3 со скидкой {rub(savingFor(3))} →</button>
           <CampCredit compact />
-        </aside>
+        </aside>}
       </div>
     </section>
   )
 }
 
 export default function CoursesPage({ user }) {
-  const { slug } = useParams()
+  const { slug, lessonId } = useParams()
   const [buying, setBuying] = useState(null)
 
   if (!canSeeCourses(user)) return <Navigate to="/dashboard" replace />
 
   const course = slug ? courseBySlug(slug) : null
   if (slug && !course) return <Navigate to="/courses" replace />
+  const lessonExists = lessonId && course?.weeks?.some(w => w.lessons.some(l => l.id === lessonId))
+  if (lessonId && !lessonExists) return <Navigate to={`/courses/${slug}`} replace />
 
   return (
     <>
-      {course ? <CourseDetail c={course} onBuy={setBuying} /> : <CoursesList onBuy={setBuying} />}
+      {course && lessonId && course.weeks
+        ? <CourseLessonPage course={course} lessonId={lessonId} user={user} onBuy={setBuying} />
+        : course ? <CourseDetail c={course} user={user} onBuy={setBuying} /> : <CoursesList onBuy={setBuying} />}
       {buying && <Checkout key={buying} initial={buying} onClose={() => setBuying(null)} />}
     </>
   )

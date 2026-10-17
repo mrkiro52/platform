@@ -74,14 +74,15 @@ function finish(result) {
 
 // Запустить код. onEvent получает стадии ('loading' / 'running') и куски
 // вывода по мере появления. Промис разрешается итогом запуска.
-export function runPython(code, { stdin = '', owner = null, onEvent = () => {} } = {}) {
+// prelude / epilogue — служебный код до и после кода студента (автопроверка задач).
+export function runPython(code, { stdin = '', owner = null, onEvent = () => {}, prelude = '', epilogue = '' } = {}) {
   if (current) return Promise.resolve({ ok: false, busy: true, error: 'Уже идёт другой запуск' })
 
   return new Promise(resolve => {
     const id = nextId++
     current = { id, onEvent, resolve, timer: null }
     setState({ running: true, owner })
-    getWorker().postMessage({ id, type: 'run', code, stdin })
+    getWorker().postMessage({ id, type: 'run', code, stdin, prelude, epilogue })
   })
 }
 
