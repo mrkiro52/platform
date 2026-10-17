@@ -39,7 +39,7 @@ const OCTOBER_CALLS = [
   },
   { day: 6, topic: 'Системный дизайн для всех. Часть 2', time: '20:00', videos: ['https://youtu.be/hNOznFS1PIA'] },
   { day: 10, topic: 'Кибербезопасность: основы для всех', time: '20:00' },
-  { day: 17, topic: null },
+  { day: 17, topic: 'Инженерия и процессы: тестирование, CI/CD, Docker и логи' },
   { day: 24, topic: null },
   { day: 31, topic: null },
 ]
