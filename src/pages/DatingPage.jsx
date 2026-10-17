@@ -37,7 +37,22 @@ function Modal({ title, onClose, children, wide }) {
   )
 }
 
-function DatingCard({ p, mine }) {
+// Описание в карточке обрезается до пяти строк. Если текст не поместился,
+// под ним появляется «Ещё» — открывает анкету целиком (onOpen)
+function DatingCard({ p, mine, onOpen }) {
+  const aboutRef = useRef(null)
+  const [clipped, setClipped] = useState(false)
+
+  useEffect(() => {
+    const el = aboutRef.current
+    if (!el || !onOpen) return
+    const check = () => setClipped(el.scrollHeight > el.clientHeight + 1)
+    check()
+    const ro = new ResizeObserver(check)
+    ro.observe(el)
+    return () => ro.disconnect()
+  }, [p.about, onOpen])
+
   return (
     <article className={`dt-card${mine ? ' is-mine' : ''}`}>
       <div className="dt-card-photo">
@@ -47,13 +62,38 @@ function DatingCard({ p, mine }) {
       </div>
       <div className="dt-card-body">
         <div className="dt-card-label">Обо мне и кого ищу</div>
-        <p className="dt-card-about">{p.about}</p>
+        <p ref={aboutRef} className="dt-card-about">{p.about}</p>
+        {clipped && (
+          <button type="button" className="dt-card-more" onClick={() => onOpen(p)}>Ещё</button>
+        )}
         <a className="dt-card-contact" href={p.contact} target="_blank" rel="noopener noreferrer">
           <span className="dt-card-contact-text">{contactLabel(p.contact)}</span>
           <span aria-hidden="true">↗</span>
         </a>
       </div>
     </article>
+  )
+}
+
+// Анкета целиком: большое фото, имя, полное описание и контакт
+function ProfileView({ p, mine, onClose }) {
+  return (
+    <Modal title={mine ? 'Ваша анкета' : 'Анкета'} onClose={onClose} wide>
+      <div className="dt-view">
+        <div className="dt-view-photo">
+          <img src={assetUrl(p.photoUrl)} alt={p.name} />
+        </div>
+        <div className="dt-view-info">
+          <h3 className="dt-view-name">{p.name}</h3>
+          <div className="dt-card-label">Обо мне и кого ищу</div>
+          <p className="dt-view-about">{p.about}</p>
+          <a className="dt-card-contact dt-view-contact" href={p.contact} target="_blank" rel="noopener noreferrer">
+            <span className="dt-card-contact-text">{contactLabel(p.contact)}</span>
+            <span aria-hidden="true">↗</span>
+          </a>
+        </div>
+      </div>
+    </Modal>
   )
 }
 
@@ -211,6 +251,7 @@ export default function DatingPage() {
   const [data, setData] = useState(null)
   const [error, setError] = useState('')
   const [modal, setModal] = useState(null) // 'confirm' | 'publish' | 'edit'
+  const [viewing, setViewing] = useState(null) // анкета, открытая целиком
   const [busy, setBusy] = useState(false)
   const [actionError, setActionError] = useState('')
 
@@ -291,13 +332,14 @@ export default function DatingPage() {
             )
             : (
               <div className="dt-grid">
-                {me?.visible && <DatingCard p={me} mine />}
-                {others.map(p => <DatingCard key={p.userId} p={p} />)}
+                {me?.visible && <DatingCard p={me} mine onOpen={setViewing} />}
+                {others.map(p => <DatingCard key={p.userId} p={p} onOpen={setViewing} />)}
               </div>
             )}
         </>
       )}
 
+      {viewing && <ProfileView p={viewing} mine={viewing.userId === me?.userId} onClose={() => setViewing(null)} />}
       {modal === 'confirm' && (
         <ConfirmShow
           me={me}

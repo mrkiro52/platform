@@ -5205,6 +5205,22 @@ a.prg-chapter-link, a.prg-chip { text-decoration: none; }
   flex: 1; margin: 0 0 8px; color: var(--text-secondary); font-size: 14px; line-height: 1.55; white-space: pre-line;
   overflow-wrap: anywhere; display: -webkit-box; -webkit-line-clamp: 5; -webkit-box-orient: vertical; overflow: hidden;
 }
+.dt-card-more {
+  align-self: flex-start; margin: -6px 0 8px; padding: 0; background: none; border: none; cursor: pointer;
+  font: inherit; font-size: 13.5px; font-weight: 700; color: var(--accent-lime);
+}
+.dt-card-more:hover { text-decoration: underline; text-underline-offset: 3px; }
+.dt-view { display: grid; grid-template-columns: minmax(0, 300px) minmax(0, 1fr); gap: 24px; padding: 0 22px 22px; }
+.dt-view-photo { aspect-ratio: 4 / 5; border-radius: var(--radius-lg); overflow: hidden; background: var(--bg-tertiary); }
+.dt-view-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.dt-view-info { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.dt-view-name { margin: 0 0 8px; font-family: var(--font-syne); font-size: 24px; font-weight: 700; color: var(--text-primary); overflow-wrap: anywhere; }
+.dt-view-about { margin: 0 0 16px; color: var(--text-secondary); font-size: 15px; line-height: 1.65; white-space: pre-line; overflow-wrap: anywhere; }
+.dt-view-contact { margin-top: auto; }
+@media (max-width: 640px) {
+  .dt-view { grid-template-columns: minmax(0, 1fr); }
+  .dt-view-photo { max-width: 260px; width: 100%; margin: 0 auto; }
+}
 .dt-card-contact {
   display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 10px 13px;
   border-radius: var(--radius-md); background: var(--accent-dim); border: 1px solid rgba(255,214,10,0.35);
