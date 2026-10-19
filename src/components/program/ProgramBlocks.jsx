@@ -101,9 +101,9 @@ function Files({ b }) {
   )
 }
 
-// Курсив — только _слово_ на границе слов, чтобы не ломать created_at и __name__.
+// `код` — моноширинным шрифтом. Курсив — только _слово_ на границе слов, чтобы не ломать created_at и __name__.
 // Формула \( … \) стоит первой в альтернативе: подчёркивания внутри LaTeX курсивом не считаются.
-const RICH = /(\\\(.+?\\\)|\*\*[^*]+\*\*|(?<![\p{L}\p{N}_])_[^_\n]+_(?![\p{L}\p{N}_]))/gu
+const RICH = /(\\\(.+?\\\)|`[^`\n]+`|\*\*[^*]+\*\*|(?<![\p{L}\p{N}_])_[^_\n]+_(?![\p{L}\p{N}_]))/gu
 
 export function Tex({ tex, display = false }) {
   const html = katex.renderToString(tex, { displayMode: display, throwOnError: false, strict: false, output: 'html' })
@@ -117,6 +117,7 @@ export function Rich({ text }) {
       {li > 0 && <br />}
       {line.split(RICH).map((part, i) => {
         if (part.startsWith('\\(') && part.endsWith('\\)')) return <Tex key={i} tex={part.slice(2, -2)} />
+        if (part.startsWith('`') && part.endsWith('`') && part.length > 2) return <code key={i} className="prg-inline-code">{part.slice(1, -1)}</code>
         if (part.startsWith('**') && part.endsWith('**') && part.length > 4) return <strong key={i}>{part.slice(2, -2)}</strong>
         if (part.startsWith('_') && part.endsWith('_') && part.length > 2) return <em key={i}>{part.slice(1, -1)}</em>
         return part
@@ -255,6 +256,15 @@ function Block({ b }) {
     case 'trainer':
       return <TrainerProgress />
     case 'code':
+      // out — что напечатает код: показывается под ним отдельной панелью «Вывод»
+      if (b.out != null) {
+        return (
+          <div className="prg-code-run">
+            <pre className="prg-code"><code>{b.text}</code></pre>
+            <div className="prg-code-out"><span>Вывод</span><pre>{b.out}</pre></div>
+          </div>
+        )
+      }
       return <pre className="prg-code"><code>{b.text}</code></pre>
     case 'note':
       return <div className="prg-note"><Rich text={b.text} /></div>

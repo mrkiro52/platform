@@ -38,7 +38,7 @@ const ProgramsData = {
 }
 
 // ═══ Отрисовка блоков главы (повторяет src/components/program/ProgramBlocks.jsx) ═══
-const PRG_RICH = /(\\\(.+?\\\)|\*\*[^*]+\*\*|(?<![\p{L}\p{N}_])_[^_\n]+_(?![\p{L}\p{N}_]))/gu
+const PRG_RICH = /(\\\(.+?\\\)|`[^`\n]+`|\*\*[^*]+\*\*|(?<![\p{L}\p{N}_])_[^_\n]+_(?![\p{L}\p{N}_]))/gu
 
 // Формулы LaTeX — через KaTeX (подключён в index.html); без него показываем исходник
 function prgTex(tex, display) {
@@ -50,6 +50,7 @@ const PRG_LETTERS = 'абвгдежзик'
 function prgRich(text) {
   return String(text).split('\n').map(line => line.split(PRG_RICH).map(part => {
     if (part.startsWith('\\(') && part.endsWith('\\)')) return prgTex(part.slice(2, -2), false)
+    if (part.startsWith('`') && part.endsWith('`') && part.length > 2) return `<code class="prg-inline-code">${esc(part.slice(1, -1))}</code>`
     if (part.startsWith('**') && part.endsWith('**') && part.length > 4) return `<strong>${esc(part.slice(2, -2))}</strong>`
     if (part.startsWith('_') && part.endsWith('_') && part.length > 2) return `<em>${esc(part.slice(1, -1))}</em>`
     return esc(part)
@@ -89,7 +90,7 @@ function prgBlock(b) {
       </div>`
     case 'frac': return `<div class="prg-formula"><div>${esc(b.label)} = ${esc(b.num)} / ${esc(b.den)}</div></div>`
     case 'tree': return `<div class="prg-tree">${b.lines.map(([level, text]) => `<div style="padding-left:${level * 22}px">${prgRich(text)}</div>`).join('')}</div>`
-    case 'code': return `<pre class="prg-code"><code>${esc(b.text)}</code></pre>`
+    case 'code': return `<pre class="prg-code"><code>${esc(b.text)}</code></pre>${b.out != null ? `<div class="prg-code-out"><span>Вывод</span><pre>${esc(b.out)}</pre></div>` : ''}`
     case 'trainer': return `<div class="prg-note">На этом месте студент видит свой прогресс в SQL-тренажёре по темам и кнопку «Открыть тренажёр».</div>`
     case 'files': return `<div class="prg-files-admin">${b.label ? `<div class="prg-label" style="width:100%">${esc(b.label)}</div>` : ''}${b.items.map(it => `<span class="badge badge-orange" title="${esc(it.title || '')}">${icon('file-text', 12)}${esc(it.name)}</span>`).join('')}</div>`
     case 'note': return `<div class="prg-note">${prgRich(b.text)}</div>`

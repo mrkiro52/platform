@@ -5597,3 +5597,11 @@ a.cs-lesson:hover { border-color: color-mix(in srgb, var(--c) 60%, transparent);
   .ls-pager { flex-direction: column; }
   .ls-pager a { max-width: none; }
 }
+
+/* Код в конспектах: `инлайн` и панель «Вывод» под примером */
+.prg-inline-code { font-family: var(--font-mono); font-size: 0.88em; color: var(--accent-soft, #FFE873); background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: 5px; padding: 1px 5px; }
+.prg-code-run { margin: 12px 0 16px; }
+.prg-code-run .prg-code { margin: 0; border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
+.prg-code-out { border: 1px solid var(--border-color); border-top: 1px dashed var(--border-color); border-radius: 0 0 var(--radius-md) var(--radius-md); background: #0B0B0E; padding: 10px 18px 12px; margin-top: -1px; }
+.prg-code-out span { display: block; margin-bottom: 4px; font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #3FB950; }
+.prg-code-out pre { margin: 0; font: 500 12.5px/1.55 var(--font-mono); color: var(--text-secondary); white-space: pre-wrap; overflow-wrap: anywhere; }
