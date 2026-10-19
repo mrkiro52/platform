@@ -150,7 +150,7 @@ function InterviewPanel({ data }) {
   const opened = data.sections.filter(sec => sec.open).length
   return (
     <aside className="prg-interview" aria-label={data.title}>
-      <span className="prg-interview-kicker">{opened === 1 ? 'Открыт первый раздел' : `Открыто разделов: ${opened}`}</span>
+      <span className="prg-interview-kicker">{data.kicker || (opened === 1 ? 'Открыт первый раздел' : `Открыто разделов: ${opened}`)}</span>
       <h2 className="prg-interview-title">{data.title}</h2>
       <p className="prg-interview-lead">{data.lead}</p>
       {data.sections.map((sec, i) => (
@@ -158,7 +158,7 @@ function InterviewPanel({ data }) {
           <summary>
             <span className="prg-interview-num">{i + 1}</span>
             <span className="prg-interview-name">{sec.title}</span>
-            <span className="prg-interview-count">{sec.questions.length} {plural(sec.questions.length, 'вопрос', 'вопроса', 'вопросов')}</span>
+            <span className="prg-interview-count">{sec.questions.length} {plural(sec.questions.length, ...(data.countWords || ['вопрос', 'вопроса', 'вопросов']))}</span>
           </summary>
           <ol className="prg-interview-list">
             {sec.questions.map((q, j) => <li key={j}>{q}</li>)}
