@@ -3,7 +3,7 @@
 // слайсы и map (старая реализация и Swiss Tables), интерфейсы, ошибки, generics,
 // конкурентность и модель памяти, планировщик G–M–P, escape analysis, GC,
 // стандартная библиотека, database/sql, тестирование и профилирование.
-// Общие темы главы — в backend-3.js, склеиваются в combineTrack (index.js).
+// Общие темы главы — в backend-extra.js, склеиваются в combineTrack (index.js).
 
 export default {
   summary: 'Go под капотом: модули и пакеты, defer, строки и руны, слайсы и рост ёмкости, map до и после Swiss Tables, структуры и выравнивание, указатели, методы и receivers, интерфейсы и itab, ошибки и panic, generics и рефлексия, горутины, каналы и select, context, sync и atomic, модель памяти, гонки и утечки, worker pool и pipeline, планировщик G–M–P, escape analysis, сборщик мусора, net/http, JSON, database/sql, тесты, бенчмарки и pprof.',

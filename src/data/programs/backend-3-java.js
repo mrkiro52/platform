@@ -3,7 +3,7 @@
 // исключения, generics и стирание типов, устройство коллекций, Stream API, records и
 // sealed, рефлексия и прокси, многопоточность и JMM, виртуальные потоки, JVM, GC,
 // I/O и NIO, Maven/Gradle, JUnit/Mockito/Testcontainers, Spring и Spring Boot, JPA/Hibernate.
-// Общие темы главы — в backend-3.js, склеиваются в combineTrack (index.js).
+// Общие темы главы — в backend-extra.js, склеиваются в combineTrack (index.js).
 
 export default {
   summary: 'Java под капотом: примитивы и ссылки, кеш Integer, String pool, ООП и порядок инициализации, иммутабельность, equals и hashCode, исключения и try-with-resources, generics и стирание типов, устройство ArrayList и HashMap, Stream API, records, sealed и pattern matching, рефлексия и прокси, потоки и Java Memory Model, synchronized, volatile, CAS, CompletableFuture, ConcurrentHashMap, виртуальные потоки, загрузка классов и JIT, куча и Metaspace, сборщики мусора, утечки памяти, NIO, Maven и Gradle, тестирование, Spring IoC, AOP, MVC, транзакции и Spring Data, Hibernate и N+1.',
