@@ -122,7 +122,7 @@ export const DIRECTIONS = {
       { num: 2, title: 'Классическое машинное обучение: базовые понятия', sections: 8, load: () => import('./ml-2') },
       { num: 3, title: 'Линейные модели', sections: 10, load: () => import('./ml-3') },
       { num: 4, title: 'Линейные модели. Линейная регрессия', sections: 11, load: () => import('./ml-4'), video: 'https://youtu.be/0jTY6KkkOsw' },
-      { num: 5, title: 'Градиентный спуск', sections: 16, load: () => import('./ml-5'), submit: 'soon' },
+      { num: 5, title: 'Градиентный спуск', sections: 16, load: () => import('./ml-5') },
       { num: 6, title: 'Теоретическая сводка', sections: 11, load: () => import('./ml-6'), submit: 'soon' },
     ],
   },
