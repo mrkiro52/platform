@@ -191,7 +191,7 @@ function ChapterCard({ dir, ch, homework }) {
         {ch.video && (
           <a className="prg-chapter-link is-video" href={ch.video} target="_blank" rel="noopener noreferrer">
             <span className="prg-chapter-link-name">Запись встречи</span>
-            <span className="prg-chapter-link-meta">видео на YouTube</span>
+            <span className="prg-chapter-link-meta">{/t\.me\//.test(ch.video) ? 'запись в Telegram' : 'видео на YouTube'}</span>
             <span className="prg-chapter-link-go">↗</span>
           </a>
         )}

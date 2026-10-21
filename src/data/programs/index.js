@@ -74,6 +74,7 @@ export const DIRECTIONS = {
       { num: 4, title: 'Архитектура приложений', sections: 5, load: () => import('./backend-4'), quiz: () => import('./backend-4-quiz') },
       { num: 5, title: 'Безопасность', sections: 4, load: () => import('./backend-5'), quiz: () => import('./backend-5-quiz') },
       { num: 6, title: 'Тестирование', sections: 4, load: () => import('./backend-6'), quiz: () => import('./backend-6-quiz') },
+      { num: 7, title: 'Git', sections: 5, load: () => import('./backend-7'), quiz: () => import('./backend-7-quiz') },
     ],
     // Дополнительные главы — вне основной нумерации: адрес /autumn-camp/program/<key>
     extra: [
@@ -84,6 +85,9 @@ export const DIRECTIONS = {
         { key: 'java', name: 'Java', file: 'backend-3-java', load: () => import('./backend-3-java'),
           about: 'Зрелый язык на JVM с огромной экосистемой и Spring. Стандарт для банков, финтеха, крупных корпоративных систем и маркетплейсов: Сбер, Т-Банк, Альфа-Банк, Ozon, Яндекс, МТС.' },
       ], pickIntro: 'Эта глава — про язык, на котором ты будешь писать бэкенд, и про темы, которые спрашивают на собеседованиях у любого бэкендера. Выбери Go или Java: в треке — устройство языка до уровня «как это работает под капотом», а после него — общие темы, одинаковые для обоих треков. Выбор можно поменять в любой момент.' },
+      // Конспекты встреч: вопросы с собеседования на Go и на Java с разбором ответов
+      { key: 'x2', label: 'Дополнительная глава 2', source: 'backend-gointerview', title: 'Вопросы с собеседования на Go', sections: 7, submit: 'soon', video: 'https://t.me/c/3847941201/27', load: () => import('./backend-gointerview') },
+      { key: 'x3', label: 'Дополнительная глава 3', source: 'backend-javainterview', title: 'Вопросы с собеседования на Java', sections: 10, submit: 'soon', video: 'https://t.me/c/3847941201/29', load: () => import('./backend-javainterview') },
     ],
   },
   ml: {
