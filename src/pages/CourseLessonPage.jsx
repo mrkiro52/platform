@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import LessonBlocks from '../components/course/LessonBlocks'
 import TaskCard from '../components/course/TaskCard'
+import AnswerTaskCard from '../components/course/AnswerTaskCard'
+import { LockIcon, PencilIcon, PlayIcon } from '../components/icons'
 import { canOpenLesson, loadProgress, markSolved, priceFor, rub, savingFor, COURSE_PRICE } from '../data/courses'
 
 // Урок курса: видео (пока заглушка), теория по разделам и 5 задач с автопроверкой.
@@ -21,7 +23,7 @@ function VideoPlaceholder({ video }) {
   }
   return (
     <div className="ls-video is-empty">
-      <span className="ls-video-play" aria-hidden="true">▶</span>
+      <span className="ls-video-play" aria-hidden="true"><PlayIcon size={26} /></span>
       <span className="ls-video-title">Видеоурок появится скоро</span>
       <span className="ls-video-sub">Пока можно пройти теорию и решить задачи ниже</span>
     </div>
@@ -31,9 +33,9 @@ function VideoPlaceholder({ video }) {
 function Paywall({ course, onBuy }) {
   return (
     <div className="ls-paywall">
-      <span className="ls-paywall-icon" aria-hidden="true">🔒</span>
+      <span className="ls-paywall-icon" aria-hidden="true"><LockIcon size={28} /></span>
       <h2>Урок откроется после покупки</h2>
-      <p>Бесплатно доступен первый урок курса. Купи курс, чтобы открыть все уроки, задачи с автопроверкой и финальный проект.</p>
+      <p>Бесплатно доступен первый урок курса. Купи курс, чтобы открыть все уроки и задачи с автопроверкой{course.finalProject ? ' и финальный проект' : ''}.</p>
       <div className="ls-paywall-prices">
         <span>«{course.short}» — <b>{rub(COURSE_PRICE)}</b></span>
         <span>все 3 курса — <b>{rub(priceFor(3))}</b> <em>выгода {rub(savingFor(3))}</em></span>
@@ -76,7 +78,7 @@ export default function CourseLessonPage({ course, lessonId, user, onBuy }) {
       <Link className="prg-back" to={`/courses/${course.slug}`}>← {course.title}</Link>
 
       <header className="ls-hero">
-        <span className="ls-kicker">Неделя {meta.week} · урок {meta.day}{meta.free ? ' · бесплатно' : ''}</span>
+        <span className="ls-kicker">Неделя {meta.week} · {course.dayWord || 'урок'} {meta.day}{meta.free ? ' · бесплатно' : ''}</span>
         <h1 className="ls-title">{meta.title}</h1>
         {lesson && <p className="ls-summary">{lesson.summary}</p>}
         {lesson && (
@@ -102,7 +104,7 @@ export default function CourseLessonPage({ course, lessonId, user, onBuy }) {
               </a>
             ))}
             <a href="#tasks" className="is-tasks" onClick={e => { e.preventDefault(); document.getElementById('tasks')?.scrollIntoView({ behavior: 'smooth' }) }}>
-              <span>✎</span>Задачи
+              <span><PencilIcon size={12} /></span>Задачи
             </a>
           </nav>
 
@@ -115,10 +117,11 @@ export default function CourseLessonPage({ course, lessonId, user, onBuy }) {
 
           <section id="tasks" className="ls-tasks">
             <h2 className="ls-tasks-title">Задачи</h2>
-            <p className="ls-tasks-lead">Напиши решение в редакторе, запусти его, а затем нажми «Проверить решение» — код пройдёт автоматические тесты. Решение сохраняется в браузере.</p>
-            {lesson.tasks.map((t, i) => (
-              <TaskCard key={t.id} task={t} index={i} user={user} solved={!!progress[t.id]} onSolved={solve} />
-            ))}
+            <p className="ls-tasks-lead">{course.taskLead || 'Напиши решение в редакторе, запусти его, а затем нажми «Проверить решение» — код пройдёт автоматические тесты. Решение сохраняется в браузере.'}</p>
+            {lesson.tasks.map((t, i) => t.answer !== undefined
+              ? <AnswerTaskCard key={t.id} task={t} index={i} user={user} solved={!!progress[t.id]} onSolved={solve} />
+              : <TaskCard key={t.id} task={t} index={i} user={user} solved={!!progress[t.id]} onSolved={solve} />
+            )}
           </section>
         </>
       )}

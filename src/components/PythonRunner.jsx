@@ -1,6 +1,7 @@
 import { useState, useId, useRef, useEffect } from 'react'
 import CodeEditor from './CodeEditor'
 import { runPython, stopPython, warmUpPython, usePythonState } from '../lib/python/runner'
+import { CheckIcon } from './icons'
 
 const isMac = typeof navigator !== 'undefined' && /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent)
 const RUN_SHORTCUT = isMac ? '⌘ + Enter' : 'Ctrl + Enter'
@@ -180,7 +181,7 @@ export default function PythonRunner({
             {status && (
               <span className="py-console-status" role="status">
                 {(status.kind === 'loading' || status.kind === 'running') && <span className="py-spinner" aria-hidden="true" />}
-                {status.kind === 'ok' && <span aria-hidden="true">✓</span>}
+                {status.kind === 'ok' && <CheckIcon size={13} />}
                 {status.text}
               </span>
             )}

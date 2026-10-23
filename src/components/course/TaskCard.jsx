@@ -4,6 +4,7 @@ import { Inline } from './LessonBlocks'
 import { checkSolution } from '../../lib/python/checker'
 import { usePythonState } from '../../lib/python/runner'
 import { loadDraft, saveDraft } from '../../data/courses'
+import { CheckIcon, CrossIcon } from '../icons'
 
 // Задача урока: условие, примеры, редактор с запуском и автопроверка.
 // Черновик решения сохраняется в браузере, решённая задача отмечается в прогрессе.
@@ -66,7 +67,7 @@ export default function TaskCard({ task, index, user, solved, onSolved }) {
       <header className="tk-head">
         <span className="tk-num">Задача {index + 1}</span>
         <h3 className="tk-title">{task.title}</h3>
-        {solved && <span className="tk-solved">✓ Решено</span>}
+        {solved && <span className="tk-solved"><CheckIcon size={13} />Решено</span>}
       </header>
 
       <div className="tk-text"><Inline text={task.text} /></div>
@@ -94,12 +95,13 @@ export default function TaskCard({ task, index, user, solved, onSolved }) {
           ) : (
             <>
               <div className="tk-report-head">
-                {allOk ? '🎉 Все тесты пройдены — задача решена!' : `Пройдено тестов: ${report.passed} из ${report.total}`}
+                {allOk && <CheckIcon size={17} />}
+                {allOk ? 'Все тесты пройдены — задача решена!' : `Пройдено тестов: ${report.passed} из ${report.total}`}
               </div>
               <ul className="tk-results">
                 {report.results.map((r, i) => (
                   <li key={i} className={r.ok ? 'is-ok' : 'is-fail'}>
-                    <span className="tk-mark" aria-hidden="true">{r.ok ? '✓' : '✗'}</span>
+                    <span className="tk-mark" aria-hidden="true">{r.ok ? <CheckIcon size={15} /> : <CrossIcon size={15} />}</span>
                     <div className="tk-result-body">
                       <span className="tk-result-label">{r.label}</span>
                       {!r.ok && (

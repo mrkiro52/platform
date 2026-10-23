@@ -7,12 +7,15 @@
 //   { type: 'line', points: [[x, y], …], color, width?, dash?, label? }
 //   { type: 'area', points, color, opacity? }            — заливка от кривой до нуля
 //   { type: 'bars', points, barWidth?, color, label? }    — столбцы (barWidth в единицах x)
-//   { type: 'scatter', points, color, r? }
+//   { type: 'scatter', points, color, r?, hollow? }        — hollow: кружок с обводкой (вершины графа)
 //   { type: 'vline', x, color?, dash?, label? }           — вертикальная линия с подписью сверху
 //   { type: 'hline', y, color?, dash? }
-//   { type: 'text', x, y, text, color?, anchor? }
+//   { type: 'text', x, y, text, color?, anchor?, dy?, size? } — dy: сдвиг вниз в пикселях, size: кегль
 //   { type: 'box', y, stats: [min, q1, median, q3, max], outliers?, color, height? } — горизонтальный ящик с усами
 //   { type: 'interval', y, from, to, point?, color }      — горизонтальный отрезок (доверительный интервал)
+//   { type: 'arrow', from: [x, y], to: [x, y], color, label?, dx?, dy? } — вектор со стрелкой и подписью у конца
+// Параметры графика: equal: true — одинаковый масштаб по осям (высота считается сама, нужна для векторов),
+// axes: false — без сетки, осей и подписей (схемы графов: вершины — scatter, рёбра — line, имена — text).
 // Цвет — имя из палитры ниже или любой CSS-цвет.
 
 export const PLOT_COLORS = {
@@ -58,9 +61,9 @@ export function fmtNum(v) {
 }
 
 export function plotSvg(spec) {
-  const H = spec.height || 280
   const x = spec.x, y = spec.y
   const iw = W - PAD.left - PAD.right
+  const H = spec.equal ? Math.round(PAD.top + PAD.bottom + iw * (y.max - y.min) / (x.max - x.min)) : (spec.height || 280)
   const ih = H - PAD.top - PAD.bottom
   const sx = v => PAD.left + ((v - x.min) / (x.max - x.min)) * iw
   const sy = v => PAD.top + ih - ((v - y.min) / (y.max - y.min)) * ih
@@ -69,13 +72,20 @@ export function plotSvg(spec) {
   const parts = []
 
   // Сетка и подписи осей
-  const xt = ticksOf(x), yt = y.hideTicks ? [] : ticksOf(y)
+  const axes = spec.axes !== false
+  // При равном масштабе шаг сетки по y такой же, как по x — иначе клетки не квадратные
+  const yAxis = spec.equal && !y.step && !y.ticks ? { ...y, step: x.step || niceStep(x.max - x.min) } : y
+  const xt = axes ? ticksOf(x) : [], yt = axes && !y.hideTicks ? ticksOf(yAxis) : []
   parts.push('<g class="plot-grid">')
   for (const v of yt) parts.push(`<line x1="${PAD.left}" x2="${PAD.left + iw}" y1="${sy(v)}" y2="${sy(v)}"/>`)
   for (const v of xt) parts.push(`<line x1="${sx(v)}" x2="${sx(v)}" y1="${PAD.top}" y2="${PAD.top + ih}"/>`)
   parts.push('</g>')
-  parts.push(`<g class="plot-axis"><line x1="${PAD.left}" x2="${PAD.left + iw}" y1="${PAD.top + ih}" y2="${PAD.top + ih}"/>`)
-  if (!y.hideAxis) parts.push(`<line x1="${PAD.left}" x2="${PAD.left}" y1="${PAD.top}" y2="${PAD.top + ih}"/>`)
+  // Оси проходят через ноль, если он виден на графике (для векторов), иначе — по краю
+  const ax0 = spec.equal && x.min < 0 && x.max > 0 ? sx(0) : PAD.left
+  const ay0 = spec.equal && y.min < 0 && y.max > 0 ? sy(0) : PAD.top + ih
+  parts.push('<g class="plot-axis">')
+  if (axes) parts.push(`<line x1="${PAD.left}" x2="${PAD.left + iw}" y1="${ay0}" y2="${ay0}"/>`)
+  if (axes && !y.hideAxis) parts.push(`<line x1="${ax0}" x2="${ax0}" y1="${PAD.top}" y2="${PAD.top + ih}"/>`)
   parts.push('</g><g class="plot-ticks">')
   for (const v of xt) parts.push(`<text x="${sx(v)}" y="${PAD.top + ih + 16}" text-anchor="middle">${esc(fx(v))}</text>`)
   for (const v of yt) parts.push(`<text x="${PAD.left - 7}" y="${sy(v) + 4}" text-anchor="end">${esc(fy(v))}</text>`)
@@ -108,7 +118,11 @@ export function plotSvg(spec) {
         break
       }
       case 'scatter':
-        for (const [a, b] of s.points) parts.push(`<circle cx="${sx(a).toFixed(1)}" cy="${sy(b).toFixed(1)}" r="${s.r || 4}" fill="${c}" fill-opacity="0.85"/>`)
+        for (const [a, b] of s.points) {
+          parts.push(s.hollow
+            ? `<circle cx="${sx(a).toFixed(1)}" cy="${sy(b).toFixed(1)}" r="${s.r || 4}" fill="var(--bg-tertiary, #16161a)" stroke="${c}" stroke-width="2"/>`
+            : `<circle cx="${sx(a).toFixed(1)}" cy="${sy(b).toFixed(1)}" r="${s.r || 4}" fill="${c}" fill-opacity="0.85"/>`)
+        }
         break
       case 'vline':
         parts.push(`<line x1="${sx(s.x)}" x2="${sx(s.x)}" y1="${PAD.top}" y2="${PAD.top + ih}" stroke="${c}" stroke-width="1.6"${s.dash === false ? '' : ' stroke-dasharray="5 4"'}/>`)
@@ -118,7 +132,7 @@ export function plotSvg(spec) {
         parts.push(`<line x1="${PAD.left}" x2="${PAD.left + iw}" y1="${sy(s.y)}" y2="${sy(s.y)}" stroke="${c}" stroke-width="1.4"${s.dash === false ? '' : ' stroke-dasharray="5 4"'}/>`)
         break
       case 'text':
-        parts.push(`<text class="plot-note" x="${sx(s.x)}" y="${sy(s.y)}" text-anchor="${s.anchor || 'middle'}" fill="${s.color ? c : 'currentColor'}">${esc(s.text)}</text>`)
+        parts.push(`<text class="plot-note" x="${sx(s.x)}" y="${sy(s.y) + (s.dy || 0)}" text-anchor="${s.anchor || 'middle'}" fill="${s.color ? c : 'currentColor'}"${s.size ? ` style="font-size:${s.size}px;font-weight:700"` : ''}>${esc(s.text)}</text>`)
         break
       case 'box': {
         const [mn, q1, med, q3, mx] = s.stats
@@ -132,6 +146,16 @@ export function plotSvg(spec) {
         for (const o of s.outliers || []) parts.push(`<circle cx="${sx(o)}" cy="${cy}" r="4.5" fill="none" stroke="${PLOT_COLORS.red}" stroke-width="2"/>`)
         break
       }
+      case 'arrow': {
+        const [x1, y1] = s.from || [0, 0], [x2, y2] = s.to
+        const X1 = sx(x1), Y1 = sy(y1), X2 = sx(x2), Y2 = sy(y2)
+        const a = Math.atan2(Y2 - Y1, X2 - X1), k = 11
+        const head = [[X2, Y2], [X2 - k * Math.cos(a - 0.4), Y2 - k * Math.sin(a - 0.4)], [X2 - k * Math.cos(a + 0.4), Y2 - k * Math.sin(a + 0.4)]]
+        parts.push(`<line x1="${X1.toFixed(1)}" y1="${Y1.toFixed(1)}" x2="${(X2 - 7 * Math.cos(a)).toFixed(1)}" y2="${(Y2 - 7 * Math.sin(a)).toFixed(1)}" stroke="${c}" stroke-width="${s.width || 2.4}"${s.dash ? ` stroke-dasharray="${s.dash === true ? '6 5' : s.dash}"` : ''} stroke-linecap="round"/>`)
+        parts.push(`<polygon points="${head.map(([u, v]) => `${u.toFixed(1)},${v.toFixed(1)}`).join(' ')}" fill="${c}"/>`)
+        if (s.label) parts.push(`<text class="plot-note" x="${(X2 + (s.dx ?? 8)).toFixed(1)}" y="${(Y2 + (s.dy ?? -8)).toFixed(1)}" fill="${c}">${esc(s.label)}</text>`)
+        break
+      }
       case 'interval': {
         const cy = sy(s.y)
         parts.push(`<g stroke="${c}" stroke-width="2"><line x1="${sx(s.from)}" x2="${sx(s.to)}" y1="${cy}" y2="${cy}"/><line x1="${sx(s.from)}" x2="${sx(s.from)}" y1="${cy - 4}" y2="${cy + 4}"/><line x1="${sx(s.to)}" x2="${sx(s.to)}" y1="${cy - 4}" y2="${cy + 4}"/></g>`)
@@ -141,7 +165,7 @@ export function plotSvg(spec) {
       default:
         break
     }
-    if (s.label && s.type !== 'vline') legend.push([c, s.label, s.dash])
+    if (s.label && s.type !== 'vline' && s.type !== 'arrow') legend.push([c, s.label, s.dash])
   }
 
   // Легенда — в правом верхнем углу области графика

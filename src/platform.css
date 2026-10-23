@@ -5317,14 +5317,14 @@ a.prg-chapter-link, a.prg-chip { text-decoration: none; }
   background: radial-gradient(560px 260px at 100% 0%, rgba(255,214,10,0.14), transparent 70%), var(--bg-secondary);
 }
 .cs-title { font-family: var(--font-syne); font-size: 34px; font-weight: 700; letter-spacing: -0.5px; color: var(--text-primary); margin: 0; }
-.cs-lead { margin: 0; max-width: 760px; color: var(--text-secondary); font-size: 15px; line-height: 1.6; }
+.cs-lead { margin: 0; color: var(--text-secondary); font-size: 15px; line-height: 1.6; }
 
 .cs-credit {
-  display: flex; gap: 12px; align-items: flex-start; max-width: 760px; padding: 12px 16px; border-radius: var(--radius-md);
+  display: flex; gap: 12px; align-items: flex-start; align-self: stretch; padding: 12px 16px; border-radius: var(--radius-md);
   background: var(--accent-dim); border: 1px solid rgba(255,214,10,0.35); color: var(--text-secondary); font-size: 14px; line-height: 1.5;
 }
 .cs-credit b { color: var(--accent-lime); }
-.cs-credit-icon { font-size: 20px; line-height: 1.2; }
+.cs-credit-icon { display: flex; flex-shrink: 0; color: var(--accent-lime); padding-top: 1px; }
 .cs-credit.is-compact { font-size: 13px; padding: 10px 13px; }
 
 .cs-bundles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-bottom: 18px; }
@@ -5421,7 +5421,7 @@ a.prg-chapter-link, a.prg-chip { text-decoration: none; }
 .cs-module.is-locked { opacity: .75; }
 .cs-module-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 4px; }
 .cs-module-num { font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-tertiary); }
-.cs-module-badge { font-size: 12px; font-weight: 700; color: var(--success); }
+.cs-module-badge { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 700; color: var(--success); }
 .cs-module-badge.is-lock { color: var(--text-tertiary); }
 .cs-module-title { font-weight: 700; font-size: 15.5px; color: var(--text-primary); }
 .cs-lesson { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-top: 12px; }
@@ -5461,7 +5461,7 @@ a.prg-chapter-link, a.prg-chip { text-decoration: none; }
 
 /* Программа курса: недели и уроки */
 .cs-detail.is-owned { grid-template-columns: minmax(0, 1fr); }
-.cs-owned { font-size: 13px; font-weight: 700; color: var(--success); }
+.cs-owned { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 700; color: var(--success); }
 .cs-week { margin-bottom: 18px; }
 .cs-week-head { display: flex; align-items: baseline; gap: 10px; margin-bottom: 8px; }
 .cs-week-title { font-weight: 700; font-size: 15.5px; color: var(--text-primary); }
@@ -5476,12 +5476,13 @@ a.cs-lesson:hover { border-color: color-mix(in srgb, var(--c) 60%, transparent);
 .cs-lesson-day { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 8px; font-size: 13px; font-weight: 800; color: var(--c); background: color-mix(in srgb, var(--c) 14%, transparent); }
 .cs-lesson-title { font-size: 14.5px; font-weight: 600; line-height: 1.4; }
 .cs-lesson-meta { display: flex; align-items: center; gap: 8px; white-space: nowrap; }
+.cs-lesson-lock { display: flex; color: var(--text-tertiary); }
 .cs-lesson-free { font-size: 11.5px; font-weight: 700; color: var(--success); background: var(--success-dim); border-radius: var(--radius-pill); padding: 2px 9px; }
 .cs-lesson-progress { font-size: 12.5px; font-weight: 700; color: var(--text-tertiary); }
 .cs-lesson-progress.is-done { color: var(--success); }
 
 /* Урок */
-.ls-page { max-width: 980px; }
+.ls-page { width: 100%; }
 .ls-hero { padding: 26px 30px; margin-bottom: 18px; border-radius: var(--radius-xl); border: 1px solid var(--border-color); background: radial-gradient(560px 240px at 100% 0%, color-mix(in srgb, var(--c) 16%, transparent), transparent 70%), var(--bg-secondary); }
 .ls-kicker { font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--c); }
 .ls-title { margin: 8px 0 10px; font-family: var(--font-syne); font-size: 28px; font-weight: 700; line-height: 1.25; color: var(--text-primary); }
@@ -5493,7 +5494,7 @@ a.cs-lesson:hover { border-color: color-mix(in srgb, var(--c) 60%, transparent);
 .ls-video { position: relative; aspect-ratio: 16 / 9; border-radius: var(--radius-lg); overflow: hidden; margin-bottom: 18px; background: #000; border: 1px solid var(--border-color); }
 .ls-video iframe { width: 100%; height: 100%; border: 0; display: block; }
 .ls-video.is-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; background: radial-gradient(400px 220px at 50% 40%, color-mix(in srgb, var(--c) 18%, transparent), transparent 70%), var(--bg-secondary); }
-.ls-video-play { display: grid; place-items: center; width: 64px; height: 64px; border-radius: 50%; font-size: 22px; color: var(--on-accent); background: var(--accent-lime); padding-left: 4px; box-shadow: 0 10px 30px rgba(255,214,10,0.25); }
+.ls-video-play { display: grid; place-items: center; width: 64px; height: 64px; border-radius: 50%; color: var(--on-accent); background: var(--accent-lime); padding-left: 3px; box-shadow: 0 10px 30px rgba(255,214,10,0.25); }
 .ls-video-title { font-family: var(--font-syne); font-size: 18px; font-weight: 700; color: var(--text-primary); margin-top: 6px; }
 .ls-video-sub { font-size: 13.5px; color: var(--text-tertiary); }
 
@@ -5516,7 +5517,7 @@ a.cs-lesson:hover { border-color: color-mix(in srgb, var(--c) 60%, transparent);
 .ls-py { margin: 4px 0 16px; border: 1px solid var(--border-color); border-radius: var(--radius-md); background: #0B0B0E; overflow: hidden; }
 .ls-py.is-live { background: transparent; border: none; overflow: visible; }
 .ls-py-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 7px 12px; border-bottom: 1px solid var(--border-color); font-size: 11.5px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-tertiary); }
-.ls-py-run { font: inherit; font-size: 12px; font-weight: 700; letter-spacing: 0; text-transform: none; color: var(--accent-lime); background: var(--accent-dim); border: 1px solid rgba(255,214,10,0.35); border-radius: var(--radius-pill); padding: 4px 11px; cursor: pointer; }
+.ls-py-run { display: inline-flex; align-items: center; gap: 6px; font: inherit; font-size: 12px; font-weight: 700; letter-spacing: 0; text-transform: none; color: var(--accent-lime); background: var(--accent-dim); border: 1px solid rgba(255,214,10,0.35); border-radius: var(--radius-pill); padding: 4px 11px; cursor: pointer; }
 .ls-py-run:hover { background: rgba(255,214,10,0.22); }
 .ls-pre { margin: 0; padding: 14px 16px; font-family: var(--font-mono); font-size: 13.5px; line-height: 1.6; color: var(--text-primary); white-space: pre; overflow-x: auto; }
 .ls-out { border-top: 1px dashed var(--border-color); padding: 10px 16px 12px; }
@@ -5525,11 +5526,11 @@ a.cs-lesson:hover { border-color: color-mix(in srgb, var(--c) 60%, transparent);
 .ls-py-actions { display: flex; gap: 14px; justify-content: flex-end; margin-top: 6px; }
 .ls-link { background: none; border: none; padding: 0; font: inherit; font-size: 13px; font-weight: 600; color: var(--text-tertiary); cursor: pointer; }
 .ls-link:hover { color: var(--accent-lime); }
-.ls-callout { display: flex; flex-direction: column; gap: 4px; margin: 4px 0 16px; padding: 12px 16px; border-radius: var(--radius-md); font-size: 14.5px; line-height: 1.6; color: var(--text-secondary); border: 1px solid var(--border-color); background: var(--bg-tertiary); border-left: 3px solid var(--text-tertiary); }
-.ls-callout-label { font-size: 11px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; }
-.ls-callout.is-note { border-left-color: #58A6FF; } .ls-callout.is-note .ls-callout-label { color: #58A6FF; }
-.ls-callout.is-tip { border-left-color: var(--success); } .ls-callout.is-tip .ls-callout-label { color: var(--success); }
-.ls-callout.is-warn { border-left-color: var(--accent-lime); } .ls-callout.is-warn .ls-callout-label { color: var(--accent-lime); }
+.ls-callout { --cc: var(--text-tertiary); display: flex; flex-direction: column; gap: 4px; margin: 4px 0 16px; padding: 12px 16px; border-radius: var(--radius-md); font-size: 14.5px; line-height: 1.6; color: var(--text-secondary); border: 1px solid color-mix(in srgb, var(--cc) 35%, transparent); background: color-mix(in srgb, var(--cc) 7%, var(--bg-tertiary)); }
+.ls-callout-label { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: var(--cc); }
+.ls-callout.is-note { --cc: #58A6FF; }
+.ls-callout.is-tip { --cc: var(--success); }
+.ls-callout.is-warn { --cc: var(--accent-lime); }
 .ls-table-wrap { margin: 4px 0 16px; overflow-x: auto; border: 1px solid var(--border-color); border-radius: var(--radius-md); }
 .ls-table { width: 100%; border-collapse: collapse; font-size: 14px; }
 .ls-table th { text-align: left; padding: 9px 12px; font-size: 12px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--text-tertiary); background: var(--bg-tertiary); border-bottom: 1px solid var(--border-color); }
@@ -5544,7 +5545,7 @@ a.cs-lesson:hover { border-color: color-mix(in srgb, var(--c) 60%, transparent);
 .tk-head { display: flex; align-items: baseline; flex-wrap: wrap; gap: 6px 12px; margin-bottom: 10px; }
 .tk-num { font-size: 12px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; color: var(--c); }
 .tk-title { margin: 0; font-size: 18px; font-weight: 800; color: var(--text-primary); flex: 1; }
-.tk-solved { font-size: 12.5px; font-weight: 800; color: var(--success); background: var(--success-dim); border-radius: var(--radius-pill); padding: 3px 10px; }
+.tk-solved { display: inline-flex; align-items: center; gap: 5px; font-size: 12.5px; font-weight: 800; color: var(--success); background: var(--success-dim); border-radius: var(--radius-pill); padding: 3px 10px; }
 .tk-text { color: var(--text-secondary); font-size: 15px; line-height: 1.68; margin-bottom: 14px; }
 .tk-examples { display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px; }
 .tk-examples-title { font-size: 11.5px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-tertiary); }
@@ -5563,11 +5564,11 @@ a.cs-lesson:hover { border-color: color-mix(in srgb, var(--c) 60%, transparent);
 .tk-report { margin-top: 14px; padding: 14px 16px; border-radius: var(--radius-md); border: 1px solid var(--border-color); background: var(--bg-tertiary); }
 .tk-report.is-ok { border-color: rgba(63,185,80,0.5); background: var(--success-dim); }
 .tk-report.is-fail { border-color: rgba(255,95,95,0.4); }
-.tk-report-head { font-weight: 800; font-size: 15px; color: var(--text-primary); margin-bottom: 8px; }
+.tk-report-head { display: flex; align-items: center; gap: 8px; font-weight: 800; font-size: 15px; color: var(--text-primary); margin-bottom: 8px; }
 .tk-report.is-ok .tk-report-head { color: var(--success); margin-bottom: 4px; }
 .tk-results { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
 .tk-results li { display: flex; gap: 10px; font-size: 14px; }
-.tk-mark { flex-shrink: 0; width: 20px; font-weight: 800; }
+.tk-mark { flex-shrink: 0; width: 20px; display: flex; padding-top: 1px; }
 .tk-results .is-ok .tk-mark { color: var(--success); }
 .tk-results .is-fail .tk-mark { color: var(--danger); }
 .tk-result-body { min-width: 0; flex: 1; }
@@ -5577,7 +5578,7 @@ a.cs-lesson:hover { border-color: color-mix(in srgb, var(--c) 60%, transparent);
 .tk-result-detail pre { margin: 0; padding: 7px 10px; font-family: var(--font-mono); font-size: 12.5px; line-height: 1.5; background: #0B0B0E; border: 1px solid var(--border-color); border-radius: var(--radius-sm); white-space: pre-wrap; overflow-wrap: anywhere; color: var(--text-primary); }
 
 .ls-paywall { text-align: center; padding: 36px 28px; border-radius: var(--radius-xl); border: 1px solid var(--border-color); background: var(--bg-secondary); display: flex; flex-direction: column; align-items: center; gap: 10px; }
-.ls-paywall-icon { font-size: 32px; }
+.ls-paywall-icon { display: grid; place-items: center; width: 56px; height: 56px; border-radius: 16px; color: var(--c); background: color-mix(in srgb, var(--c) 14%, transparent); }
 .ls-paywall h2 { margin: 0; font-family: var(--font-syne); font-size: 22px; color: var(--text-primary); }
 .ls-paywall p { margin: 0; max-width: 520px; color: var(--text-secondary); line-height: 1.6; }
 .ls-paywall-prices { display: flex; flex-direction: column; gap: 4px; margin: 6px 0 8px; color: var(--text-secondary); }
@@ -5596,6 +5597,42 @@ a.cs-lesson:hover { border-color: color-mix(in srgb, var(--c) 60%, transparent);
   .tk-example { grid-template-columns: minmax(0, 1fr); }
   .ls-pager { flex-direction: column; }
   .ls-pager a { max-width: none; }
+}
+
+/* Курс по математике: формулы KaTeX, графики и задачи с вводом ответа */
+.ls-tex .katex { font-size: 1.06em; }
+.ls-formula { margin: 6px 0 16px; padding: 4px 0; overflow-x: auto; overflow-y: hidden; }
+.ls-formula .katex-display { margin: 4px 0; }
+.ls-formula .katex-display > .katex { font-size: 1.14em; }
+.ls-plot { max-width: 760px; margin-left: auto; margin-right: auto; }
+.ls-table td .ls-tex { white-space: nowrap; }
+.ak-blocks { margin: -4px 0 6px; }
+.ak-form { display: flex; flex-direction: column; gap: 4px; }
+.ak-line { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.ak-affix { font-size: 15px; color: var(--text-secondary); }
+.ak-input {
+  flex: 1; min-width: 0; max-width: 420px; height: 46px; padding: 0 14px; font: inherit; font-family: var(--font-mono); font-size: 15px;
+  color: var(--text-primary); background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-md); outline: none;
+}
+.ak-input:focus { border-color: color-mix(in srgb, var(--c) 70%, transparent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--c) 18%, transparent); }
+.ak-input.is-matrix { height: auto; max-width: 420px; padding: 10px 14px; line-height: 1.6; resize: vertical; }
+.ak-options { display: flex; flex-direction: column; gap: 8px; }
+.ak-option { display: flex; align-items: flex-start; gap: 12px; padding: 11px 14px; cursor: pointer; font-size: 15px; line-height: 1.55; color: var(--text-secondary); background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-md); transition: border-color .15s; }
+.ak-option:hover { border-color: #3a3a44; }
+.ak-option.is-on { border-color: color-mix(in srgb, var(--c) 70%, transparent); color: var(--text-primary); }
+.ak-option input { position: absolute; opacity: 0; pointer-events: none; }
+.ak-option-mark { flex-shrink: 0; display: grid; place-items: center; width: 24px; height: 24px; border-radius: 7px; font-size: 12.5px; font-weight: 800; color: var(--text-tertiary); background: var(--bg-secondary); border: 1px solid var(--border-color); }
+.ak-option.is-on .ak-option-mark { color: var(--c); border-color: color-mix(in srgb, var(--c) 60%, transparent); background: color-mix(in srgb, var(--c) 14%, transparent); }
+.ak-show { display: inline-flex; align-items: center; gap: 6px; }
+.ak-report .tk-report-head { margin-bottom: 0; }
+.ak-report.is-fail .tk-report-head { color: var(--text-primary); }
+.ak-report.is-fail .tk-report-head svg { color: var(--danger); }
+.ak-hint { display: flex; gap: 8px; margin-top: 10px; font-size: 14px; line-height: 1.55; color: var(--text-secondary); }
+.ak-hint svg { flex-shrink: 0; color: var(--accent-lime); margin-top: 2px; }
+.ak-solution { margin-top: 14px; padding: 16px 18px 6px; border-radius: var(--radius-md); background: var(--bg-tertiary); border: 1px solid var(--border-color); }
+.ak-solution-label { display: block; margin-bottom: 8px; font-size: 11px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: var(--success); }
+@media (max-width: 768px) {
+  .ak-input, .ak-input.is-matrix { max-width: none; }
 }
 
 /* Код в конспектах: `инлайн` и панель «Вывод» под примером */

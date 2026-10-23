@@ -127,6 +127,15 @@ self.onmessage = async (event) => {
   const globals = py.globals.get('dict')()
   globals.set('__name__', '__main__')
 
+  // numpy и другие пакеты из дистрибутива Pyodide подгружаются по import в коде —
+  // только при первом запуске, который их использует (примеры курса по математике)
+  if (/^\s*(import|from)\s+(numpy|scipy|pandas)\b/m.test(code)) {
+    try {
+      post({ type: 'stage', stage: 'loading' })
+      await py.loadPackagesFromImports(code)
+    } catch { /* без сети пакет не загрузится — import ниже покажет понятную ошибку */ }
+  }
+
   post({ type: 'stage', stage: 'running' })
   const started = performance.now()
   // prelude и epilogue — служебный код автопроверки задач: prelude выполняется

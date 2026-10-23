@@ -1,16 +1,29 @@
 import { useState } from 'react'
+import katex from 'katex'
+import 'katex/dist/katex.min.css'
 import PythonRunner from '../PythonRunner'
+import { plotSvg } from '../../data/programs/plot'
+import { AlertIcon, BulbIcon, InfoIcon, PlayIcon } from '../icons'
 
 // Блоки теории урока курса (формат — src/data/courses/python/blocks.js).
-// Inline-разметка: **жирный**, `код`, перевод строки \n.
+// Inline-разметка: **жирный**, `код`, формула $…$ (LaTeX, рисует KaTeX), перевод строки \n.
+
+export function Tex({ tex, display = false }) {
+  const html = katex.renderToString(tex, { displayMode: display, throwOnError: false, strict: false, output: 'html' })
+  return <span className={display ? 'ls-tex-display' : 'ls-tex'} dangerouslySetInnerHTML={{ __html: html }} />
+}
+
+// Формула идёт первой в альтернативе: звёздочки и обратные кавычки внутри LaTeX не считаются разметкой
+const INLINE = /(\$[^$\n]+\$|\*\*[^*]+\*\*|`[^`]+`)/g
 
 export function Inline({ text }) {
   const lines = String(text ?? '').split('\n')
   return lines.map((line, li) => (
     <span key={li}>
       {li > 0 && <br />}
-      {line.split(/(\*\*[^*]+\*\*|`[^`]+`)/g).map((part, i) => {
-        if (part.startsWith('**') && part.endsWith('**') && part.length > 4) return <strong key={i}>{part.slice(2, -2)}</strong>
+      {line.split(INLINE).map((part, i) => {
+        if (part.startsWith('$') && part.endsWith('$') && part.length > 2) return <Tex key={i} tex={part.slice(1, -1)} />
+        if (part.startsWith('**') && part.endsWith('**') && part.length > 4) return <strong key={i}><Inline text={part.slice(2, -2)} /></strong>
         if (part.startsWith('`') && part.endsWith('`') && part.length > 2) return <code key={i} className="ls-code">{part.slice(1, -1)}</code>
         return part
       })}
@@ -39,7 +52,7 @@ function PyExample({ code, out }) {
     <div className="ls-py">
       <div className="ls-py-head">
         <span>Python</span>
-        <button type="button" className="ls-py-run" onClick={() => setLive(true)}>▶ Запустить и изменить</button>
+        <button type="button" className="ls-py-run" onClick={() => setLive(true)}><PlayIcon size={12} />Запустить и изменить</button>
       </div>
       <pre className="ls-pre">{code}</pre>
       {out != null && (
@@ -67,13 +80,23 @@ export default function LessonBlocks({ blocks }) {
             <pre className="ls-pre">{b.v}</pre>
           </div>
         )
+      case 'tex':
+        return <div key={i} className="ls-formula"><Tex tex={b.v} display /></div>
+      case 'plot':
+        return (
+          <figure key={i} className="prg-plot ls-plot">
+            <div className="prg-plot-svg" dangerouslySetInnerHTML={{ __html: plotSvg(b) }} />
+            {b.caption && <figcaption><Inline text={b.caption} /></figcaption>}
+          </figure>
+        )
       case 'note':
       case 'tip':
       case 'warn': {
         const label = { note: 'Важно', tip: 'Совет', warn: 'Осторожно' }[b.t]
+        const Icon = { note: InfoIcon, tip: BulbIcon, warn: AlertIcon }[b.t]
         return (
           <div key={i} className={`ls-callout is-${b.t}`}>
-            <span className="ls-callout-label">{label}</span>
+            <span className="ls-callout-label"><Icon size={14} />{label}</span>
             <span><Inline text={b.v} /></span>
           </div>
         )

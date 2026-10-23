@@ -17,3 +17,16 @@ export const table = (head, rows) => ({ t: 'table', head, rows })
 
 // Шаблон кода задачи: отрезаем пустые строки по краям
 export const starter = v => v.replace(/^\n/, '').replace(/\n\s*$/, '') + '\n'
+
+// Для курса по математике. Формула отдельной строкой (LaTeX, KaTeX) — tex;
+// внутри текста формула пишется в $…$. Формулы удобно писать через String.raw (r`…`),
+// чтобы не удваивать обратные слэши
+export const r = String.raw
+export const tex = v => ({ t: 'tex', v })
+// График: спецификация как у блока plot в конспектах (src/data/programs/plot.js)
+export const plot = spec => ({ t: 'plot', ...spec })
+// Точки кривой y = f(x) на отрезке [a; b] для графика
+export const curve = (f, a, b, n = 120) => Array.from({ length: n + 1 }, (_, i) => {
+  const x = a + (b - a) * i / n
+  return [+x.toFixed(6), +f(x).toFixed(6)]
+})

@@ -5,6 +5,7 @@ import {
   loadProgress, priceFor, rub, savingFor,
 } from '../data/courses'
 import CourseLessonPage from './CourseLessonPage'
+import { CheckIcon, LockIcon, TicketIcon } from '../components/icons'
 
 // Раздел «Курсы»: витрина трёх мини-курсов и покупка.
 // /courses — карточки и комплекты, /courses/:slug — страница курса,
@@ -18,7 +19,7 @@ const FULL3 = COURSE_PRICE * 3
 function CampCredit({ amount, compact }) {
   return (
     <div className={`cs-credit${compact ? ' is-compact' : ''}`}>
-      <span className="cs-credit-icon" aria-hidden="true">🎟</span>
+      <span className="cs-credit-icon" aria-hidden="true"><TicketIcon size={20} /></span>
       <div>
         <b>Деньги за курсы идут в зачёт Лагеря.</b>{' '}
         {amount
@@ -112,7 +113,7 @@ function Checkout({ initial, onClose }) {
           <CampCredit amount={price} compact />
           <p className="cs-note">Онлайн-оплата скоро появится прямо на платформе. Сейчас заказ оформляет менеджер: напиши ему — он пришлёт ссылку на оплату и откроет доступ.</p>
           <div className="cs-actions">
-            <button type="button" className="btn-ghost" onClick={copy}>{copied ? '✓ Текст заказа скопирован' : 'Скопировать текст заказа'}</button>
+            <button type="button" className="btn-ghost" onClick={copy}>{copied ? <><CheckIcon size={15} />Текст заказа скопирован</> : 'Скопировать текст заказа'}</button>
             <a className="btn-primary" href={MANAGER_URL} target="_blank" rel="noopener noreferrer">Написать менеджеру</a>
           </div>
         </div>
@@ -262,7 +263,8 @@ function Program({ c, user }) {
       <ol className="cs-lessons">
         {w.lessons.map(l => {
           const open = canOpenLesson(user, c, l)
-          const solved = [1, 2, 3, 4, 5].filter(n => progress[`${l.id}t${n}`]).length
+          const total = l.tasks || 5
+          const solved = Array.from({ length: total }, (_, n) => n + 1).filter(n => progress[`${l.id}t${n}`]).length
           const body = (
             <>
               <span className="cs-lesson-day">{l.day}</span>
@@ -270,8 +272,8 @@ function Program({ c, user }) {
               <span className="cs-lesson-meta">
                 {l.free && <span className="cs-lesson-free">Бесплатно</span>}
                 {open
-                  ? <span className={`cs-lesson-progress${solved === 5 ? ' is-done' : ''}`}>{solved}/5</span>
-                  : <span className="cs-lesson-lock" aria-label="Откроется после покупки">🔒</span>}
+                  ? <span className={`cs-lesson-progress${solved === total ? ' is-done' : ''}`}>{solved}/{total}</span>
+                  : <span className="cs-lesson-lock" aria-label="Откроется после покупки"><LockIcon size={15} /></span>}
               </span>
             </>
           )
@@ -317,7 +319,7 @@ function CourseDetail({ c, user, onBuy }) {
             {firstLesson
               ? <Link className="btn-primary cs-start" to={`/courses/${c.slug}/${firstLesson.id}`}>{owned ? 'Начать обучение' : 'Начать бесплатно'}</Link>
               : <a className="btn-primary cs-start" href="#free">Начать бесплатно</a>}
-            {owned && <span className="cs-owned">✓ Курс открыт полностью</span>}
+            {owned && <span className="cs-owned"><CheckIcon size={15} />Курс открыт полностью</span>}
           </div>
 
           <div className="cs-block">
@@ -355,7 +357,7 @@ function CourseDetail({ c, user, onBuy }) {
             <div className="cs-module is-locked">
               <div className="cs-module-head">
                 <span className="cs-module-num">Следующие модули</span>
-                <span className="cs-module-badge is-lock">🔒 После покупки</span>
+                <span className="cs-module-badge is-lock"><LockIcon size={13} />После покупки</span>
               </div>
               <div className="cs-module-title">Программа курса появится скоро</div>
             </div>
@@ -363,7 +365,7 @@ function CourseDetail({ c, user, onBuy }) {
               <div className="cs-module is-locked">
                 <div className="cs-module-head">
                   <span className="cs-module-num">Финал</span>
-                  <span className="cs-module-badge is-lock">🔒 После покупки</span>
+                  <span className="cs-module-badge is-lock"><LockIcon size={13} />После покупки</span>
                 </div>
                 <div className="cs-module-title">Финальный проект</div>
               </div>
