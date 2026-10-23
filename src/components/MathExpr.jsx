@@ -3,7 +3,7 @@
 // Для линейной алгебры: матрицы \begin{pmatrix}…\end{pmatrix} (а также bmatrix, vmatrix и
 // расширенная матрица \begin{amatrix}{k} с чертой после k-го столбца), стрелки над векторами
 // \vec{a} и \overrightarrow{AB}, подписанная стрелка \xrightarrow{…}.
-// Для вероятностей: черта над противоположным событием \overline{A}.
+// Для вероятностей: черта над противоположным событием \overline{A}, знаки \sum и \int.
 // Полноценный KaTeX сюда тянуть незачем — это лишние 300 КБ ради девяти тем.
 
 const SYMBOLS = {
@@ -22,6 +22,7 @@ const SYMBOLS = {
   nabla: '∇', partial: '∂', eta: 'η', mu: 'μ', sigma: 'σ',
   neq: '≠', Longrightarrow: '⟹', mid: '∣', vdots: '⋮', cdots: '⋯', ddots: '⋱',
   Omega: 'Ω', Longleftrightarrow: '⟺',
+  sum: '∑', int: '∫', leq: '≤', geq: '≥',
 }
 
 // Имена функций пишутся прямым шрифтом, а не курсивом переменных

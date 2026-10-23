@@ -132,6 +132,160 @@ function VennFigure() {
   )
 }
 
+// ── Рисунки к занятию 5: распределения ─────────────────────────────────────
+
+const ORANGE = '#FFB870', BLUE = '#79C0FF', GREEN = '#7EE787'
+const normalPdf = (x, mu, s) => Math.exp(-((x - mu) ** 2) / (2 * s * s)) / (s * Math.sqrt(2 * Math.PI))
+
+// Оси с подписанными засечками: px/py переводят значения в координаты рисунка
+function Axes({ px, py, x0, x1, y1, xTicks = [], yTicks = [], xLabel, yLabel }) {
+  return (
+    <>
+      <g stroke="currentColor" strokeWidth="1.2" opacity="0.55" fill="none">
+        <path d={`M${px(x0)} ${py(0)} H${px(x1)}`} />
+        <path d={`M${px(x0)} ${py(0)} V${py(y1)}`} />
+        {xTicks.map(([v]) => <path key={v} d={`M${px(v)} ${py(0) - 3} V${py(0) + 3}`} />)}
+        {yTicks.map(([v]) => <path key={v} d={`M${px(x0) - 3} ${py(v)} H${px(x0) + 3}`} />)}
+      </g>
+      <g fill="currentColor" opacity="0.75" fontSize="11" fontFamily="Georgia, serif">
+        {xTicks.map(([v, t]) => <text key={v} x={px(v)} y={py(0) + 16} textAnchor="middle">{t}</text>)}
+        {yTicks.map(([v, t]) => <text key={v} x={px(x0) - 7} y={py(v) + 4} textAnchor="end">{t}</text>)}
+        {xLabel && <text x={px(x1)} y={py(0) - 7} textAnchor="end" fontStyle="italic">{xLabel}</text>}
+        {yLabel && <text x={px(x0) + 7} y={py(y1) + 10} fontStyle="italic">{yLabel}</text>}
+      </g>
+    </>
+  )
+}
+
+function curvePath(f, from, to, px, py, step = 0.05) {
+  const pts = []
+  for (let x = from; x <= to + 1e-9; x += step) pts.push(`${pts.length ? 'L' : 'M'}${px(x).toFixed(1)} ${py(f(x)).toFixed(1)}`)
+  return pts.join(' ')
+}
+
+// Биномиальное распределение n = 10, p = 0,5: столбик — вероятность каждого значения
+function BinomialFigure() {
+  const C = [1, 10, 45, 120, 210, 252, 210, 120, 45, 10, 1]
+  const px = k => 52 + k * 24, py = v => 190 - v * 640
+  return (
+    <svg className="math-svg" viewBox="0 0 340 222" role="img" aria-label="Биномиальное распределение при n = 10, p = 0,5">
+      <Axes px={px} py={py} x0={-0.8} x1={10.9} y1={0.27}
+        xTicks={C.map((_, k) => [k, k])} yTicks={[[0.05, '0,05'], [0.1, '0,1'], [0.15, '0,15'], [0.2, '0,2'], [0.25, '0,25']]}
+        xLabel="k" yLabel="P(X = k)" />
+      {C.map((c, k) => (
+        <rect key={k} x={px(k) - 8} y={py(c / 1024)} width="16" height={py(0) - py(c / 1024)}
+          fill={ORANGE} fillOpacity="0.3" stroke={ORANGE} strokeWidth="1.4" />
+      ))}
+    </svg>
+  )
+}
+
+// Равномерное распределение на [a; b]: вероятность попасть в участок [c; d] — площадь над ним
+function UniformFigure() {
+  const px = x => 40 + x * 26, py = v => 170 - v * 300
+  const h = 0.3
+  return (
+    <svg className="math-svg" viewBox="0 0 340 200" role="img" aria-label="Плотность равномерного распределения на отрезке от a до b">
+      <Axes px={px} py={py} x0={0} x1={11.3} y1={0.42}
+        xTicks={[[1, 'a'], [4, 'c'], [7, 'd'], [10, 'b']]} yTicks={[[h, '1/(b−a)']]} xLabel="x" yLabel="f(x)" />
+      <rect x={px(4)} y={py(h)} width={px(7) - px(4)} height={py(0) - py(h)} fill={ORANGE} fillOpacity="0.28" />
+      <path d={`M${px(0)} ${py(0)} H${px(1)} V${py(h)} H${px(10)} V${py(0)} H${px(11)}`} fill="none" stroke={ORANGE} strokeWidth="2" />
+      <g stroke="currentColor" strokeDasharray="3 3" opacity="0.5"><path d={`M${px(4)} ${py(0)} V${py(h)} M${px(7)} ${py(0)} V${py(h)}`} /></g>
+      <text x={px(5.5)} y={py(h / 2) + 4} textAnchor="middle" fontSize="11" fontFamily="Georgia, serif" fill="currentColor">площадь</text>
+    </svg>
+  )
+}
+
+// Нормальное распределение: μ сдвигает «колокол», σ задаёт его ширину
+function NormalParamsFigure() {
+  const px = x => 40 + (x + 4) * 27, py = v => 182 - v * 360
+  const curves = [
+    { mu: 0, s: 1, color: ORANGE, label: 'μ = 0, σ = 1', lx: -2.7, ly: 0.33 },
+    { mu: 0, s: 2, color: BLUE, label: 'μ = 0, σ = 2', lx: -3.2, ly: 0.14 },
+    { mu: 3, s: 1, color: GREEN, label: 'μ = 3, σ = 1', lx: 4.4, ly: 0.36 },
+  ]
+  return (
+    <svg className="math-svg" viewBox="0 0 340 214" role="img" aria-label="Три нормальных распределения с разными μ и σ">
+      <Axes px={px} py={py} x0={-4} x1={7.7} y1={0.46}
+        xTicks={[-4, -2, 0, 2, 4, 6].map(v => [v, String(v).replace('-', '−')])} yTicks={[[0.2, '0,2'], [0.4, '0,4']]} xLabel="x" yLabel="f(x)" />
+      {curves.map(c => <path key={c.label} d={curvePath(x => normalPdf(x, c.mu, c.s), -4, 7.5, px, py)} fill="none" stroke={c.color} strokeWidth="2" />)}
+      <g fontSize="11" fontFamily="Georgia, serif" fontStyle="italic">
+        {curves.map(c => <text key={c.label} x={px(c.lx)} y={py(c.ly)} textAnchor="middle" fill={c.color}>{c.label}</text>)}
+      </g>
+    </svg>
+  )
+}
+
+// Правило трёх сигм: доли значений в пределах μ ± σ, μ ± 2σ, μ ± 3σ
+function ThreeSigmaFigure() {
+  const px = x => 170 + x * 44, py = v => 168 - v * 330
+  const f = x => normalPdf(x, 0, 1)
+  const band = (k, opacity) => (
+    <path d={`${curvePath(f, -k, k, px, py, 0.02)} L${px(k)} ${py(0)} L${px(-k)} ${py(0)} Z`} fill={ORANGE} fillOpacity={opacity} />
+  )
+  const arrow = (k, y, label) => (
+    <g key={k}>
+      <path d={`M${px(-k)} ${py(y)} H${px(k)}`} stroke="currentColor" strokeWidth="1" opacity="0.7" />
+      <path d={`M${px(-k)} ${py(y) - 4} V${py(y) + 4} M${px(k)} ${py(y) - 4} V${py(y) + 4}`} stroke="currentColor" strokeWidth="1" opacity="0.7" />
+      <text x={px(0)} y={py(y) - 4} textAnchor="middle" fontSize="11" fontFamily="Georgia, serif" fill="currentColor">{label}</text>
+    </g>
+  )
+  return (
+    <svg className="math-svg" viewBox="0 0 340 214" role="img" aria-label="Правило трёх сигм: 68%, 95% и 99,7% значений">
+      {band(3, 0.12)}{band(2, 0.18)}{band(1, 0.28)}
+      <path d={curvePath(f, -3.6, 3.6, px, py)} fill="none" stroke={ORANGE} strokeWidth="2" />
+      <Axes px={px} py={py} x0={-3.7} x1={3.7} y1={0}
+        xTicks={[[-3, 'μ−3σ'], [-2, 'μ−2σ'], [-1, 'μ−σ'], [0, 'μ'], [1, 'μ+σ'], [2, 'μ+2σ'], [3, 'μ+3σ']]} />
+      {arrow(1, 0.13, '68%')}{arrow(2, 0.05, '95%')}{arrow(3, 0.47, '99,7%')}
+    </svg>
+  )
+}
+
+// Функция распределения: ступенчатая у дискретной величины, плавная у непрерывной
+function CdfFigure() {
+  const W = 150
+  const panel = (dx, title, children) => (
+    <g transform={`translate(${dx} 0)`}>
+      <text x={W / 2 + 30} y="16" textAnchor="middle" fontSize="11" fontFamily="Georgia, serif" fill="currentColor" opacity="0.8">{title}</text>
+      {children}
+    </g>
+  )
+  const dpx = x => 44 + x * 17, dpy = v => 176 - v * 140
+  const steps = [[-0.5, 1, 0], [1, 3, 0.2], [3, 5, 0.7], [5, 6.4, 1]]
+  const cpx = x => 50 + x * 22, cpy = v => 176 - v * 140
+  return (
+    <svg className="math-svg" viewBox="0 0 340 200" role="img" aria-label="Функция распределения дискретной и непрерывной величины">
+      {panel(0, 'дискретная', (
+        <>
+          <Axes px={dpx} py={dpy} x0={-0.5} x1={6.5} y1={1.12}
+            xTicks={[[1, '1'], [3, '3'], [5, '5']]} yTicks={[[0.2, '0,2'], [0.7, '0,7'], [1, '1']]} xLabel="x" />
+          {steps.map(([a, b, v]) => <path key={a} d={`M${dpx(a)} ${dpy(v)} H${dpx(b)}`} stroke={ORANGE} strokeWidth="2" />)}
+          {steps.slice(1).map(([a, , v], i) => (
+            <g key={a}>
+              <path d={`M${dpx(a)} ${dpy(steps[i][2])} V${dpy(v)}`} stroke={ORANGE} strokeWidth="1" strokeDasharray="3 3" />
+              <circle cx={dpx(a)} cy={dpy(steps[i][2])} r="2.8" fill={ORANGE} />
+              <circle cx={dpx(a)} cy={dpy(v)} r="2.8" fill="var(--bg-primary, #111)" stroke={ORANGE} strokeWidth="1.4" />
+            </g>
+          ))}
+        </>
+      ))}
+      {panel(170, 'непрерывная', (
+        <>
+          <Axes px={cpx} py={cpy} x0={-0.5} x1={5} y1={1.12}
+            xTicks={[[0, '0'], [2, '2'], [4, '4']]} yTicks={[[0.25, '0,25'], [1, '1']]} xLabel="x" />
+          <path d={`M${cpx(-0.5)} ${cpy(0)} H${cpx(0)} ${curvePath(x => x * x / 16, 0, 4, cpx, cpy).replace('M', 'L')} H${cpx(4.9)}`}
+            fill="none" stroke={BLUE} strokeWidth="2" />
+        </>
+      ))}
+    </svg>
+  )
+}
+
+const FIGURES = {
+  binomial: BinomialFigure, uniform: UniformFigure, 'normal-params': NormalParamsFigure,
+  'three-sigma': ThreeSigmaFigure, cdf: CdfFigure,
+}
+
 export default function MathBlocks({ blocks }) {
   return blocks.map((block, i) => {
     if (block.t === 'p') {
@@ -171,11 +325,13 @@ export default function MathBlocks({ blocks }) {
       )
     }
     if (block.t === 'figure') {
+      const Figure = FIGURES[block.kind]
       return (
         <figure key={i} className="math-figure">
           {block.kind === 'tangent' && <TangentFigure />}
           {(block.kind === 'vector' || block.kind === 'parallelogram') && <VectorGrid kind={block.kind} />}
           {block.kind === 'venn' && <VennFigure />}
+          {Figure && <Figure />}
           {block.caption && <figcaption><MathText>{block.caption}</MathText></figcaption>}
         </figure>
       )
