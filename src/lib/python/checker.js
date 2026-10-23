@@ -6,7 +6,11 @@ import { runPython } from './runner'
 //   { code: 'assert ...', label: '...' }    — произвольная проверка на Python
 //   { forbid: ['sorted', '.sort'] }         — в коде нельзя вызывать эти функции или методы
 //                                             (проверяется по тексту, без запуска)
-// Тесты выполняются по одному, каждый с чистого листа.
+//   { forbidRe: '\\.pop\\(\\s*0\\s*\\)', message } — то же по регулярному выражению, со своим сообщением
+// perf: true у теста call/code — тест на скорость: если решение не уложилось в лимит
+// времени, тест не пройден с понятным сообщением, а проверка идёт дальше.
+// Тесты выполняются по одному, каждый с чистого листа. options.prelude — служебный код
+// задачи, который выполняется до кода студента (например, классы ListNode и TreeNode).
 
 // input() без подсказки: текст подсказки иначе попал бы в вывод и сломал сравнение.
 // Функция кладётся в пространство имён запуска, встроенный input не меняется
@@ -31,10 +35,16 @@ export function normalizeOutput(text) {
     .replace(/^\n+/, '')
 }
 
+// Проверка выполняется в try/finally: если служебный код задачи определил _kiro_teardown
+// (например, разбор длинных связных списков — см. src/data/courses/algo/helpers.js),
+// он вызывается после теста, даже если проверка не прошла
 function epilogueFor(test) {
-  if (test.call) return `${HELPERS}__kiro_eq(${JSON.stringify(test.call)}, ${test.call}, ${test.expected})\n`
-  if (test.code) return `${HELPERS}${test.code}\n`
-  return ''
+  const body = test.call
+    ? `__kiro_eq(${JSON.stringify(test.call)}, ${test.call}, ${test.expected})`
+    : test.code
+  if (!body) return ''
+  const indented = body.split('\n').map(line => `    ${line}`).join('\n')
+  return `${HELPERS}try:\n${indented}\nfinally:\n    if '_kiro_teardown' in globals():\n        _kiro_teardown()\n`
 }
 
 // Последняя строка ошибки — «AssertionError: …» без служебного трейсбека
@@ -64,11 +74,16 @@ export function testLabel(test, i) {
 
 // Проверить решение. onProgress(i) — начат i-й тест.
 // Итог: { passed, total, results: [{ ok, label, detail, input, expected, got }], fatal? }
-export async function checkSolution(code, tests, { onProgress = () => {} } = {}) {
+export async function checkSolution(code, tests, { onProgress = () => {}, prelude = '' } = {}) {
   const results = []
   for (let i = 0; i < tests.length; i++) {
     const test = tests[i]
     onProgress(i)
+    if (test.forbidRe) {
+      const found = new RegExp(test.forbidRe).test(withoutComments(code))
+      results.push(found ? { ok: false, label: testLabel(test, i), detail: test.message } : { ok: true, label: testLabel(test, i) })
+      continue
+    }
     if (test.forbid) {
       const used = test.forbid.filter(name => forbiddenPattern(name).test(withoutComments(code)))
       results.push(used.length
@@ -79,11 +94,15 @@ export async function checkSolution(code, tests, { onProgress = () => {} } = {})
     let out = ''
     const result = await runPython(code, {
       stdin: test.input || '',
-      prelude: PRELUDE,
+      prelude: prelude ? `${PRELUDE}\n${prelude}\n` : PRELUDE,
       epilogue: epilogueFor(test),
       onEvent: e => { if (e.type === 'output') out += e.chunks.filter(c => c.stream === 'stdout').map(c => c.text).join('') },
     })
 
+    if (result.stopped && result.reason === 'timeout' && test.perf) {
+      results.push({ ok: false, label: testLabel(test, i), detail: 'Решение работает слишком долго на большом входе. Нужен алгоритм с меньшей сложностью — подсказка в теории урока.' })
+      continue
+    }
     if (result.busy || result.loadFailed || result.stopped) {
       return { passed: results.filter(r => r.ok).length, total: tests.length, results, fatal: result.error }
     }

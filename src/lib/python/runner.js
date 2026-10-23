@@ -8,6 +8,7 @@ import { track } from '../analytics'
 // Сколько даём коду поработать. Задачи курса выполняются за доли секунды —
 // всё, что дольше, почти наверняка бесконечный цикл.
 export const RUN_TIMEOUT_MS = 10_000
+const WATCHDOG_MS = 4_000
 
 let worker = null
 let nextId = 1
@@ -42,6 +43,7 @@ function onMessage(event) {
   if (!current || msg.id !== current.id) return
 
   if (msg.type === 'stage') {
+    clearTimeout(current.watchdog)
     if (msg.stage === 'running') {
       setState({ loaded: true })
       // Таймер считаем с начала выполнения, а не загрузки: первая загрузка
@@ -63,6 +65,7 @@ function finish(result) {
   const run = current
   current = null
   clearTimeout(run.timer)
+  clearTimeout(run.watchdog)
   setState({ running: false, owner: null })
   track('code_run', {
     ok: !!result.ok,
@@ -80,9 +83,20 @@ export function runPython(code, { stdin = '', owner = null, onEvent = () => {}, 
 
   return new Promise(resolve => {
     const id = nextId++
-    current = { id, onEvent, resolve, timer: null }
+    current = { id, onEvent, resolve, timer: null, watchdog: null }
     setState({ running: true, owner })
-    getWorker().postMessage({ id, type: 'run', code, stdin, prelude, epilogue })
+    // Загруженный Python отвечает на запуск сразу. Если ответа нет, воркер завис
+    // на прошлом запуске (например, долго освобождает память) — перезапускаем его
+    const message = { id, type: 'run', code, stdin, prelude, epilogue }
+    if (state.loaded) {
+      current.watchdog = setTimeout(() => {
+        worker?.terminate()
+        worker = null
+        setState({ loaded: false })
+        getWorker().postMessage(message)    // тот же запуск в свежем воркере
+      }, WATCHDOG_MS)
+    }
+    getWorker().postMessage(message)
   })
 }
 
