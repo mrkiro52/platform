@@ -7,12 +7,16 @@ import { PYTHON_WEEKS, loadPythonLesson } from './courses/python'
 import { MATH_WEEKS, loadMathLesson } from './courses/math'
 import { ALGO_WEEKS, loadAlgoLesson } from './courses/algo'
 
-export const COURSES_PREVIEW_USERS = ['khani']
+// Логины — в нижнем регистре: сравнение идёт без учёта регистра (militaryzCl → militaryzcl)
+export const COURSES_PREVIEW_USERS = ['khani', 'militaryzcl', 'lostce']
 
 // Полный доступ к курсам (как после покупки). Пока оплаты нет — выдаётся вручную.
 // Проверка на фронтенде: когда появится оплата, доступ нужно хранить и проверять на сервере
+const ALL_COURSES = ['python', 'math-ml', 'algorithms']
 const FULL_ACCESS = {
-  khani: ['python', 'math-ml', 'algorithms'],
+  khani: ALL_COURSES,
+  militaryzcl: ALL_COURSES,
+  lostce: ALL_COURSES,
 }
 
 function nick(user) {
