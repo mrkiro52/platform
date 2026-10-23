@@ -7,15 +7,19 @@
 //   { type: 'line', points: [[x, y], …], color, width?, dash?, label? }
 //   { type: 'area', points, color, opacity? }            — заливка от кривой до нуля
 //   { type: 'bars', points, barWidth?, color, label? }    — столбцы (barWidth в единицах x)
-//   { type: 'scatter', points, color, r?, hollow? }        — hollow: кружок с обводкой (вершины графа)
+//   { type: 'scatter', points, color, r?, hollow?, opacity?, stroke? } — hollow: кружок с обводкой (вершины графа)
 //   { type: 'vline', x, color?, dash?, label? }           — вертикальная линия с подписью сверху
 //   { type: 'hline', y, color?, dash? }
 //   { type: 'text', x, y, text, color?, anchor?, dy?, size? } — dy: сдвиг вниз в пикселях, size: кегль
 //   { type: 'box', y, stats: [min, q1, median, q3, max], outliers?, color, height? } — горизонтальный ящик с усами
 //   { type: 'interval', y, from, to, point?, color }      — горизонтальный отрезок (доверительный интервал)
 //   { type: 'arrow', from: [x, y], to: [x, y], color, label?, dx?, dy? } — вектор со стрелкой и подписью у конца
+//   { type: 'cells', size, points: [[x, y, i], …], colors: [c0, c1, …], opacity? } — квадратные клетки со стороной
+//     size (в единицах осей) с центром в (x, y) и цветом colors[i]: фон «карты решений» классификатора
+//   { type: 'circle', center: [x, y], r, color, dash?, width? } — окружность радиуса r (ровная при equal: true)
 // Параметры графика: equal: true — одинаковый масштаб по осям (высота считается сама, нужна для векторов),
 // axes: false — без сетки, осей и подписей (схемы графов: вершины — scatter, рёбра — line, имена — text).
+// При equal оси проходят через ноль; axesAtZero: false — оси по краям, как на обычном графике (карты данных).
 // Цвет — имя из палитры ниже или любой CSS-цвет.
 
 export const PLOT_COLORS = {
@@ -81,8 +85,9 @@ export function plotSvg(spec) {
   for (const v of xt) parts.push(`<line x1="${sx(v)}" x2="${sx(v)}" y1="${PAD.top}" y2="${PAD.top + ih}"/>`)
   parts.push('</g>')
   // Оси проходят через ноль, если он виден на графике (для векторов), иначе — по краю
-  const ax0 = spec.equal && x.min < 0 && x.max > 0 ? sx(0) : PAD.left
-  const ay0 = spec.equal && y.min < 0 && y.max > 0 ? sy(0) : PAD.top + ih
+  const zero = spec.equal && spec.axesAtZero !== false
+  const ax0 = zero && x.min < 0 && x.max > 0 ? sx(0) : PAD.left
+  const ay0 = zero && y.min < 0 && y.max > 0 ? sy(0) : PAD.top + ih
   parts.push('<g class="plot-axis">')
   if (axes) parts.push(`<line x1="${PAD.left}" x2="${PAD.left + iw}" y1="${ay0}" y2="${ay0}"/>`)
   if (axes && !y.hideAxis) parts.push(`<line x1="${ax0}" x2="${ax0}" y1="${PAD.top}" y2="${PAD.top + ih}"/>`)
@@ -121,7 +126,7 @@ export function plotSvg(spec) {
         for (const [a, b] of s.points) {
           parts.push(s.hollow
             ? `<circle cx="${sx(a).toFixed(1)}" cy="${sy(b).toFixed(1)}" r="${s.r || 4}" fill="var(--bg-tertiary, #16161a)" stroke="${c}" stroke-width="2"/>`
-            : `<circle cx="${sx(a).toFixed(1)}" cy="${sy(b).toFixed(1)}" r="${s.r || 4}" fill="${c}" fill-opacity="0.85"/>`)
+            : `<circle cx="${sx(a).toFixed(1)}" cy="${sy(b).toFixed(1)}" r="${s.r || 4}" fill="${c}" fill-opacity="${s.opacity ?? 0.85}"${s.stroke ? ` stroke="${s.stroke}" stroke-width="1.2"` : ''}/>`)
         }
         break
       case 'vline':
@@ -146,6 +151,19 @@ export function plotSvg(spec) {
         for (const o of s.outliers || []) parts.push(`<circle cx="${sx(o)}" cy="${cy}" r="4.5" fill="none" stroke="${PLOT_COLORS.red}" stroke-width="2"/>`)
         break
       }
+      case 'cells': {
+        const w = Math.abs(sx(s.size) - sx(0)), hh = Math.abs(sy(0) - sy(s.size))
+        // прозрачность — у группы целиком: перекрытия соседних клеток не дают более тёмных швов
+        parts.push(`<g opacity="${s.opacity ?? 0.16}" shape-rendering="crispEdges">`)
+        for (const [a, b, k] of s.points) parts.push(`<rect x="${(sx(a) - w / 2).toFixed(2)}" y="${(sy(b) - hh / 2).toFixed(2)}" width="${(w + 0.4).toFixed(2)}" height="${(hh + 0.4).toFixed(2)}" fill="${color(s.colors[k])}"/>`)
+        parts.push('</g>')
+        break
+      }
+      case 'circle': {
+        const [cx, cy] = s.center
+        parts.push(`<ellipse cx="${sx(cx).toFixed(1)}" cy="${sy(cy).toFixed(1)}" rx="${Math.abs(sx(s.r) - sx(0)).toFixed(1)}" ry="${Math.abs(sy(0) - sy(s.r)).toFixed(1)}" fill="none" stroke="${c}" stroke-width="${s.width || 1.6}"${s.dash ? ` stroke-dasharray="${s.dash === true ? '6 5' : s.dash}"` : ''}/>`)
+        break
+      }
       case 'arrow': {
         const [x1, y1] = s.from || [0, 0], [x2, y2] = s.to
         const X1 = sx(x1), Y1 = sy(y1), X2 = sx(x2), Y2 = sy(y2)
@@ -165,7 +183,7 @@ export function plotSvg(spec) {
       default:
         break
     }
-    if (s.label && s.type !== 'vline' && s.type !== 'arrow') legend.push([c, s.label, s.dash])
+    if (s.label && !['vline', 'arrow', 'cells'].includes(s.type)) legend.push([c, s.label, s.dash])
   }
 
   // Легенда — в правом верхнем углу области графика
