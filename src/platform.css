@@ -5327,19 +5327,31 @@ a.prg-chapter-link, a.prg-chip { text-decoration: none; }
 .cs-credit-icon { display: flex; flex-shrink: 0; color: var(--accent-lime); padding-top: 1px; }
 .cs-credit.is-compact { font-size: 13px; padding: 10px 13px; }
 
-.cs-bundles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-bottom: 18px; }
+/* Шапка витрины: описание слева, комплекты справа — колонки одной высоты */
+.cs-top { display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: 16px; align-items: stretch; margin-bottom: 18px; }
+.cs-top .cs-hero { margin-bottom: 0; }
+.cs-top .cs-credit { margin-top: auto; }
+.cs-top .cs-lead { font-size: 16px; max-width: 640px; }
+.cs-bundles { display: flex; flex-direction: column; gap: 12px; }
 .cs-bundle {
-  position: relative; display: flex; flex-direction: column; gap: 4px; padding: 18px 20px;
+  position: relative; flex: 1 1 auto; display: flex; flex-direction: column; justify-content: center; gap: 3px; padding: 14px 18px;
   background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-lg);
 }
 .cs-bundle.is-best { border-color: var(--accent-lime); box-shadow: 0 0 0 1px rgba(255,214,10,0.3), 0 12px 36px rgba(255,214,10,0.08); background: linear-gradient(160deg, rgba(255,214,10,0.10), transparent 60%), var(--bg-secondary); }
-.cs-bundle-flag { position: absolute; top: -11px; right: 16px; font-size: 11.5px; font-weight: 800; color: var(--on-accent); background: var(--accent-lime); border-radius: var(--radius-pill); padding: 4px 11px; }
+.cs-bundle-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.cs-bundle-flag { font-size: 11.5px; font-weight: 800; color: var(--on-accent); background: var(--accent-lime); border-radius: var(--radius-pill); padding: 4px 11px; white-space: nowrap; }
 .cs-bundle-name { font-size: 13px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--text-tertiary); }
 .cs-bundle-price { font-family: var(--font-syne); font-size: 26px; font-weight: 700; color: var(--text-primary); }
 .cs-bundle.is-best .cs-bundle-price { color: var(--accent-lime); }
 .cs-bundle-sub { font-size: 13px; color: var(--success); font-weight: 600; }
+.cs-bundle-sub.is-plain { color: var(--text-tertiary); font-weight: 500; }
 .cs-bundle-sub s, .cs-option-price s, .cs-total-price s { color: var(--text-tertiary); font-weight: 500; }
 .cs-bundle-btn { margin-top: 10px; align-self: stretch; }
+/* Обычные комплекты компактнее: название и подпись слева, цена справа */
+.cs-bundle:not(.is-best) { display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "name price" "sub price"; align-content: center; column-gap: 12px; }
+.cs-bundle:not(.is-best) .cs-bundle-name { grid-area: name; }
+.cs-bundle:not(.is-best) .cs-bundle-sub { grid-area: sub; }
+.cs-bundle:not(.is-best) .cs-bundle-price { grid-area: price; align-self: center; }
 
 .cs-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
 .cs-card {
@@ -5405,12 +5417,22 @@ a.prg-chapter-link, a.prg-chip { text-decoration: none; }
 .cs-actions { display: flex; justify-content: flex-end; flex-wrap: wrap; gap: 10px; }
 
 /* Страница курса */
-.cs-detail { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 20px; align-items: start; }
+.cs-detail { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 14px 20px; align-items: stretch; }
+/* Шапка курса и карточка покупки — в первом ряду, блоки о курсе и программа — во всю ширину под ними */
+.cs-detail-main { display: contents; }
+.cs-detail .cs-hero, .cs-detail .cs-about, .cs-detail-main > .cs-block { margin-bottom: 0; grid-column: 1 / -1; }
+@media (min-width: 1101px) {
+  .cs-detail:not(.is-owned) .cs-hero { grid-column: 1; grid-row: 1; }
+  .cs-detail .cs-buy { grid-column: 2; grid-row: 1; }
+}
 .cs-hero--course { background: radial-gradient(560px 260px at 100% 0%, color-mix(in srgb, var(--c) 16%, transparent), transparent 70%), var(--bg-secondary); }
 .cs-tags { display: flex; flex-wrap: wrap; gap: 6px; }
 .cs-tags span { font-size: 12.5px; font-weight: 600; color: var(--text-secondary); background: var(--bg-tertiary); border: 1px solid var(--border-color); border-radius: var(--radius-pill); padding: 4px 11px; }
 .cs-tags .is-free { color: var(--success); border-color: rgba(63,185,80,0.4); background: var(--success-dim); }
 .cs-start { margin-top: 6px; }
+/* «Для кого», «Чему научишься», «Как устроен курс» — в ряд по трети */
+.cs-about { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-bottom: 14px; }
+.cs-about .cs-block { margin-bottom: 0; }
 .cs-block { padding: 22px 24px; margin-bottom: 14px; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); scroll-margin-top: 80px; }
 .cs-block h2 { margin: 0 0 12px; font-family: var(--font-syne); font-size: 18px; font-weight: 700; color: var(--text-primary); }
 .cs-block p, .cs-block li { color: var(--text-secondary); font-size: 15px; line-height: 1.65; }
@@ -5445,6 +5467,9 @@ a.prg-chapter-link, a.prg-chip { text-decoration: none; }
 .cs-buy-all:hover { text-decoration: underline; text-underline-offset: 3px; }
 
 @media (max-width: 1100px) {
+  .cs-top { grid-template-columns: minmax(0, 1fr); }
+  .cs-bundles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .cs-about { grid-template-columns: minmax(0, 1fr); }
   .cs-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .cs-detail { grid-template-columns: minmax(0, 1fr); }
   .cs-buy { order: -1; }

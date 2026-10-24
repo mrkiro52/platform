@@ -1,5 +1,5 @@
 'use strict'
-// Пользователи: поиск, фильтр по лагерю, доступ к Autumn Camp, правка и удаление.
+// Пользователи: поиск, фильтр по лагерю, доступ к Autumn Camp и мини-курсам, правка и удаление.
 
 const UsersPage = {
   list: [],
@@ -11,7 +11,7 @@ const UsersPage = {
   async render(view, ctx) {
     UsersPage.q = ctx.query.get('q') || ''
     UsersPage.filter = ['camp', 'nocamp'].includes(ctx.query.get('filter')) ? ctx.query.get('filter') : 'all'
-    UsersPage.sort = ['active', 'points'].includes(ctx.query.get('sort')) ? ctx.query.get('sort') : 'created'
+    UsersPage.sort = ctx.query.get('sort') === 'active' ? 'active' : 'created'
     UsersPage.limit = 50
     view.innerHTML = UsersPage.head() + skeleton({ rows: 10 })
     const list = await api('/api/users')
@@ -73,7 +73,6 @@ const UsersPage = {
     const by = {
       created: (a, b) => String(b.created_at).localeCompare(String(a.created_at)) || b.id - a.id,
       active: (a, b) => String(b.lastActiveDay || '').localeCompare(String(a.lastActiveDay || '')) || b.id - a.id,
-      points: (a, b) => (b.points || 0) - (a.points || 0) || b.id - a.id,
     }
     return rows.sort(by[UsersPage.sort])
   },
@@ -115,10 +114,9 @@ const UsersPage = {
           <thead><tr>
             <th>Пользователь</th>
             <th>Осенний лагерь</th>
+            <th>Курсы</th>
             ${sortHead('created', 'Регистрация')}
             ${sortHead('active', 'Активность')}
-            ${sortHead('points', 'Очки', 'r')}
-            <th class="r">Стрик</th>
             <th></th>
           </tr></thead>
           <tbody>${shown.map(UsersPage.row).join('')}</tbody>
@@ -156,15 +154,43 @@ const UsersPage = {
             ${UsersPage.DIRECTIONS.map(([v, l]) => `<option value="${v}" ${(u.autumnDirection || '') === v ? 'selected' : ''}>${l}</option>`).join('')}
           </select>` : ''}
         </td>
+        <td>
+          <div class="course-checks">
+            ${UsersPage.COURSES.map(([slug, title]) => `<label class="course-check" title="${esc(title)}">
+              <input type="checkbox" ${(u.courses || []).includes(slug) ? 'checked' : ''} onchange="UsersPage.toggleCourse(${u.id}, '${slug}', this)"/>
+              <span class="course-box">${icon('check', 12)}</span><span>${esc(title.split(':')[0])}</span>
+            </label>`).join('')}
+          </div>
+        </td>
         <td class="nowrap">${created}</td>
         <td class="nowrap">${active ? (active === 'сегодня' ? `<span class="badge badge-green">сегодня</span>` : esc(active)) : '<span class="muted">—</span>'}</td>
-        <td class="r num cell-main" style="color:var(--lime)">${fmt(u.points)}</td>
-        <td class="r num">${fmt(u.streak)}</td>
         <td class="actions"><div>
           <button class="btn-icon btn-sm" onclick="UsersPage.openEdit(${u.id})" title="Изменить логин или пароль" aria-label="Изменить">${icon('pencil', 15)}</button>
           <button class="btn-icon btn-sm is-danger" onclick="UsersPage.remove(${u.id})" title="Удалить" aria-label="Удалить">${icon('trash-2', 15)}</button>
         </div></td>
       </tr>`
+  },
+
+  // Мини-курсы: галочка — курс куплен и открыт полностью; без галочки — только бесплатные уроки
+  COURSES: [['python', 'Python: с нуля и до профи'], ['math-ml', 'Математика: вся для Junior ML'], ['algorithms', 'Алгоритмы: leetcode и алгособесы']],
+
+  async toggleCourse(id, slug, input) {
+    const user = UsersPage.list.find(u => u.id === id)
+    if (!user) return
+    const title = UsersPage.COURSES.find(([s]) => s === slug)[1]
+    const prev = user.courses || []
+    const next = input.checked ? [...prev, slug] : prev.filter(s => s !== slug)
+    input.disabled = true
+    try {
+      const r = await api(`/api/users/${id}/courses`, { method: 'PATCH', body: { courses: next } })
+      user.courses = r.courses
+      toast(`${user.nickname || user.name}: «${title}» — ${input.checked ? 'открыт' : 'закрыт'}`)
+    } catch (e) {
+      input.checked = !input.checked
+      toast(e.message, 'err')
+    } finally {
+      input.disabled = false
+    }
   },
 
   // Направление индивидуальной программы на октябрь; пусто — программа ещё готовится

@@ -5,6 +5,7 @@ const db = require('../db')
 const { requireAdmin, verifyToken } = require('../middleware/auth')
 const { uploadAvatar, deleteAvatar, keyFromUrl, s3Configured } = require('../s3')
 const { lastActiveDays } = require('../analytics')
+const { COURSE_SLUGS, parseCourses } = require('../courses')
 
 const upload = multer({
   storage: multer.memoryStorage(),
@@ -19,10 +20,11 @@ const upload = multer({
 
 // GET /api/users/me — current user's own profile
 router.get('/me', verifyToken, (req, res) => {
-  const user = db.prepare('SELECT id, name, nickname, email, bio, position, birthday, avatar_url, is_summer_camp_2026, is_autumn_camp_2026, autumn_direction FROM users WHERE id = ?').get(req.user.id)
+  const user = db.prepare('SELECT id, name, nickname, email, bio, position, birthday, avatar_url, is_summer_camp_2026, is_autumn_camp_2026, autumn_direction, courses FROM users WHERE id = ?').get(req.user.id)
   if (!user) return res.status(404).json({ message: 'Пользователь не найден' })
   res.json({
     ...user,
+    courses: parseCourses(user.courses),
     isSummerCamp2026: !!user.is_summer_camp_2026,
     isAutumnCamp2026: !!user.is_autumn_camp_2026,
     autumnDirection: user.is_autumn_camp_2026 ? (user.autumn_direction || null) : null,
@@ -79,15 +81,16 @@ router.put('/me', verifyToken, (req, res) => {
   res.json(user)
 })
 
-// GET /api/users — список для админки: логин, участие в лагере и день
-// последней активности (по Москве), чтобы видеть, кто пропал
+// GET /api/users — список для админки: логин, участие в лагере, купленные
+// курсы и день последней активности (по Москве), чтобы видеть, кто пропал
 router.get('/', requireAdmin, (req, res) => {
   const last = lastActiveDays()
   const users = db.prepare(`
-    SELECT id, name, nickname, points, streak, created_at, is_autumn_camp_2026, autumn_direction
+    SELECT id, name, nickname, created_at, is_autumn_camp_2026, autumn_direction, courses
       FROM users ORDER BY created_at DESC`).all()
   res.json(users.map(u => ({
     ...u,
+    courses: parseCourses(u.courses),
     autumnCamp: !!u.is_autumn_camp_2026,
     autumnDirection: u.autumn_direction || null,
     lastActiveDay: last.get(u.id) || null,
@@ -101,6 +104,19 @@ router.patch('/:id/camp', requireAdmin, (req, res) => {
   const r = db.prepare('UPDATE users SET is_autumn_camp_2026 = ? WHERE id = ?').run(autumnCamp ? 1 : 0, req.params.id)
   if (!r.changes) return res.status(404).json({ message: 'Пользователь не найден' })
   res.json({ id: Number(req.params.id), autumnCamp })
+})
+
+// PATCH /api/users/:id/courses — открыть или закрыть купленные мини-курсы:
+// { courses: ['python', 'math-ml', 'algorithms'] } — полный список открытых
+router.patch('/:id/courses', requireAdmin, (req, res) => {
+  const { courses } = req.body || {}
+  if (!Array.isArray(courses) || courses.some(c => !COURSE_SLUGS.includes(c))) {
+    return res.status(400).json({ message: 'Неизвестный курс' })
+  }
+  const list = COURSE_SLUGS.filter(c => courses.includes(c))
+  const r = db.prepare('UPDATE users SET courses = ? WHERE id = ?').run(JSON.stringify(list), req.params.id)
+  if (!r.changes) return res.status(404).json({ message: 'Пользователь не найден' })
+  res.json({ id: Number(req.params.id), courses: list })
 })
 
 // PATCH /api/users/:id/direction — направление индивидуальной программы

@@ -10,14 +10,8 @@ import { ALGO_WEEKS, loadAlgoLesson } from './courses/algo'
 // Логины — в нижнем регистре: сравнение идёт без учёта регистра (militaryzCl → militaryzcl)
 export const COURSES_PREVIEW_USERS = ['khani', 'militaryzcl', 'lostce']
 
-// Полный доступ к курсам (как после покупки). Пока оплаты нет — выдаётся вручную.
-// Проверка на фронтенде: когда появится оплата, доступ нужно хранить и проверять на сервере
-const ALL_COURSES = ['python', 'math-ml', 'algorithms']
-const FULL_ACCESS = {
-  khani: ALL_COURSES,
-  militaryzcl: ALL_COURSES,
-  lostce: ALL_COURSES,
-}
+// Купленные курсы приходят с сервера (user.courses): после оплаты админ
+// ставит галочку курса в админке. Без галочки открыты только бесплатные уроки
 
 function nick(user) {
   return String(user?.nickname || '').toLowerCase()
@@ -28,7 +22,7 @@ export function canSeeCourses(user) {
 }
 
 export function hasFullAccess(user, slug) {
-  return (FULL_ACCESS[nick(user)] || []).includes(slug)
+  return Array.isArray(user?.courses) && user.courses.includes(slug)
 }
 
 export function canOpenLesson(user, course, lesson) {
@@ -97,7 +91,7 @@ export const COURSES = [
       'В конце — финальный проект.',
     ],
     lesson: ['Видеоурок', 'Теория', '5 задач'],
-    free: 'Видеоурок первого урока, теория и 5 задач к нему',
+    free: 'Первые два урока: видео, теория и задачи',
     finalProject: true,
     weeks: PYTHON_WEEKS,
     loadLesson: loadPythonLesson,
@@ -123,7 +117,7 @@ export const COURSES = [
       'В конце — итоговый экзамен по всем темам.',
     ],
     lesson: ['Видеоурок', 'Теория', '5 задач с проверкой ответа'],
-    free: 'Видеоурок первого урока, теория и 5 задач к нему',
+    free: 'Первые два урока: видео, теория и задачи',
     finalProject: false,
     weeks: MATH_WEEKS,
     loadLesson: loadMathLesson,
@@ -151,7 +145,7 @@ export const COURSES = [
       'Каждую неделю — мини-контест с таймером, в конце курса — финальный контест и план повторения.',
     ],
     lesson: ['Видео о паттерне', 'Теория', 'Задачи с разборами'],
-    free: 'Видеоурок первого урока, теория и 5 задач к нему',
+    free: 'Первые два урока: видео, теория и задачи',
     finalProject: false,
     weeks: ALGO_WEEKS,
     loadLesson: loadAlgoLesson,

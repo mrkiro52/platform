@@ -1117,6 +1117,20 @@ function migrate() {
       console.error('❌ Migration 36 failed:', err.message)
     }
   }
+
+  // Migration 37: купленные мини-курсы пользователя — JSON-массив слагов
+  // ('python', 'math-ml', 'algorithms'). Только ADD COLUMN: остальные поля
+  // users не трогаем. По умолчанию '[]' — платные уроки никому не открыты.
+  if (schemaVersion < 37) {
+    try {
+      const cols = db.prepare('PRAGMA table_info(users)').all().map(c => c.name)
+      if (!cols.includes('courses')) db.exec("ALTER TABLE users ADD COLUMN courses TEXT NOT NULL DEFAULT '[]'")
+      db.pragma('user_version = 37')
+      console.log('✅ Migration 37 completed: added users.courses')
+    } catch (err) {
+      console.error('❌ Migration 37 failed:', err.message)
+    }
+  }
 }
 
 migrate()

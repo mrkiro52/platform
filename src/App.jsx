@@ -99,6 +99,7 @@ export default function App() {
           isSummerCamp2026: !!p.isSummerCamp2026,
           isAutumnCamp2026: !!p.isAutumnCamp2026,
           autumnDirection: p.autumnDirection || null,
+          courses: Array.isArray(p.courses) ? p.courses : [],
         }
         localStorage.setItem('kiro_user', JSON.stringify(updated))
         return updated

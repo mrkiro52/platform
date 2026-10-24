@@ -35,7 +35,7 @@ function Paywall({ course, onBuy }) {
     <div className="ls-paywall">
       <span className="ls-paywall-icon" aria-hidden="true"><LockIcon size={28} /></span>
       <h2>Урок откроется после покупки</h2>
-      <p>Бесплатно доступен первый урок курса. Купи курс, чтобы открыть все уроки и задачи с автопроверкой{course.finalProject ? ' и финальный проект' : ''}.</p>
+      <p>Бесплатно доступны первые два урока курса. Купи курс, чтобы открыть все уроки и задачи с автопроверкой{course.finalProject ? ' и финальный проект' : ''}.</p>
       <div className="ls-paywall-prices">
         <span>«{course.short}» — <b>{rub(COURSE_PRICE)}</b></span>
         <span>все 3 курса — <b>{rub(priceFor(3))}</b> <em>выгода {rub(savingFor(3))}</em></span>

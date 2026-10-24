@@ -179,13 +179,14 @@ function Checkout({ initial, onClose }) {
   )
 }
 
+// Комплекты — колонка справа от шапки, по высоте как шапка
 function Bundles({ onBuy }) {
   return (
     <section className="cs-bundles" aria-label="Комплекты">
       <div className="cs-bundle">
         <div className="cs-bundle-name">1 курс</div>
         <div className="cs-bundle-price">{rub(priceFor(1))}</div>
-        <div className="cs-bundle-sub">любой на выбор</div>
+        <div className="cs-bundle-sub is-plain">любой на выбор</div>
       </div>
       <div className="cs-bundle">
         <div className="cs-bundle-name">2 курса</div>
@@ -193,8 +194,10 @@ function Bundles({ onBuy }) {
         <div className="cs-bundle-sub"><s>{rub(COURSE_PRICE * 2)}</s> · выгода {rub(savingFor(2))}</div>
       </div>
       <div className="cs-bundle is-best">
-        <span className="cs-bundle-flag">Выгоднее всего</span>
-        <div className="cs-bundle-name">Все 3 курса</div>
+        <div className="cs-bundle-head">
+          <span className="cs-bundle-name">Все 3 курса</span>
+          <span className="cs-bundle-flag">Выгоднее всего</span>
+        </div>
         <div className="cs-bundle-price">{rub(priceFor(3))}</div>
         <div className="cs-bundle-sub"><s>{rub(FULL3)}</s> · выгода {rub(savingFor(3))}</div>
         <button type="button" className="btn-primary cs-bundle-btn" onClick={() => onBuy('all')}>Купить комплект</button>
@@ -209,7 +212,7 @@ function CourseCard({ c, onBuy }) {
     <article className="cs-card" style={{ '--c': c.accent }}>
       <div className="cs-card-top">
         <span className="cs-icon">{c.icon}</span>
-        <span className="cs-free">Модуль 1 бесплатно</span>
+        <span className="cs-free">2 урока бесплатно</span>
       </div>
       <h2 className="cs-card-title">{c.title}</h2>
       <p className="cs-card-tagline">{c.tagline}</p>
@@ -235,14 +238,15 @@ function CourseCard({ c, onBuy }) {
 function CoursesList({ onBuy }) {
   return (
     <section className="page active cs-page">
-      <div className="cs-hero">
-        <span className="dt-tag">Мини-курсы KIRO</span>
-        <h1 className="cs-title">Курсы</h1>
-        <p className="cs-lead">Три коротких курса — выжимка того, что нужно для старта в IT. У каждого курса первый модуль открыт бесплатно: видеоурок, теория и задачи. Попробуй формат до покупки.</p>
-        <CampCredit />
+      <div className="cs-top">
+        <div className="cs-hero">
+          <span className="dt-tag">Мини-курсы KIRO</span>
+          <h1 className="cs-title">Курсы</h1>
+          <p className="cs-lead">Три коротких курса — выжимка того, что нужно для старта в IT. У каждого курса первый модуль открыт бесплатно: видеоурок, теория и задачи. Попробуй формат до покупки.</p>
+          <CampCredit />
+        </div>
+        <Bundles onBuy={onBuy} />
       </div>
-
-      <Bundles onBuy={onBuy} />
 
       <div className="cs-grid">
         {COURSES.map(c => <CourseCard key={c.slug} c={c} onBuy={onBuy} />)}
@@ -313,7 +317,7 @@ function CourseDetail({ c, user, onBuy }) {
             <p className="cs-lead">{c.tagline}</p>
             <div className="cs-tags">
               {c.duration && <span>{c.duration}</span>}
-              <span className="is-free">Модуль 1 бесплатно</span>
+              <span className="is-free">2 урока бесплатно</span>
               {c.finalProject && <span>Финальный проект</span>}
             </div>
             {firstLesson
@@ -322,17 +326,19 @@ function CourseDetail({ c, user, onBuy }) {
             {owned && <span className="cs-owned"><CheckIcon size={15} />Курс открыт полностью</span>}
           </div>
 
-          <div className="cs-block">
-            <h2>Для кого</h2>
-            <ul>{c.audience.map((a, i) => <li key={i}>{a}</li>)}</ul>
-          </div>
-          <div className="cs-block">
-            <h2>Чему научишься</h2>
-            <p>{c.outcome}</p>
-          </div>
-          <div className="cs-block">
-            <h2>Как устроен курс</h2>
-            <ul>{c.format.map((a, i) => <li key={i}>{a}</li>)}</ul>
+          <div className="cs-about">
+            <div className="cs-block">
+              <h2>Для кого</h2>
+              <ul>{c.audience.map((a, i) => <li key={i}>{a}</li>)}</ul>
+            </div>
+            <div className="cs-block">
+              <h2>Чему научишься</h2>
+              <p>{c.outcome}</p>
+            </div>
+            <div className="cs-block">
+              <h2>Как устроен курс</h2>
+              <ul>{c.format.map((a, i) => <li key={i}>{a}</li>)}</ul>
+            </div>
           </div>
 
           <div className="cs-block" id="free">
