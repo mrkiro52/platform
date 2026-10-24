@@ -3,11 +3,13 @@
 // (week1.js, week2.js, week3.js). Названия должны совпадать с title в файлах недель.
 // Задачи — с вводом ответа (src/lib/answers.js), id задач — <id урока>t<номер>.
 // tasks — число задач в уроке, если их не 5 (итоговый экзамен).
+// video — ссылка на видеолекцию недели (одна на неделю, embed-URL для iframe); пусто — «появится скоро».
 
 export const MATH_WEEKS = [
   {
     week: 1,
     title: 'Линейная алгебра и начала анализа',
+    video: '',
     lessons: [
       { id: 'd1', day: 1, title: 'Векторы', free: true },
       { id: 'd2', day: 2, title: 'Ортогональность и проекция', free: true },
@@ -21,6 +23,7 @@ export const MATH_WEEKS = [
   {
     week: 2,
     title: 'Градиентный спуск и теория вероятностей',
+    video: '',
     lessons: [
       { id: 'd8', day: 8, title: 'Градиентный спуск' },
       { id: 'd9', day: 9, title: 'Случайные величины' },
@@ -34,6 +37,7 @@ export const MATH_WEEKS = [
   {
     week: 3,
     title: 'Статистика, дискретная математика, итог',
+    video: '',
     lessons: [
       { id: 'd15', day: 15, title: 'Выборочные статистики' },
       { id: 'd16', day: 16, title: 'Доверительные интервалы' },

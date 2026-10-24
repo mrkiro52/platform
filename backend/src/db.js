@@ -1131,6 +1131,27 @@ function migrate() {
       console.error('❌ Migration 37 failed:', err.message)
     }
   }
+
+  // Migration 38: прогресс по задачам мини-курсов — какие задачи решены и
+  // каким решением (ответ или код). Новая таблица, users не меняется.
+  if (schemaVersion < 38) {
+    try {
+      db.prepare(`
+        CREATE TABLE IF NOT EXISTS course_progress (
+          user_id   INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+          course    TEXT NOT NULL,
+          task_id   TEXT NOT NULL,
+          answer    TEXT,
+          solved_at TEXT NOT NULL DEFAULT (datetime('now')),
+          PRIMARY KEY (user_id, course, task_id)
+        )
+      `).run()
+      db.pragma('user_version = 38')
+      console.log('✅ Migration 38 completed: added course_progress')
+    } catch (err) {
+      console.error('❌ Migration 38 failed:', err.message)
+    }
+  }
 }
 
 migrate()

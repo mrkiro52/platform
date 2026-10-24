@@ -6,18 +6,24 @@ import { BulbIcon, CheckIcon, CrossIcon, EyeIcon } from '../icons'
 
 // Задача с вводом ответа (курс по математике): условие, поле для ответа, проверка
 // прямо на странице. После верного ответа открывается разбор решения; после двух
-// неверных попыток его можно открыть самому. Последний ввод сохраняется в браузере.
+// неверных попыток его можно открыть самому. Последний ввод сохраняется в браузере,
+// принятый ответ — в аккаунте (savedAnswer): после решения поле показывает его
+// и закрыто для ввода.
 
 const SHOW_SOLUTION_AFTER = 2
 
-export default function AnswerTaskCard({ task, index, user, solved, onSolved }) {
+export default function AnswerTaskCard({ task, index, user, solved, savedAnswer, onSolved }) {
   const kind = kindOf(task)
   const [value, setValue] = useState(() => loadDraft(user, task.id) ?? '')
   const [result, setResult] = useState(null)
   const [fails, setFails] = useState(0)
   const [showSolution, setShowSolution] = useState(false)
 
+  // После решения в поле — принятый ответ; у старых записей без ответа — последний ввод
+  const shown = solved ? (savedAnswer ?? value) : value
+
   const change = v => {
+    if (solved) return
     setValue(v)
     setResult(null)
     saveDraft(user, task.id, String(v))
@@ -25,9 +31,10 @@ export default function AnswerTaskCard({ task, index, user, solved, onSolved }) 
 
   const check = e => {
     e?.preventDefault()
+    if (solved) return
     const r = checkAnswer(task, value)
     setResult(r)
-    if (r.ok) onSolved(task.id)
+    if (r.ok) onSolved(task.id, String(value))
     else setFails(f => f + 1)
   }
 
@@ -44,30 +51,32 @@ export default function AnswerTaskCard({ task, index, user, solved, onSolved }) 
       <div className="tk-text"><Inline text={task.text} /></div>
       {task.blocks && <div className="ak-blocks"><LessonBlocks blocks={task.blocks} /></div>}
 
-      <form className="ak-form" onSubmit={check}>
+      <form className={`ak-form${solved ? ' is-locked' : ''}`} onSubmit={check}>
         {kind === 'choice' ? (
           <div className="ak-options" role="radiogroup" aria-label="Варианты ответа">
             {task.options.map((opt, i) => (
-              <label key={i} className={`ak-option${String(value) === String(i) ? ' is-on' : ''}`}>
-                <input type="radio" name={task.id} value={i} checked={String(value) === String(i)} onChange={() => change(String(i))} />
+              <label key={i} className={`ak-option${String(shown) === String(i) ? ' is-on' : ''}`}>
+                <input type="radio" name={task.id} value={i} checked={String(shown) === String(i)} disabled={solved} onChange={() => change(String(i))} />
                 <span className="ak-option-mark" aria-hidden="true">{String.fromCharCode(1040 + i)}</span>
                 <span><Inline text={opt} /></span>
               </label>
             ))}
           </div>
         ) : kind === 'matrix' ? (
-          <textarea className="ak-input is-matrix" rows={task.answer.length + 1} value={value} placeholder={placeholderOf(task)}
+          <textarea className="ak-input is-matrix" rows={task.answer.length + 1} value={shown} placeholder={placeholderOf(task)} readOnly={solved}
             onChange={e => change(e.target.value)} spellCheck={false} aria-label="Ответ" />
         ) : (
           <div className="ak-line">
             {task.prefix && <span className="ak-affix"><Inline text={task.prefix} /></span>}
-            <input className="ak-input" value={value} placeholder={placeholderOf(task)} onChange={e => change(e.target.value)}
+            <input className="ak-input" value={shown} placeholder={placeholderOf(task)} readOnly={solved} onChange={e => change(e.target.value)}
               inputMode={kind === 'number' ? 'decimal' : undefined} autoComplete="off" spellCheck={false} aria-label="Ответ" />
             {task.unit && <span className="ak-affix">{task.unit}</span>}
           </div>
         )}
         <div className="tk-actions">
-          <button type="submit" className="btn-primary tk-check">Проверить ответ</button>
+          {solved
+            ? <span className="tk-locked"><CheckIcon size={15} />Ответ принят и сохранён</span>
+            : <button type="submit" className="btn-primary tk-check">Проверить ответ</button>}
           {!solutionOpen && fails >= SHOW_SOLUTION_AFTER && task.solution && (
             <button type="button" className="tk-reset ak-show" onClick={() => setShowSolution(true)}><EyeIcon size={15} />Показать решение</button>
           )}

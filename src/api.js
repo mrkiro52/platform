@@ -74,6 +74,8 @@ export const api = {
   announcements: ()          => req('/api/announcements'),
   links:         ()          => req('/api/links'),
   profile:       ()          => req('/api/users/me'),
+  courseProgress:     ()  => req('/api/courses/progress'),
+  saveCourseProgress: (course, taskId, answer) => req('/api/courses/progress', { method: 'POST', body: JSON.stringify({ course, taskId, answer }) }),
   updateProfile: (data)      => req('/api/users/me', { method: 'PUT', body: JSON.stringify(data) }),
   uploadAvatar:  (file)      => { const fd = new FormData(); fd.append('avatar', file); return reqForm('/api/users/me/avatar', fd) },
   posts:         (opts = {}) => {

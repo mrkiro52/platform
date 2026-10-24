@@ -32,6 +32,7 @@ app.use('/api/sql-trainer',   require('./src/routes/sqlTrainer'))
 app.use('/api/programs',      require('./src/routes/programs'))
 app.use('/api/vacancies',     require('./src/routes/vacancies'))
 app.use('/api/dating',        require('./src/routes/dating'))
+app.use('/api/courses',       require('./src/routes/courses'))
 
 // ── Admin Panel ──────────────────────────────────────────────────────────────
 app.use('/admin', express.static(path.join(__dirname, 'admin')))

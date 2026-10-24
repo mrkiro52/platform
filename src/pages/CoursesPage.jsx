@@ -1,15 +1,16 @@
 import { useEffect, useState } from 'react'
 import { Link, Navigate, useNavigate, useParams } from 'react-router-dom'
 import {
-  COURSES, COURSE_PRICE, MANAGER_URL, canSeeCourses, canOpenLesson, courseBySlug, hasFullAccess,
-  loadProgress, priceFor, rub, savingFor,
+  COURSES, COURSE_PRICE, MANAGER_URL, canSeeCourses, canOpenLesson, canOpenVideo, courseBySlug, hasFullAccess,
+  priceFor, rub, savingFor, videoId,
 } from '../data/courses'
-import CourseLessonPage from './CourseLessonPage'
-import { CheckIcon, LockIcon, TicketIcon } from '../components/icons'
+import { courseStats, lessonSolved, useCourseProgress } from '../lib/courseProgress'
+import CourseLessonPage, { CourseVideoPage } from './CourseLessonPage'
+import { CheckIcon, LockIcon, PlayIcon, TicketIcon } from '../components/icons'
 
 // Раздел «Курсы»: витрина трёх мини-курсов и покупка.
 // /courses — карточки и комплекты, /courses/:slug — страница курса,
-// /courses/:slug/:lessonId — урок (CourseLessonPage).
+// /courses/:slug/:lessonId — урок (CourseLessonPage) или видеолекция недели (v1, v2, v3).
 // Покупка ведёт к комплекту: после «Купить» предлагаем добавить курсы со скидкой,
 // комплект из трёх выбран по умолчанию и подписан как самый выгодный.
 // Онлайн-оплаты пока нет — заказ оформляется через менеджера.
@@ -255,23 +256,43 @@ function CoursesList({ onBuy }) {
   )
 }
 
-// Программа курса с уроками: доступные — ссылками, закрытые — с замком
+// Программа курса: в начале каждой недели — видеолекция (номер 0), затем уроки.
+// Доступные — ссылками, закрытые — с замком
 function Program({ c, user }) {
-  const progress = loadProgress(user)
-  return c.weeks.map(w => (
+  const progress = useCourseProgress(user)
+  return c.weeks.map(w => {
+    const videoOpen = canOpenVideo(user, c, w.week)
+    const videoBody = (
+      <>
+        <span className="cs-lesson-day is-video">0</span>
+        <span className="cs-lesson-title">Видеолекция недели {w.week}</span>
+        <span className="cs-lesson-meta">
+          {w.week === 1 && !hasFullAccess(user, c.slug) && <span className="cs-lesson-free">Бесплатно</span>}
+          {videoOpen
+            ? <span className="cs-lesson-video"><PlayIcon size={13} />{w.video ? 'Видео' : 'Скоро'}</span>
+            : <span className="cs-lesson-lock" aria-label="Откроется после покупки"><LockIcon size={15} /></span>}
+        </span>
+      </>
+    )
+    return (
     <div key={w.week} className="cs-week">
       <div className="cs-week-head">
         <span className="cs-module-num">Неделя {w.week}</span>
         <span className="cs-week-title">{w.title}</span>
       </div>
       <ol className="cs-lessons">
-        {w.lessons.map(l => {
+        <li>
+          {videoOpen
+            ? <Link className="cs-lesson is-video" to={`/courses/${c.slug}/${videoId(w.week)}`}>{videoBody}</Link>
+            : <span className="cs-lesson is-video is-locked">{videoBody}</span>}
+        </li>
+        {w.lessons.map((l, i) => {
           const open = canOpenLesson(user, c, l)
           const total = l.tasks || 5
-          const solved = Array.from({ length: total }, (_, n) => n + 1).filter(n => progress[`${l.id}t${n}`]).length
+          const solved = lessonSolved(progress, l)
           const body = (
             <>
-              <span className="cs-lesson-day">{l.day}</span>
+              <span className="cs-lesson-day">{i + 1}</span>
               <span className="cs-lesson-title">{l.title}</span>
               <span className="cs-lesson-meta">
                 {l.free && <span className="cs-lesson-free">Бесплатно</span>}
@@ -291,7 +312,8 @@ function Program({ c, user }) {
         })}
       </ol>
     </div>
-  )).concat(c.finalProject ? [(
+    )
+  }).concat(c.finalProject ? [(
     <div key="final" className="cs-module is-locked">
       <div className="cs-module-head">
         <span className="cs-module-num">Финал</span>
@@ -300,6 +322,22 @@ function Program({ c, user }) {
       <div className="cs-module-title">Финальный проект</div>
     </div>
   )] : [])
+}
+
+// Сколько задач курса решено — по прогрессу в аккаунте
+function CourseProgress({ c, user }) {
+  const { solved, total } = courseStats(useCourseProgress(user), c)
+  return (
+    <div className="cs-progress">
+      <div className="cs-progress-head">
+        <span>Прогресс по задачам</span>
+        <b>{solved} из {total}</b>
+      </div>
+      <div className="cs-progress-bar" role="progressbar" aria-valuemin={0} aria-valuemax={total} aria-valuenow={solved} aria-label="Решено задач">
+        <span style={{ width: `${total ? (solved / total) * 100 : 0}%` }} />
+      </div>
+    </div>
+  )
 }
 
 function CourseDetail({ c, user, onBuy }) {
@@ -324,6 +362,7 @@ function CourseDetail({ c, user, onBuy }) {
               ? <Link className="btn-primary cs-start" to={`/courses/${c.slug}/${firstLesson.id}`}>{owned ? 'Начать обучение' : 'Начать бесплатно'}</Link>
               : <a className="btn-primary cs-start" href="#free">Начать бесплатно</a>}
             {owned && <span className="cs-owned"><CheckIcon size={15} />Курс открыт полностью</span>}
+            {c.weeks && <CourseProgress c={c} user={user} />}
           </div>
 
           <div className="cs-about">
@@ -404,12 +443,15 @@ export default function CoursesPage({ user }) {
 
   const course = slug ? courseBySlug(slug) : null
   if (slug && !course) return <Navigate to="/courses" replace />
+  const videoWeek = course?.weeks?.find(w => videoId(w.week) === lessonId)?.week
   const lessonExists = lessonId && course?.weeks?.some(w => w.lessons.some(l => l.id === lessonId))
-  if (lessonId && !lessonExists) return <Navigate to={`/courses/${slug}`} replace />
+  if (lessonId && !lessonExists && !videoWeek) return <Navigate to={`/courses/${slug}`} replace />
 
   return (
     <>
-      {course && lessonId && course.weeks
+      {course && videoWeek
+        ? <CourseVideoPage course={course} week={videoWeek} user={user} onBuy={setBuying} />
+        : course && lessonId && course.weeks
         ? <CourseLessonPage course={course} lessonId={lessonId} user={user} onBuy={setBuying} />
         : course ? <CourseDetail c={course} user={user} onBuy={setBuying} /> : <CoursesList onBuy={setBuying} />}
       {buying && <Checkout key={buying} initial={buying} onClose={() => setBuying(null)} />}

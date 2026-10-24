@@ -7,7 +7,8 @@ import { loadDraft, saveDraft } from '../../data/courses'
 import { CheckIcon, ClockIcon, CrossIcon, EyeIcon, LinkIcon } from '../icons'
 
 // Задача урока: условие, примеры, редактор с запуском и автопроверка.
-// Черновик решения сохраняется в браузере, решённая задача отмечается в прогрессе.
+// Черновик решения сохраняется в браузере. Принятое решение сохраняется в аккаунте
+// (savedAnswer): после решения редактор показывает его и закрыт для правок.
 // Необязательные поля задачи (курс по алгоритмам):
 //   source: { name: 'LeetCode 344', url } — ссылка на оригинал задачи
 //   prelude — служебный код до решения студента (ListNode, TreeNode и т. п.)
@@ -84,7 +85,7 @@ function Example({ ex }) {
   )
 }
 
-export default function TaskCard({ task, index, user, solved, onSolved }) {
+export default function TaskCard({ task, index, user, solved, savedAnswer, onSolved }) {
   const [code, setCode] = useState(() => loadDraft(user, task.id) ?? task.starter ?? '')
   const [report, setReport] = useState(null)
   const [progress, setProgress] = useState(null)
@@ -92,19 +93,23 @@ export default function TaskCard({ task, index, user, solved, onSolved }) {
   const [showSolution, setShowSolution] = useState(false)
   const { running } = usePythonState()
 
+  // После решения — принятый код; у старых записей без решения — последний черновик
+  const shown = solved ? (savedAnswer ?? code) : code
+
   const change = value => {
+    if (solved) return
     setCode(value)
     saveDraft(user, task.id, value)
   }
 
   const check = async () => {
-    if (running) return
+    if (running || solved) return
     setReport(null)
     setProgress(0)
     const result = await checkSolution(code, task.tests, { onProgress: setProgress, prelude: task.prelude })
     setProgress(null)
     setReport(result)
-    if (!result.fatal && result.passed === result.total) onSolved(task.id)
+    if (!result.fatal && result.passed === result.total) onSolved(task.id, code)
     else if (!result.fatal) setFails(f => f + 1)
   }
 
@@ -138,13 +143,19 @@ export default function TaskCard({ task, index, user, solved, onSolved }) {
         </div>
       )}
 
-      <PythonRunner value={code} onChange={change} minLines={Math.max(6, code.split('\n').length + 1)} />
+      <PythonRunner value={shown} onChange={change} readOnly={solved} minLines={Math.max(6, shown.split('\n').length + 1)} />
 
       <div className="tk-actions">
-        <button type="button" className="btn-primary tk-check" onClick={check} disabled={running}>
-          {checking ? `Проверяем… тест ${progress + 1} из ${task.tests.length}` : 'Проверить решение'}
-        </button>
-        <button type="button" className="tk-reset" onClick={reset} disabled={running}>Сбросить к шаблону</button>
+        {solved ? (
+          <span className="tk-locked"><CheckIcon size={15} />Решение принято и сохранено — его можно запустить, но не изменить</span>
+        ) : (
+          <>
+            <button type="button" className="btn-primary tk-check" onClick={check} disabled={running}>
+              {checking ? `Проверяем… тест ${progress + 1} из ${task.tests.length}` : 'Проверить решение'}
+            </button>
+            <button type="button" className="tk-reset" onClick={reset} disabled={running}>Сбросить к шаблону</button>
+          </>
+        )}
         {task.solution && !solved && !showSolution && fails >= SHOW_SOLUTION_AFTER && (
           <button type="button" className="tk-reset ak-show" onClick={() => setShowSolution(true)}><EyeIcon size={15} />Показать разбор</button>
         )}

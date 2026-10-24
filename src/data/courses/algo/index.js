@@ -3,11 +3,13 @@
 // (week1.js, week2.js, week3.js). Названия должны совпадать с title в файлах недель.
 // Задачи — код на Python с автопроверкой (src/lib/python/checker.js), после решения
 // открывается разбор. tasks — число задач в уроке, если их не 5.
+// video — ссылка на видеолекцию недели (одна на неделю, embed-URL для iframe); пусто — «появится скоро».
 
 export const ALGO_WEEKS = [
   {
     week: 1,
     title: 'Фундамент и линейные структуры',
+    video: '',
     lessons: [
       { id: 'a1', day: 1, title: 'Массивы и строки, два указателя', free: true },
       { id: 'a2', day: 2, title: 'Два указателя (продолжение) и префиксные суммы', free: true },
@@ -21,6 +23,7 @@ export const ALGO_WEEKS = [
   {
     week: 2,
     title: 'Связные списки, поиск, сортировки, деревья',
+    video: '',
     lessons: [
       { id: 'a8', day: 8, title: 'Односвязный список' },
       { id: 'a9', day: 9, title: 'Связные списки: быстрый и медленный указатели', tasks: 4 },
@@ -34,6 +37,7 @@ export const ALGO_WEEKS = [
   {
     week: 3,
     title: 'Графы, деревья, greedy, heap, backtracking',
+    video: '',
     lessons: [
       { id: 'a15', day: 15, title: 'DFS: графы и деревья' },
       { id: 'a16', day: 16, title: 'BFS: графы и деревья' },

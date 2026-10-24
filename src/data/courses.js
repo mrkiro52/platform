@@ -13,7 +13,7 @@ export const COURSES_PREVIEW_USERS = ['khani', 'militaryzcl', 'lostce']
 // Купленные курсы приходят с сервера (user.courses): после оплаты админ
 // ставит галочку курса в админке. Без галочки открыты только бесплатные уроки
 
-function nick(user) {
+export function nick(user) {
   return String(user?.nickname || '').toLowerCase()
 }
 
@@ -29,20 +29,23 @@ export function canOpenLesson(user, course, lesson) {
   return !!lesson?.free || hasFullAccess(user, course.slug)
 }
 
-// Прогресс по задачам и черновики решений — в браузере, у каждого пользователя свои
-const progressKey = user => `kiro-course-progress:${nick(user)}`
-
-export function loadProgress(user) {
-  try { return JSON.parse(localStorage.getItem(progressKey(user))) || {} } catch { return {} }
+// Видеолекция недели: первая неделя открыта без покупки
+export function canOpenVideo(user, course, week) {
+  return week === 1 || hasFullAccess(user, course.slug)
 }
 
-export function markSolved(user, taskId) {
-  const progress = loadProgress(user)
-  progress[taskId] = true
-  try { localStorage.setItem(progressKey(user), JSON.stringify(progress)) } catch { /* без сохранения */ }
-  return progress
+// Порядок страниц курса: видеолекция недели, затем её уроки
+export const videoId = week => `v${week}`
+
+export function courseItems(course) {
+  return (course.weeks || []).flatMap(w => [
+    { id: videoId(w.week), week: w.week, title: `Видеолекция недели ${w.week}`, video: true },
+    ...w.lessons.map((l, i) => ({ ...l, week: w.week, num: i + 1 })),
+  ])
 }
 
+// Прогресс по задачам — src/lib/courseProgress.js (сервер + кэш в браузере).
+// Черновики решений — только в браузере, у каждого пользователя свои
 const draftKey = (user, taskId) => `kiro-course-code:${nick(user)}:${taskId}`
 
 export function loadDraft(user, taskId) {
@@ -70,7 +73,7 @@ export function rub(n) {
   return `${n.toLocaleString('ru-RU').replace(/ /g, ' ')} ₽`
 }
 
-// Урок курса: видео + теория + задачи. free — открыт без оплаты.
+// Урок курса: теория + задачи, видеолекция — одна на неделю. free — урок открыт без оплаты.
 export const COURSES = [
   {
     slug: 'python',
@@ -87,10 +90,10 @@ export const COURSES = [
     outcome: 'Самостоятельно писать простые программы: работать с данными, функциями, файлами и запросами к API.',
     format: [
       'Код пишется и запускается прямо на платформе, в браузере. Ничего устанавливать не нужно — главный барьер новичка снят в первый же день.',
-      'Каждый урок — видео, теория и 5 задач для решения.',
+      'Каждую неделю — видеолекция, а каждый урок — теория и 5 задач для решения.',
       'В конце — финальный проект.',
     ],
-    lesson: ['Видеоурок', 'Теория', '5 задач'],
+    lesson: ['Видеолекция каждую неделю', 'Теория', '5 задач к уроку'],
     free: 'Первые два урока: видео, теория и задачи',
     finalProject: true,
     weeks: PYTHON_WEEKS,
@@ -116,7 +119,7 @@ export const COURSES = [
       'Примеры на numpy запускаются прямо в браузере. Все данные синтетические и небольшие — например, цены квартир, — чтобы курс не превращался в курс по работе с датасетами.',
       'В конце — итоговый экзамен по всем темам.',
     ],
-    lesson: ['Видеоурок', 'Теория', '5 задач с проверкой ответа'],
+    lesson: ['Видеолекция каждую неделю', 'Теория', '5 задач с проверкой ответа'],
     free: 'Первые два урока: видео, теория и задачи',
     finalProject: false,
     weeks: MATH_WEEKS,
@@ -144,7 +147,7 @@ export const COURSES = [
       'После каждой решённой задачи открывается текстовый разбор с эталонным решением, сложностью и типичными ошибками.',
       'Каждую неделю — мини-контест с таймером, в конце курса — финальный контест и план повторения.',
     ],
-    lesson: ['Видео о паттерне', 'Теория', 'Задачи с разборами'],
+    lesson: ['Видеолекция каждую неделю', 'Теория', 'Задачи с разборами'],
     free: 'Первые два урока: видео, теория и задачи',
     finalProject: false,
     weeks: ALGO_WEEKS,
