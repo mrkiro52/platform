@@ -6,7 +6,7 @@ import {
 } from '../data/courses'
 import { courseStats, lessonSolved, useCourseProgress } from '../lib/courseProgress'
 import CourseLessonPage, { CourseVideoPage } from './CourseLessonPage'
-import { CheckIcon, LockIcon, PlayIcon, TicketIcon } from '../components/icons'
+import { CheckIcon, LockIcon, PlayIcon } from '../components/icons'
 
 // Раздел «Курсы»: витрина трёх мини-курсов и покупка.
 // /courses — карточки и комплекты, /courses/:slug — страница курса,
@@ -20,7 +20,6 @@ const FULL3 = COURSE_PRICE * 3
 function CampCredit({ amount, compact }) {
   return (
     <div className={`cs-credit${compact ? ' is-compact' : ''}`}>
-      <span className="cs-credit-icon" aria-hidden="true"><TicketIcon size={20} /></span>
       <div>
         <b>Деньги за курсы идут в зачёт Лагеря.</b>{' '}
         {amount
@@ -71,7 +70,7 @@ function Modal({ title, onClose, children }) {
 
 // Покупка: выбор комплекта → оформление. initial — курс, с которого начали,
 // или 'all', если сразу нажали «Купить комплект»
-function Checkout({ initial, onClose }) {
+function Checkout({ initial, user, onClose }) {
   const first = initial === 'all' ? COURSES[0] : courseBySlug(initial)
   const others = COURSES.filter(c => c.slug !== first.slug)
   const [option, setOption] = useState('three')
@@ -86,7 +85,8 @@ function Checkout({ initial, onClose }) {
   const price = priceFor(count)
   const saving = savingFor(count)
 
-  const orderText = `Здравствуйте! Хочу купить на KIRO PLATFORM: ${picked.map(c => `«${c.title}»`).join(', ')} — ${rub(price)}.`
+  const login = user?.nickname || user?.name || ''
+  const orderText = `Здравствуйте! Хочу купить на KIRO PLATFORM: ${picked.map(c => `«${c.title}»`).join(', ')} — ${rub(price)}.${login ? ` Мой логин на платформе: ${login}` : ''}`
 
   const copy = async () => {
     try { await navigator.clipboard.writeText(orderText) } catch { /* без буфера обмена */ }
@@ -112,7 +112,7 @@ function Checkout({ initial, onClose }) {
           </div>
           {saving > 0 && <div className="cs-total-save">Твоя выгода — {rub(saving)}</div>}
           <CampCredit amount={price} compact />
-          <p className="cs-note">Онлайн-оплата скоро появится прямо на платформе. Сейчас заказ оформляет менеджер: напиши ему — он пришлёт ссылку на оплату и откроет доступ.</p>
+          <p className="cs-note">Онлайн-оплата скоро появится прямо на платформе. Сейчас заказ оформляет менеджер: сначала скопируй текст заказа, затем перейди в личку к менеджеру и вставь его — менеджер пришлёт ссылку на оплату и откроет доступ к курсам на платформе.</p>
           <div className="cs-actions">
             <button type="button" className="btn-ghost" onClick={copy}>{copied ? <><CheckIcon size={15} />Текст заказа скопирован</> : 'Скопировать текст заказа'}</button>
             <a className="btn-primary" href={MANAGER_URL} target="_blank" rel="noopener noreferrer">Написать менеджеру</a>
@@ -207,6 +207,12 @@ function Bundles({ onBuy }) {
   )
 }
 
+// «Более 100 задач» — только если их правда больше ста, иначе точное число
+function tasksLabel(c) {
+  const total = (c.weeks || []).flatMap(w => w.lessons).reduce((n, l) => n + (l.tasks || 5), 0)
+  return total > 100 ? 'Более 100 задач' : `${total} задач`
+}
+
 function CourseCard({ c, onBuy }) {
   const navigate = useNavigate()
   return (
@@ -219,8 +225,7 @@ function CourseCard({ c, onBuy }) {
       <p className="cs-card-tagline">{c.tagline}</p>
       <ul className="cs-card-meta">
         {c.duration && <li>{c.duration}</li>}
-        <li>{c.lesson.join(' · ')}</li>
-        {c.finalProject && <li>Финальный проект</li>}
+        <li>{tasksLabel(c)}</li>
       </ul>
       <div className="cs-card-foot">
         <div className="cs-card-price">
@@ -454,7 +459,7 @@ export default function CoursesPage({ user }) {
         : course && lessonId && course.weeks
         ? <CourseLessonPage course={course} lessonId={lessonId} user={user} onBuy={setBuying} />
         : course ? <CourseDetail c={course} user={user} onBuy={setBuying} /> : <CoursesList onBuy={setBuying} />}
-      {buying && <Checkout key={buying} initial={buying} onClose={() => setBuying(null)} />}
+      {buying && <Checkout key={buying} initial={buying} user={user} onClose={() => setBuying(null)} />}
     </>
   )
 }

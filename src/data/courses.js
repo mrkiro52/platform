@@ -162,4 +162,4 @@ export function courseBySlug(slug) {
   return COURSES.find(c => c.slug === slug) || null
 }
 
-export const MANAGER_URL = 'https://t.me/kiro_team_manager'
+export const MANAGER_URL = 'https://t.me/kiro_it'
