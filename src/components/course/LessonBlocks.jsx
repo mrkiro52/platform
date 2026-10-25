@@ -3,10 +3,11 @@ import katex from 'katex'
 import 'katex/dist/katex.min.css'
 import PythonRunner from '../PythonRunner'
 import { plotSvg } from '../../data/programs/plot'
-import { AlertIcon, BulbIcon, InfoIcon, PlayIcon } from '../icons'
+import { AlertIcon, BulbIcon, InfoIcon, LinkIcon, PlayIcon } from '../icons'
 
 // Блоки теории урока курса (формат — src/data/courses/python/blocks.js).
-// Inline-разметка: **жирный**, `код`, формула $…$ (LaTeX, рисует KaTeX), перевод строки \n.
+// Inline-разметка: **жирный**, `код`, формула $…$ (LaTeX, рисует KaTeX), ссылка [текст](https://…),
+// перевод строки \n. Ссылки открываются в новой вкладке.
 
 export function Tex({ tex, display = false }) {
   const html = katex.renderToString(tex, { displayMode: display, throwOnError: false, strict: false, output: 'html' })
@@ -14,7 +15,8 @@ export function Tex({ tex, display = false }) {
 }
 
 // Формула идёт первой в альтернативе: звёздочки и обратные кавычки внутри LaTeX не считаются разметкой
-const INLINE = /(\$[^$\n]+\$|\*\*[^*]+\*\*|`[^`]+`)/g
+const INLINE = /(\$[^$\n]+\$|\[[^\]\n]+\]\(https?:\/\/[^)\s]+\)|\*\*[^*]+\*\*|`[^`]+`)/g
+const LINK = /^\[([^\]\n]+)\]\((https?:\/\/[^)\s]+)\)$/
 
 export function Inline({ text }) {
   const lines = String(text ?? '').split('\n')
@@ -23,6 +25,14 @@ export function Inline({ text }) {
       {li > 0 && <br />}
       {line.split(INLINE).map((part, i) => {
         if (part.startsWith('$') && part.endsWith('$') && part.length > 2) return <Tex key={i} tex={part.slice(1, -1)} />
+        const link = LINK.exec(part)
+        if (link) {
+          return (
+            <a key={i} className="ls-a" href={link[2]} target="_blank" rel="noopener noreferrer">
+              <Inline text={link[1]} /><LinkIcon size={12} />
+            </a>
+          )
+        }
         if (part.startsWith('**') && part.endsWith('**') && part.length > 4) return <strong key={i}><Inline text={part.slice(2, -2)} /></strong>
         if (part.startsWith('`') && part.endsWith('`') && part.length > 2) return <code key={i} className="ls-code">{part.slice(1, -1)}</code>
         return part

@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import LessonBlocks from '../components/course/LessonBlocks'
 import TaskCard from '../components/course/TaskCard'
 import AnswerTaskCard from '../components/course/AnswerTaskCard'
-import { LockIcon, PencilIcon, PlayIcon } from '../components/icons'
+import { ChevronRightIcon, LockIcon, PencilIcon, PlayIcon } from '../components/icons'
 import { canOpenLesson, canOpenVideo, courseItems, priceFor, rub, savingFor, COURSE_PRICE } from '../data/courses'
 import { lessonSolved, markSolved, useCourseProgress } from '../lib/courseProgress'
 
@@ -84,6 +84,44 @@ function Pager({ course, id }) {
   )
 }
 
+function plural(n, one, few, many) {
+  const m10 = n % 10, m100 = n % 100
+  if (m10 === 1 && m100 !== 11) return one
+  if (m10 >= 2 && m10 <= 4 && (m100 < 12 || m100 > 14)) return few
+  return many
+}
+
+// Содержание урока: разделы теории и задачи — колонкой, по клику плавный переход
+function LessonToc({ sections, solved, total }) {
+  const go = id => e => {
+    e.preventDefault()
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
+  }
+  return (
+    <nav className="ls-toc" aria-label="Содержание урока">
+      <div className="ls-toc-head">Содержание урока</div>
+      <ol className="ls-toc-list">
+        {sections.map((s, i) => (
+          <li key={s.id}>
+            <a href={`#${s.id}`} onClick={go(s.id)}>
+              <span className="ls-toc-num">{i + 1}</span>
+              <span className="ls-toc-title">{s.title}</span>
+              <ChevronRightIcon size={16} className="ls-toc-arrow" />
+            </a>
+          </li>
+        ))}
+        <li className="is-tasks">
+          <a href="#tasks" onClick={go('tasks')}>
+            <span className="ls-toc-num"><PencilIcon size={14} /></span>
+            <span className="ls-toc-title">Задачи</span>
+            <span className={`ls-toc-progress${solved === total ? ' is-done' : ''}`}>{solved} из {total}</span>
+          </a>
+        </li>
+      </ol>
+    </nav>
+  )
+}
+
 function scrollTop() {
   window.scrollTo(0, 0)
   document.querySelector('.app-page')?.scrollTo?.(0, 0)
@@ -148,7 +186,7 @@ export default function CourseLessonPage({ course, lessonId, user, onBuy }) {
         {lesson && <p className="ls-summary">{lesson.summary}</p>}
         {lesson && (
           <div className="ls-meta">
-            <span>{lesson.sections.length} разделов теории</span>
+            <span>{lesson.sections.length} {plural(lesson.sections.length, 'раздел', 'раздела', 'разделов')} теории</span>
             <span className={solvedHere === lesson.tasks.length ? 'is-done' : ''}>Задачи: {solvedHere} из {lesson.tasks.length}</span>
           </div>
         )}
@@ -160,16 +198,7 @@ export default function CourseLessonPage({ course, lessonId, user, onBuy }) {
 
       {lesson && (
         <>
-          <nav className="ls-toc" aria-label="Содержание урока">
-            {lesson.sections.map((s, i) => (
-              <a key={s.id} href={`#${s.id}`} onClick={e => { e.preventDefault(); document.getElementById(s.id)?.scrollIntoView({ behavior: 'smooth' }) }}>
-                <span>{i + 1}</span>{s.title}
-              </a>
-            ))}
-            <a href="#tasks" className="is-tasks" onClick={e => { e.preventDefault(); document.getElementById('tasks')?.scrollIntoView({ behavior: 'smooth' }) }}>
-              <span><PencilIcon size={12} /></span>Задачи
-            </a>
-          </nav>
+          <LessonToc sections={lesson.sections} solved={solvedHere} total={lesson.tasks.length} />
 
           {lesson.sections.map((s, i) => (
             <section key={s.id} id={s.id} className="ls-section">

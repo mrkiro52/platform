@@ -5551,11 +5551,45 @@ a.cs-lesson:hover { border-color: color-mix(in srgb, var(--c) 60%, transparent);
 .ls-video-title { font-family: var(--font-syne); font-size: 18px; font-weight: 700; color: var(--text-primary); margin-top: 6px; }
 .ls-video-sub { font-size: 13.5px; color: var(--text-tertiary); }
 
-.ls-toc { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
-.ls-toc a { display: inline-flex; align-items: center; gap: 8px; font-size: 13.5px; font-weight: 600; color: var(--text-secondary); text-decoration: none; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-pill); padding: 6px 13px 6px 6px; transition: border-color .15s, color .15s; }
-.ls-toc a:hover { border-color: color-mix(in srgb, var(--c) 60%, transparent); color: var(--text-primary); }
-.ls-toc a span { display: grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; font-size: 11.5px; font-weight: 800; color: var(--c); background: color-mix(in srgb, var(--c) 14%, transparent); }
-.ls-toc a.is-tasks { color: var(--accent-lime); border-color: rgba(255,214,10,0.4); }
+.ls-toc { margin-bottom: 22px; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); overflow: hidden; }
+.ls-toc-head { padding: 16px 20px 8px; font-size: 11.5px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-tertiary); }
+.ls-toc-list { list-style: none; margin: 0; padding: 0 8px 8px; display: flex; flex-direction: column; gap: 2px; counter-reset: none; }
+.ls-toc-list a {
+  display: grid; grid-template-columns: 30px minmax(0, 1fr) auto; align-items: center; gap: 14px;
+  padding: 9px 12px; border-radius: var(--radius-md); text-decoration: none;
+  color: var(--text-secondary); font-size: 15px; font-weight: 600; line-height: 1.35;
+  transition: background .15s, color .15s;
+}
+.ls-toc-list a:hover, .ls-toc-list a:focus-visible { background: var(--bg-tertiary); color: var(--text-primary); }
+.ls-toc-num {
+  display: grid; place-items: center; width: 30px; height: 30px; border-radius: 9px;
+  font-size: 13px; font-weight: 800; font-variant-numeric: tabular-nums;
+  color: var(--c); background: color-mix(in srgb, var(--c) 14%, transparent);
+}
+.ls-toc-arrow { color: var(--text-tertiary); opacity: 0; transform: translateX(-4px); transition: opacity .15s, transform .15s; }
+.ls-toc-list a:hover .ls-toc-arrow, .ls-toc-list a:focus-visible .ls-toc-arrow { opacity: 1; transform: none; color: var(--c); }
+.ls-toc-list .is-tasks { margin-top: 6px; padding-top: 8px; border-top: 1px solid var(--border-color); }
+.ls-toc-list .is-tasks a { color: var(--text-primary); }
+.ls-toc-list .is-tasks .ls-toc-num { color: var(--accent-lime); background: var(--accent-dim); }
+.ls-toc-progress {
+  font-size: 12.5px; font-weight: 800; font-variant-numeric: tabular-nums; white-space: nowrap;
+  color: var(--text-tertiary); background: var(--bg-tertiary); border: 1px solid var(--border-color);
+  border-radius: var(--radius-pill); padding: 3px 10px;
+}
+.ls-toc-progress.is-done { color: var(--success); background: var(--success-dim); border-color: rgba(63,185,80,0.4); }
+@media (max-width: 768px) {
+  .ls-toc-head { padding: 14px 16px 6px; }
+  .ls-toc-list { padding: 0 6px 6px; }
+  .ls-toc-list a { gap: 12px; padding: 9px 10px; font-size: 14.5px; }
+}
+
+/* Ссылка в тексте урока: цвет курса, тонкое подчёркивание, значок внешней ссылки */
+.ls-a {
+  color: var(--c); font-weight: 600; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px;
+  text-decoration-color: color-mix(in srgb, var(--c) 45%, transparent); transition: text-decoration-color .15s;
+}
+.ls-a:hover { text-decoration-color: currentColor; }
+.ls-a svg { display: inline-block; vertical-align: -1px; margin-left: 3px; }
 
 .ls-section { padding: 24px 28px; margin-bottom: 16px; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); scroll-margin-top: 80px; }
 .ls-section-title { display: flex; align-items: center; gap: 12px; margin: 0 0 14px; font-family: var(--font-syne); font-size: 20px; font-weight: 700; color: var(--text-primary); }

@@ -24,4 +24,5 @@ export const AlertIcon = p => <Svg {...p}><path d="M12 3L2 20h20z" /><path d="M1
 export const EyeIcon = p => <Svg {...p}><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z" /><circle cx="12" cy="12" r="3" /></Svg>
 export const ResetIcon = p => <Svg {...p}><path d="M4 4v6h6" /><path d="M5.5 15a7.5 7.5 0 1 0 1.3-8.3L4 10" /></Svg>
 export const ClockIcon = p => <Svg {...p}><circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 2" /></Svg>
+export const ChevronRightIcon = p => <Svg {...p}><path d="M9 6l6 6-6 6" /></Svg>
 export const LinkIcon = p => <Svg {...p}><path d="M14 5h5v5" /><path d="M19 5l-8 8" /><path d="M18 14v4a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h4" /></Svg>
