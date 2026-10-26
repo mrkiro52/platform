@@ -693,4 +693,21 @@ print("линейн.:", lin.predict(X_new).round(2))`, out: 'истина: [ 0.9
       terms: [],
     },
   ],
+  assignment: {
+    time: 'около 4–6 часов',
+    format: 'Jupyter-ноутбук',
+    situation: [
+      'Домашнее задание к главе — готовый Jupyter-ноутбук. Реши его сначала на **синтетических данных**, затем на **реальном датасете**.',
+    ],
+    parts: [
+      {
+        title: 'Ноутбук',
+        blocks: [
+          { t: 'reading', label: 'Файл с заданием', items: [
+            { title: 'ML_HW_KNN.ipynb — домашнее задание по методу k ближайших соседей', url: 'https://s3.regru.cloud/kirocamp/ML_HW_KNN.ipynb' },
+          ] },
+        ],
+      },
+    ],
+  },
 }
