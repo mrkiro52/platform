@@ -142,31 +142,10 @@ export const DIRECTIONS = {
     dative: 'информационной безопасности',
     goal: 'Путь к офферу intern / junior специалиста по информационной безопасности',
     practice: 'практика — лабы PortSwigger',
-    // Блок «С чего начать» — показывается в самом начале программы и каждой главы.
-    start: {
-      title: 'С чего начать',
-      blocks: [
-        { t: 'reading', label: 'Сайт и программа', items: [
-          { title: 'PortSwigger Web Security Academy — заведи аккаунт, на нём делаем лабы', url: 'https://portswigger.net/web-security' },
-          { title: 'Burp Suite Community Edition — скачай и установи', url: 'https://portswigger.net/burp/communitydownload' },
-        ] },
-        { t: 'note', text: '**Первый блок практики — 18 лаб по SQL-инъекциям.** Читай теорию PortSwigger по порядку: она сама подсказывает, в какой момент переходить к какой лабе.' },
-        { t: 'reading', label: 'SQL-инъекции', items: [
-          { title: 'Теория: SQL injection', url: 'https://portswigger.net/web-security/sql-injection' },
-          { title: 'Все 18 лаб по SQL-инъекциям', url: 'https://portswigger.net/web-security/all-labs#sql-injection' },
-        ] },
-        { t: 'h4', text: 'Как мы работаем' },
-        { t: 'ol', items: [
-          'Изучаешь теорию из главы ниже — главное не прочитать, а понять.',
-          'Параллельно проходишь лабы на PortSwigger.',
-          'Через пару дней — общий созвон в формате полусобеседования: задаём вопросы по теории, поправляем и объясняем то, что осталось непонятным.',
-          'После созвона — следующий пакет теории и лаб.',
-        ] },
-        { t: 'small', text: 'Вопросы по Burp Suite и лабам — Глеб, @kom1ssar4ik в Telegram.' },
-      ],
-    },
     chapters: [
       { num: 1, title: 'Фундамент, стандарты и регуляторика', sections: 5, load: () => import('./security-1'), quiz: () => import('./security-1-quiz') },
+      { num: 2, title: 'С чего начать: PortSwigger и первые лабы', sections: 1, load: () => import('./security-2') },
+      { num: 3, title: 'CORS, XSS, CSRF', sections: 5, load: () => import('./security-3') },
     ],
   },
 }
