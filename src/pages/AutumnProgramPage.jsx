@@ -77,12 +77,25 @@ function taskLabel(dir, ch, hw) {
   if (kind === 'quiz') return hw ? `сдано · ${HW_STATUS[hw.status] || hw.status}` : 'вопросы · сдаётся на платформе'
   if (kind === 'trainer') return ch.taskHint || 'задачи SQL-тренажёра'
   if (kind === 'file') return 'файлом в личные сообщения'
+  if (kind === 'link') return 'ссылкой в личные сообщения'
   if (kind === 'soon') return 'скоро появится'
   return 'выполняется самостоятельно'
 }
 
 // Как сдавать задание, которое не сдаётся на платформе
 function SubmitPanel({ kind }) {
+  if (kind === 'link') {
+    return (
+      <div className="prg-submit">
+        <div className="prg-submit-label">Как сдать</div>
+        <p>
+          Опубликуй проект в GitHub, Notion или Confluence и отправь ссылку в личные сообщения в Telegram:{' '}
+          <a href={PROGRAM_CONTACT.url} target="_blank" rel="noopener noreferrer">{PROGRAM_CONTACT.text}</a>.
+          Ссылка должна открываться без регистрации. В сообщении укажи свой ник на платформе, номер главы и название выбранной системы.
+        </p>
+      </div>
+    )
+  }
   if (kind === 'file') {
     return (
       <div className="prg-submit">
@@ -444,7 +457,7 @@ function Task({ dir, chapterRef: ref, user }) {
 
   const count = quiz ? (quiz.variants ? `${quiz.questions.filter(q => !q.python).length} или ${quiz.questions.length}` : quiz.questions.length) : 0
   const kind = taskKind(dir, meta, chapter)
-  const KIND_CHIP = { trainer: 'Проверяется в тренажёре', file: 'Сдаётся файлом в Telegram', self: 'Сдавать на платформе не нужно', soon: 'Задание скоро появится' }
+  const KIND_CHIP = { trainer: 'Проверяется в тренажёре', file: 'Сдаётся файлом в Telegram', link: 'Сдаётся ссылкой в Telegram', self: 'Сдавать на платформе не нужно', soon: 'Задание скоро появится' }
 
   return (
     <section className="page active prg-page">
@@ -469,7 +482,7 @@ function Task({ dir, chapterRef: ref, user }) {
               ? <>
                   <SubmitPanel kind={kind} />
                   <Assignment a={chapter.assignment} />
-                  {kind === 'file' && <SubmitPanel kind={kind} />}
+                  {(kind === 'file' || kind === 'link') && <SubmitPanel kind={kind} />}
                 </>
               : <div className="prg-empty">Задание к этой главе скоро появится.</div>}
         </div>

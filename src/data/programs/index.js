@@ -50,6 +50,7 @@ export const DIRECTIONS = {
       { num: 10, title: 'Git и документация как код', sections: 4, load: () => import('./system-10'), quiz: () => import('./system-10-quiz') },
       { num: 11, title: 'Работа в команде', sections: 5, load: () => import('./system-11'), quiz: () => import('./system-11-quiz') },
       { num: 12, title: 'Безопасность и данные', sections: 3, load: () => import('./system-12'), quiz: () => import('./system-12-quiz') },
+      { num: 13, title: 'Портфолио: сквозной проект', sections: 7, load: () => import('./system-13'), submit: 'link' },
     ],
   },
   business: {
@@ -153,7 +154,7 @@ export const DIRECTIONS = {
 
 // Как сдаётся задание главы: quiz — вопросы на платформе, trainer — задачи
 // тренажёра, file — файлом в личные сообщения, self — сдавать не нужно,
-// soon — задание к главе ещё не опубликовано
+// link — ссылкой на проект в личные сообщения, soon — задание к главе ещё не опубликовано
 // Глава с выбором трека: сначала разделы трека, затем общие разделы базовой главы.
 // Номера общих разделов продолжают нумерацию трека, поэтому в их заголовках h3 номеров нет.
 export function combineTrack(base, track) {
