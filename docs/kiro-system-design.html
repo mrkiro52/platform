@@ -1,0 +1,310 @@
+<title>Архитектура KIRO</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Onest:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: одна колонка технического документа, таблицы и схемы — во всю ширину колонки с прокруткой внутри */
+:root {
+  --bg: #F6F7F9;
+  --surface: #FFFFFF;
+  --fg: #16181D;
+  --muted: #5B6170;
+  --line: #DFE2E8;
+  --accent: #FFD60A;
+  --accent-ink: #6B5800;
+  --ok: #1E8E4E;
+  --warn: #B26A00;
+  --bad: #C2362F;
+  --f-display: "Unbounded", "Onest", system-ui, sans-serif;
+  --f-body: "Onest", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #111317; --surface: #191C22; --fg: #ECEEF2; --muted: #9AA1AE; --line: #2A2F38;
+    --accent: #FFD60A; --accent-ink: #FFD60A; --ok: #4CC47F; --warn: #F0A63A; --bad: #F06A62;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #111317; --surface: #191C22; --fg: #ECEEF2; --muted: #9AA1AE; --line: #2A2F38;
+  --accent: #FFD60A; --accent-ink: #FFD60A; --ok: #4CC47F; --warn: #F0A63A; --bad: #F06A62;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--fg); font: 16px/1.6 var(--f-body); padding-inline: 16px; padding-block: 40px 80px; }
+main { max-width: 920px; margin: 0 auto; display: flex; flex-direction: column; gap: 56px; }
+header { display: flex; flex-direction: column; gap: 12px; }
+.eyebrow { font: 500 12px/1 var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+h1 { font: 700 clamp(28px, 5vw, 44px)/1.1 var(--f-display); margin: 0; text-wrap: balance; }
+h1 mark { background: var(--accent); color: #16181D; padding: 0 .15em; border-radius: 4px; }
+h2 { font: 700 22px/1.25 var(--f-display); margin: 0; text-wrap: balance; }
+h3 { font: 600 17px/1.3 var(--f-body); margin: 0; }
+p { margin: 0; max-width: 68ch; }
+.lead { font-size: 18px; color: var(--muted); max-width: 64ch; }
+section { display: flex; flex-direction: column; gap: 18px; }
+.sec-head { display: flex; flex-direction: column; gap: 6px; }
+.sec-head .eyebrow { color: var(--accent-ink); }
+code, .mono { font-family: var(--f-mono); font-size: .88em; }
+code { background: color-mix(in srgb, var(--fg) 7%, transparent); padding: .1em .35em; border-radius: 4px; }
+.diagram { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 20px; overflow-x: auto; }
+.diagram pre { margin: 0; }
+.scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; min-width: 620px; font-size: 14.5px; }
+th, td { text-align: left; vertical-align: top; padding: 10px 14px; border-bottom: 1px solid var(--line); }
+th { font: 500 12px/1.3 var(--f-mono); text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+tr:last-child td { border-bottom: 0; }
+td.num { font-variant-numeric: tabular-nums; font-family: var(--f-mono); font-size: 13.5px; white-space: nowrap; }
+.pill { display: inline-block; font: 500 12px/1 var(--f-mono); padding: 4px 8px; border-radius: 999px; white-space: nowrap; }
+.pill.ok { color: var(--ok); background: color-mix(in srgb, var(--ok) 14%, transparent); }
+.pill.warn { color: var(--warn); background: color-mix(in srgb, var(--warn) 14%, transparent); }
+.pill.bad { color: var(--bad); background: color-mix(in srgb, var(--bad) 14%, transparent); }
+.server { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+.server > div { background: var(--surface); padding: 16px; display: flex; flex-direction: column; gap: 4px; }
+.server b { font: 700 24px/1.1 var(--f-display); }
+.server span { color: var(--muted); font-size: 14px; }
+.ram { display: flex; flex-direction: column; gap: 8px; }
+.bar { display: flex; height: 34px; border-radius: 8px; overflow: hidden; border: 1px solid var(--line); background: var(--surface); }
+.bar > div { display: flex; align-items: center; justify-content: center; font: 500 11.5px/1 var(--f-mono); color: #16181D; white-space: nowrap; overflow: hidden; min-width: 0; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 13.5px; color: var(--muted); }
+.legend i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 6px; vertical-align: -1px; }
+.verdict { background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--accent); border-radius: 10px; padding: 20px 22px; display: flex; flex-direction: column; gap: 10px; }
+.verdict h3 { font: 700 18px/1.3 var(--f-display); }
+ul, ol { margin: 0; padding-left: 1.2em; display: flex; flex-direction: column; gap: 6px; max-width: 72ch; }
+.cols { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+.cols > div { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.note { font-size: 14px; color: var(--muted); }
+a { color: inherit; text-decoration-color: var(--accent); text-underline-offset: 3px; }
+@media (max-width: 640px) {
+  .server, .cols { grid-template-columns: 1fr; }
+  body { padding-block: 28px 60px; }
+}
+</style>
+
+<main>
+  <header>
+    <span class="eyebrow">kiroplatform.ru · системный дизайн · октябрь 2026</span>
+    <h1>Как устроен KIRO и что нужно для <mark>1000</mark> активных учеников</h1>
+    <p class="lead">Разбор текущей архитектуры: из чего состоит платформа, где лежат данные, хватает ли сервера. В конце — целевая схема под 1000 активных пользователей и план, как к ней прийти.</p>
+  </header>
+
+  <section>
+    <div class="sec-head"><span class="eyebrow">1 · Сейчас</span><h2>Текущая архитектура</h2></div>
+    <p>Классический монолит на одном сервере. Фронтенд — статические файлы, бэкенд — один процесс Node.js, база — один файл SQLite рядом с ним. Тяжёлое вынесено наружу: Python у учеников выполняется прямо в браузере, картинки лежат в S3, видео — на YouTube.</p>
+    <div class="diagram"><pre class="mermaid">
+flowchart TB
+  U["Ученик / админ<br/>браузер"]
+  subgraph BR["В браузере"]
+    SPA["React SPA<br/>Vite, react-router"]
+    PY["Python в Web Worker<br/>Pyodide"]
+  end
+  subgraph VPS["VPS 92.242.61.214 · 1 ядро · 1 ГБ · 10 ГБ NVMe"]
+    NG["nginx<br/>HTTPS, раздача фронтенда,<br/>прокси /api и /admin"]
+    FE[("/var/www/kiro-frontend<br/>собранный фронтенд")]
+    subgraph PM2["pm2"]
+      API["kiro-backend<br/>Node 20 + Express<br/>порт 3001"]
+      RUN["SQL-раннер<br/>дочерний процесс"]
+    end
+    DB[("kiro.db<br/>SQLite, WAL")]
+    SQLDB[("sql-trainer.db<br/>учебная база, 4 МБ")]
+    ADM["Админка<br/>backend/admin"]
+  end
+  S3[("S3 reg.ru<br/>бакет kirocamp<br/>аватарки, фото постов")]
+  CDN["jsDelivr CDN<br/>файлы Pyodide"]
+  YT["YouTube / Telegram<br/>записи созвонов"]
+  GH["GitHub<br/>репозиторий + Actions"]
+
+  U --> SPA
+  SPA -->|HTTPS| NG
+  NG --> FE
+  NG -->|/api, /admin| API
+  API --> DB
+  API --> ADM
+  API -->|IPC| RUN
+  RUN --> SQLDB
+  API -->|загрузка файлов| S3
+  SPA -->|картинки| S3
+  PY --> CDN
+  SPA --> YT
+  GH -->|push в main: сборка и scp фронтенда| FE
+  GH -.->|бэкенд вручную: ssh, git pull, pm2 reload| API
+</pre></div>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="eyebrow">2 · Компоненты</span><h2>Где что лежит</h2></div>
+    <div class="scroll"><table>
+      <thead><tr><th>Компонент</th><th>Где</th><th>Что делает</th></tr></thead>
+      <tbody>
+        <tr><td>Фронтенд</td><td><code>src/</code> → сборка в <code>/var/www/kiro-frontend</code></td><td>Всё, что видит ученик: лагерь, курсы, тренажёры, стена, сообщения. React 18 + Vite.</td></tr>
+        <tr><td>API</td><td><code>backend/server.js</code>, <code>backend/src/routes/</code></td><td>17 групп маршрутов: вход, пользователи, ДЗ, посты, сообщения, уведомления, аналитика, задачи админов, SQL-тренажёр. Вход по JWT.</td></tr>
+        <tr><td>Основная база</td><td><code>~/platform/backend/data/kiro.db</code></td><td>Пользователи, ДЗ и проверки, посты, сообщения, уведомления, аналитика, прогресс SQL-тренажёра. Один файл SQLite в режиме WAL.</td></tr>
+        <tr><td>Админка</td><td><code>backend/admin/</code>, адрес <code>/admin</code></td><td>Отдаётся тем же процессом. Четыре роли: главный админ, проверка ДЗ, помощник, продюсер.</td></tr>
+        <tr><td>SQL-тренажёр</td><td><code>backend/src/sqlTrainer/</code>, база <code>data/sql-trainer.db</code></td><td>Отдельный дочерний процесс: запросы только на чтение, таймаут 3 с, потолок памяти 160 МБ.</td></tr>
+        <tr><td>Python-тренажёр</td><td>браузер ученика, Pyodide с jsDelivr</td><td>Код выполняется у ученика, сервер не нагружает.</td></tr>
+        <tr><td>Файлы</td><td>S3 reg.ru, бакет <code>kirocamp</code></td><td>Аватарки и картинки постов, до 5 МБ. На диск сервера не пишутся.</td></tr>
+        <tr><td>Учебный контент</td><td><code>src/data/</code>, <code>src/theory/</code></td><td>Материалы недель, теория, расписание созвонов зашиты во фронтенд, меняются коммитом.</td></tr>
+        <tr><td>Секреты</td><td><code>backend/.env</code> на сервере</td><td>Пароли админов, JWT-секрет, ключи S3. В git не хранятся.</td></tr>
+        <tr><td>Деплой</td><td><code>.github/workflows/deploy.yml</code></td><td>Фронтенд — автоматически при push в main. Бэкенд — вручную по SSH.</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="eyebrow">3 · Сервер</span><h2>Что у нас за машина</h2></div>
+    <div class="server">
+      <div><b>1 ядро</b><span>CPU 2,8 ГГц</span></div>
+      <div><b>1 ГБ</b><span>DDR4, swap не было</span></div>
+      <div><b>10 ГБ</b><span>SSD NVMe, занято 4,6 ГБ</span></div>
+    </div>
+    <div class="ram">
+      <h3>Куда уходит 1 ГБ памяти в худший момент</h3>
+      <div class="bar" role="img" aria-label="Распределение памяти">
+        <div style="flex: 220; background: #C9CED8;">система ~220</div>
+        <div style="flex: 20; background: #9FB4E0;"></div>
+        <div style="flex: 150; background: #7FC8A9;">backend ~150</div>
+        <div style="flex: 160; background: #F3B562;">SQL-раннер до 160</div>
+        <div style="flex: 120; background: #E59A9A;">npm/git ~120</div>
+        <div style="flex: 286; background: var(--accent);">запас ~290</div>
+      </div>
+      <div class="legend">
+        <span><i style="background:#C9CED8"></i>ядро, systemd, ssh</span>
+        <span><i style="background:#9FB4E0"></i>nginx ~20</span>
+        <span><i style="background:#7FC8A9"></i>Node.js сейчас 70, под нагрузкой до 150</span>
+        <span><i style="background:#F3B562"></i>тяжёлый SQL-запрос</span>
+        <span><i style="background:#E59A9A"></i>git pull, npm install при деплое</span>
+        <span><i style="background:var(--accent)"></i>кэш диска и всё остальное</span>
+      </div>
+      <p class="note">Значения в мегабайтах, оценка. Запас в 290 МБ на бумаге есть, но любой всплеск (до сегодняшнего фикса SQL-раннер мог занять до 512 МБ) съедает его целиком. Без swap Linux в такой момент часто не убивает процесс, а зависает — это и случилось сегодня.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="eyebrow">4 · Нагрузка</span><h2>Сколько запросов дают 1000 активных учеников</h2></div>
+    <p>1000 активных в день — это не 1000 одновременно. На обучающих платформах на пике онлайн обычно 10–20% дневной аудитории: 100–200 человек, а во время группового созвона или дедлайна ДЗ — до 300.</p>
+    <div class="scroll"><table>
+      <thead><tr><th>Что шлёт открытая вкладка</th><th>Как часто</th><th>При 300 онлайн</th></tr></thead>
+      <tbody>
+        <tr><td>Значки уведомлений и сообщений</td><td class="num">раз в 30 с</td><td class="num">10 запр/с</td></tr>
+        <tr><td>Проверка токена</td><td class="num">раз в 60 с</td><td class="num">5 запр/с</td></tr>
+        <tr><td>Отправка аналитики</td><td class="num">раз в 30 с</td><td class="num">10 запр/с</td></tr>
+        <tr><td>Открытый чат</td><td class="num">раз в 10–15 с</td><td class="num">~5 запр/с</td></tr>
+        <tr><td>Переходы по страницам, ДЗ, тренажёры</td><td class="num">по действиям</td><td class="num">10–20 запр/с</td></tr>
+        <tr><td><b>Итого на пике</b></td><td></td><td class="num"><b>40–50 запр/с</b></td></tr>
+      </tbody>
+    </table></div>
+    <p>Express с SQLite на одном ядре держит 1–3 тысячи простых запросов в секунду. По процессору запас в десятки раз, нагрузка тут не проблема. Проблемы в другом: в памяти и в том, что всё стоит на одной машине без страховки.</p>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="eyebrow">5 · Вердикт</span><h2>Нужен ли сервер мощнее</h2></div>
+    <div class="verdict">
+      <h3>Да, но небольшой шаг: 2 ядра, 2–4 ГБ памяти, 20–30 ГБ диска</h3>
+      <p>Это вертикальное масштабирование в самом дешёвом варианте, и для 1000 активных его хватит с запасом. Горизонтальное масштабирование (несколько серверов, балансировщик, отдельная база) на таком объёме не нужно: оно усложнит систему сильнее, чем поможет.</p>
+    </div>
+    <div class="scroll"><table>
+      <thead><tr><th>Ресурс</th><th>Сейчас</th><th>Риск</th><th>Почему</th></tr></thead>
+      <tbody>
+        <tr><td>Память</td><td class="num">1 ГБ</td><td><span class="pill bad">главный</span></td><td>Сегодняшнее зависание. Swap спасает от зависания, но не от тормозов. 2 ГБ — минимум, 4 ГБ — спокойный запас.</td></tr>
+        <tr><td>Процессор</td><td class="num">1 ядро</td><td><span class="pill warn">средний</span></td><td>Средней нагрузки хватает. Но одно ядро делят nginx, API и SQL-раннер: тяжёлый SQL-запрос 3 секунды занимает это ядро, и в это время тормозит весь сайт. Со вторым ядром раннер и API не мешают друг другу.</td></tr>
+        <tr><td>Диск</td><td class="num">10 ГБ</td><td><span class="pill warn">средний</span></td><td>Занято 4,6 ГБ. Логи pm2 растут без ограничений, бэкапы базы лежат там же. Сам диск быстрый, NVMe.</td></tr>
+        <tr><td>Сеть и HTTPS</td><td class="num">—</td><td><span class="pill ok">низкий</span></td><td>Видео и картинки уже отдаются не с нашего сервера.</td></tr>
+        <tr><td>База SQLite</td><td class="num">152 КБ</td><td><span class="pill ok">низкий</span></td><td>Для одного сервера и сотен онлайн SQLite с WAL — правильный выбор. Переход на PostgreSQL понадобится только при втором сервере приложения.</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="eyebrow">6 · Цель</span><h2>Целевая схема под 1000 активных пользователей</h2></div>
+    <p>Остаёмся на одном сервере, но делаем его надёжным: CDN перед ним, изоляция тяжёлых задач, непрерывный бэкап базы, мониторинг и автодеплой бэкенда. Новое на схеме отмечено звёздочкой.</p>
+    <div class="diagram"><pre class="mermaid">
+flowchart TB
+  U["Ученики и админы<br/>до 300 одновременно"]
+
+  subgraph EDGE["Край сети"]
+    CF["Cloudflare ★<br/>DNS, HTTPS, кэш статики,<br/>защита от DDoS"]
+  end
+
+  subgraph VPS["VPS · 2 ядра · 4 ГБ · 30 ГБ NVMe · swap 2 ГБ ★"]
+    NG["nginx<br/>статика с gzip/brotli ★,<br/>лимиты запросов ★, прокси"]
+    FE[("Фронтенд<br/>статические файлы")]
+    subgraph APP["pm2"]
+      API["API: Node 20 → 22 ★<br/>Express, JWT"]
+      SSE["Канал событий SSE ★<br/>сообщения и уведомления<br/>вместо опроса раз в 10–30 с"]
+      RUN["SQL-раннер<br/>лимит памяти через systemd ★"]
+    end
+    DB[("kiro.db<br/>SQLite WAL")]
+    SQLDB[("sql-trainer.db<br/>только чтение")]
+    LS["Litestream ★<br/>непрерывная копия базы"]
+    LOG["pm2-logrotate ★"]
+  end
+
+  subgraph CLOUD["Облако"]
+    S3[("S3 reg.ru<br/>аватарки, фото")]
+    BK[("S3: бэкапы базы ★<br/>с точностью до секунд")]
+    YT["YouTube<br/>записи созвонов"]
+    PYO["jsDelivr<br/>Pyodide"]
+  end
+
+  subgraph OPS["Наблюдение и деплой"]
+    UR["UptimeRobot ★<br/>проверка /health раз в минуту"]
+    TG["Telegram-бот ★<br/>алерты админу"]
+    GH["GitHub Actions<br/>фронтенд + бэкенд ★<br/>с проверкой /health"]
+  end
+
+  U --> CF --> NG
+  NG --> FE
+  NG -->|/api, /admin| API
+  NG -->|/api/events| SSE
+  API --> DB
+  SSE --> DB
+  API -->|IPC| RUN --> SQLDB
+  DB --> LS --> BK
+  API --> S3
+  U -.-> S3
+  U -.-> YT
+  U -.-> PYO
+  UR -->|HTTPS| CF
+  UR --> TG
+  GH -->|ssh: сборка, git pull,<br/>npm ci, pm2 reload| VPS
+</pre></div>
+
+    <div class="cols">
+      <div>
+        <h3>Что даёт каждый блок</h3>
+        <ul>
+          <li><b>Cloudflare</b> — бесплатно. Отдаёт фронтенд из своего кэша, прячет IP сервера, переживает всплески трафика.</li>
+          <li><b>Swap и 4 ГБ памяти</b> — сервер больше не зависает целиком при всплеске.</li>
+          <li><b>Лимит памяти через systemd</b> для SQL-раннера — ядро ОС само ограничивает процесс, без опроса раз в 50 мс.</li>
+          <li><b>SSE</b> — сервер сам присылает новые сообщения. Опроса становится в 3–5 раз меньше, чаты обновляются сразу.</li>
+          <li><b>Litestream</b> — если диск сервера умрёт, база восстанавливается из S3 с потерей нескольких секунд, а не всего.</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Чего сознательно нет</h3>
+        <ul>
+          <li><b>Второго сервера и балансировщика</b> — при 50 запросах в секунду они не нужны.</li>
+          <li><b>PostgreSQL</b> — SQLite справится. Переезд имеет смысл вместе со вторым сервером.</li>
+          <li><b>Redis, очередей, Kubernetes, микросервисов</b> — их надо обслуживать, а польза на таком объёме нулевая.</li>
+        </ul>
+        <p class="note">Порог, после которого это понадобится: около 5–10 тысяч активных в день или требование работать без простоя при падении сервера.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="eyebrow">7 · План</span><h2>Порядок работ</h2></div>
+    <p>Шаги отсортированы по соотношению пользы и усилий: первые закрывают сегодняшний риск.</p>
+    <div class="scroll"><table>
+      <thead><tr><th>Шаг</th><th>Зачем</th><th>Усилия</th></tr></thead>
+      <tbody>
+        <tr><td>1. Swap 2 ГБ, pm2-logrotate, постоянный журнал systemd</td><td>Сервер не зависает, диск не забивается логами, причины сбоев сохраняются</td><td class="num">15 минут</td></tr>
+        <tr><td>2. UptimeRobot + алерты в Telegram</td><td>Узнавать о падении раньше учеников</td><td class="num">15 минут</td></tr>
+        <tr><td>3. Тариф 2 ядра / 4 ГБ / 30 ГБ</td><td>Запас по памяти, раннер не тормозит сайт</td><td class="num">смена тарифа</td></tr>
+        <tr><td>4. Бэкап базы: Litestream в S3</td><td>Сейчас база существует в одном экземпляре на одном диске</td><td class="num">1 час</td></tr>
+        <tr><td>5. Автодеплой бэкенда в GitHub Actions</td><td>Не забывать обновлять бэкенд; проверка /health после выкладки</td><td class="num">1 час</td></tr>
+        <tr><td>6. Cloudflare перед сервером</td><td>Кэш, защита, скрытый IP</td><td class="num">1 час</td></tr>
+        <tr><td>7. SSE вместо опроса, Node 22</td><td>Меньше запросов, мгновенные сообщения, свежие обновления безопасности</td><td class="num">1–2 дня</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+</main>

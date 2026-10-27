@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Миф 3</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;800;900&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #08080A;
+    --border: #26262E;
+    --text: #F6F6F4;
+    --text-3: #8B8B96;
+    --accent: #FFD60A;
+    --on-accent: #08080A;
+    --danger: #FF5F5F;
+  }
+  * { box-sizing: border-box; margin: 0; }
+  html, body { background: var(--bg); }
+  body { width: 1600px; height: 800px; font-family: 'Manrope', system-ui, sans-serif; color: var(--text); }
+
+  .card {
+    width: 1600px; height: 800px; padding: 56px 72px 56px;
+    display: flex; flex-direction: column; justify-content: space-between;
+    background:
+      radial-gradient(900px 420px at 100% 0%, rgba(255,214,10,0.10), transparent 60%),
+      var(--bg);
+    border: 1px solid var(--border);
+  }
+  .top { display: flex; justify-content: space-between; align-items: flex-start; }
+  .brand { font: 800 22px/1 'Unbounded', sans-serif; letter-spacing: .04em; color: var(--accent); padding-top: 8px; }
+
+  /* Штамп «МИФ»: крупный жёлтый блок с крестом, читается раньше любого текста */
+  .stamp {
+    display: flex; align-items: center; gap: 28px;
+    background: var(--accent); color: var(--on-accent);
+    padding: 22px 44px 22px 34px; border-radius: 24px;
+    transform: rotate(-2deg); transform-origin: left center;
+  }
+  .stamp .cross {
+    width: 84px; height: 84px; border-radius: 50%; background: var(--on-accent); flex: none;
+    display: grid; place-items: center;
+  }
+  .stamp .cross svg { width: 44px; height: 44px; }
+  .stamp .word { font: 900 112px/1 'Unbounded', sans-serif; letter-spacing: -.01em; }
+  .stamp .num { font: 800 56px/1 'Unbounded', sans-serif; opacity: .85; align-self: flex-end; padding-bottom: 12px; }
+
+  h1 { font: 800 84px/1.12 'Unbounded', sans-serif; letter-spacing: -.02em; }
+  h1 mark { background: none; color: var(--accent); }
+  /* Каждая строка зачёркивается отдельно, линия идёт по середине строчных букв */
+  h1 .strike { position: relative; display: table; }
+  h1 .strike::after {
+    content: ''; position: absolute; left: -8px; right: -8px; top: 60%; height: 6px; border-radius: 3px;
+    background: var(--danger);
+  }
+  .foot { font: 600 18px/1 'Manrope', sans-serif; color: var(--text-3); }
+</style>
+</head>
+<body>
+  <div class="card">
+    <div class="top">
+      <div class="stamp">
+        <div class="cross">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#FFD60A" stroke-width="3.4" stroke-linecap="round"><path d="M5 5l14 14M19 5L5 19"/></svg>
+        </div>
+        <div class="word">МИФ</div>
+        <div class="num">№3</div>
+      </div>
+      <div class="brand">KIRO PLATFORM</div>
+    </div>
+
+    <h1>
+      <span class="strike">ИИ заменит</span>
+      <span class="strike">всех айтишников</span>
+    </h1>
+
+    <div class="foot">kiroplatform.ru</div>
+  </div>
+</body>
+</html>

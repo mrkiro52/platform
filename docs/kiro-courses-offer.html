@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Мини-курсы KIRO — коммерческое предложение</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;800;900&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  @page { size: A4; margin: 0; }
+  :root {
+    --bg: #08080A; --panel: #101014; --panel-2: #17171D; --border: #26262E;
+    --text: #F6F6F4; --text-2: #C2C2BE; --text-3: #8B8B96;
+    --accent: #FFD60A; --accent-dim: rgba(255, 214, 10, .12); --on-accent: #08080A;
+    --success: #3FB950; --success-dim: rgba(63, 185, 80, .12);
+    --py: #58A6FF; --math: #BC8CFF; --algo: #3FB950;
+    --display: 'Unbounded', sans-serif; --sans: 'Manrope', sans-serif; --mono: 'JetBrains Mono', monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--bg); -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body { font: 500 10.5px/1.5 var(--sans); color: var(--text-2); }
+  .page {
+    width: 210mm; height: 297mm; padding: 12mm 13mm 10mm; position: relative; overflow: hidden;
+    display: flex; flex-direction: column; gap: 4.4mm; page-break-after: always;
+    background: radial-gradient(130mm 90mm at 100% 0%, rgba(255, 214, 10, .10), transparent 60%), var(--bg);
+  }
+  .page:last-child { page-break-after: auto; }
+  b, strong { color: var(--text); font-weight: 700; }
+
+  .top { display: flex; align-items: center; justify-content: space-between; }
+  .brand { font: 800 12px/1 var(--display); letter-spacing: .04em; color: var(--accent); }
+  .top-meta { font: 700 9px/1 var(--mono); color: var(--text-3); letter-spacing: .04em; }
+
+  .label { font: 800 8.5px/1 var(--sans); letter-spacing: .1em; text-transform: uppercase; color: var(--text-3); }
+  .label.is-accent { color: var(--accent); }
+  h1 { font: 800 30px/1.08 var(--display); color: var(--text); letter-spacing: -.01em; margin-top: 3mm; }
+  h1 em { font-style: normal; color: var(--accent); }
+  h2 { font: 800 15px/1.2 var(--display); color: var(--text); }
+  h3 { font: 800 13px/1.2 var(--display); color: var(--text); }
+  .lead { font-size: 12px; line-height: 1.55; color: var(--text-2); margin-top: 3.5mm; max-width: 165mm; }
+
+  .card { background: var(--panel); border: 1px solid var(--border); border-radius: 13px; padding: 4.2mm 4.6mm; }
+  .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 3mm; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3mm; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 3mm; }
+
+  .stat b { display: block; font: 800 17px/1.1 var(--display); white-space: nowrap; color: var(--text); margin-bottom: 1.4mm; }
+  .stat b.is-accent { color: var(--accent); }
+  .stat span { font-size: 9.5px; color: var(--text-3); line-height: 1.4; display: block; }
+
+  .sec-head { display: flex; align-items: baseline; justify-content: space-between; gap: 4mm; margin-bottom: 2.6mm; }
+  .list { list-style: none; display: flex; flex-direction: column; gap: 1.6mm; }
+  .list li { position: relative; padding-left: 3.6mm; }
+  .list li::before { content: ''; position: absolute; left: 0; top: .62em; width: 4px; height: 4px; border-radius: 50%; background: var(--accent); }
+
+  .feature { display: flex; gap: 3mm; align-items: flex-start; }
+  .num { flex-shrink: 0; display: grid; place-items: center; width: 6.6mm; height: 6.6mm; border-radius: 7px; font: 800 10px/1 var(--mono); color: var(--accent); background: var(--accent-dim); }
+  .feature b { display: block; margin-bottom: .6mm; font-size: 11px; }
+  .feature div span { font-size: 9.8px; color: var(--text-3); line-height: 1.45; display: block; }
+
+  .price { display: flex; flex-direction: column; gap: 1mm; }
+  .price .pname { font: 800 8.5px/1 var(--sans); letter-spacing: .1em; text-transform: uppercase; color: var(--text-3); }
+  .price .pval { font: 800 21px/1.1 var(--display); color: var(--text); margin-top: 1.4mm; }
+  .price .psub { font-size: 9.8px; font-weight: 700; color: var(--success); }
+  .price .psub s { color: var(--text-3); font-weight: 500; }
+  .price .psub.is-plain { color: var(--text-3); font-weight: 500; }
+  .price .pnote { font-size: 9.5px; color: var(--text-3); margin-top: 1.2mm; line-height: 1.4; }
+  .price.is-best { border-color: var(--accent); background: linear-gradient(160deg, rgba(255, 214, 10, .10), transparent 60%), var(--panel); position: relative; }
+  .price.is-best .pval { color: var(--accent); }
+  .flag { position: absolute; top: 3.6mm; right: 4mm; font: 800 8.5px/1 var(--sans); color: var(--on-accent); background: var(--accent); border-radius: 99px; padding: 1.3mm 2.6mm; }
+
+  .credit { display: flex; gap: 3.4mm; align-items: center; background: var(--accent-dim); border: 1px solid rgba(255, 214, 10, .35); border-radius: 13px; padding: 3.6mm 4.6mm; font-size: 10.5px; }
+  .credit b { color: var(--accent); }
+
+  .course { display: grid; grid-template-columns: 50mm 1fr; gap: 5mm; padding: 4mm 4.6mm; }
+  .course-side { display: flex; flex-direction: column; gap: 2mm; }
+  .icon { display: grid; place-items: center; width: 10mm; height: 10mm; border-radius: 9px; font: 800 12px/1 var(--mono); color: var(--c); background: color-mix(in srgb, var(--c) 15%, transparent); }
+  .course h3 { font-size: 12.5px; line-height: 1.25; }
+  .tagline { font-size: 9.8px; color: var(--text-3); line-height: 1.45; }
+  .chips { display: flex; flex-wrap: wrap; gap: 1.4mm; margin-top: auto; }
+  .chip { font: 700 8.6px/1 var(--sans); color: var(--text-2); background: var(--panel-2); border: 1px solid var(--border); border-radius: 99px; padding: 1.4mm 2.4mm; white-space: nowrap; }
+  .course-main { display: grid; grid-template-columns: 1fr 1fr; gap: 2.4mm 5mm; align-content: start; }
+  .course-main .full { grid-column: 1 / -1; }
+  .mini { font: 800 7.8px/1 var(--sans); letter-spacing: .1em; text-transform: uppercase; color: var(--text-3); margin-bottom: 1.3mm; }
+  .course-main p, .course-main li { font-size: 9.8px; line-height: 1.45; }
+  .weeks { list-style: none; display: flex; flex-direction: column; gap: 1mm; }
+  .weeks li { display: flex; gap: 2mm; }
+  .weeks li span { flex-shrink: 0; font: 700 8.6px/1.6 var(--mono); color: var(--c); }
+  .free { background: var(--success-dim); border: 1px solid rgba(63, 185, 80, .35); border-radius: 9px; padding: 2mm 3mm; }
+  .free .mini { color: var(--success); }
+  .free p { color: var(--text); font-weight: 600; }
+
+  .steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 3mm; }
+  .step b { display: block; font-size: 10.5px; margin: 1.8mm 0 .6mm; }
+  .step > span:not(.num) { font-size: 9.5px; color: var(--text-3); line-height: 1.4; display: block; }
+  .step .num { width: 6.2mm; height: 6.2mm; font-size: 9.5px; }
+  .step b { margin-top: 2mm; }
+  .link { font-family: var(--mono); font-weight: 700; color: var(--accent); }
+
+  .foot { margin-top: auto; display: flex; justify-content: space-between; align-items: center; padding-top: 3mm; border-top: 1px solid var(--border); font: 700 9px/1 var(--mono); color: var(--text-3); }
+  .foot .link { font-size: 9px; }
+</style>
+</head>
+<body>
+
+<!-- ═══════════ Страница 1: зачем, как устроено, цены ═══════════ -->
+<section class="page">
+  <div class="top">
+    <div class="brand">KIRO PLATFORM</div>
+    <div class="top-meta">МИНИ-КУРСЫ · KIROPLATFORM.RU/COURSES</div>
+  </div>
+
+  <div>
+    <div class="label is-accent">Коммерческое предложение для студентов</div>
+    <h1>Три курса — <em>быстрый старт</em><br>в IT</h1>
+    <p class="lead">Короткие курсы, в которых собрана выжимка того, что нужно для старта в IT: <b>Python</b>, <b>математика для машинного обучения</b> и <b>алгоритмы для собеседований</b>. Всё обучение — прямо на платформе KIRO: видеолекции, теория с примерами и задачи, которые проверяются автоматически в браузере. Ничего не нужно устанавливать.</p>
+  </div>
+
+  <div class="grid-4">
+    <div class="card stat"><b>3 курса</b><span>Python, математика для ML, алгоритмы</span></div>
+    <div class="card stat"><b>3 недели</b><span>в каждом курсе: 21 урок и 3 видеолекции</span></div>
+    <div class="card stat"><b>300+ задач</b><span>с автопроверкой прямо на платформе</span></div>
+    <div class="card stat"><b class="is-accent">2 урока</b><span>каждого курса бесплатно — попробуй до покупки</span></div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="sec-head"><h2>Зачем это нужно</h2></div>
+      <ul class="list">
+        <li><b>Закрыть базу быстро.</b> Только то, что реально используется в работе и спрашивают на собеседованиях, — без лишней теории.</li>
+        <li><b>Подготовиться к лагерю, стажировке или первой работе:</b> прийти с фундаментом, а не начинать с нуля.</li>
+        <li><b>Пройти техническое собеседование:</b> паттерны задач LeetCode, которые дают в бигтехе.</li>
+        <li><b>Понять, как устроено машинное обучение</b> изнутри, а не запускать модели вслепую.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="sec-head"><h2>Кому подойдёт</h2></div>
+      <ul class="list">
+        <li><b>Новичкам</b>, которые хотят начать программировать, но не знают, с чего.</li>
+        <li><b>Тем, кто идёт в ML и аналитику</b> и боится формул: нужна только школьная математика.</li>
+        <li><b>Тем, кто готовится к собеседованиям</b> на разработчика, аналитика или ML-инженера.</li>
+        <li><b>Тем, кто хочет повторить</b> и систематизировать знания перед новым этапом.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="sec-head"><h2>Как устроено обучение</h2><span class="label">в каждом курсе</span></div>
+    <div class="grid-3" style="gap: 4mm 5mm">
+      <div class="feature"><span class="num">01</span><div><b>Видеолекция каждую неделю</b><span>Разбор темы недели, который задаёт картину целиком.</span></div></div>
+      <div class="feature"><span class="num">02</span><div><b>Теория по урокам</b><span>Сначала понятный пример, потом формула или код и объяснение простыми словами.</span></div></div>
+      <div class="feature"><span class="num">03</span><div><b>Код запускается в браузере</b><span>Примеры можно изменить и запустить одной кнопкой — без установки Python.</span></div></div>
+      <div class="feature"><span class="num">04</span><div><b>Задачи с автопроверкой</b><span>Код проходит скрытые тесты, ответ по математике проверяется сразу.</span></div></div>
+      <div class="feature"><span class="num">05</span><div><b>Разборы решений</b><span>После решения открывается разбор: эталон, сложность и типичные ошибки.</span></div></div>
+      <div class="feature"><span class="num">06</span><div><b>Прогресс в аккаунте</b><span>Решённые задачи сохраняются и видны с любого устройства.</span></div></div>
+    </div>
+  </div>
+
+  <div>
+    <div class="sec-head"><h2>Стоимость</h2><span class="label">цена за весь курс</span></div>
+    <div class="grid-3">
+      <div class="card price">
+        <span class="pname">1 курс</span>
+        <span class="pval">4 990 ₽</span>
+        <span class="psub is-plain">любой на выбор</span>
+        <span class="pnote">Python, математика или алгоритмы</span>
+      </div>
+      <div class="card price">
+        <span class="pname">2 курса</span>
+        <span class="pval">7 990 ₽</span>
+        <span class="psub"><s>9 980 ₽</s> · выгода 1 990 ₽</span>
+        <span class="pnote">любые два курса — 3 995 ₽ за курс</span>
+      </div>
+      <div class="card price is-best">
+        <span class="flag">Выгоднее всего</span>
+        <span class="pname">Все 3 курса</span>
+        <span class="pval">9 990 ₽</span>
+        <span class="psub"><s>14 970 ₽</s> · выгода 4 980 ₽</span>
+        <span class="pnote">полный путь: Python → математика → алгоритмы, 3 330 ₽ за курс</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="credit">
+    <div><b>Деньги за курсы идут в зачёт Лагеря.</b> Сколько потратишь на курсы — такой будет твоя скидка на участие в онлайн IT-лагере KIRO IT CAMP.</div>
+  </div>
+
+  <div class="foot"><span>KIRO PLATFORM · мини-курсы</span><span>1 / 2</span></div>
+</section>
+
+<!-- ═══════════ Страница 2: курсы подробно и как купить ═══════════ -->
+<section class="page">
+  <div class="top">
+    <div class="brand">KIRO PLATFORM</div>
+    <div class="top-meta">МИНИ-КУРСЫ · KIROPLATFORM.RU/COURSES</div>
+  </div>
+
+  <div>
+    <div class="label is-accent">Программы курсов</div>
+    <h2 style="font-size: 20px; margin-top: 2.4mm">Что внутри каждого курса</h2>
+  </div>
+
+  <div class="card course" style="--c: var(--py)">
+    <div class="course-side">
+      <span class="icon">Py</span>
+      <h3>Python: с нуля и до профи</h3>
+      <p class="tagline">Выжимка без лишней теории — до уровня Junior Python-разработчика.</p>
+      <div class="chips"><span class="chip">3 недели</span><span class="chip">21 урок</span><span class="chip">105 задач</span><span class="chip">финальный проект</span></div>
+    </div>
+    <div class="course-main">
+      <div class="full"><div class="mini">Чему научишься</div><p>Самостоятельно писать программы: работать с данными, функциями, файлами и запросами к API.</p></div>
+      <div class="full"><div class="mini">Программа</div>
+        <ul class="weeks">
+          <li><span>НЕД 1</span>Основы языка: переменные и типы, ввод и вывод, условия, циклы while и for</li>
+          <li><span>НЕД 2</span>Структуры данных и функции: строки, списки, словари, множества, функции, обработка ошибок</li>
+          <li><span>НЕД 3</span>Продвинутые темы и инструменты: ООП, генераторы и декораторы, файлы и JSON, модули, pip и venv, асинхронность</li>
+        </ul>
+      </div>
+      <div class="full free"><div class="mini">Бесплатно</div><p>Урок 1. Введение: установка, переменные, типы данных и операторы · Урок 2. Ввод и вывод, f-строки, форматирование</p></div>
+    </div>
+  </div>
+
+  <div class="card course" style="--c: var(--math)">
+    <div class="course-side">
+      <span class="icon">Σ</span>
+      <h3>Математика: вся для Junior ML</h3>
+      <p class="tagline">Сначала ML-пример, потом формула — математика без страха.</p>
+      <div class="chips"><span class="chip">3 недели</span><span class="chip">21 урок</span><span class="chip">110 задач</span><span class="chip">итоговый экзамен</span></div>
+    </div>
+    <div class="course-main">
+      <div class="full"><div class="mini">Чему научишься</div><p>Понимать, что происходит внутри моделей: векторы и матрицы, как модель «учится» градиентным спуском, вероятности и статистика.</p></div>
+      <div class="full"><div class="mini">Программа</div>
+        <ul class="weeks">
+          <li><span>НЕД 1</span>Линейная алгебра и начала анализа: векторы, проекции, матрицы, производные и градиент</li>
+          <li><span>НЕД 2</span>Градиентный спуск и теория вероятностей: градиентный спуск, случайные величины, распределения, формула Байеса</li>
+          <li><span>НЕД 3</span>Статистика, дискретная математика и итог: выборочные статистики, доверительные интервалы, комбинаторика, графы, итоговый экзамен</li>
+        </ul>
+      </div>
+      <div class="full free"><div class="mini">Бесплатно</div><p>Урок 1. Векторы · Урок 2. Ортогональность и проекция</p></div>
+    </div>
+  </div>
+
+  <div class="card course" style="--c: var(--algo)">
+    <div class="course-side">
+      <span class="icon">{ }</span>
+      <h3>Алгоритмы: leetcode и алгособесы</h3>
+      <p class="tagline">Только паттерны и задачи, которые реально спрашивают на собеседованиях.</p>
+      <div class="chips"><span class="chip">3 недели</span><span class="chip">21 урок</span><span class="chip">95 задач LeetCode</span><span class="chip">контесты</span></div>
+    </div>
+    <div class="course-main">
+      <div class="full"><div class="mini">Чему научишься</div><p>Узнавать типовые паттерны и решать задачи собеседований: указатели, окно, хеш-таблицы, стек, списки, двоичный поиск, деревья, графы, кучи.</p></div>
+      <div class="full"><div class="mini">Программа</div>
+        <ul class="weeks">
+          <li><span>НЕД 1</span>Фундамент и линейные структуры: два указателя, префиксные суммы, окно, хеш-таблицы, стек, очередь</li>
+          <li><span>НЕД 2</span>Связные списки и LRU-кеш, двоичный поиск, сортировки, обходы деревьев, мини-контест</li>
+          <li><span>НЕД 3</span>Графы, DFS и BFS, жадные алгоритмы, куча, перебор с возвратом и финальный контест</li>
+        </ul>
+      </div>
+      <div class="full free"><div class="mini">Бесплатно</div><p>Урок 1. Массивы и строки, два указателя · Урок 2. Два указателя (продолжение) и префиксные суммы</p></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="sec-head"><h2>Как начать</h2><span class="label">оплата через менеджера</span></div>
+    <div class="steps">
+      <div class="step"><span class="num">1</span><b>Попробуй бесплатно</b><span>Открой <span class="link">kiroplatform.ru/courses</span> и пройди первые два урока любого курса.</span></div>
+      <div class="step"><span class="num">2</span><b>Выбери набор</b><span>Один курс, два или все три — комплект выгоднее.</span></div>
+      <div class="step"><span class="num">3</span><b>Напиши менеджеру</b><span>Скопируй текст заказа на платформе и отправь в <span class="link">t.me/kiro_it</span>.</span></div>
+      <div class="step"><span class="num">4</span><b>Учись</b><span>После оплаты все уроки откроются в твоём аккаунте.</span></div>
+    </div>
+  </div>
+
+  <div class="foot"><span>Вопросы и покупка — <span class="link">t.me/kiro_it</span></span><span>2 / 2</span></div>
+</section>
+
+</body>
+</html>

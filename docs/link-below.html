@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Ссылка в описании</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;800;900&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #08080A;
+    --border: #26262E;
+    --text: #F6F6F4;
+    --text-3: #8B8B96;
+    --accent: #FFD60A;
+    --on-accent: #08080A;
+  }
+  * { box-sizing: border-box; margin: 0; }
+  html, body { background: var(--bg); }
+  body { width: 1600px; height: 400px; font-family: 'Manrope', system-ui, sans-serif; color: var(--text); }
+
+  .card {
+    width: 1600px; height: 400px; padding: 44px 72px;
+    display: flex; flex-direction: column; justify-content: space-between;
+    background:
+      radial-gradient(900px 300px at 100% 0%, rgba(255,214,10,0.10), transparent 60%),
+      var(--bg);
+    border: 1px solid var(--border);
+  }
+  .brand { font: 800 22px/1 'Unbounded', sans-serif; letter-spacing: .04em; color: var(--accent); }
+  .row { display: flex; align-items: center; justify-content: space-between; gap: 40px; }
+  h1 { font: 800 92px/1.1 'Unbounded', sans-serif; letter-spacing: -.02em; }
+  h1 mark { background: none; color: var(--accent); }
+  .go {
+    flex: none; width: 128px; height: 128px; border-radius: 50%; background: var(--accent);
+    display: grid; place-items: center;
+  }
+  .go svg { width: 60px; height: 60px; }
+  .foot { font: 600 18px/1 'Manrope', sans-serif; color: var(--text-3); }
+</style>
+</head>
+<body>
+  <div class="card">
+    <div class="brand">KIRO PLATFORM</div>
+
+    <div class="row">
+      <h1>Ссылка в <mark>описании</mark></h1>
+      <div class="go">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#08080A" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M6 13l6 6 6-6"/></svg>
+      </div>
+    </div>
+
+    <div class="foot">kiroplatform.ru</div>
+  </div>
+</body>
+</html>
