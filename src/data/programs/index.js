@@ -66,6 +66,10 @@ export const DIRECTIONS = {
       { num: 4, title: 'Разбор вопросов с собеседований на аналитика в бигтех', sections: 10, source: 'analyst-4', load: () => import('./analyst-4'), submit: 'self' },
       { num: 5, title: 'Математика и статистика', sections: 8, load: () => import('./business-5') },
       { num: 6, title: 'A/B-тесты', sections: 7, load: () => import('./business-6') },
+      { num: 7, title: 'Excel и Google Таблицы', sections: 5, load: () => import('./business-7') },
+      // Глава 8 — SQL: содержимое перенесено из главы 2 продуктовой аналитики; задачи решаются в том же SQL-тренажёре
+      { num: 8, title: 'SQL для бизнес-аналитика', sections: 8, load: () => import('./business-8'), submit: 'trainer', taskHint: 'все задачи SQL-тренажёра' },
+      { num: 9, title: 'Базы данных и хранилища', sections: 6, load: () => import('./business-9'), quiz: () => import('./business-9-quiz') },
     ],
   },
   backend: {
