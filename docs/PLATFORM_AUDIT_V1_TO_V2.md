@@ -370,17 +370,17 @@ GitHub Actions: сборка фронта + scp; watchdog каждые 5 мин�
 
 ## 12. Приложение: ключевые файлы
 
-| Что | Где |
-|---|---|
-| Точка входа API | `backend/server.js` |
-| Схема, миграции, сиды | `backend/src/db.js` |
-| Auth и роли | `backend/src/routes/auth.js`, `backend/src/middleware/auth.js`, `backend/src/admins.js` |
-| Аналитика (бэк / фронт) | `backend/src/analytics.js`, `src/lib/analytics.js` |
-| SQL-песочница | `backend/src/sqlTrainer/*` |
-| Здоровье / монитор | `backend/src/routes/health.js`, `monitor-bot/index.js`, `.github/workflows/watchdog.yml` |
-| Деплой | `.github/workflows/deploy.yml` |
-| Маршруты фронтенда | `src/App.jsx`, `src/AppShell.jsx` |
-| API-клиент | `src/api.js` |
-| Учебный контент | `src/data/`, `src/theory/`, `src/questions/` |
-| Админка | `backend/admin/` |
-| Предыдущий разбор нагрузки на 1000 пользователей | `docs/kiro-system-design.html` |
+| Что                                              | Где                                                                                      |
+| ------------------------------------------------ | ---------------------------------------------------------------------------------------- |
+| Точка входа API                                  | `backend/server.js`                                                                      |
+| Схема, миграции, сиды                            | `backend/src/db.js`                                                                      |
+| Auth и роли                                      | `backend/src/routes/auth.js`, `backend/src/middleware/auth.js`, `backend/src/admins.js`  |
+| Аналитика (бэк / фронт)                          | `backend/src/analytics.js`, `src/lib/analytics.js`                                       |
+| SQL-песочница                                    | `backend/src/sqlTrainer/*`                                                               |
+| Здоровье / монитор                               | `backend/src/routes/health.js`, `monitor-bot/index.js`, `.github/workflows/watchdog.yml` |
+| Деплой                                           | `.github/workflows/deploy.yml`                                                           |
+| Маршруты фронтенда                               | `src/App.jsx`, `src/AppShell.jsx`                                                        |
+| API-клиент                                       | `src/api.js`                                                                             |
+| Учебный контент                                  | `src/data/`, `src/theory/`, `src/questions/`                                             |
+| Админка                                          | `backend/admin/`                                                                         |
+| Предыдущий разбор нагрузки на 1000 пользователей | `docs/kiro-system-design.html`                                                           |
