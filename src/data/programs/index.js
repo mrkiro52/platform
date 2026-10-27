@@ -139,7 +139,7 @@ export const DIRECTIONS = {
       { num: 5, title: 'Градиентный спуск', sections: 16, load: () => import('./ml-5') },
       { num: 6, title: 'Теоретическая сводка', sections: 11, load: () => import('./ml-6'), submit: 'soon' },
       { num: 7, title: 'Метод k ближайших соседей (KNN)', sections: 12, load: () => import('./ml-7') },
-      { num: 8, title: 'Логистическая регрессия', sections: 15, load: () => import('./ml-8'), submit: 'soon' },
+      { num: 8, title: 'Логистическая регрессия', sections: 15, load: () => import('./ml-8') },
     ],
   },
   security: {
