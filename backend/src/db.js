@@ -1152,6 +1152,22 @@ function migrate() {
       console.error('❌ Migration 38 failed:', err.message)
     }
   }
+
+  // Migration 39: у вакансии несколько категорий — JSON-массив ключей в vacancies.categories.
+  // Столбец category остаётся (первая категория) для совместимости со старым кодом.
+  if (schemaVersion < 39) {
+    try {
+      const cols = db.prepare('PRAGMA table_info(vacancies)').all().map(c => c.name)
+      if (!cols.includes('categories')) db.exec("ALTER TABLE vacancies ADD COLUMN categories TEXT NOT NULL DEFAULT ''")
+      const rows = db.prepare("SELECT id, category FROM vacancies WHERE categories = ''").all()
+      const set = db.prepare('UPDATE vacancies SET categories = ? WHERE id = ?')
+      for (const r of rows) set.run(JSON.stringify([r.category || 'other']), r.id)
+      db.pragma('user_version = 39')
+      console.log('✅ Migration 39 completed: added vacancies.categories')
+    } catch (err) {
+      console.error('❌ Migration 39 failed:', err.message)
+    }
+  }
 }
 
 migrate()

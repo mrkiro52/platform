@@ -40,11 +40,11 @@ const VacanciesPage = {
     el.innerHTML = `
       <div class="table-wrap">
         <table class="tbl">
-          <thead><tr><th>Вакансия</th><th>Категория</th><th>Контакт</th><th>Добавлена</th><th></th></tr></thead>
+          <thead><tr><th>Вакансия</th><th>Категории</th><th>Контакт</th><th>Добавлена</th><th></th></tr></thead>
           <tbody>${list.map(v => `
             <tr>
               <td><div class="cell-main">${esc(v.title)}</div><div class="cell-sub ann-text">${esc(v.description)}</div></td>
-              <td class="nowrap"><span class="badge badge-orange">${esc(VACANCY_CATS[v.category] || v.category)}</span></td>
+              <td><div class="vac-cats">${(v.categories || [v.category]).map(c => `<span class="badge badge-orange">${esc(VACANCY_CATS[c] || c)}</span>`).join('')}</div></td>
               <td>${esc(v.contact)}</td>
               <td class="nowrap">${esc(String(v.created_at || '').slice(0, 10))}</td>
               <td class="actions"><div>
@@ -61,16 +61,18 @@ const VacanciesPage = {
     Modal.open(`
       ${modalHead(v ? 'Изменить вакансию' : 'Новая вакансия', v ? '' : 'Появится карточкой на странице вакансий')}
       <div class="field"><label for="v-title">Название</label><input id="v-title" value="${esc(v ? v.title : '')}" maxlength="200" placeholder="Стажёр Python-разработчик" autofocus/></div>
-      <div class="form-row">
-        <div class="field">
-          <label for="v-cat">Категория</label>
-          <select id="v-cat">${Object.entries(VACANCY_CATS).map(([key, label]) => `<option value="${key}"${(v ? v.category : 'backend') === key ? ' selected' : ''}>${label}</option>`).join('')}</select>
-        </div>
-        <div class="field">
-          <label for="v-contact">Контакт для связи</label>
-          <input id="v-contact" value="${esc(v ? v.contact : '')}" maxlength="300" placeholder="@telegram, почта или ссылка"/>
-          <div class="field-hint">Telegram-ник, почта и ссылка станут кликабельными</div>
-        </div>
+      <div class="field">
+        <label>Категории</label>
+        <div class="vac-cat-checks" id="v-cats">${Object.entries(VACANCY_CATS).map(([key, label]) => `<label class="course-check">
+          <input type="checkbox" value="${key}"${(v ? (v.categories || [v.category]) : []).includes(key) ? ' checked' : ''}/>
+          <span class="course-box">${icon('check', 12)}</span><span>${esc(label)}</span>
+        </label>`).join('')}</div>
+        <div class="field-hint">Можно выбрать несколько: вакансия появится под каждой выбранной категорией</div>
+      </div>
+      <div class="field">
+        <label for="v-contact">Контакт для связи</label>
+        <input id="v-contact" value="${esc(v ? v.contact : '')}" maxlength="300" placeholder="@telegram, почта или ссылка"/>
+        <div class="field-hint">Telegram-ник, почта и ссылка станут кликабельными</div>
       </div>
       <div class="field"><label for="v-desc">Описание</label><textarea id="v-desc" rows="10" placeholder="Задачи, требования, условия. Переносы строк сохраняются">${esc(v ? v.description : '')}</textarea></div>
       <div class="form-error" id="v-err" hidden></div>
@@ -83,12 +85,12 @@ const VacanciesPage = {
   async save(id) {
     const body = {
       title: $('#v-title').value.trim(),
-      category: $('#v-cat').value,
+      categories: [...document.querySelectorAll('#v-cats input:checked')].map(i => i.value),
       contact: $('#v-contact').value.trim(),
       description: $('#v-desc').value.trim(),
     }
-    if (!body.title || !body.contact) {
-      $('#v-err').textContent = 'Название и контакт обязательны'
+    if (!body.title || !body.contact || !body.categories.length) {
+      $('#v-err').textContent = !body.categories.length ? 'Выбери хотя бы одну категорию' : 'Название и контакт обязательны'
       $('#v-err').hidden = false
       return
     }

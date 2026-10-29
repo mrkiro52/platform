@@ -67,9 +67,18 @@ function PinGate({ onPass }) {
   )
 }
 
-function CategoryBadge({ category }) {
-  const c = VACANCY_CATEGORIES[category] || VACANCY_CATEGORIES.other
-  return <span className="vac-badge" style={{ '--vac': c.color }}>{c.label}</span>
+// Категорий у вакансии несколько — показываем плашку на каждую
+const catsOf = v => (Array.isArray(v.categories) && v.categories.length ? v.categories : [v.category || 'other'])
+
+function CategoryBadges({ vacancy }) {
+  return (
+    <span className="vac-badges">
+      {catsOf(vacancy).map(key => {
+        const c = VACANCY_CATEGORIES[key] || VACANCY_CATEGORIES.other
+        return <span key={key} className="vac-badge" style={{ '--vac': c.color }}>{c.label}</span>
+      })}
+    </span>
+  )
 }
 
 // Контакт — ссылкой, если это URL, Telegram-ник или почта
@@ -95,8 +104,8 @@ function VacancyList() {
     return () => { alive = false }
   }, [])
 
-  const shown = (list || []).filter(v => filter === 'all' || v.category === filter)
-  const present = new Set((list || []).map(v => v.category))
+  const shown = (list || []).filter(v => filter === 'all' || catsOf(v).includes(filter))
+  const present = new Set((list || []).flatMap(catsOf))
 
   return (
     <section className="page active prg-page vac-page">
@@ -123,7 +132,7 @@ function VacancyList() {
       <div className="vac-grid">
         {shown.map(v => (
           <button key={v.id} type="button" className="vac-card" onClick={() => navigate(`/autumn-camp/vacancies/${v.id}`)}>
-            <CategoryBadge category={v.category} />
+            <CategoryBadges vacancy={v} />
             <span className="vac-card-title">{v.title}</span>
             <span className="vac-card-desc">{v.description}</span>
             <span className="vac-card-foot">
@@ -155,7 +164,7 @@ function VacancyItem({ id }) {
       {!v && !error && <p className="prg-loading">Загружаем вакансию…</p>}
       {v && (
         <article className="vac-item">
-          <CategoryBadge category={v.category} />
+          <CategoryBadges vacancy={v} />
           <h1 className="prg-title">{v.title}</h1>
           <div className="vac-item-desc">{v.description}</div>
           <div className="vac-item-contact">
