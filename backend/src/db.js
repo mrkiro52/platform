@@ -1168,6 +1168,28 @@ function migrate() {
       console.error('❌ Migration 39 failed:', err.message)
     }
   }
+
+  // Migration 40: компания у вакансии. По умолчанию 'Unknown'. Уже существующим вакансиям
+  // проставляем inDrive, а трём первым (Data Scientist (BI & Analytics), Machine Learning
+  // Engineer, Middle/Senior Data Analyst) — Easybrain. Только ADD COLUMN, остальное не меняется.
+  if (schemaVersion < 40) {
+    try {
+      const cols = db.prepare('PRAGMA table_info(vacancies)').all().map(c => c.name)
+      if (!cols.includes('company')) {
+        db.exec("ALTER TABLE vacancies ADD COLUMN company TEXT NOT NULL DEFAULT 'Unknown'")
+        db.exec("UPDATE vacancies SET company = 'inDrive'")
+        const easybrain = ['Data Scientist (BI & Analytics)', 'Machine Learning Engineer', 'Middle/Senior Data Analyst']
+        const mark = db.prepare("UPDATE vacancies SET company = 'Easybrain' WHERE LOWER(title) LIKE ?")
+        let n = 0
+        for (const t of easybrain) n += mark.run(`%${t.toLowerCase()}%`).changes
+        console.log(`   company: inDrive для всех, Easybrain для ${n} вакансий`)
+      }
+      db.pragma('user_version = 40')
+      console.log('✅ Migration 40 completed: added vacancies.company')
+    } catch (err) {
+      console.error('❌ Migration 40 failed:', err.message)
+    }
+  }
 }
 
 migrate()

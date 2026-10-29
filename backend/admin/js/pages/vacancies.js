@@ -40,12 +40,13 @@ const VacanciesPage = {
     el.innerHTML = `
       <div class="table-wrap">
         <table class="tbl">
-          <thead><tr><th>Вакансия</th><th>Категории</th><th>Контакт</th><th>Добавлена</th><th></th></tr></thead>
+          <thead><tr><th>Вакансия</th><th>Компания</th><th>Категории</th><th>Контакт</th><th>Добавлена</th><th></th></tr></thead>
           <tbody>${list.map(v => `
             <tr>
               <td><div class="cell-main">${esc(v.title)}</div><div class="cell-sub ann-text">${esc(v.description)}</div></td>
+              <td class="nowrap">${esc(v.company || 'Unknown')}</td>
               <td><div class="vac-cats">${(v.categories || [v.category]).map(c => `<span class="badge badge-orange">${esc(VACANCY_CATS[c] || c)}</span>`).join('')}</div></td>
-              <td>${esc(v.contact)}</td>
+              <td><div class="vac-contact" title="${esc(v.contact)}">${esc(v.contact)}</div></td>
               <td class="nowrap">${esc(String(v.created_at || '').slice(0, 10))}</td>
               <td class="actions"><div>
                 <button class="btn-icon btn-sm" onclick="VacanciesPage.open(${v.id})" title="Изменить" aria-label="Изменить">${icon('pencil', 15)}</button>
@@ -70,6 +71,11 @@ const VacanciesPage = {
         <div class="field-hint">Можно выбрать несколько: вакансия появится под каждой выбранной категорией</div>
       </div>
       <div class="field">
+        <label for="v-company">Компания</label>
+        <input id="v-company" value="${esc(v ? v.company : '')}" maxlength="100" placeholder="Unknown"/>
+        <div class="field-hint">Название компании: показывается на карточке перед названием вакансии. Пусто — «Unknown»</div>
+      </div>
+      <div class="field">
         <label for="v-contact">Контакт для связи</label>
         <input id="v-contact" value="${esc(v ? v.contact : '')}" maxlength="300" placeholder="@telegram, почта или ссылка"/>
         <div class="field-hint">Telegram-ник, почта и ссылка станут кликабельными</div>
@@ -86,6 +92,7 @@ const VacanciesPage = {
     const body = {
       title: $('#v-title').value.trim(),
       categories: [...document.querySelectorAll('#v-cats input:checked')].map(i => i.value),
+      company: $('#v-company').value.trim(),
       contact: $('#v-contact').value.trim(),
       description: $('#v-desc').value.trim(),
     }

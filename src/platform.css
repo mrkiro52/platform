@@ -5094,18 +5094,34 @@ a.prg-chapter-link, a.prg-chip { text-decoration: none; }
 .vac-toolbar { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 16px; }
 .vac-toolbar .vac-filters { margin-bottom: 0; flex: 1 1 auto; min-width: 0; }
 .vac-filters { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
-.vac-pager { display: flex; align-items: center; gap: 6px; flex-shrink: 0; flex-wrap: wrap; justify-content: flex-end; }
+.vac-pager { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; justify-content: center; }
 .vac-pager.is-empty { min-height: 0; }
 .vac-pager-btn { cursor: pointer; font: inherit; font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; min-width: 34px; height: 34px; padding: 0 8px; color: var(--text-secondary); background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); }
 .vac-pager-btn:hover:not(:disabled) { border-color: rgba(255,140,66,0.6); color: var(--text-primary); }
 .vac-pager-btn.is-active { color: var(--prg-text); border-color: var(--prg-text); background: var(--prg-dim); }
 .vac-pager-btn:disabled { opacity: .4; cursor: default; }
 .vac-pager-gap { color: var(--text-tertiary); padding: 0 2px; }
-.vac-bottom { display: flex; justify-content: flex-end; margin-top: 18px; }
+.vac-bottom { display: flex; justify-content: center; margin-top: 20px; }
 .vac-filters button { cursor: pointer; font: inherit; font-size: 13px; font-weight: 600; color: var(--text-secondary); background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-pill); padding: 6px 14px; }
 .vac-filters button:hover { border-color: rgba(255,140,66,0.6); }
 .vac-filters button.is-active { color: var(--prg-text); border-color: var(--prg-text); background: var(--prg-dim); }
-.vac-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: 14px; align-items: stretch; }
+.vac-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; align-items: stretch; }
+@media (max-width: 1250px) { .vac-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 900px) { .vac-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 560px) { .vac-grid { grid-template-columns: minmax(0, 1fr); } }
+/* Заглушка карточки на время запроса: серые блоки, по которым бежит блик */
+.vac-card.is-skeleton { cursor: default; pointer-events: none; }
+.vac-card.is-skeleton:hover { transform: none; border-color: var(--border-color); }
+.vac-sk { display: block; border-radius: 6px; background: linear-gradient(100deg, var(--bg-tertiary) 30%, rgba(255,255,255,0.09) 50%, var(--bg-tertiary) 70%); background-size: 250% 100%; animation: vac-shimmer .5s linear infinite; }
+.vac-sk-badge { width: 72px; height: 22px; border-radius: var(--radius-pill); }
+.vac-sk-title { width: 92%; height: 18px; }
+.vac-sk-title.is-short { width: 60%; }
+.vac-sk-line { width: 100%; height: 12px; }
+.vac-sk-line.is-short { width: 70%; }
+.vac-sk-foot { width: 90px; height: 12px; }
+.vac-sk-foot.is-right { width: 70px; margin-left: auto; }
+@keyframes vac-shimmer { from { background-position: 125% 0; } to { background-position: -125% 0; } }
+@media (prefers-reduced-motion: reduce) { .vac-sk { animation-duration: 1.6s; } }
 .vac-card {
   display: flex; flex-direction: column; gap: 10px; text-align: left; cursor: pointer; color: inherit; font: inherit;
   background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 18px 18px 16px;
@@ -5139,9 +5155,6 @@ a.prg-chapter-link, a.prg-chip { text-decoration: none; }
 .vac-pin-back { margin-top: 4px; background: none; border: none; color: var(--prg-text); font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; }
 @media (max-width: 640px) {
   .vac-hero, .vac-item { padding: 20px 18px; }
-  .vac-toolbar { flex-direction: column; align-items: stretch; }
-  .vac-toolbar .vac-pager { justify-content: flex-start; }
-  .vac-bottom { justify-content: center; }
 }
 
 /* ════════════════════════════════════════════════════════════════

@@ -68,6 +68,7 @@ function PinGate({ onPass }) {
 }
 
 // Категорий у вакансии несколько — показываем плашку на каждую
+const titleOf = v => `${v.company || 'Unknown'} + ${v.title}`
 const catsOf = v => (Array.isArray(v.categories) && v.categories.length ? v.categories : [v.category || 'other'])
 
 function CategoryBadges({ vacancy }) {
@@ -120,11 +121,31 @@ function Pagination({ page, pages, onChange, className = '' }) {
   )
 }
 
+// Пока идёт запрос — 12 серых заготовок (4 в ряд, 3 ряда) с бликом, такой же формы, как карточки
+function VacancySkeleton() {
+  return (
+    <div className="vac-grid" aria-busy="true" aria-label="Загружаем вакансии">
+      {Array.from({ length: PAGE_SIZE }, (_, i) => (
+        <div key={i} className="vac-card is-skeleton" aria-hidden="true">
+          <span className="vac-sk vac-sk-badge" />
+          <span className="vac-sk vac-sk-title" />
+          <span className="vac-sk vac-sk-title is-short" />
+          <span className="vac-sk vac-sk-line" />
+          <span className="vac-sk vac-sk-line" />
+          <span className="vac-sk vac-sk-line is-short" />
+          <span className="vac-card-foot"><span className="vac-sk vac-sk-foot" /><span className="vac-sk vac-sk-foot is-right" /></span>
+        </div>
+      ))}
+    </div>
+  )
+}
+
 function VacancyList() {
   const navigate = useNavigate()
   const [params, setParams] = useSearchParams()
   const [data, setData] = useState(null)
   const [error, setError] = useState('')
+  const [loading, setLoading] = useState(true)
 
   // Состояние — в адресе: ?page=2&category=backend,ml. Страницу и фильтр можно открыть ссылкой
   const page = Math.max(parseInt(params.get('page'), 10) || 1, 1)
@@ -136,9 +157,10 @@ function VacancyList() {
     const query = { page, limit: PAGE_SIZE }
     if (categoryParam) query.category = categoryParam
     setError('')
+    setLoading(true)
     api.vacancies(query)
-      .then(d => { if (alive) setData(d) })
-      .catch(e => { if (alive) setError(e.message || 'Не удалось загрузить вакансии') })
+      .then(d => { if (alive) { setData(d); setLoading(false) } })
+      .catch(e => { if (alive) { setError(e.message || 'Не удалось загрузить вакансии'); setLoading(false) } })
     return () => { alive = false }
   }, [page, categoryParam])
 
@@ -173,32 +195,33 @@ function VacancyList() {
               <button key={key} type="button" className={selected.includes(key) ? 'is-active' : ''} aria-pressed={selected.includes(key)} onClick={() => toggle(key)}>{c.label}</button>
             ))}
           </div>
-          <Pagination page={data.page} pages={data.pages} onChange={goPage} className="is-top" />
         </div>
       )}
 
       {error && <div className="prg-empty">{error}</div>}
-      {!data && !error && <p className="prg-loading">Загружаем вакансии…</p>}
-      {data && !hasAny && <div className="prg-empty">Вакансий пока нет — загляни позже.</div>}
-      {data && hasAny && !shown.length && <div className="prg-empty">В выбранных категориях вакансий нет.</div>}
+      {!loading && data && !hasAny && <div className="prg-empty">Вакансий пока нет — загляни позже.</div>}
+      {!loading && data && hasAny && !shown.length && <div className="prg-empty">В выбранных категориях вакансий нет.</div>}
 
-      <div className="vac-grid">
-        {shown.map(v => (
-          <button key={v.id} type="button" className="vac-card" onClick={() => navigate(`/autumn-camp/vacancies/${v.id}`)}>
-            <CategoryBadges vacancy={v} />
-            <span className="vac-card-title">{v.title}</span>
-            <span className="vac-card-desc">{v.description}</span>
-            <span className="vac-card-foot">
-              <span className="vac-card-contact">{v.contact}</span>
-              <span className="vac-card-go">Подробнее →</span>
-            </span>
-          </button>
-        ))}
-      </div>
+      {loading && !error && <VacancySkeleton />}
+      {!loading && (
+        <div className="vac-grid">
+          {shown.map(v => (
+            <button key={v.id} type="button" className="vac-card" onClick={() => navigate(`/autumn-camp/vacancies/${v.id}`)}>
+              <CategoryBadges vacancy={v} />
+              <span className="vac-card-title">{titleOf(v)}</span>
+              <span className="vac-card-desc">{v.description}</span>
+              <span className="vac-card-foot">
+                <span className="vac-card-contact">{v.contact}</span>
+                <span className="vac-card-go">Подробнее →</span>
+              </span>
+            </button>
+          ))}
+        </div>
+      )}
 
       {data && data.pages > 1 && (
         <div className="vac-bottom">
-          <Pagination page={data.page} pages={data.pages} onChange={goPage} className="is-bottom" />
+          <Pagination page={data.page} pages={data.pages} onChange={goPage} />
         </div>
       )}
     </section>
@@ -224,7 +247,7 @@ function VacancyItem({ id }) {
       {v && (
         <article className="vac-item">
           <CategoryBadges vacancy={v} />
-          <h1 className="prg-title">{v.title}</h1>
+          <h1 className="prg-title">{titleOf(v)}</h1>
           <div className="vac-item-desc">{v.description}</div>
           <div className="vac-item-contact">
             <span className="vac-item-contact-label">Контакт для связи</span>

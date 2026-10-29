@@ -608,3 +608,4 @@ a.kpi:hover{border-color:var(--lime-line)}
 
 .vac-cats{display:flex;flex-wrap:wrap;gap:5px;max-width:220px}
 .vac-cat-checks{display:flex;flex-wrap:wrap;gap:10px 18px;padding:6px 0 2px}
+.vac-contact{width:130px;max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}

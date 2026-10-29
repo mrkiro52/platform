@@ -9,12 +9,13 @@ const router = express.Router()
 const VACANCY_CATEGORIES = ['fullstack', 'backend', 'analytics', 'ml', 'security', 'other']
 const DEFAULT_LIMIT = 12
 const MAX_LIMIT = 50
-const LIMITS = { title: 200, description: 20000, contact: 300 }
+const LIMITS = { title: 200, description: 20000, contact: 300, company: 100 }
 
 function clean(body) {
   const title = String(body?.title || '').trim()
   const description = String(body?.description || '').trim()
   const contact = String(body?.contact || '').trim()
+  const company = String(body?.company || '').trim() || 'Unknown'
   // Категорий несколько: categories — массив ключей; одиночное category принимаем для совместимости
   const raw = Array.isArray(body?.categories) ? body.categories : body?.category ? [body.category] : []
   const categories = VACANCY_CATEGORIES.filter(c => raw.includes(c))
@@ -23,9 +24,9 @@ function clean(body) {
   if (!categories.length) return { error: 'Выбери хотя бы одну категорию' }
   if (raw.some(c => !VACANCY_CATEGORIES.includes(c))) return { error: 'Неизвестная категория' }
   for (const [key, max] of Object.entries(LIMITS)) {
-    if ({ title, description, contact }[key].length > max) return { error: `Слишком длинное поле ${key}` }
+    if ({ title, description, contact, company }[key].length > max) return { error: `Слишком длинное поле ${key}` }
   }
-  return { value: { title, description, contact, categories } }
+  return { value: { title, description, contact, company, categories } }
 }
 
 // В ответе категории — массив categories; category — первая из них (для старых клиентов)
@@ -79,8 +80,8 @@ router.get('/:id', verifyToken, (req, res) => {
 router.post('/', requireAdmin, (req, res) => {
   const { error, value } = clean(req.body)
   if (error) return res.status(400).json({ message: error })
-  const r = db.prepare('INSERT INTO vacancies (title, description, category, categories, contact) VALUES (?, ?, ?, ?, ?)')
-    .run(value.title, value.description, value.categories[0], JSON.stringify(value.categories), value.contact)
+  const r = db.prepare('INSERT INTO vacancies (title, description, category, categories, contact, company) VALUES (?, ?, ?, ?, ?, ?)')
+    .run(value.title, value.description, value.categories[0], JSON.stringify(value.categories), value.contact, value.company)
   res.status(201).json(present(db.prepare('SELECT * FROM vacancies WHERE id = ?').get(r.lastInsertRowid)))
 })
 
@@ -88,8 +89,8 @@ router.post('/', requireAdmin, (req, res) => {
 router.put('/:id', requireAdmin, (req, res) => {
   const { error, value } = clean(req.body)
   if (error) return res.status(400).json({ message: error })
-  const r = db.prepare(`UPDATE vacancies SET title = ?, description = ?, category = ?, categories = ?, contact = ?, updated_at = datetime('now') WHERE id = ?`)
-    .run(value.title, value.description, value.categories[0], JSON.stringify(value.categories), value.contact, Number(req.params.id))
+  const r = db.prepare(`UPDATE vacancies SET title = ?, description = ?, category = ?, categories = ?, contact = ?, company = ?, updated_at = datetime('now') WHERE id = ?`)
+    .run(value.title, value.description, value.categories[0], JSON.stringify(value.categories), value.contact, value.company, Number(req.params.id))
   if (!r.changes) return res.status(404).json({ message: 'Вакансия не найдена' })
   res.json(present(db.prepare('SELECT * FROM vacancies WHERE id = ?').get(Number(req.params.id))))
 })
