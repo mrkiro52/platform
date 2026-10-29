@@ -7,6 +7,8 @@ const router = express.Router()
 // Вакансии для участников лагеря. Читать может любой вошедший пользователь,
 // добавлять, менять и удалять — только главный админ.
 const VACANCY_CATEGORIES = ['fullstack', 'backend', 'analytics', 'ml', 'security', 'other']
+const DEFAULT_LIMIT = 12
+const MAX_LIMIT = 50
 const LIMITS = { title: 200, description: 20000, contact: 300 }
 
 function clean(body) {
@@ -35,9 +37,35 @@ function present(row) {
   return { ...row, categories, category: categories[0] }
 }
 
-// GET /api/vacancies — все вакансии, свежие сверху
+// GET /api/vacancies — вакансии, свежие сверху.
+// Без параметров — весь список массивом (им пользуется админка). С page и/или limit —
+// постраничная выдача: { items, total, page, pages, limit, categories }.
+//   page — номер страницы с 1; limit — вакансий на странице (по умолчанию 12, не больше 50);
+//   category — одна или несколько категорий через запятую (category=backend,ml):
+//   вакансия подходит, если в ней есть хотя бы одна из них (условие ИЛИ).
+//   categories в ответе — сколько вакансий в каждой категории среди всех (без учёта фильтра),
+//   по ним фронтенд рисует плашки.
 router.get('/', verifyToken, (req, res) => {
-  res.json(db.prepare('SELECT * FROM vacancies ORDER BY created_at DESC, id DESC').all().map(present))
+  const paged = req.query.page !== undefined || req.query.limit !== undefined || req.query.category !== undefined
+  if (!paged) {
+    return res.json(db.prepare('SELECT * FROM vacancies ORDER BY created_at DESC, id DESC').all().map(present))
+  }
+  const limit = Math.min(Math.max(parseInt(req.query.limit, 10) || DEFAULT_LIMIT, 1), MAX_LIMIT)
+  const wanted = String(req.query.category || '').split(',').map(c => c.trim()).filter(c => VACANCY_CATEGORIES.includes(c))
+
+  const counts = Object.fromEntries(VACANCY_CATEGORIES.map(c => [c, 0]))
+  for (const row of db.prepare('SELECT * FROM vacancies').all().map(present)) {
+    for (const c of row.categories) counts[c] += 1
+  }
+
+  const where = wanted.length ? 'WHERE ' + wanted.map(() => 'categories LIKE ?').join(' OR ') : ''
+  const args = wanted.map(c => `%"${c}"%`)
+  const total = db.prepare(`SELECT COUNT(*) AS n FROM vacancies ${where}`).get(...args).n
+  const pages = Math.max(Math.ceil(total / limit), 1)
+  const page = Math.min(Math.max(parseInt(req.query.page, 10) || 1, 1), pages)
+  const items = db.prepare(`SELECT * FROM vacancies ${where} ORDER BY created_at DESC, id DESC LIMIT ? OFFSET ?`)
+    .all(...args, limit, (page - 1) * limit).map(present)
+  res.json({ items, total, page, pages, limit, categories: counts })
 })
 
 // GET /api/vacancies/:id — одна вакансия

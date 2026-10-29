@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Link, useNavigate, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { api } from '../api'
 
 // Вакансии и контакты для участников лагеря:
@@ -92,20 +92,69 @@ function Contact({ value }) {
   return <a href={href} target="_blank" rel="noopener noreferrer">{v.replace(/^https?:\/\//i, '')}</a>
 }
 
+const PAGE_SIZE = 12
+
+// Номера страниц с многоточиями: 1 … 4 5 [6] 7 8 … 20
+function pageItems(page, pages) {
+  const set = new Set([1, pages, page - 1, page, page + 1])
+  const nums = [...set].filter(n => n >= 1 && n <= pages).sort((a, b) => a - b)
+  const out = []
+  nums.forEach((n, i) => {
+    if (i && n - nums[i - 1] > 1) out.push('gap' + n)
+    out.push(n)
+  })
+  return out
+}
+
+// Пагинация. Одно и то же состояние (page из адреса) рисуется и над списком, и под ним
+function Pagination({ page, pages, onChange, className = '' }) {
+  if (pages <= 1) return <div className={`vac-pager is-empty ${className}`} />
+  return (
+    <nav className={`vac-pager ${className}`} aria-label="Страницы">
+      <button type="button" className="vac-pager-btn" disabled={page <= 1} onClick={() => onChange(page - 1)} aria-label="Предыдущая страница">←</button>
+      {pageItems(page, pages).map(it => typeof it === 'number'
+        ? <button key={it} type="button" className={`vac-pager-btn${it === page ? ' is-active' : ''}`} aria-current={it === page ? 'page' : undefined} onClick={() => onChange(it)}>{it}</button>
+        : <span key={it} className="vac-pager-gap" aria-hidden="true">…</span>)}
+      <button type="button" className="vac-pager-btn" disabled={page >= pages} onClick={() => onChange(page + 1)} aria-label="Следующая страница">→</button>
+    </nav>
+  )
+}
+
 function VacancyList() {
   const navigate = useNavigate()
-  const [list, setList] = useState(null)
+  const [params, setParams] = useSearchParams()
+  const [data, setData] = useState(null)
   const [error, setError] = useState('')
-  const [filter, setFilter] = useState('all')
+
+  // Состояние — в адресе: ?page=2&category=backend,ml. Страницу и фильтр можно открыть ссылкой
+  const page = Math.max(parseInt(params.get('page'), 10) || 1, 1)
+  const selected = (params.get('category') || '').split(',').filter(c => VACANCY_CATEGORIES[c])
+  const categoryParam = selected.join(',')
 
   useEffect(() => {
     let alive = true
-    api.vacancies().then(l => { if (alive) setList(l || []) }).catch(e => { if (alive) setError(e.message || 'Не удалось загрузить вакансии') })
+    const query = { page, limit: PAGE_SIZE }
+    if (categoryParam) query.category = categoryParam
+    setError('')
+    api.vacancies(query)
+      .then(d => { if (alive) setData(d) })
+      .catch(e => { if (alive) setError(e.message || 'Не удалось загрузить вакансии') })
     return () => { alive = false }
-  }, [])
+  }, [page, categoryParam])
 
-  const shown = (list || []).filter(v => filter === 'all' || catsOf(v).includes(filter))
-  const present = new Set((list || []).flatMap(catsOf))
+  const update = (nextPage, nextSelected) => {
+    const p = new URLSearchParams()
+    if (nextPage > 1) p.set('page', String(nextPage))
+    if (nextSelected.length) p.set('category', nextSelected.join(','))
+    setParams(p)
+  }
+  const goPage = n => { update(n, selected); window.scrollTo({ top: 0, behavior: 'smooth' }) }
+  // Смена категорий всегда возвращает на первую страницу
+  const toggle = key => update(1, selected.includes(key) ? selected.filter(c => c !== key) : [...selected, key])
+
+  const counts = data?.categories || {}
+  const shown = data?.items || []
+  const hasAny = data && (data.total > 0 || selected.length > 0 || Object.values(counts).some(n => n > 0))
 
   return (
     <section className="page active prg-page vac-page">
@@ -116,18 +165,22 @@ function VacancyList() {
         <p className="prg-lead">Стажировки и junior-позиции от компаний-партнёров и выпускников лагеря. Открой вакансию, чтобы прочитать описание целиком и написать по контакту.</p>
       </div>
 
-      {list && list.length > 0 && (
-        <div className="vac-filters" role="tablist" aria-label="Категории">
-          <button type="button" className={filter === 'all' ? 'is-active' : ''} onClick={() => setFilter('all')}>Все · {list.length}</button>
-          {Object.entries(VACANCY_CATEGORIES).filter(([key]) => present.has(key)).map(([key, c]) => (
-            <button key={key} type="button" className={filter === key ? 'is-active' : ''} onClick={() => setFilter(key)}>{c.label}</button>
-          ))}
+      {hasAny && (
+        <div className="vac-toolbar">
+          <div className="vac-filters" role="group" aria-label="Категории">
+            <button type="button" className={!selected.length ? 'is-active' : ''} onClick={() => update(1, [])}>Все</button>
+            {Object.entries(VACANCY_CATEGORIES).filter(([key]) => counts[key] > 0 || selected.includes(key)).map(([key, c]) => (
+              <button key={key} type="button" className={selected.includes(key) ? 'is-active' : ''} aria-pressed={selected.includes(key)} onClick={() => toggle(key)}>{c.label}</button>
+            ))}
+          </div>
+          <Pagination page={data.page} pages={data.pages} onChange={goPage} className="is-top" />
         </div>
       )}
 
       {error && <div className="prg-empty">{error}</div>}
-      {!list && !error && <p className="prg-loading">Загружаем вакансии…</p>}
-      {list && !list.length && <div className="prg-empty">Вакансий пока нет — загляни позже.</div>}
+      {!data && !error && <p className="prg-loading">Загружаем вакансии…</p>}
+      {data && !hasAny && <div className="prg-empty">Вакансий пока нет — загляни позже.</div>}
+      {data && hasAny && !shown.length && <div className="prg-empty">В выбранных категориях вакансий нет.</div>}
 
       <div className="vac-grid">
         {shown.map(v => (
@@ -142,6 +195,12 @@ function VacancyList() {
           </button>
         ))}
       </div>
+
+      {data && data.pages > 1 && (
+        <div className="vac-bottom">
+          <Pagination page={data.page} pages={data.pages} onChange={goPage} className="is-bottom" />
+        </div>
+      )}
     </section>
   )
 }

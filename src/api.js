@@ -117,7 +117,7 @@ export const api = {
   // Задания к главам индивидуальных программ октября
   programHomework:       ()                              => req('/api/programs/homework/mine'),
   submitProgramHomework: (direction, chapter, payload)   => req(`/api/programs/homework/${direction}/${chapter}`, { method: 'PUT', body: JSON.stringify(payload) }),
-  vacancies:             ()                              => req('/api/vacancies'),
+  vacancies:             (params = {})                   => req(`/api/vacancies?${new URLSearchParams(params)}`),
   // Знакомства: анкеты, своя анкета, фото, показать / скрыть
   dating:                ()                              => req('/api/dating'),
   saveDating:            (data)                          => req('/api/dating/me', { method: 'PUT', body: JSON.stringify(data) }),
