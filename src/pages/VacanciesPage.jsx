@@ -68,7 +68,7 @@ function PinGate({ onPass }) {
 }
 
 // Категорий у вакансии несколько — показываем плашку на каждую
-const titleOf = v => `${v.company || 'Unknown'} + ${v.title}`
+const titleOf = v => `${v.company || 'Unknown'}: ${v.title}`
 const catsOf = v => (Array.isArray(v.categories) && v.categories.length ? v.categories : [v.category || 'other'])
 
 function CategoryBadges({ vacancy }) {
