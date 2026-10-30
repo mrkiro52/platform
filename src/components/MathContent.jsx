@@ -281,9 +281,87 @@ function CdfFigure() {
   )
 }
 
+// ── Рисунки к занятию 6: статистика ────────────────────────────────────────
+
+// Скошенное распределение (гамма, k = 3): мода 2, медиана ≈ 2,67, среднее 3 — среднее сдвинуто в хвост
+function SkewedFigure() {
+  const px = x => 40 + x * 33, py = v => 170 - v * 330
+  const f = x => (x * x * Math.exp(-x)) / 2
+  const marks = [[2, 'мода', 20], [2.674, 'медиана', 6], [3, 'среднее', 20]]
+  return (
+    <svg className="math-svg" viewBox="0 0 340 200" role="img" aria-label="Скошенное распределение: мода, медиана и среднее">
+      <path d={`${curvePath(f, 0, 9.4, px, py, 0.05)} L${px(9.4)} ${py(0)} L${px(0)} ${py(0)} Z`} fill={ORANGE} fillOpacity="0.16" />
+      <path d={curvePath(f, 0, 9.4, px, py, 0.05)} fill="none" stroke={ORANGE} strokeWidth="2" />
+      <Axes px={px} py={py} x0={0} x1={10} y1={0.3} xLabel="значение" />
+      {marks.map(([x, label, dy], i) => (
+        <g key={label}>
+          <path d={`M${px(x)} ${py(0)} V${py(f(x))}`} stroke={[BLUE, GREEN, ORANGE][i]} strokeWidth="1.6" strokeDasharray="4 3" />
+          <path d={`M${px(x)} ${py(f(x))} V${22 + (i === 1 ? 0 : 0)}`} stroke="currentColor" strokeWidth="0.8" opacity="0.35" />
+          <text x={px(x) + (i === 0 ? -4 : i === 1 ? 4 : 14)} y={18 + (i === 1 ? 14 : 0)} textAnchor={i === 0 ? 'end' : 'start'}
+            fontSize="11" fontFamily="Georgia, serif" fill={[BLUE, GREEN, ORANGE][i]}>{label}</text>
+        </g>
+      ))}
+    </svg>
+  )
+}
+
+// Диаграмма размаха: min, Q1, медиана, Q3, max и выброс; над коробкой отмечен IQR
+function BoxplotFigure() {
+  const px = v => 24 + v * 8.6
+  const y0 = 96, h = 40
+  const ticks = [[2, 'min'], [5, 'Q₁'], [9, 'Me'], [15, 'Q₃'], [20, 'max'], [32, 'выброс']]
+  return (
+    <svg className="math-svg" viewBox="0 0 340 180" role="img" aria-label="Диаграмма размаха с межквартильным размахом и выбросом">
+      <g stroke="currentColor" strokeWidth="1.4" fill="none">
+        <path d={`M${px(2)} ${y0 + h / 2} H${px(5)} M${px(15)} ${y0 + h / 2} H${px(20)}`} />
+        <path d={`M${px(2)} ${y0 + 10} V${y0 + h - 10} M${px(20)} ${y0 + 10} V${y0 + h - 10}`} />
+        <rect x={px(5)} y={y0} width={px(15) - px(5)} height={h} fill={ORANGE} fillOpacity="0.18" stroke={ORANGE} />
+        <path d={`M${px(9)} ${y0} V${y0 + h}`} stroke={ORANGE} strokeWidth="2.6" />
+      </g>
+      <circle cx={px(32)} cy={y0 + h / 2} r="3.6" fill="currentColor" />
+      <g stroke="currentColor" strokeWidth="1" fill="none" opacity="0.7">
+        <path d={`M${px(5)} ${y0 - 18} H${px(15)} M${px(5)} ${y0 - 22} V${y0 - 14} M${px(15)} ${y0 - 22} V${y0 - 14}`} />
+      </g>
+      <text x={px(10)} y={y0 - 26} textAnchor="middle" fontSize="12" fontFamily="Georgia, serif" fill="currentColor">IQR</text>
+      <path d={`M${px(0)} ${y0 + h + 22} H${px(37)}`} stroke="currentColor" strokeWidth="1.2" opacity="0.55" />
+      {ticks.map(([v, t]) => (
+        <g key={t}>
+          <path d={`M${px(v)} ${y0 + h + 19} V${y0 + h + 25}`} stroke="currentColor" strokeWidth="1.2" opacity="0.55" />
+          <text x={px(v)} y={y0 + h + 40} textAnchor="middle" fontSize="11" fontFamily="Georgia, serif" fill="currentColor" opacity="0.8">{t}</text>
+        </g>
+      ))}
+    </svg>
+  )
+}
+
+// Четырнадцать доверительных интервалов вокруг истинного μ: один из них не накрывает его
+function CiCoverageFigure() {
+  const centers = [-0.3, 0.4, -0.5, 0.6, -0.8, 0.1, 1.4, 0.5, -0.6, 0.2, -0.1, 0.7, -0.9, 0.3]
+  const half = 1
+  const px = v => 170 + v * 52, y = i => 36 + i * 16
+  return (
+    <svg className="math-svg" viewBox="0 0 340 268" role="img" aria-label="Четырнадцать доверительных интервалов, один из них не накрывает истинное значение">
+      <path d={`M${px(0)} 22 V${y(13) + 12}`} stroke="currentColor" strokeWidth="1.2" strokeDasharray="4 3" opacity="0.7" />
+      <text x={px(0)} y="14" textAnchor="middle" fontSize="11" fontFamily="Georgia, serif" fill="currentColor">истинное μ</text>
+      {centers.map((c, i) => {
+        const miss = Math.abs(c) > half
+        const col = miss ? '#F85149' : BLUE
+        return (
+          <g key={i} stroke={col} strokeWidth="1.8" fill="none">
+            <path d={`M${px(c - half)} ${y(i)} H${px(c + half)} M${px(c - half)} ${y(i) - 4} V${y(i) + 4} M${px(c + half)} ${y(i) - 4} V${y(i) + 4}`} />
+            <circle cx={px(c)} cy={y(i)} r="2.2" fill={col} stroke="none" />
+          </g>
+        )
+      })}
+      <text x={px(1.4 + half) + 8} y={y(6) + 4} fontSize="11" fontFamily="Georgia, serif" fill="#F85149">← не накрыл μ</text>
+    </svg>
+  )
+}
+
 const FIGURES = {
   binomial: BinomialFigure, uniform: UniformFigure, 'normal-params': NormalParamsFigure,
   'three-sigma': ThreeSigmaFigure, cdf: CdfFigure,
+  skewed: SkewedFigure, boxplot: BoxplotFigure, 'ci-coverage': CiCoverageFigure,
 }
 
 export default function MathBlocks({ blocks }) {
