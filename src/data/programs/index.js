@@ -140,6 +140,7 @@ export const DIRECTIONS = {
       { num: 6, title: 'Теоретическая сводка', sections: 11, load: () => import('./ml-6'), submit: 'soon' },
       { num: 7, title: 'Метод k ближайших соседей (KNN)', sections: 12, load: () => import('./ml-7') },
       { num: 8, title: 'Логистическая регрессия', sections: 15, load: () => import('./ml-8') },
+      { num: 9, title: 'Решающие деревья', sections: 11, load: () => import('./ml-9'), submit: 'soon' },
     ],
   },
   security: {
