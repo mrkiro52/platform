@@ -29,6 +29,7 @@ export const DIRECTIONS = {
       { num: 5, title: 'Математика и статистика', sections: 14, load: () => import('./product-5') },
       // Глава 6 — та же, что глава 6 бизнес-аналитиков
       { num: 6, title: 'A/B-тесты', sections: 7, source: 'business-6', load: () => import('./business-6') },
+      { num: 7, title: 'Продуктовая аналитика на практике', sections: 8, load: () => import('./product-7'), quiz: () => import('./product-7-quiz') },
     ],
   },
   system: {
