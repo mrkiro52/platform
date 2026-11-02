@@ -183,7 +183,10 @@ function VacancyList() {
       <Link className="prg-back" to="/autumn-camp">← Осенний лагерь</Link>
       <div className="vac-hero">
         <span className="prg-tag">Autumn Camp 2026</span>
-        <h1 className="prg-title">Вакансии и контакты</h1>
+        <h1 className="prg-title vac-title">
+          Вакансии и контакты
+          {data?.all > 0 && <span className="vac-total" title="Всего вакансий на платформе">{data.all}</span>}
+        </h1>
         <p className="prg-lead">Стажировки и junior-позиции от компаний-партнёров и выпускников лагеря. Открой вакансию, чтобы прочитать описание целиком и написать по контакту.</p>
       </div>
 

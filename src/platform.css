@@ -5091,6 +5091,8 @@ a.prg-chapter-link, a.prg-chip { text-decoration: none; }
 
 /* Вакансии и контакты (VacanciesPage) */
 .vac-hero { background: radial-gradient(640px 220px at 100% 0%, rgba(255,140,66,0.14), transparent 70%), var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 26px 30px; margin-bottom: 18px; display: flex; flex-direction: column; align-items: flex-start; gap: 10px; }
+.vac-title { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; }
+.vac-total { display: inline-flex; align-items: center; justify-content: center; min-width: 34px; height: 30px; padding: 0 10px; border-radius: 999px; background: rgba(255,140,66,0.14); border: 1px solid rgba(255,140,66,0.35); color: #ff8c42; font-family: var(--font-syne); font-size: 15px; font-weight: 700; letter-spacing: 0; line-height: 1; font-variant-numeric: tabular-nums; }
 .vac-toolbar { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 16px; }
 .vac-toolbar .vac-filters { margin-bottom: 0; flex: 1 1 auto; min-width: 0; }
 .vac-filters { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }

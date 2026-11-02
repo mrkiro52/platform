@@ -45,7 +45,7 @@ function present(row) {
 //   category — одна или несколько категорий через запятую (category=backend,ml):
 //   вакансия подходит, если в ней есть хотя бы одна из них (условие ИЛИ).
 //   categories в ответе — сколько вакансий в каждой категории среди всех (без учёта фильтра),
-//   по ним фронтенд рисует плашки.
+//   по ним фронтенд рисует плашки. all — сколько вакансий размещено всего (без фильтра).
 router.get('/', verifyToken, (req, res) => {
   const paged = req.query.page !== undefined || req.query.limit !== undefined || req.query.category !== undefined
   if (!paged) {
@@ -55,7 +55,8 @@ router.get('/', verifyToken, (req, res) => {
   const wanted = String(req.query.category || '').split(',').map(c => c.trim()).filter(c => VACANCY_CATEGORIES.includes(c))
 
   const counts = Object.fromEntries(VACANCY_CATEGORIES.map(c => [c, 0]))
-  for (const row of db.prepare('SELECT * FROM vacancies').all().map(present)) {
+  const allRows = db.prepare('SELECT * FROM vacancies').all().map(present)
+  for (const row of allRows) {
     for (const c of row.categories) counts[c] += 1
   }
 
@@ -66,7 +67,7 @@ router.get('/', verifyToken, (req, res) => {
   const page = Math.min(Math.max(parseInt(req.query.page, 10) || 1, 1), pages)
   const items = db.prepare(`SELECT * FROM vacancies ${where} ORDER BY created_at DESC, id DESC LIMIT ? OFFSET ?`)
     .all(...args, limit, (page - 1) * limit).map(present)
-  res.json({ items, total, page, pages, limit, categories: counts })
+  res.json({ items, total, all: allRows.length, page, pages, limit, categories: counts })
 })
 
 // GET /api/vacancies/:id — одна вакансия
