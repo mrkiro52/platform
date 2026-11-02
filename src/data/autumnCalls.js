@@ -43,7 +43,12 @@ const OCTOBER_CALLS = [
   { day: 25, topic: 'Работаем на пару с ИИ: как не превратиться в вайбкодера' },
   { day: 31, topic: null },
 ]
-const NOVEMBER_CALLS = [7, 14, 21, 28].map(day => ({ day, topic: null }))
+const NOVEMBER_CALLS = [
+  { day: 7, topic: 'Как составить резюме и разбор резюме студентов' },
+  { day: 14, topic: 'Как рассказать о себе и отвечать на вопросы' },
+  { day: 21, topic: 'Как оформить свои соцсети и аккаунты' },
+  { day: 28, topic: 'Как оформить пет-проекты' },
+]
 
 const CALLS_BY_MONTH = {
   'Сентябрь': SEPTEMBER_CALLS,
