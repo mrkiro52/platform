@@ -144,6 +144,7 @@ export const DIRECTIONS = {
       { num: 7, title: 'Метод k ближайших соседей (KNN)', sections: 12, load: () => import('./ml-7') },
       { num: 8, title: 'Логистическая регрессия', sections: 15, load: () => import('./ml-8') },
       { num: 9, title: 'Решающие деревья', sections: 11, load: () => import('./ml-9'), submit: 'soon' },
+      { num: 10, title: 'Метод опорных векторов (SVM)', sections: 10, load: () => import('./ml-10'), quiz: () => import('./ml-10-quiz') },
     ],
   },
   security: {
