@@ -1258,24 +1258,40 @@ function migrate() {
   // данные — в data/vacancies-2026-11.js. Описание собирается из задач, требований и условий.
   // Вставляем в обратном порядке, чтобы в выдаче первой шла первая из списка.
   // Вакансию с той же ссылкой повторно не добавляем.
+  function addVacancies(list) {
+    const exists = db.prepare('SELECT 1 FROM vacancies WHERE contact = ?')
+    const add = db.prepare('INSERT INTO vacancies (title, description, category, categories, contact, company) VALUES (?, ?, ?, ?, ?, ?)')
+    let n = 0
+    db.transaction(() => {
+      for (const [company, title, cats, url, tasks, reqs, cond] of [...list].reverse()) {
+        if (exists.get(url)) continue
+        const description = `Задачи: ${tasks}.\n\nТребования: ${reqs}.\n\nУсловия: ${cond}.`
+        add.run(title, description, cats[0], JSON.stringify(cats), url, company)
+        n += 1
+      }
+    })()
+    return n
+  }
+
   if (schemaVersion < 42) {
     try {
-      const list = require('./data/vacancies-2026-11.js')
-      const exists = db.prepare('SELECT 1 FROM vacancies WHERE contact = ?')
-      const add = db.prepare('INSERT INTO vacancies (title, description, category, categories, contact, company) VALUES (?, ?, ?, ?, ?, ?)')
-      let n = 0
-      db.transaction(() => {
-        for (const [company, title, cats, url, tasks, reqs, cond] of [...list].reverse()) {
-          if (exists.get(url)) continue
-          const description = `Задачи: ${tasks}.\n\nТребования: ${reqs}.\n\nУсловия: ${cond}.`
-          add.run(title, description, cats[0], JSON.stringify(cats), url, company)
-          n += 1
-        }
-      })()
+      const n = addVacancies(require('./data/vacancies-2026-11.js'))
       db.pragma('user_version = 42')
       console.log(`✅ Migration 42 completed: added ${n} vacancies`)
     } catch (err) {
       console.error('❌ Migration 42 failed:', err.message)
+    }
+  }
+
+  // Migration 43: вторая подборка (ИнфоТеКС, Контур, КОРУС, Моё дело, МТС Банк, AIRI) —
+  // data/vacancies-2026-11b.js. Добавляется после 42, поэтому в выдаче идёт выше неё.
+  if (schemaVersion < 43) {
+    try {
+      const n = addVacancies(require('./data/vacancies-2026-11b.js'))
+      db.pragma('user_version = 43')
+      console.log(`✅ Migration 43 completed: added ${n} vacancies`)
+    } catch (err) {
+      console.error('❌ Migration 43 failed:', err.message)
     }
   }
 }
