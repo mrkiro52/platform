@@ -145,6 +145,8 @@ export const DIRECTIONS = {
       { num: 8, title: 'Логистическая регрессия', sections: 15, load: () => import('./ml-8') },
       { num: 9, title: 'Решающие деревья', sections: 11, load: () => import('./ml-9'), submit: 'soon' },
       { num: 10, title: 'Метод опорных векторов (SVM)', sections: 10, load: () => import('./ml-10'), quiz: () => import('./ml-10-quiz') },
+      { num: 11, title: 'Ансамбли: бэггинг, случайный лес, бустинг, стекинг', sections: 12, load: () => import('./ml-11'), quiz: () => import('./ml-11-quiz') },
+      { num: 12, title: 'Обучение без учителя: кластеризация, PCA, аномалии', sections: 11, load: () => import('./ml-12'), quiz: () => import('./ml-12-quiz') },
     ],
   },
   security: {
