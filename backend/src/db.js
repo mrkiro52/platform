@@ -1253,6 +1253,31 @@ function migrate() {
       console.error('❌ Migration 41 failed:', err.message)
     }
   }
+
+  // Migration 42: конкретные вакансии с карьерных сайтов (Cloud.ru, IBS, Navio, Selecty, МТС и др.),
+  // данные — в data/vacancies-2026-11.js. Описание собирается из задач, требований и условий.
+  // Вставляем в обратном порядке, чтобы в выдаче первой шла первая из списка.
+  // Вакансию с той же ссылкой повторно не добавляем.
+  if (schemaVersion < 42) {
+    try {
+      const list = require('./data/vacancies-2026-11.js')
+      const exists = db.prepare('SELECT 1 FROM vacancies WHERE contact = ?')
+      const add = db.prepare('INSERT INTO vacancies (title, description, category, categories, contact, company) VALUES (?, ?, ?, ?, ?, ?)')
+      let n = 0
+      db.transaction(() => {
+        for (const [company, title, cats, url, tasks, reqs, cond] of [...list].reverse()) {
+          if (exists.get(url)) continue
+          const description = `Задачи: ${tasks}.\n\nТребования: ${reqs}.\n\nУсловия: ${cond}.`
+          add.run(title, description, cats[0], JSON.stringify(cats), url, company)
+          n += 1
+        }
+      })()
+      db.pragma('user_version = 42')
+      console.log(`✅ Migration 42 completed: added ${n} vacancies`)
+    } catch (err) {
+      console.error('❌ Migration 42 failed:', err.message)
+    }
+  }
 }
 
 migrate()
