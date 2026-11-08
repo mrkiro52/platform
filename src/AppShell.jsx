@@ -168,6 +168,9 @@ export default function AppShell({ user, onLogout }) {
             <Route path="/autumn-camp/program" element={<AutumnProgramPage user={user} />} />
             <Route path="/autumn-camp/program/:chapter" element={<AutumnProgramPage user={user} />} />
             <Route path="/autumn-camp/program/:chapter/task" element={<AutumnProgramPage user={user} task />} />
+            <Route path="/autumn-camp/block/:block" element={<AutumnProgramPage user={user} />} />
+            <Route path="/autumn-camp/block/:block/:chapter" element={<AutumnProgramPage user={user} />} />
+            <Route path="/autumn-camp/block/:block/:chapter/task" element={<AutumnProgramPage user={user} task />} />
             <Route path="/autumn-camp/onboarding-autumn-2026" element={<AutumnOnboardingPage />} />
             <Route path="/autumn-camp/vacancies" element={<VacanciesPage />} />
             <Route path="/autumn-camp/vacancies/:id" element={<VacanciesPage />} />

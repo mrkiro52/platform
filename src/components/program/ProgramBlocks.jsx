@@ -103,7 +103,9 @@ function Files({ b }) {
 
 // `код` — моноширинным шрифтом. Курсив — только _слово_ на границе слов, чтобы не ломать created_at и __name__.
 // Формула \( … \) стоит первой в альтернативе: подчёркивания внутри LaTeX курсивом не считаются.
-const RICH = /(\\\(.+?\\\)|`[^`\n]+`|\*\*[^*]+\*\*|(?<![\p{L}\p{N}_])_[^_\n]+_(?![\p{L}\p{N}_]))/gu
+// Ссылка — [текст](https://…), открывается в новой вкладке.
+const RICH = /(\\\(.+?\\\)|\[[^\]\n]+\]\(https?:\/\/[^)\s]+\)|`[^`\n]+`|\*\*[^*]+\*\*|(?<![\p{L}\p{N}_])_[^_\n]+_(?![\p{L}\p{N}_]))/gu
+const LINK = /^\[([^\]\n]+)\]\((https?:\/\/[^)\s]+)\)$/
 
 export function Tex({ tex, display = false }) {
   const html = katex.renderToString(tex, { displayMode: display, throwOnError: false, strict: false, output: 'html' })
@@ -117,6 +119,8 @@ export function Rich({ text }) {
       {li > 0 && <br />}
       {line.split(RICH).map((part, i) => {
         if (part.startsWith('\\(') && part.endsWith('\\)')) return <Tex key={i} tex={part.slice(2, -2)} />
+        const link = part.startsWith('[') && part.match(LINK)
+        if (link) return <a key={i} href={link[2]} target="_blank" rel="noopener noreferrer" className="prg-link">{link[1]}</a>
         if (part.startsWith('`') && part.endsWith('`') && part.length > 2) return <code key={i} className="prg-inline-code">{part.slice(1, -1)}</code>
         if (part.startsWith('**') && part.endsWith('**') && part.length > 4) return <strong key={i}>{part.slice(2, -2)}</strong>
         if (part.startsWith('_') && part.endsWith('_') && part.length > 2) return <em key={i}>{part.slice(1, -1)}</em>
@@ -199,6 +203,46 @@ function Block({ b }) {
             </div>
           ))}
         </div>
+      )
+    }
+    // Массив по шагам: каждая строка — состояние, ptr — подписи-указатели над ячейками
+    // (например { 0: 'L', 5: 'R' }), hl — подсвеченные ячейки, dim — приглушённые.
+    // { t: 'array', caption?, index?: true, rows: [{ label?, cells: [...], ptr?, hl?, dim?, note? }] }
+    case 'array': {
+      const width = Math.max(...b.rows.map(r => r.cells.length))
+      return (
+        <figure className="prg-arr">
+          <div className="prg-arr-scroll">
+            {b.index !== false && (
+              <div className="prg-arr-row is-index">
+                <span className="prg-arr-label" />
+                <div className="prg-arr-cells">
+                  {Array.from({ length: width }, (_, i) => <span key={i} className="prg-arr-idx">{i}</span>)}
+                </div>
+              </div>
+            )}
+            {b.rows.map((r, ri) => (
+              <div key={ri} className="prg-arr-row">
+                <span className="prg-arr-label">{r.label}</span>
+                <div className="prg-arr-cells">
+                  {r.cells.map((c, i) => {
+                    const cls = ['prg-arr-cell']
+                    if (r.hl?.includes(i)) cls.push('is-hl')
+                    if (r.dim?.includes(i)) cls.push('is-dim')
+                    return (
+                      <span key={i} className={cls.join(' ')}>
+                        {r.ptr?.[i] && <span className="prg-arr-ptr">{r.ptr[i]}</span>}
+                        {String(c)}
+                      </span>
+                    )
+                  })}
+                </div>
+                {r.note && <span className="prg-arr-note"><Rich text={r.note} /></span>}
+              </div>
+            ))}
+          </div>
+          {b.caption && <figcaption><Rich text={b.caption} /></figcaption>}
+        </figure>
       )
     }
     case 'plot':

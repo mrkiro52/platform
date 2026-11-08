@@ -6,7 +6,7 @@ import HomeworkReview from '../components/HomeworkReview'
 import { AUTUMN_MONTHS, CALL_MONTHS } from '../data/autumnCalls'
 import { MATH_SESSIONS, nextMathSession, dayOf } from '../data/mathCourse'
 import { materialsOf } from '../data/math'
-import { PROGRAM_CONTACT, PROGRAM_PERIOD, directionOf } from '../data/programs'
+import { NOVEMBER_BLOCKS, PROGRAM_CONTACT, PROGRAM_PERIOD, directionOf } from '../data/programs'
 
 // Даты созвонов мини-курса кружками. Ближайший выделен, прошедшие и будущие —
 // приглушённые.
@@ -127,6 +127,33 @@ function GroupCalls() {
   )
 }
 
+// Ноябрь — не недели, а блоки, одинаковые для всех участников лагеря
+const BLOCKS_MONTH = 'Ноябрь'
+
+function chaptersWord(n) {
+  const m10 = n % 10, m100 = n % 100
+  if (m10 === 1 && m100 !== 11) return 'глава'
+  if (m10 >= 2 && m10 <= 4 && (m100 < 12 || m100 > 14)) return 'главы'
+  return 'глав'
+}
+
+function BlocksPlaques({ onOpen }) {
+  return (
+    <div className="wk-blocks">
+      {Object.values(NOVEMBER_BLOCKS).map((b, i) => (
+        <div key={b.key} className="wk-program is-block">
+          <span className="wk-program-tag">Блок {i + 1}</span>
+          <span className="wk-program-title">{b.name}</span>
+          <span className="wk-program-sub">{b.chapters.length} {chaptersWord(b.chapters.length)}</span>
+          <button type="button" className="wk-program-open" onClick={() => onOpen(b.key)}>
+            Открыть <span aria-hidden="true">→</span>
+          </button>
+        </div>
+      ))}
+    </div>
+  )
+}
+
 // Октябрь — не пять недель, а один месяц индивидуальной программы
 // по направлению, которое выбрал участник
 const PROGRAM_MONTH = 'Октябрь'
@@ -155,10 +182,15 @@ function ProgramPlaque({ user, onOpen }) {
   )
 }
 
-function WeekMaterials({ onOpenWeek, currentSlug, user, onOpenProgram }) {
+function WeekMaterials({ onOpenWeek, currentSlug, user, onOpenProgram, onOpenBlock }) {
   return (
     <div className="wk-grid">
-      {AUTUMN_WEEK_MONTHS.map(month => month.label === PROGRAM_MONTH ? (
+      {AUTUMN_WEEK_MONTHS.map(month => month.label === BLOCKS_MONTH ? (
+        <div key={month.label} className="wk-month">
+          <div className="wk-month-label">{month.label}</div>
+          <BlocksPlaques onOpen={onOpenBlock} />
+        </div>
+      ) : month.label === PROGRAM_MONTH ? (
         <div key={month.label} className="wk-month">
           <div className="wk-month-label">{month.label}</div>
           <ProgramPlaque user={user} onOpen={onOpenProgram} />
@@ -257,14 +289,14 @@ export default function AutumnCampPage({ user }) {
         <div className="camp-main">
           <Block
             slot="materials"
-            title="Материалы по неделям"
+            title="Материалы лагеря"
             action={(
               <a href="/autumn-camp/upload-homework" target="_blank" rel="noopener" className="hw-submit-btn">
                 Сдать дз
               </a>
             )}
           >
-            <WeekMaterials onOpenWeek={slug => navigate(`/autumn-camp/${slug}`)} currentSlug={currentSlug} user={user} onOpenProgram={() => navigate('/autumn-camp/program')} />
+            <WeekMaterials onOpenWeek={slug => navigate(`/autumn-camp/${slug}`)} currentSlug={currentSlug} user={user} onOpenProgram={() => navigate('/autumn-camp/program')} onOpenBlock={key => navigate(`/autumn-camp/block/${key}`)} />
           </Block>
 
           <Block slot="review" title="Проверка домашних заданий">
