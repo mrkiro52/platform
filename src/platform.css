@@ -5805,3 +5805,13 @@ a.cs-lesson:hover { border-color: color-mix(in srgb, var(--c) 60%, transparent);
 /* Ноябрь: две плашки блоков (карьера и алгособес) вместо недель, друг под другом */
 .wk-blocks { flex: 1; display: flex; flex-direction: column; gap: 8px; }
 .wk-program.is-block { flex: 1; }
+/* Экспресс-главы блока: две кнопки в шапке обзора */
+.prg-express { display: flex; flex-direction: column; gap: 8px; margin-top: 4px; }
+.prg-express-label { font-size: 13px; color: var(--text-tertiary); }
+.prg-express-row { display: flex; flex-wrap: wrap; gap: 10px; }
+.prg-express-btn { cursor: pointer; font: inherit; display: flex; flex-direction: column; align-items: flex-start; gap: 2px; padding: 11px 18px; border-radius: var(--radius-md); background: var(--prg); border: 1px solid var(--prg); color: #101014; text-align: left; transition: filter .15s, transform .15s; }
+.prg-express-btn:hover { filter: brightness(1.08); transform: translateY(-1px); }
+.prg-express-name { font-weight: 800; font-size: 14.5px; }
+.prg-express-meta { font-size: 12px; font-weight: 600; opacity: .75; }
+@media (max-width: 600px) { .prg-express-btn { flex: 1 1 100%; } }
+@media (prefers-reduced-motion: reduce) { .prg-express-btn:hover { transform: none; } }

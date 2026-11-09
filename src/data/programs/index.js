@@ -6,6 +6,7 @@
 // оформляют задание в файле и присылают в личные сообщения (PROGRAM_CONTACT);
 // у задания главы может быть свой способ сдачи (assignment.submit, например 'trainer').
 // extra — дополнительные главы вне основной нумерации (key вместо num, label вместо «Глава N»).
+// express — такие же главы, но показываются кнопками в шапке обзора (экспресс-версии блока).
 // video — запись встречи по главе (ссылка на YouTube): кнопка в карточке главы и в шапке конспекта.
 // tracks — глава с выбором языка: студент выбирает трек, разделы трека идут перед общими (combineTrack).
 
@@ -213,6 +214,11 @@ export const NOVEMBER_BLOCKS = {
     base: '/autumn-camp/block/algo',
     submit: 'self',
     chapters: ALGO_TOPICS.map(([num, title, sections]) => ({ num, title, sections, load: () => import(`./algo-${num}.js`) })),
+    // Экспресс-главы для тех, у кого нет времени на весь блок: кнопки в шапке блока
+    express: [
+      { key: 'base10', label: 'Самые базовые 10', title: '10 задач — 10 базовых паттернов', sections: 12, load: () => import('./algo-base10.js') },
+      { key: 'base30', label: 'Самые базовые 30', title: '30 задач — 20 паттернов', sections: 22, load: () => import('./algo-base30.js') },
+    ],
   },
 }
 
@@ -237,7 +243,7 @@ export function combineTrack(base, track) {
 export function chapterRef(meta) { return String(meta.key ?? meta.num) }
 export function chapterName(meta) { return meta.label || `Глава ${meta.num}` }
 export function findChapter(dir, ref) {
-  return [...dir.chapters, ...(dir.extra || [])].find(c => chapterRef(c) === String(ref)) || null
+  return [...dir.chapters, ...(dir.extra || []), ...(dir.express || [])].find(c => chapterRef(c) === String(ref)) || null
 }
 
 export function taskKind(dir, meta, chapter) {

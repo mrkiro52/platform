@@ -137,6 +137,7 @@ function Overview({ dir }) {
           <h1 className="prg-title">{dir.name}</h1>
           <p className="prg-lead">{dir.lead || `${dir.goal}. Программа состоит из глав: у каждой есть конспект с теорией по разделам и задание к главе${dir.practice ? `, а ещё ${dir.practice}` : ''}.`}</p>
           {!dir.base && <ContactNote />}
+          {dir.express?.length > 0 && <ExpressButtons dir={dir} />}
         </div>
         {dir.interview && <InterviewPanel data={dir.interview} />}
       </div>
@@ -161,6 +162,24 @@ function Overview({ dir }) {
         </>
       )}
     </section>
+  )
+}
+
+// Кнопки экспресс-глав в шапке блока: короткие версии для тех, у кого мало времени
+function ExpressButtons({ dir }) {
+  const navigate = useNavigate()
+  return (
+    <div className="prg-express">
+      <span className="prg-express-label">Мало времени? Начни с короткой версии:</span>
+      <div className="prg-express-row">
+        {dir.express.map(ch => (
+          <button key={ch.key} type="button" className="prg-express-btn" onClick={() => navigate(`${basePath(dir)}/${ch.key}`)}>
+            <span className="prg-express-name">{ch.label}</span>
+            <span className="prg-express-meta">{ch.title}</span>
+          </button>
+        ))}
+      </div>
+    </div>
   )
 }
 
