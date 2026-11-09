@@ -2,3 +2,4 @@ node_modules/
 kiro.db
 backend/data/
 .env
+dist-ssr/

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { isoOf } from '../../lib/dashEvents'
 
 // Таймер фокуса по технике помодоро. Время окончания хранится в браузере,
@@ -60,7 +60,6 @@ export default function FocusTimer() {
   const [now, setNow] = useState(Date.now())
   const [stats, setStats] = useState(todayStats)
   const [justFinished, setJustFinished] = useState(false)
-  const titleRef = useRef(document.title)
 
   const current = PRESETS.find(p => p.id === preset) || PRESETS[0]
   const total = (current.minutes ?? customMin) * 60
@@ -95,12 +94,15 @@ export default function FocusTimer() {
     if (!silent) beep()
   }, [running, remaining, endsAt, current.focus, total])
 
-  // Оставшееся время во вкладке браузера, пока таймер идёт
+  // Оставшееся время во вкладке браузера, пока таймер идёт. Заголовок страницы
+  // запоминаем в момент запуска и возвращаем при остановке или уходе со страницы.
   useEffect(() => {
-    const original = titleRef.current
-    if (running) document.title = `${mmss(remaining)} · ${current.focus ? 'фокус' : 'перерыв'}`
-    else document.title = original
+    if (!running) return
+    const original = document.title
     return () => { document.title = original }
+  }, [running])
+  useEffect(() => {
+    if (running) document.title = `${mmss(remaining)} · ${current.focus ? 'фокус' : 'перерыв'}`
   }, [running, remaining, current.focus])
 
   const start = () => {

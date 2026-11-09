@@ -1,0 +1,21 @@
+# KIRO PLATFORM — публичны только лендинг, вход и регистрация; остальное закрыто авторизацией
+User-agent: *
+Disallow: /dashboard
+Disallow: /library
+Disallow: /links
+Disallow: /profile
+Disallow: /trainings
+Disallow: /wall
+Disallow: /u/
+Disallow: /messages
+Disallow: /dating
+Disallow: /courses
+Disallow: /notifications
+Disallow: /likebezy
+Disallow: /antireels
+Disallow: /autumn-camp
+Disallow: /announcements
+Disallow: /api/
+Disallow: /admin
+
+Sitemap: https://kiroplatform.ru/sitemap.xml

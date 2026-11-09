@@ -3,23 +3,80 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>KIRO PLATFORM — закрытая платформа для тех, кто идёт в IT</title>
-  <meta name="description" content="Соцсеть для разработчиков, библиотека конспектов и видеозаписей, тренажёры, онлайн-тесты, AntiReels и закрытая база вакансий, стажировок и ресурсов. Доступ по приглашению."/>
-  <meta name="theme-color" content="#08090c"/>
+  <title>KIRO PLATFORM — всё айти в одном месте</title>
+  <meta name="description" content="Айти-платформа комьюнити KIRO TEAM: конспекты и материалы, тренажёры по SQL и Python, подготовка к собеседованиям, вакансии и онлайн IT-лагерь KIRO IT CAMP."/>
+  <meta name="robots" content="index, follow"/>
+  <link rel="canonical" href="https://kiroplatform.ru/"/>
+  <meta name="theme-color" content="#08080A"/>
+
+  <!-- Превью ссылки в мессенджерах и соцсетях (Telegram, VK, WhatsApp, Slack) -->
   <meta property="og:type" content="website"/>
-  <meta property="og:title" content="KIRO PLATFORM — закрытая платформа для тех, кто идёт в IT"/>
-  <meta property="og:description" content="Соцсеть для разработчиков, конспекты и видео, тренажёры, онлайн-тесты, AntiReels и закрытая база вакансий и стажировок. Доступ по приглашению."/>
   <meta property="og:site_name" content="KIRO PLATFORM"/>
+  <meta property="og:locale" content="ru_RU"/>
+  <meta property="og:url" content="https://kiroplatform.ru/"/>
+  <meta property="og:title" content="KIRO PLATFORM — всё айти в одном месте"/>
+  <meta property="og:description" content="Айти-платформа нового поколения: материалы, тренажёры, подготовка к собеседованиям, вакансии и онлайн IT-лагерь KIRO IT CAMP."/>
+  <meta property="og:image" content="https://kiroplatform.ru/og-image.jpg"/>
+  <meta property="og:image:secure_url" content="https://kiroplatform.ru/og-image.jpg"/>
+  <meta property="og:image:type" content="image/jpeg"/>
+  <meta property="og:image:width" content="1200"/>
+  <meta property="og:image:height" content="630"/>
+  <meta property="og:image:alt" content="KIRO PLATFORM — айти-платформа нового поколения. Всё айти в одном месте"/>
   <meta name="twitter:card" content="summary_large_image"/>
+  <meta name="twitter:title" content="KIRO PLATFORM — всё айти в одном месте"/>
+  <meta name="twitter:description" content="Айти-платформа нового поколения: материалы, тренажёры, подготовка к собеседованиям, вакансии и онлайн IT-лагерь."/>
+  <meta name="twitter:image" content="https://kiroplatform.ru/og-image.jpg"/>
+  <meta name="twitter:image:alt" content="KIRO PLATFORM — всё айти в одном месте"/>
+  <link rel="image_src" href="https://kiroplatform.ru/og-image.jpg"/>
+
+  <!-- Иконки и манифест -->
+  <link rel="icon" href="/favicon.ico" sizes="any"/>
   <link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
   <link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32"/>
+  <link rel="icon" href="/icon-192.png" type="image/png" sizes="192x192"/>
   <link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
-  <link rel="preconnect" href="https://fonts.googleapis.com"/>
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-  <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;800;900&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <link rel="manifest" href="/site.webmanifest"/>
+
+  <!-- Разметка для поисковиков: организация и сайт -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": "https://kiroplatform.ru/#organization",
+        "name": "KIRO TEAM",
+        "alternateName": "KIRO PLATFORM",
+        "url": "https://kiroplatform.ru/",
+        "logo": "https://kiroplatform.ru/icon-512.png",
+        "image": "https://kiroplatform.ru/og-image.jpg",
+        "description": "Комьюнити KIRO TEAM и айти-платформа: материалы, тренажёры, подготовка к собеседованиям и онлайн IT-лагерь KIRO IT CAMP.",
+        "sameAs": ["https://t.me/kiro_team", "https://www.instagram.com/kkhanill/"]
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://kiroplatform.ru/#website",
+        "name": "KIRO PLATFORM",
+        "alternateName": "KIRO",
+        "url": "https://kiroplatform.ru/",
+        "inLanguage": "ru-RU",
+        "publisher": { "@id": "https://kiroplatform.ru/#organization" }
+      }
+    ]
+  }
+  </script>
+
+  <!-- Предрендеренный лендинг в #root показываем только гостю на «/»; на остальных адресах он скрыт до запуска React -->
+  <style>.no-prerender #root > .lp { display: none; }</style>
 </head>
 <body>
-  <div id="root"></div>
+  <script>
+    try {
+      if (location.pathname === '/' && !localStorage.getItem('kiro_user')) document.body.classList.add('landing-page')
+      else document.documentElement.classList.add('no-prerender')
+    } catch (e) { document.documentElement.classList.add('no-prerender') }
+  </script>
+  <div id="root"><!--prerender--></div>
   <script type="module" src="/src/main.jsx"></script>
 </body>
 </html>

@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import '../landing.css'
 
 // Лендинг для гостей: одна секция в стиле платформы — шапка с логотипом и
@@ -15,8 +15,6 @@ const FEATURES = [
 ]
 
 export default function Landing() {
-  const navigate = useNavigate()
-
   useEffect(() => {
     document.body.classList.add('landing-page')
     return () => document.body.classList.remove('landing-page')
@@ -26,7 +24,7 @@ export default function Landing() {
     <div className="lp">
       <header className="lp-nav">
         <span className="lp-logo">KIRO PLATFORM</span>
-        <button type="button" className="btn-primary lp-nav-btn" onClick={() => navigate('/login')}>Войти</button>
+        <Link to="/login" className="btn-primary lp-nav-btn">Войти</Link>
       </header>
 
       <main className="lp-hero">
@@ -42,8 +40,8 @@ export default function Landing() {
             {FEATURES.map(f => <li key={f}>{f}</li>)}
           </ul>
           <div className="lp-cta">
-            <button type="button" className="btn-primary lp-cta-btn" onClick={() => navigate('/login')}>Войти</button>
-            <button type="button" className="lp-cta-btn lp-cta-btn--ghost" onClick={() => navigate('/register')}>Зарегистрироваться</button>
+            <Link to="/login" className="btn-primary lp-cta-btn">Войти</Link>
+            <Link to="/register" className="lp-cta-btn lp-cta-btn--ghost">Зарегистрироваться</Link>
           </div>
         </div>
       </main>

@@ -1,9 +1,12 @@
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useCallback, useEffect, lazy, Suspense } from 'react'
 import { Routes, Route, Navigate, useNavigate } from 'react-router-dom'
 import LoginPage from './pages/Login'
 import RegisterPage from './pages/Register'
 import Landing from './pages/Landing'
-import AppShell from './AppShell'
+import { usePageMeta } from './lib/pageMeta'
+
+// Платформа грузится отдельным чанком: гостю на лендинге, входе и регистрации она не нужна
+const AppShell = lazy(() => import('./AppShell'))
 import { api } from './api'
 import { endAnalyticsSession } from './lib/analytics'
 
@@ -125,6 +128,8 @@ export default function App() {
     navigate('/login')
   }, [navigate])
 
+  usePageMeta()
+
   return (
     <Routes>
       {/* Гостя на "/" встречает лендинг; залогиненного сразу уводим в дэшборд */}
@@ -139,7 +144,7 @@ export default function App() {
       } />
       <Route path="/*" element={
         user
-          ? <AppShell user={user} onLogout={handleLogout} />
+          ? <Suspense fallback={null}><AppShell user={user} onLogout={handleLogout} /></Suspense>
           : <Navigate to="/login" replace />
       } />
     </Routes>
