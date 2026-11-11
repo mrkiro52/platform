@@ -186,22 +186,37 @@ const COMPANY_GROUPS = [
   ['nonit', 'IT‑отделы вне IT', 'ритейл, транспорт, промышленность, финансы'],
 ]
 const PAGE_SIZE = 10
+const PAGE_WINDOW = 10 // сколько номеров страниц видно сразу
 
 function Companies({ data }) {
   const [group, setGroup] = useState('mid')
-  const [shown, setShown] = useState(PAGE_SIZE)
+  const [page, setPage] = useState(1)
   const [q, setQ] = useState('')
-  const [onlyAcc, setOnlyAcc] = useState(false)
   const total = COMPANY_GROUPS.reduce((n, [k]) => n + data.companies[k].length, 0)
   const rows = useMemo(() => {
     const needle = q.trim().toLowerCase()
     return data.companies[group].filter(c =>
-      (!onlyAcc || c.accredited) &&
-      (!needle || [c.name, c.about, c.city, ...(c.skills || [])].join(' ').toLowerCase().includes(needle)))
-  }, [data, group, q, onlyAcc])
-  // Любая смена группы или фильтра возвращает к первой десятке
-  useEffect(() => { setShown(PAGE_SIZE) }, [group, q, onlyAcc])
-  const visible = rows.slice(0, shown)
+      !needle || [c.name, c.about, c.city, ...(c.skills || [])].join(' ').toLowerCase().includes(needle))
+  }, [data, group, q])
+  // Смена группы или поиска возвращает на первую страницу
+  useEffect(() => { setPage(1) }, [group, q])
+  const pages = Math.max(1, Math.ceil(rows.length / PAGE_SIZE))
+  const current = Math.min(page, pages)
+  const visible = rows.slice((current - 1) * PAGE_SIZE, current * PAGE_SIZE)
+  // Номера показываем десятками: 1–10, 11–20 и так далее
+  const windowStart = Math.floor((current - 1) / PAGE_WINDOW) * PAGE_WINDOW + 1
+  const windowEnd = Math.min(pages, windowStart + PAGE_WINDOW - 1)
+  const numbers = []
+  for (let n = windowStart; n <= windowEnd; n++) numbers.push(n)
+  const goTo = (n) => {
+    setPage(Math.min(pages, Math.max(1, n)))
+    document.getElementById('itm-company-top')?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+  }
+  const pageBtn = (active, disabled) => ({
+    minWidth: 36, height: 36, padding: '0 10px', borderRadius: 8, fontSize: 13.5, fontWeight: 600, fontFamily: MONO,
+    background: active ? ACCENT : 'var(--bg-secondary)', color: active ? '#08080A' : 'var(--text-secondary)',
+    border: `1px solid ${active ? ACCENT : 'var(--border-color)'}`, cursor: disabled ? 'not-allowed' : 'pointer', opacity: disabled ? 0.4 : 1,
+  })
 
   return (
     <div style={{ margin: '18px 0' }}>
@@ -220,15 +235,11 @@ function Companies({ data }) {
           }}>{label} · {data.companies[key].length}</button>
         ))}
       </div>
-      <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap', alignItems: 'center', marginBottom: 12 }}>
+      <div id="itm-company-top" style={{ marginBottom: 12, scrollMarginTop: 80 }}>
         <input id="itm-company-search" value={q} onChange={e => setQ(e.target.value)} placeholder="Поиск: Python, Казань, безопасность…" style={{
-          flex: '1 1 240px', minWidth: 0, background: 'var(--bg-tertiary)', border: '1px solid var(--border-color)', borderRadius: 8,
-          padding: '9px 12px', color: 'var(--text-primary)', fontSize: 14, fontFamily: 'inherit',
+          width: '100%', maxWidth: 420, background: 'var(--bg-tertiary)', border: '1px solid var(--border-color)', borderRadius: 8,
+          padding: '9px 12px', color: 'var(--text-primary)', fontSize: 14, fontFamily: 'inherit', boxSizing: 'border-box',
         }} />
-        <label style={{ display: 'flex', gap: 8, alignItems: 'center', color: 'var(--text-secondary)', fontSize: 13.5, cursor: 'pointer' }}>
-          <input id="itm-company-acc" type="checkbox" checked={onlyAcc} onChange={e => setOnlyAcc(e.target.checked)} style={{ accentColor: ACCENT }} />
-          только аккредитованные
-        </label>
       </div>
       <div style={{ overflowX: 'auto', border: '1px solid var(--border-color)', borderRadius: 10 }}>
         <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13.5, minWidth: 720 }}>
@@ -259,27 +270,28 @@ function Companies({ data }) {
               </tr>
             ))}
             {rows.length === 0 && (
-              <tr><td colSpan={5} style={{ padding: 18, color: 'var(--text-tertiary)' }}>Ничего не нашлось. Попробуй другое слово или сними фильтр.</td></tr>
+              <tr><td colSpan={5} style={{ padding: 18, color: 'var(--text-tertiary)' }}>Ничего не нашлось. Попробуй другое слово.</td></tr>
             )}
           </tbody>
         </table>
       </div>
       {rows.length > 0 && (
-        <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap', alignItems: 'center', marginTop: 12 }}>
-          <span style={{ color: 'var(--text-tertiary)', fontFamily: MONO, fontSize: 12.5 }}>
-            Показано {visible.length} из {rows.length}
+        <nav aria-label="Страницы списка компаний" style={{ display: 'flex', gap: 6, flexWrap: 'wrap', alignItems: 'center', marginTop: 12 }}>
+          {pages > PAGE_WINDOW && (
+            <button type="button" disabled={windowStart === 1} onClick={() => goTo(windowStart - PAGE_WINDOW)} title="На 10 страниц назад" aria-label="На 10 страниц назад" style={pageBtn(false, windowStart === 1)}>«</button>
+          )}
+          <button type="button" disabled={current === 1} onClick={() => goTo(current - 1)} title="Предыдущая страница" aria-label="Предыдущая страница" style={pageBtn(false, current === 1)}>‹</button>
+          {numbers.map(n => (
+            <button key={n} type="button" onClick={() => goTo(n)} aria-current={n === current ? 'page' : undefined} style={pageBtn(n === current, false)}>{n}</button>
+          ))}
+          <button type="button" disabled={current === pages} onClick={() => goTo(current + 1)} title="Следующая страница" aria-label="Следующая страница" style={pageBtn(false, current === pages)}>›</button>
+          {pages > PAGE_WINDOW && (
+            <button type="button" disabled={windowEnd === pages} onClick={() => goTo(windowStart + PAGE_WINDOW)} title="На 10 страниц вперёд" aria-label="На 10 страниц вперёд" style={pageBtn(false, windowEnd === pages)}>»</button>
+          )}
+          <span style={{ color: 'var(--text-tertiary)', fontFamily: MONO, fontSize: 12.5, marginLeft: 8 }}>
+            Страница {current} из {pages} · компаний: {rows.length}
           </span>
-          {shown < rows.length && (
-            <button type="button" onClick={() => setShown(n => n + PAGE_SIZE)} style={{ ...btn, padding: '9px 16px', fontSize: 13.5, background: 'var(--bg-secondary)', border: `1px solid ${ACCENT_LINE}`, color: ACCENT_HI, cursor: 'pointer' }}>
-              Показать ещё {Math.min(PAGE_SIZE, rows.length - shown)}
-            </button>
-          )}
-          {shown > PAGE_SIZE && (
-            <button type="button" onClick={() => setShown(PAGE_SIZE)} style={{ ...btn, padding: '9px 16px', fontSize: 13.5, background: 'none', border: '1px solid var(--border-color)', color: 'var(--text-secondary)', cursor: 'pointer' }}>
-              Свернуть
-            </button>
-          )}
-        </div>
+        </nav>
       )}
       <P style={{ fontSize: 12.5, color: 'var(--text-tertiary)' }}>
         Число в последнем столбце — все открытые вакансии компании на площадке, не только IT; ссылка ведёт на них. Прямого показателя «мало откликов» ни одна площадка не публикует:
@@ -867,7 +879,7 @@ export default function ItMarketLikbez({ user, onBack }) {
       <Gate camp={camp} title="Список из 468 компаний с открытыми вакансиями" inside={[
         '247 средних IT‑компаний, 77 крупных, но не раскрученных, 34 малые команды и стартапа, 110 IT‑отделов вне IT',
         'У каждой: сайт, город, описание, отметка об аккредитации и ссылка на открытые вакансии',
-        'Поиск по стеку и городу, фильтр по аккредитованным',
+        'Поиск по стеку и городу, по 10 компаний на странице',
       ]}>
         {data => <Companies data={data} />}
       </Gate>
