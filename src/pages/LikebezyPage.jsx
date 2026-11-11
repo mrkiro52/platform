@@ -10,8 +10,21 @@ const PythonOopLikbez = lazy(() => import('./likebezy/PythonOopLikbez'))
 const ItCareer2026Likbez = lazy(() => import('./likebezy/ItCareer2026Likbez'))
 const BackendInterviewLikbez = lazy(() => import('./likebezy/BackendInterviewLikbez'))
 const AvitoMlTestLikbez = lazy(() => import('./likebezy/AvitoMlTestLikbez'))
+const ItMarketLikbez = lazy(() => import('./likebezy/ItMarketLikbez'))
 
 const LIKEBEZY = [
+  {
+    id: 'it-market-2026',
+    title: 'Рынок IT‑профессий: кого нанимают и как туда попасть',
+    subtitle: 'Анализ рынка на ноябрь 2026: спрос, зарплаты, навыки ML/AI, списки компаний и каналов, план поиска работы за неделю',
+    tag: 'Карьера',
+    level: 'Новичок → Middle',
+    time: '~40 мин',
+    chapters: 12,
+    questions: 0,
+    topics: ['Спрос и зарплаты', 'Навыки ML/AI', 'Новые профессии', 'Компании в тени', 'Telegram‑каналы', 'Работа за неделю'],
+    component: ItMarketLikbez,
+  },
   {
     id: 'avito-ml-test',
     title: 'Отборочный тест Avito ML Bootcamp',
@@ -141,7 +154,7 @@ const TAG_COLORS = {
   'Архитектура':{ bg: 'rgba(236,72,153,0.1)',  border: 'rgba(236,72,153,0.25)', text: '#f472b6' },
 }
 
-export default function LikebezyPage() {
+export default function LikebezyPage({ user }) {
   const { id } = useParams()
   const navigate = useNavigate()
 
@@ -151,7 +164,7 @@ export default function LikebezyPage() {
       const Component = item.component
       return (
         <Suspense fallback={<p style={{ color: 'var(--text-secondary)', padding: '20px 0' }}>Загрузка...</p>}>
-          <Component onBack={() => navigate('/likebezy')} />
+          <Component user={user} onBack={() => navigate('/likebezy')} />
         </Suspense>
       )
     }

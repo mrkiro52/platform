@@ -1,0 +1,2033 @@
+{
+ "updated": "2026-11-12",
+ "source": "Хабр Карьера, раздел «Компании» с фильтром «есть вакансии»",
+ "companies": {
+  "small": [
+   {
+    "name": "Джетлин",
+    "site": "https://jetlyn.ru/",
+    "habr": "https://career.habr.com/companies/jetlyn",
+    "about": "Заказная и продуктовая разработка, ML/AI-решения под ключ, внедрение и поддержка программного обеспечения",
+    "city": "Пенза",
+    "size": "10 до 100",
+    "vacancies": 11,
+    "accredited": true,
+    "skills": [
+     "SQL",
+     "Python",
+     "PostgreSQL",
+     "LLM"
+    ]
+   },
+   {
+    "name": "ITK academy",
+    "site": "https://itk.academy/",
+    "habr": "https://career.habr.com/companies/itk-academy",
+    "about": "Цифровая образовательная платформа",
+    "city": "Таганрог",
+    "size": "10 до 100",
+    "vacancies": 8,
+    "accredited": true,
+    "skills": [
+     "SQL",
+     "Git",
+     "Базы данных",
+     "Docker"
+    ]
+   },
+   {
+    "name": "Реактив",
+    "site": "https://rktv.ru/",
+    "habr": "https://career.habr.com/companies/rktv",
+    "about": "Сложная заказная разработка: проектируем и разрабатываем системы учёта и контроля, реестры и корпоративные решения",
+    "city": "Пермь",
+    "size": "10 до 100",
+    "vacancies": 4,
+    "accredited": true,
+    "skills": [
+     "Linux",
+     "XML",
+     "PostgreSQL",
+     "PHP"
+    ]
+   },
+   {
+    "name": "Реверслаб",
+    "site": "https://reverselab.ru",
+    "habr": "https://career.habr.com/companies/reverselab",
+    "about": "Команда специалистов в области кибербезопасности",
+    "city": "Москва",
+    "size": "10 до 100",
+    "vacancies": 4,
+    "accredited": true,
+    "skills": []
+   },
+   {
+    "name": "IRLIX",
+    "site": "",
+    "habr": "https://career.habr.com/companies/irlix",
+    "about": "Объединяя специалистов с инженерным подходом, мы создаем продукты и решения для людей",
+    "city": "Ульяновск",
+    "size": "10 до 100",
+    "vacancies": 2,
+    "accredited": true,
+    "skills": [
+     "Java",
+     "SQL",
+     "Git",
+     "Docker"
+    ]
+   },
+   {
+    "name": "MobileUp",
+    "site": "http://mobileup.ru",
+    "habr": "https://career.habr.com/companies/mobileup",
+    "about": "Цифровые продукты 24",
+    "city": "Санкт-Петербург",
+    "size": "10 до 100",
+    "vacancies": 2,
+    "accredited": true,
+    "skills": []
+   },
+   {
+    "name": "Spectr",
+    "site": "https://digital-spectr.ru",
+    "habr": "https://career.habr.com/companies/digital-spectr",
+    "about": "Разработка цифровых сервисов",
+    "city": "Пермь",
+    "size": "10 до 100",
+    "vacancies": 2,
+    "accredited": true,
+    "skills": []
+   },
+   {
+    "name": "Aveds.ru",
+    "site": "https://aveds.ru/",
+    "habr": "https://career.habr.com/companies/aveds",
+    "about": "Digital-агентство полного цикла в сфере e-commerce, мобильных и веб-приложений",
+    "city": "Чебоксары",
+    "size": "До 10",
+    "vacancies": 1,
+    "accredited": true,
+    "skills": [
+     "Разработка мобильных приложений",
+     "Flutter",
+     "Dart",
+     "Git"
+    ]
+   },
+   {
+    "name": "ProSpace",
+    "site": "https://prospace.tech/",
+    "habr": "https://career.habr.com/companies/prospace-tech",
+    "about": "Мы создаем цифровые решения, которые помогают добиваться целей",
+    "city": "Ступино",
+    "size": "10 до 100",
+    "vacancies": 1,
+    "accredited": true,
+    "skills": []
+   },
+   {
+    "name": "WMX",
+    "site": "https://wmx.pro/",
+    "habr": "https://career.habr.com/companies/wmx",
+    "about": "Информационная безопасность",
+    "city": "Москва",
+    "size": "10 до 100",
+    "vacancies": 1,
+    "accredited": true,
+    "skills": [
+     "Linux",
+     "Docker",
+     "Kubernetes",
+     "SDL/SDLC"
+    ]
+   },
+   {
+    "name": "ООО \"М-ТЕХ\"",
+    "site": "https://m-tex.pro/",
+    "habr": "https://career.habr.com/companies/m-tex",
+    "about": "IT-решения для бизнеса и государственных учреждений",
+    "city": "Москва",
+    "size": "10 до 100",
+    "vacancies": 1,
+    "accredited": true,
+    "skills": [
+     "Git",
+     "Python",
+     "Docker",
+     "REST"
+    ]
+   },
+   {
+    "name": "Эплекс",
+    "site": "https://eplex.ru/",
+    "habr": "https://career.habr.com/companies/eplex",
+    "about": "Eplex — AI-платформа, которая превращает закупки в конкурентное преимущество",
+    "city": "Казань",
+    "size": "10 до 100",
+    "vacancies": 1,
+    "accredited": true,
+    "skills": []
+   },
+   {
+    "name": "СПЕЦПО",
+    "site": "https://specpo.ru",
+    "habr": "https://career.habr.com/companies/spetspo-1",
+    "about": "Информационная безопасность",
+    "city": "Санкт-Петербург",
+    "size": "10 до 100",
+    "vacancies": 5,
+    "accredited": false,
+    "skills": []
+   },
+   {
+    "name": "AppRoute",
+    "site": "https://approute.io",
+    "habr": "https://career.habr.com/companies/approute",
+    "about": "b2b маркетплейс цифровых товаров",
+    "city": "",
+    "size": "До 10",
+    "vacancies": 2,
+    "accredited": false,
+    "skills": [
+     "Python",
+     "PostgreSQL",
+     "Docker",
+     "REST"
+    ]
+   },
+   {
+    "name": "Ledger Lab",
+    "site": "https://ledgerlab.one/",
+    "habr": "https://career.habr.com/companies/ledgerlab",
+    "about": "Cтроим ИТ-продукты для финансового рынка с нуля",
+    "city": "Москва",
+    "size": "10 до 100",
+    "vacancies": 2,
+    "accredited": false,
+    "skills": [
+     "Scrum",
+     "SQL",
+     "Python"
+    ]
+   },
+   {
+    "name": "Strikt",
+    "site": "https://strikt.ai",
+    "habr": "https://career.habr.com/companies/strikt",
+    "about": "Разработка стартапов с искусственным интеллектом",
+    "city": "Москва",
+    "size": "10 до 100",
+    "vacancies": 2,
+    "accredited": false,
+    "skills": [
+     "SQL",
+     "Python",
+     "Git",
+     "PostgreSQL"
+    ]
+   },
+   {
+    "name": "Synapse AI",
+    "site": "https://synapsseai.ru/",
+    "habr": "https://career.habr.com/companies/synapsseai",
+    "about": "Интеллектуальная платформа для анализа, оптимизации бизнес-процессов с использованием ИИ",
+    "city": "",
+    "size": "До 10",
+    "vacancies": 2,
+    "accredited": false,
+    "skills": []
+   },
+   {
+    "name": "AYROSA",
+    "site": "http://ayrosa.dev",
+    "habr": "https://career.habr.com/companies/ayrosa-agency",
+    "about": "Разработка и техническая поддержка сайтов, интернет-маркетинг",
+    "city": "Самара",
+    "size": "10 до 100",
+    "vacancies": 1,
+    "accredited": false,
+    "skills": [
+     "SQL",
+     "Python",
+     "PostgreSQL",
+     "Docker"
+    ]
+   },
+   {
+    "name": "Custom Product Builder inc.",
+    "site": "https://cpbplatform.com/",
+    "habr": "https://career.habr.com/companies/cpbplatform",
+    "about": "CPB (Custom Product Builder) is a platform for creating and selling customizable products in e-commerce",
+    "city": "Сан-Франциско и район залива",
+    "size": "10 до 100",
+    "vacancies": 1,
+    "accredited": false,
+    "skills": []
+   },
+   {
+    "name": "EME",
+    "site": "https://www.eme-wms.ru",
+    "habr": "https://career.habr.com/companies/eme",
+    "about": "Разработка программного обеспечения и крупные проекты в логистике",
+    "city": "Москва",
+    "size": "10 до 100",
+    "vacancies": 1,
+    "accredited": false,
+    "skills": []
+   },
+   {
+    "name": "Emilius Agency",
+    "site": "https://emilius.agency/",
+    "habr": "https://career.habr.com/companies/emilius-agency",
+    "about": "Агентство по разработке сайтов и диджитал маркетингу",
+    "city": "Москва",
+    "size": "До 10",
+    "vacancies": 1,
+    "accredited": false,
+    "skills": [
+     "Ведение переговоров",
+     "Базы данных"
+    ]
+   },
+   {
+    "name": "Empire's Battle",
+    "site": "https://empiresbattle.com",
+    "habr": "https://career.habr.com/companies/empiresbattle",
+    "about": "Компания разработчик одноименной игры Empire's Battle",
+    "city": "",
+    "size": "До 10",
+    "vacancies": 1,
+    "accredited": false,
+    "skills": []
+   },
+   {
+    "name": "Jet Admin",
+    "site": "https://jetadmin.io/",
+    "habr": "https://career.habr.com/companies/jetadmin",
+    "about": "Инструмент для создания гибкого бэкофиса",
+    "city": "Москва",
+    "size": "10 до 100",
+    "vacancies": 1,
+    "accredited": false,
+    "skills": []
+   },
+   {
+    "name": "MakeDifference",
+    "site": "https://makediff.dev/",
+    "habr": "https://career.habr.com/companies/makediff",
+    "about": "Создаем веб-проекты для стартапов и крупных корпораций",
+    "city": "",
+    "size": "10 до 100",
+    "vacancies": 1,
+    "accredited": false,
+    "skills": []
+   },
+   {
+    "name": "MiOps",
+    "site": "http://miops.dev",
+    "habr": "https://career.habr.com/companies/miops",
+    "about": "Разработка ПО",
+    "city": "Москва",
+    "size": "До 10",
+    "vacancies": 1,
+    "accredited": false,
+    "skills": []
+   },
+   {
+    "name": "Project ×",
+    "site": "https://projectxbeta.com",
+    "habr": "https://career.habr.com/companies/projectxbeta",
+    "about": "AI-платформа для полного цикла творческого производства",
+    "city": "",
+    "size": "До 10",
+    "vacancies": 1,
+    "accredited": false,
+    "skills": [
+     "Flutter",
+     "NestJS"
+    ]
+   },
+   {
+    "name": "SR",
+    "site": "https://silentroom.ai/",
+    "habr": "https://career.habr.com/companies/srm",
+    "about": "Текстовая среда с ai чатом",
+    "city": "",
+    "size": "До 10",
+    "vacancies": 1,
+    "accredited": false,
+    "skills": [
+     "Английский язык",
+     "PostgreSQL",
+     "React",
+     "TypeScript"
+    ]
+   },
+   {
+    "name": "UX Feedback",
+    "site": "https://uxfeedback.ru",
+    "habr": "https://career.habr.com/companies/uxfeedback",
+    "about": "Платформа для изучения клиентского опыта: помогаем компаниям услышать «голос клиента»",
+    "city": "Селятино, пгт",
+    "size": "10 до 100",
+    "vacancies": 1,
+    "accredited": false,
+    "skills": []
+   },
+   {
+    "name": "Wiregate",
+    "site": "https://wiregate.io/",
+    "habr": "https://career.habr.com/companies/wiregate",
+    "about": "Разработка и поддержка веб-сайтов и мобильных приложений на международном рынке",
+    "city": "Подгорица",
+    "size": "10 до 100",
+    "vacancies": 1,
+    "accredited": false,
+    "skills": [
+     "React",
+     "Git",
+     "Docker",
+     "Linux"
+    ]
+   },
+   {
+    "name": "YoloPrice",
+    "site": "https://yoloprice.com/career",
+    "habr": "https://career.habr.com/companies/yoloprice",
+    "about": "YoloPrice — это embeddable e-commerce платформа, которая встраивается в сторонние мобильные приложения и берет на себя к",
+    "city": "",
+    "size": "10 до 100",
+    "vacancies": 1,
+    "accredited": false,
+    "skills": [
+     "Kotlin",
+     "Kotlin Multiplatform",
+     "Google Firebase",
+     "Python"
+    ]
+   },
+   {
+    "name": "Авто Эксперт",
+    "site": "https://autoexpert.vc/",
+    "habr": "https://career.habr.com/companies/autoexpert",
+    "about": "Сервис для комплексной онлайн-проверки автомобилей",
+    "city": "Москва",
+    "size": "До 10",
+    "vacancies": 1,
+    "accredited": false,
+    "skills": []
+   },
+   {
+    "name": "Артис",
+    "site": "https://it-artis.ru",
+    "habr": "https://career.habr.com/companies/it-artis",
+    "about": "Информационная безопасность",
+    "city": "Санкт-Петербург",
+    "size": "10 до 100",
+    "vacancies": 1,
+    "accredited": false,
+    "skills": []
+   },
+   {
+    "name": "КУПРО АВТО",
+    "site": "https://www.qupro.ru",
+    "habr": "https://career.habr.com/companies/qupro",
+    "about": "Автомобильный классифайд",
+    "city": "Москва",
+    "size": "До 10",
+    "vacancies": 1,
+    "accredited": false,
+    "skills": []
+   },
+   {
+    "name": "ПлеядаТех",
+    "site": "https://pleiadatech.ru/",
+    "habr": "https://career.habr.com/companies/pleiadatech",
+    "about": "Разработка компьютерного программного обеспечения",
+    "city": "Красногорск",
+    "size": "До 10",
+    "vacancies": 1,
+    "accredited": false,
+    "skills": []
+   }
+  ],
+  "mid": [
+   {
+    "name": "Extyl",
+    "site": "https://www.extyl-pro.ru/",
+    "habr": "https://career.habr.com/companies/extyl",
+    "about": "Поддержка и развитие ИТ-систем любого масштаба",
+    "city": "Москва",
+    "size": "100 до 1000",
+    "vacancies": 28,
+    "accredited": true,
+    "skills": [
+     "SQL",
+     "PostgreSQL",
+     "REST",
+     "Git"
+    ]
+   },
+   {
+    "name": "ИТ-компания «Лоция»",
+    "site": "http://loodsen.ru",
+    "habr": "https://career.habr.com/companies/loodsen",
+    "about": "Создаем ИТ-решения для бизнеса, наращиваем экспертизу, развиваем команду",
+    "city": "Москва",
+    "size": "100 до 1000",
+    "vacancies": 27,
+    "accredited": true,
+    "skills": [
+     "Linux",
+     "SQL",
+     "Docker",
+     "Kubernetes"
+    ]
+   },
+   {
+    "name": "AGIMA",
+    "site": "https://www.agima.ru",
+    "habr": "https://career.habr.com/companies/agima",
+    "about": "Полносервисное интерактивное агентство с собственным продакшном",
+    "city": "Москва",
+    "size": "100 до 1000",
+    "vacancies": 11,
+    "accredited": true,
+    "skills": [
+     "SQL",
+     "Python",
+     "PHP",
+     "Git"
+    ]
+   },
+   {
+    "name": "Astrum Entertainment",
+    "site": "https://astrum-entertainment.ru/",
+    "habr": "https://career.habr.com/companies/astrum-entertainment",
+    "about": "Лидирующий издатель и разработчик игр в России",
+    "city": "",
+    "size": "100 до 1000",
+    "vacancies": 10,
+    "accredited": true,
+    "skills": [
+     "SQL",
+     "Git",
+     "Python"
+    ]
+   },
+   {
+    "name": "Action tech",
+    "site": "https://action.tech/",
+    "habr": "https://career.habr.com/companies/action-tech",
+    "about": "Мы превращаем продукты компании в современные цифровые СМИ и интернет-сервисы",
+    "city": "Москва",
+    "size": "100 до 1000",
+    "vacancies": 8,
+    "accredited": true,
+    "skills": [
+     "Linux",
+     "PostgreSQL",
+     "Docker",
+     "Git"
+    ]
+   },
+   {
+    "name": "Базис",
+    "site": "https://basistech.ru/",
+    "habr": "https://career.habr.com/companies/basistech",
+    "about": "Ведущий российский разработчик программных продуктов для оказания облачных услуг и платформ динамической инфраструктуры",
+    "city": "Москва",
+    "size": "100 до 1000",
+    "vacancies": 7,
+    "accredited": true,
+    "skills": [
+     "Linux",
+     "Kubernetes",
+     "Docker",
+     "Golang"
+    ]
+   },
+   {
+    "name": "Фарпост",
+    "site": "https://www.farpost.ru",
+    "habr": "https://career.habr.com/companies/farpost",
+    "about": "Ведущая IT-компания Дальнего Востока",
+    "city": "Владивосток",
+    "size": "100 до 1000",
+    "vacancies": 5,
+    "accredited": true,
+    "skills": [
+     "SQL",
+     "Python",
+     "Deep Learning",
+     "OLAP"
+    ]
+   },
+   {
+    "name": "EGAR",
+    "site": "http://egar.ru",
+    "habr": "https://career.habr.com/companies/egar",
+    "about": "Российская компания, специализирующаяся в области разработки программного обеспечения для финансовых рынков.",
+    "city": "Москва",
+    "size": "100 до 1000",
+    "vacancies": 4,
+    "accredited": true,
+    "skills": [
+     "Postman",
+     "SQL",
+     "PostgreSQL",
+     "SOAP"
+    ]
+   },
+   {
+    "name": "CINIMEX",
+    "site": "http://www.cinimex.ru/",
+    "habr": "https://career.habr.com/companies/cinimex",
+    "about": "Разработка, внедрение и обслуживание сложных программных решений мирового уровня",
+    "city": "Москва",
+    "size": "100 до 1000",
+    "vacancies": 3,
+    "accredited": true,
+    "skills": [
+     "SQL",
+     "PostgreSQL",
+     "Python",
+     "Базы данных"
+    ]
+   },
+   {
+    "name": "GRI",
+    "site": "https://itgri.ru/",
+    "habr": "https://career.habr.com/companies/itgri",
+    "about": "Создаем технологии, которые двигают бизнес вперед",
+    "city": "Москва",
+    "size": "100 до 1000",
+    "vacancies": 3,
+    "accredited": true,
+    "skills": [
+     "Python",
+     "Разработка под 1С",
+     "SQL",
+     "PostgreSQL"
+    ]
+   },
+   {
+    "name": "Navio",
+    "site": "https://navio.auto",
+    "habr": "https://career.habr.com/companies/navio",
+    "about": "Разработчик технологии автономного вождения, совместимой с различными видами транспорта",
+    "city": "Москва",
+    "size": "100 до 1000",
+    "vacancies": 3,
+    "accredited": true,
+    "skills": [
+     "C++",
+     "Python",
+     "Linux",
+     "Машинное обучение"
+    ]
+   },
+   {
+    "name": "Raft Digital Solutions",
+    "site": "https://raftds.ru/",
+    "habr": "https://career.habr.com/companies/raft",
+    "about": "Разрабатываем AI-решения, которые освобождают от рутины и делают ИИ надежным помощником для бизнеса",
+    "city": "Ярославль",
+    "size": "100 до 1000",
+    "vacancies": 3,
+    "accredited": true,
+    "skills": [
+     "Kubernetes",
+     "Docker",
+     "Python",
+     "LLM"
+    ]
+   },
+   {
+    "name": "deeplay",
+    "site": "https://deeplay.io",
+    "habr": "https://career.habr.com/companies/deeplay",
+    "about": "Разработка в области онлайн-игровой индустрии",
+    "city": "Санкт-Петербург",
+    "size": "100 до 1000",
+    "vacancies": 3,
+    "accredited": true,
+    "skills": [
+     "SQL",
+     "Python",
+     "Linux",
+     "Java"
+    ]
+   },
+   {
+    "name": "ИТ Контакт",
+    "site": "https://itcontact.ru/",
+    "habr": "https://career.habr.com/companies/itcontact",
+    "about": "Разрабатываем продукты для цифровой трансформации ипотечного кредитования",
+    "city": "Санкт-Петербург",
+    "size": "100 до 1000",
+    "vacancies": 3,
+    "accredited": true,
+    "skills": [
+     "Английский язык",
+     "SQL",
+     "Docker",
+     "Grafana"
+    ]
+   },
+   {
+    "name": "DIS Group",
+    "site": "http://www.dis-group.ru",
+    "habr": "https://career.habr.com/companies/dis-group",
+    "about": "Инновационные решения в области управления данными, бизнес-аналитики, защиты информации",
+    "city": "Москва",
+    "size": "100 до 1000",
+    "vacancies": 2,
+    "accredited": true,
+    "skills": [
+     "Linux",
+     "SQL",
+     "C++",
+     "PostgreSQL"
+    ]
+   },
+   {
+    "name": "Globus",
+    "site": "https://globus-ltd.ru/",
+    "habr": "https://career.habr.com/companies/globus-ltdcom",
+    "about": "Разработка и интеграция сложных корпоративных систем",
+    "city": "Москва",
+    "size": "100 до 1000",
+    "vacancies": 2,
+    "accredited": true,
+    "skills": []
+   },
+   {
+    "name": "SpectrumData",
+    "site": "https://spectrumdata.ru",
+    "habr": "https://career.habr.com/companies/spectrumdata",
+    "about": "Решения для бизнеса по управлению рисками на основе больших данных",
+    "city": "Екатеринбург",
+    "size": "100 до 1000",
+    "vacancies": 2,
+    "accredited": true,
+    "skills": [
+     "Git",
+     "SQL",
+     "YouTrack"
+    ]
+   },
+   {
+    "name": "YCLIENTS",
+    "site": "https://www.yclients.ru/",
+    "habr": "https://career.habr.com/companies/yclients",
+    "about": "Онлайн-запись и автоматизация",
+    "city": "",
+    "size": "100 до 1000",
+    "vacancies": 2,
+    "accredited": true,
+    "skills": [
+     "PHP",
+     "Laravel",
+     "Symfony",
+     "Flutter"
+    ]
+   },
+   {
+    "name": "ГК Неолант",
+    "site": "http://www.neolant.group",
+    "habr": "https://career.habr.com/companies/neolant",
+    "about": "Программные решения для коммерческих и государственных организаций атомной и и нефтегазовой отраслей",
+    "city": "Москва",
+    "size": "100 до 1000",
+    "vacancies": 2,
+    "accredited": true,
+    "skills": [
+     "TypeScript",
+     "React",
+     "GraphQL",
+     "REST"
+    ]
+   },
+   {
+    "name": "Directum",
+    "site": "https://www.directum.ru",
+    "habr": "https://career.habr.com/companies/directum-ru",
+    "about": "Мы разрабатываем программные продукты и сервисы для управления цифровыми процессами и документами",
+    "city": "Ижевск",
+    "size": "100 до 1000",
+    "vacancies": 1,
+    "accredited": true,
+    "skills": [
+     "C#",
+     ".NET",
+     "Разработка продукта",
+     ".NET Core"
+    ]
+   },
+   {
+    "name": "SENSE",
+    "site": "https://sense-it.ru/",
+    "habr": "https://career.habr.com/companies/sense-group",
+    "about": "Технологический партнёр крупного бизнеса",
+    "city": "Москва",
+    "size": "100 до 1000",
+    "vacancies": 1,
+    "accredited": true,
+    "skills": [
+     "Подбор специалистов",
+     "Рекрутмент",
+     "Обработка резюме",
+     "Поиск талантов"
+    ]
+   },
+   {
+    "name": "Правое полушарие Интроверта",
+    "site": "https://artforintrovert.ru",
+    "habr": "https://career.habr.com/companies/artforintrovert",
+    "about": "Платформа гуманитарных знаний. Университетские лекции без похода в университет",
+    "city": "Санкт-Петербург",
+    "size": "100 до 1000",
+    "vacancies": 1,
+    "accredited": true,
+    "skills": [
+     "PostgreSQL",
+     "MongoDB",
+     "Kubernetes",
+     "Apache Kafka"
+    ]
+   },
+   {
+    "name": "QSOFT",
+    "site": "http://qsoft.ru",
+    "habr": "https://career.habr.com/companies/qsoft",
+    "about": "Лидер в разработке интегрированных и высоконагруженных интернет-решений",
+    "city": "Москва",
+    "size": "100 до 1000",
+    "vacancies": 2,
+    "accredited": false,
+    "skills": []
+   },
+   {
+    "name": "Marfatech",
+    "site": "https://marfa-tech.com/",
+    "habr": "https://career.habr.com/companies/marfa-tech",
+    "about": "Продуктовая IT-компания",
+    "city": "Москва",
+    "size": "100 до 1000",
+    "vacancies": 1,
+    "accredited": false,
+    "skills": [
+     "SQL",
+     "Vue.js",
+     "MySQL",
+     "PHP"
+    ]
+   }
+  ],
+  "large": [
+   {
+    "name": "IBS",
+    "site": "http://www.ibs.ru/",
+    "habr": "https://career.habr.com/companies/ibs",
+    "about": "Здесь ты имеешь значение. Мечтай, думай, создавай в IBS",
+    "city": "Москва",
+    "size": "1000 до 5000",
+    "vacancies": 19,
+    "accredited": true,
+    "skills": [
+     "SQL",
+     "PostgreSQL",
+     "Java",
+     "Git"
+    ]
+   },
+   {
+    "name": "ИнфоТеКС",
+    "site": "https://career.infotecs.ru/",
+    "habr": "https://career.habr.com/companies/infotecs",
+    "about": "Российский разработчик сертифицированного ПО в сфере информационной безопасности",
+    "city": "Москва",
+    "size": "1000 до 5000",
+    "vacancies": 16,
+    "accredited": true,
+    "skills": [
+     "Linux",
+     "C++",
+     "Docker",
+     "Python"
+    ]
+   },
+   {
+    "name": "Bell Integrator",
+    "site": "http://www.bellintegrator.ru",
+    "habr": "https://career.habr.com/companies/bellintegrator",
+    "about": "Международная компания, специализирующаяся на консалтинге, технологических услугах и аутсорсинге",
+    "city": "Москва",
+    "size": "1000 до 5000",
+    "vacancies": 8,
+    "accredited": true,
+    "skills": [
+     "SQL",
+     "Apache Kafka",
+     "PostgreSQL",
+     "Java"
+    ]
+   },
+   {
+    "name": "SimbirSoft",
+    "site": "http://www.simbirsoft.com",
+    "habr": "https://career.habr.com/companies/simbirsoft",
+    "about": "Разработка программного обеспечения под заказ",
+    "city": "Ульяновск",
+    "size": "1000 до 5000",
+    "vacancies": 8,
+    "accredited": true,
+    "skills": [
+     "SQL",
+     "PostgreSQL",
+     "Python",
+     "Docker"
+    ]
+   },
+   {
+    "name": "SM Lab",
+    "site": "https://см-лаб.рф/",
+    "habr": "https://career.habr.com/companies/smlab",
+    "about": "Разрабатываем продукты, поддерживаем сервисы и обеспечиваем надежность решений для крупных ритейлеров",
+    "city": "Москва",
+    "size": "1000 до 5000",
+    "vacancies": 7,
+    "accredited": true,
+    "skills": [
+     "SQL",
+     "Python",
+     "Git",
+     "Oracle"
+    ]
+   },
+   {
+    "name": "Aston",
+    "site": "https://astondevs.ru/",
+    "habr": "https://career.habr.com/companies/aston",
+    "about": "Аутсорсинговая компания, ориентированная на разработку ПО",
+    "city": "Москва",
+    "size": "1000 до 5000",
+    "vacancies": 6,
+    "accredited": true,
+    "skills": [
+     "SQL",
+     "Apache Kafka",
+     "Python",
+     "REST"
+    ]
+   },
+   {
+    "name": "Группа Rubytech",
+    "site": "https://rubytech.ru/",
+    "habr": "https://career.habr.com/companies/rubytech",
+    "about": "Производитель программно-аппаратных комплексов и разработчик технологий для высоконагруженных ИТ-инфраструктур.",
+    "city": "Москва",
+    "size": "1000 до 5000",
+    "vacancies": 6,
+    "accredited": true,
+    "skills": [
+     "Python",
+     "SQL",
+     "Greenplum",
+     "Linux"
+    ]
+   },
+   {
+    "name": "Naumen",
+    "site": "http://naumen.ru",
+    "habr": "https://career.habr.com/companies/naumen",
+    "about": "Ведущий российский разработчик ПО",
+    "city": "Москва",
+    "size": "1000 до 5000",
+    "vacancies": 5,
+    "accredited": true,
+    "skills": [
+     "SQL",
+     "Docker",
+     "Python",
+     "Git"
+    ]
+   },
+   {
+    "name": "БФТ - Холдинг",
+    "site": "https://bft.ru/",
+    "habr": "https://career.habr.com/companies/bft-com",
+    "about": "Российский вендор, разработчик программных продуктов и заказных решений",
+    "city": "Москва",
+    "size": "1000 до 5000",
+    "vacancies": 5,
+    "accredited": true,
+    "skills": [
+     "SQL",
+     "PostgreSQL",
+     "Apache Kafka",
+     "REST"
+    ]
+   },
+   {
+    "name": "ГНИВЦ",
+    "site": "",
+    "habr": "https://career.habr.com/companies/gnivc",
+    "about": "Разрабатываем передовые информационные системы для государственных и коммерческих нужд",
+    "city": "Москва",
+    "size": "1000 до 5000",
+    "vacancies": 5,
+    "accredited": true,
+    "skills": [
+     "SQL",
+     "Linux",
+     "PostgreSQL",
+     "Python"
+    ]
+   },
+   {
+    "name": "IT_One",
+    "site": "https://www.it-one.ru/",
+    "habr": "https://career.habr.com/companies/it-one",
+    "about": "Стратегический партнер по цифровизации российского бизнеса и государственных органов",
+    "city": "Москва",
+    "size": "1000 до 5000",
+    "vacancies": 3,
+    "accredited": true,
+    "skills": [
+     "SQL",
+     "PostgreSQL",
+     "REST",
+     "Docker"
+    ]
+   },
+   {
+    "name": "БЮРО 1440",
+    "site": "https://1440.space/",
+    "habr": "https://career.habr.com/companies/bureau1440",
+    "about": "Разработчик и оператор низкоорбитальной спутниковой группировки связи",
+    "city": "Москва",
+    "size": "1000 до 5000",
+    "vacancies": 3,
+    "accredited": true,
+    "skills": [
+     "Python",
+     "Linux",
+     "Docker",
+     "PostgreSQL"
+    ]
+   },
+   {
+    "name": "РТК-ЦОД",
+    "site": "https://rt-dc.ru/",
+    "habr": "https://career.habr.com/companies/rt-dc",
+    "about": "ИТ сервис-провайдер полного цикла  Наша компания — высокотехнологичный кластер с многолетней историей.",
+    "city": "Москва",
+    "size": "1000 до 5000",
+    "vacancies": 3,
+    "accredited": true,
+    "skills": [
+     "Linux",
+     "Python",
+     "Zabbix",
+     "MySQL"
+    ]
+   },
+   {
+    "name": "КОРУС Консалтинг",
+    "site": "https://korusconsulting.ru",
+    "habr": "https://career.habr.com/companies/korusconsulting",
+    "about": "Одна из крупнейших российских ИТ-компаний",
+    "city": "Санкт-Петербург",
+    "size": "1000 до 5000",
+    "vacancies": 2,
+    "accredited": true,
+    "skills": [
+     "1C: ERP",
+     "SQL",
+     "Ведение переговоров",
+     "Git"
+    ]
+   },
+   {
+    "name": "Axenix (ex. Accenture)",
+    "site": "https://axenix.pro/",
+    "habr": "https://career.habr.com/companies/axenix",
+    "about": "Российская компания, предоставляющая услуги в области стратегии, управленческого консалтинга, информационных технологий",
+    "city": "Москва",
+    "size": "1000 до 5000",
+    "vacancies": 1,
+    "accredited": true,
+    "skills": [
+     "SAP",
+     "REST",
+     "Java",
+     "SQL"
+    ]
+   },
+   {
+    "name": "РТЛабс",
+    "site": "https://www.rtlabs.ru",
+    "habr": "https://career.habr.com/companies/rtlabs",
+    "about": "Развиваем экосистему Госуслуг",
+    "city": "Москва",
+    "size": "1000 до 5000",
+    "vacancies": 1,
+    "accredited": true,
+    "skills": [
+     "SQL",
+     "Apache Kafka",
+     "PostgreSQL",
+     "Java"
+    ]
+   },
+   {
+    "name": "Центр Финансовых Технологий",
+    "site": "https://cft.ru/",
+    "habr": "https://career.habr.com/companies/cft",
+    "about": "Ведущий российский разработчик программного обеспечения для финансового рынка",
+    "city": "Новосибирск",
+    "size": "1000 до 5000",
+    "vacancies": 1,
+    "accredited": false,
+    "skills": [
+     "PostgreSQL",
+     "SQL",
+     "Git",
+     "Linux"
+    ]
+   }
+  ],
+  "nonit": [
+   {
+    "name": "S7 TechLab",
+    "site": "https://techlab.s7.ru/",
+    "habr": "https://career.habr.com/companies/s7techlab",
+    "about": "ИТ-компания авиационного холдинга S7 Group",
+    "city": "Москва",
+    "size": "100 до 1000",
+    "vacancies": 9,
+    "accredited": true,
+    "skills": [
+     "SQL",
+     "Apache Kafka",
+     "Python",
+     "PostgreSQL"
+    ]
+   },
+   {
+    "name": "Вкусно – и точка",
+    "site": "https://vkusnoitochka.ru/",
+    "habr": "https://career.habr.com/companies/vkusnoitochka",
+    "about": "Популярная сеть кафе быстрого питания в России",
+    "city": "",
+    "size": "от 5000",
+    "vacancies": 5,
+    "accredited": true,
+    "skills": [
+     "Oracle",
+     "SQL"
+    ]
+   },
+   {
+    "name": "НЛМК ИТ",
+    "site": "https://it.nlmk.com/ru/",
+    "habr": "https://career.habr.com/companies/nlmk",
+    "about": "Создаем передовые IT-решения для металлургической отрасли",
+    "city": "Москва",
+    "size": "100 до 1000",
+    "vacancies": 5,
+    "accredited": true,
+    "skills": [
+     "Python",
+     "Apache Kafka",
+     "PostgreSQL",
+     "SQL"
+    ]
+   },
+   {
+    "name": "Simple",
+    "site": "http://www.simple.ru/",
+    "habr": "https://career.habr.com/companies/simple",
+    "about": "Один из ведущих импортёров алкогольной продукции в России, национальный дистрибьютор и ритейлер",
+    "city": "Москва",
+    "size": "1000 до 5000",
+    "vacancies": 3,
+    "accredited": true,
+    "skills": [
+     "Zabbix",
+     "Linux",
+     "Kubernetes",
+     "GitLab"
+    ]
+   },
+   {
+    "name": "ТехноГрупп",
+    "site": "https://tgr-zavod.ru/",
+    "habr": "https://career.habr.com/companies/tgr-zavod",
+    "about": "Инновационное производство промышленного климатического оборудования",
+    "city": "Москва",
+    "size": "1000 до 5000",
+    "vacancies": 3,
+    "accredited": true,
+    "skills": [
+     "Системный анализ",
+     "Техническая документация",
+     "Анализ требований",
+     "Системная интеграция"
+    ]
+   },
+   {
+    "name": "Золотое Яблоко",
+    "site": "https://goldapple.ru/",
+    "habr": "https://career.habr.com/companies/goldapple",
+    "about": "Beauty e-com retailer",
+    "city": "Екатеринбург",
+    "size": "от 5000",
+    "vacancies": 2,
+    "accredited": true,
+    "skills": [
+     "SQL",
+     "Python",
+     "Docker",
+     "Git"
+    ]
+   },
+   {
+    "name": "Tegola",
+    "site": "https://tegola.ru/",
+    "habr": "https://career.habr.com/companies/tegola",
+    "about": "Мировой лидер производства кровельных, гидроизоляционных и геосинтетических материалов.",
+    "city": "Москва",
+    "size": "100 до 1000",
+    "vacancies": 1,
+    "accredited": true,
+    "skills": []
+   },
+   {
+    "name": "ГК Finbridge",
+    "site": "https://fb.ftsystems.ru/",
+    "habr": "https://career.habr.com/companies/finbridge",
+    "about": "Микрокредитование населения",
+    "city": "Москва",
+    "size": "1000 до 5000",
+    "vacancies": 1,
+    "accredited": true,
+    "skills": [
+     "PHP",
+     "Git"
+    ]
+   },
+   {
+    "name": "ГУП «Московский метрополитен»",
+    "site": "https://www.mosmetro.ru",
+    "habr": "https://career.habr.com/companies/mosmetro",
+    "about": "Государственное унитарное предприятие Москвы",
+    "city": "Москва",
+    "size": "от 5000",
+    "vacancies": 58,
+    "accredited": false,
+    "skills": [
+     "Работа в команде",
+     "Microsoft Office",
+     "Информационная безопасность",
+     "AutoCAD"
+    ]
+   },
+   {
+    "name": "СОГАЗ",
+    "site": "https://sogaz.ru/",
+    "habr": "https://career.habr.com/companies/sogaz",
+    "about": "№1 в корпоративном страховании",
+    "city": "Москва",
+    "size": "от 5000",
+    "vacancies": 11,
+    "accredited": false,
+    "skills": [
+     "Python",
+     "SQL",
+     "Работа в команде",
+     "PostgreSQL"
+    ]
+   },
+   {
+    "name": "ТИТАН-2",
+    "site": "https://www.titan2.ru",
+    "habr": "https://career.habr.com/companies/t2",
+    "about": "Сооружение объектов ядерной и тепловой энергетики, нефтегазовой и химической промышленности в РФ и за рубежом",
+    "city": "Сосновый Бор",
+    "size": "от 5000",
+    "vacancies": 9,
+    "accredited": false,
+    "skills": [
+     "Техническая поддержка",
+     "Построение команды",
+     "1C: ERP",
+     "Информационные технологии"
+    ]
+   },
+   {
+    "name": "Fix Price",
+    "site": "https://fix-price.ru/",
+    "habr": "https://career.habr.com/companies/fixprice",
+    "about": "Российская сеть магазинов в формате «магазин фиксированных цен»",
+    "city": "Москва",
+    "size": "от 5000",
+    "vacancies": 5,
+    "accredited": false,
+    "skills": [
+     "SQL",
+     "Git",
+     "Kubernetes",
+     "PHP"
+    ]
+   },
+   {
+    "name": "Международный аэропорт Шереметьево",
+    "site": "https://www.svo.aero",
+    "habr": "https://career.habr.com/companies/svo-aero",
+    "about": "Международный аэропорт федерального значения",
+    "city": "Химки",
+    "size": "1000 до 5000",
+    "vacancies": 5,
+    "accredited": false,
+    "skills": [
+     "Git",
+     "PostgreSQL"
+    ]
+   },
+   {
+    "name": "Мираторг",
+    "site": "https://miratorg.ru/",
+    "habr": "https://career.habr.com/companies/miratorg",
+    "about": "Лидер Росиии по производству и продаже продуктов питания, новатор в развитии сельского хозяйства страны",
+    "city": "Москва",
+    "size": "от 5000",
+    "vacancies": 5,
+    "accredited": false,
+    "skills": [
+     "SQL",
+     "Разработка под 1С",
+     "SAP",
+     "Администрирование 1С"
+    ]
+   },
+   {
+    "name": "СГМК",
+    "site": "https://sgmk.ru/",
+    "habr": "https://career.habr.com/companies/sgmk",
+    "about": "Горно-металлургическая компания",
+    "city": "Новокузнецк",
+    "size": "1000 до 5000",
+    "vacancies": 4,
+    "accredited": false,
+    "skills": []
+   },
+   {
+    "name": "УК «Аэропорты Регионов»",
+    "site": "http://www.ar-management.ru/",
+    "habr": "https://career.habr.com/companies/ar-management",
+    "about": "Крупнейший аэропортовый холдинг России",
+    "city": "Екатеринбург",
+    "size": "от 5000",
+    "vacancies": 4,
+    "accredited": false,
+    "skills": [
+     "Управление проектами",
+     "1C: ERP",
+     "Автоматизация процессов",
+     "Ведение переговоров"
+    ]
+   },
+   {
+    "name": "РОСГОССТРАХ",
+    "site": "http://www.rgs.ru",
+    "habr": "https://career.habr.com/companies/rgs",
+    "about": "Крупнейшая страховая компания России",
+    "city": "Москва",
+    "size": "от 5000",
+    "vacancies": 3,
+    "accredited": false,
+    "skills": [
+     "Работа в команде",
+     "PostgreSQL",
+     "Kubernetes",
+     "CI/CD"
+    ]
+   },
+   {
+    "name": "GOOD WOOD",
+    "site": "https://www.gwd.ru/",
+    "habr": "https://career.habr.com/companies/gwd",
+    "about": "Строительство домой из клееного бруса и керамического блока",
+    "city": "Зеленоград",
+    "size": "100 до 1000",
+    "vacancies": 2,
+    "accredited": false,
+    "skills": [
+     "1C: ERP",
+     "Разработка ТЗ"
+    ]
+   },
+   {
+    "name": "Банковская группа Синара",
+    "site": "https://sinara.ru",
+    "habr": "https://career.habr.com/companies/sinara",
+    "about": "Банк Синара: ядро группы, универсальный банк, предоставляющий полный спектр услуг для физических и юридических лиц",
+    "city": "Екатеринбург",
+    "size": "от 5000",
+    "vacancies": 2,
+    "accredited": false,
+    "skills": []
+   },
+   {
+    "name": "ELEMENTAREE",
+    "site": "https://elementaree.ru",
+    "habr": "https://career.habr.com/companies/elementaree-new",
+    "about": "Умный подход к еде: мы подбираем ваше меню и доставляем всё необходимое, вы наслаждаетесь вкусной едой 5 раз в день",
+    "city": "Москва",
+    "size": "10 до 100",
+    "vacancies": 1,
+    "accredited": false,
+    "skills": []
+   },
+   {
+    "name": "Inventive Retail Group",
+    "site": "https://inventive.ru",
+    "habr": "https://career.habr.com/companies/inventiveretailgroup",
+    "about": "Розничная торговля, B2C, В2В, D2C, eCommerce",
+    "city": "Москва",
+    "size": "1000 до 5000",
+    "vacancies": 1,
+    "accredited": false,
+    "skills": []
+   },
+   {
+    "name": "АВТОФОРМУЛА",
+    "site": "https://www.avtoformula.ru",
+    "habr": "https://career.habr.com/companies/ao-avtoformula",
+    "about": "Крупнейший дистрибьютер автомобильных товаров",
+    "city": "Ростов-на-Дону",
+    "size": "100 до 1000",
+    "vacancies": 1,
+    "accredited": false,
+    "skills": [
+     "Python",
+     "PostgreSQL",
+     "Celery",
+     "ClickHouse"
+    ]
+   },
+   {
+    "name": "АО НВП \"Болид\"",
+    "site": "https://bolid.ru/",
+    "habr": "https://career.habr.com/companies/bolid",
+    "about": "Научно-внедренческое предприятие",
+    "city": "Мытищи",
+    "size": "100 до 1000",
+    "vacancies": 1,
+    "accredited": false,
+    "skills": []
+   },
+   {
+    "name": "Ингосстрах - Инвестиции",
+    "site": "https://www.ingosinvest.ru/",
+    "habr": "https://career.habr.com/companies/ingosinvest",
+    "about": "Управляющая компания «Ингосстрах-Инвестиции»",
+    "city": "Москва",
+    "size": "100 до 1000",
+    "vacancies": 1,
+    "accredited": false,
+    "skills": []
+   }
+  ]
+ },
+ "channels": [
+  {
+   "category": "Общие IT‑вакансии",
+   "items": [
+    {
+     "handle": "geekjobs",
+     "title": "Job in IT&Digital",
+     "subs": "51.9K"
+    },
+    {
+     "handle": "it_vakansii_jobs",
+     "title": "СЕТИ — IT & Digital вакансии",
+     "subs": "102K"
+    },
+    {
+     "handle": "vakansii_it",
+     "title": "Вакансии айти IT 💻",
+     "subs": "27.6K"
+    },
+    {
+     "handle": "progjob",
+     "title": "Работа для программистов",
+     "subs": "16K"
+    },
+    {
+     "handle": "proglib_jobs",
+     "title": "IT Job Hub | Работа и вакансии в IT",
+     "subs": "9.57K"
+    },
+    {
+     "handle": "habr_career",
+     "title": "Хабр Карьера",
+     "subs": "33.7K"
+    },
+    {
+     "handle": "careerspace",
+     "title": "careerspace",
+     "subs": "165K"
+    }
+   ]
+  },
+  {
+   "category": "Джуны и стажировки",
+   "items": [
+    {
+     "handle": "jobforjunior",
+     "title": "Job for Junior",
+     "subs": "85.9K"
+    },
+    {
+     "handle": "young_june",
+     "title": "Young & Junior - вакансии IT",
+     "subs": "79.3K"
+    },
+    {
+     "handle": "juniors_rabota_jobs",
+     "title": "Джуниор Вакансии Стажировки IT",
+     "subs": "69.4K"
+    },
+    {
+     "handle": "changellenge",
+     "title": "Changellenge >>",
+     "subs": "49K"
+    },
+    {
+     "handle": "DevZoneJunior",
+     "title": "Работа Junior | DevZone | GameDev & IT & Дизайн",
+     "subs": "4.27K"
+    }
+   ]
+  },
+  {
+   "category": "Стартапы и нетиповой найм",
+   "items": [
+    {
+     "handle": "startup_job_russia",
+     "title": "Работа и вакансии в стартапах России",
+     "subs": "2.49K"
+    },
+    {
+     "handle": "hrlunapark",
+     "title": "Take Friends to Luna Park",
+     "subs": "21K"
+    }
+   ]
+  },
+  {
+   "category": "Python",
+   "items": [
+    {
+     "handle": "job_python",
+     "title": "Python Job | Вакансии | Стажировки",
+     "subs": "23.5K"
+    },
+    {
+     "handle": "pythonrabota",
+     "title": "Python работа",
+     "subs": "13.3K"
+    },
+    {
+     "handle": "pydevjob",
+     "title": "Python jobs — вакансии по питону, Django, Flask",
+     "subs": "9.72K"
+    },
+    {
+     "handle": "forpython",
+     "title": "Job for Python",
+     "subs": "7.56K"
+    }
+   ]
+  },
+  {
+   "category": "Data Science, ML, LLM",
+   "items": [
+    {
+     "handle": "datasciencejobs",
+     "title": "Data Science Jobs",
+     "subs": "22.6K"
+    },
+    {
+     "handle": "odsjobs",
+     "title": "ODS #jobs",
+     "subs": "14.6K"
+    },
+    {
+     "handle": "datajob",
+     "title": "Data jobs — вакансии по data science, анализу данных, аналитике, искусственному интеллекту",
+     "subs": "15.2K"
+    },
+    {
+     "handle": "foranalysts",
+     "title": "Job for Analysts & Data Scientists",
+     "subs": "37.9K"
+    },
+    {
+     "handle": "datajobschannel",
+     "title": "Data jobs feed",
+     "subs": "12.6K"
+    },
+    {
+     "handle": "dataeng_jobs",
+     "title": "Data Engineering & DataOps Jobs",
+     "subs": "2.59K"
+    },
+    {
+     "handle": "bds_job",
+     "title": "Big Data Science job",
+     "subs": "1.86K"
+    },
+    {
+     "handle": "nlp_jobs",
+     "title": "NLP jobs",
+     "subs": "2.34K"
+    },
+    {
+     "handle": "llm_jobs",
+     "title": "LLM Jobs | Вакансии по AI",
+     "subs": "566"
+    },
+    {
+     "handle": "datajobskz",
+     "title": "KZ Jobs Data Science & Engineering",
+     "subs": "4.38K"
+    }
+   ]
+  },
+  {
+   "category": "Системные и бизнес‑аналитики",
+   "items": [
+    {
+     "handle": "analytics_jobs",
+     "title": "BA & SA Jobs | Работа для бизнес и системных аналитиков",
+     "subs": "3.6K"
+    },
+    {
+     "handle": "analysts_jobs",
+     "title": "Analysts_Jobs",
+     "subs": "641"
+    }
+   ]
+  },
+  {
+   "category": "Бэкенд по языкам",
+   "items": [
+    {
+     "handle": "job_javadevs",
+     "title": "Java Job | Вакансии | Работа",
+     "subs": "15.1K"
+    },
+    {
+     "handle": "javadevjob",
+     "title": "Java jobs — вакансии для java-разработчиков",
+     "subs": "14.1K"
+    },
+    {
+     "handle": "godevjob",
+     "title": "Go jobs — вакансии по Go",
+     "subs": "11.6K"
+    },
+    {
+     "handle": "csharpdevjob",
+     "title": "C# jobs — вакансии по C#, .NET, Unity",
+     "subs": "10.4K"
+    },
+    {
+     "handle": "cppdevjob",
+     "title": "Вакансии по C++ — си-плюс-плюс, cpp, Си, C, STL, Boost",
+     "subs": "6.95K"
+    },
+    {
+     "handle": "phpdevjob",
+     "title": "PHP jobs — вакансии по PHP, Symfony, Laravel",
+     "subs": "6.37K"
+    },
+    {
+     "handle": "forcpp",
+     "title": "Job for C, C++ Developers",
+     "subs": "3.71K"
+    },
+    {
+     "handle": "rust_jobs_feed",
+     "title": "Rust Jobs - лента вакансий и резюме",
+     "subs": "4.01K"
+    }
+   ]
+  },
+  {
+   "category": "Фронтенд и мобильная разработка",
+   "items": [
+    {
+     "handle": "job_react",
+     "title": "React Job | JavaScript | Вакансии",
+     "subs": "16.8K"
+    },
+    {
+     "handle": "forfrontend",
+     "title": "Job for Frontend (JavaScript + Node.js) Developers",
+     "subs": "13.9K"
+    },
+    {
+     "handle": "jsdevjob",
+     "title": "Javascript jobs — вакансии по фронтенду, джаваскрипт, React, Angular, Vue",
+     "subs": "9.76K"
+    },
+    {
+     "handle": "mobiledevjob",
+     "title": "Mobile jobs — вакансии для мобильных разработчиков",
+     "subs": "5.32K"
+    }
+   ]
+  },
+  {
+   "category": "QA",
+   "items": [
+    {
+     "handle": "forallqa",
+     "title": "Job for QA",
+     "subs": "22.9K"
+    },
+    {
+     "handle": "qa_rab",
+     "title": "QA тестирование Pабота Вакансии",
+     "subs": "3.81K"
+    }
+   ]
+  },
+  {
+   "category": "DevOps, SRE, администрирование",
+   "items": [
+    {
+     "handle": "fordevops",
+     "title": "Job for Sysadmin & DevOps",
+     "subs": "5.08K"
+    },
+    {
+     "handle": "sysadmin_jobs",
+     "title": "sysadmin_jobs",
+     "subs": "4.57K"
+    },
+    {
+     "handle": "DevOpsSRE_Jobs",
+     "title": "DevOps/SRE_Jobs",
+     "subs": "3.54K"
+    },
+    {
+     "handle": "job_devops",
+     "title": "DevOps - вакансии и стажировки",
+     "subs": "1.34K"
+    }
+   ]
+  },
+  {
+   "category": "Информационная безопасность",
+   "items": [
+    {
+     "handle": "infosec_work",
+     "title": "Вакансии в ИБ | infosec",
+     "subs": "16.4K"
+    }
+   ]
+  },
+  {
+   "category": "Продакты и проджекты",
+   "items": [
+    {
+     "handle": "forproducts",
+     "title": "Job for Products and Projects",
+     "subs": "70.7K"
+    },
+    {
+     "handle": "product_jobs",
+     "title": "Вакансии для продактов и проджектов",
+     "subs": "37K"
+    },
+    {
+     "handle": "hireproproduct",
+     "title": "Hire ProProduct - Продуктовые вакансии",
+     "subs": "24.9K"
+    },
+    {
+     "handle": "productjobgo",
+     "title": "Вакансии для продакт-менеджеров",
+     "subs": "23.2K"
+    }
+   ]
+  },
+  {
+   "category": "Дизайн",
+   "items": [
+    {
+     "handle": "designer_ru",
+     "title": "ИЩУ_ДИЗАЙНЕРА",
+     "subs": "81.6K"
+    },
+    {
+     "handle": "jun_hi",
+     "title": "Дизайнер, привет",
+     "subs": "23.4K"
+    }
+   ]
+  },
+  {
+   "category": "Геймдев",
+   "items": [
+    {
+     "handle": "gamedevjob",
+     "title": "Работа в геймдеве 🍖",
+     "subs": "46.2K"
+    },
+    {
+     "handle": "gamedevjobs",
+     "title": "Gamedev Jobs (Inflow)",
+     "subs": "22K"
+    },
+    {
+     "handle": "forgamedev",
+     "title": "Job for Gamedev",
+     "subs": "14.6K"
+    },
+    {
+     "handle": "job_gamedev",
+     "title": "Работа в Геймдеве Вакансии 3D художники аниматоры gamedev, unity unreal engine программисты, blender, 3dmax, maya, zbrush",
+     "subs": "3.59K"
+    }
+   ]
+  },
+  {
+   "category": "Удалёнка и релокация",
+   "items": [
+    {
+     "handle": "theyseeku",
+     "title": "Finder.work: работа и вакансии",
+     "subs": "274K"
+    },
+    {
+     "handle": "remocate",
+     "title": "Remocate: релокация, удалёнка, работа и вакансии",
+     "subs": "141K"
+    },
+    {
+     "handle": "onlinevakansii",
+     "title": "Удаленная работа - Вакансии",
+     "subs": "126K"
+    },
+    {
+     "handle": "relocateme",
+     "title": "Relocate.Me: Jobs & Moving Abroad",
+     "subs": "34.7K"
+    },
+    {
+     "handle": "relocats",
+     "title": "IT Relocation (Inflow)",
+     "subs": "33.8K"
+    },
+    {
+     "handle": "remotegeekjob",
+     "title": "RemoteGeekjob",
+     "subs": "26K"
+    }
+   ]
+  },
+  {
+   "category": "Digital и маркетинг",
+   "items": [
+    {
+     "handle": "normrabota",
+     "title": "Норм работа",
+     "subs": "143K"
+    },
+    {
+     "handle": "dnative_job",
+     "title": "Вакансии SMM и Digital",
+     "subs": "106K"
+    }
+   ]
+  },
+  {
+   "category": "Каналы компаний",
+   "items": [
+    {
+     "handle": "avito_career",
+     "title": "Avito Career",
+     "subs": "67.5K"
+    },
+    {
+     "handle": "alfadigital_jobs",
+     "title": "Alfa Digital",
+     "subs": "53.8K"
+    },
+    {
+     "handle": "ozon_tech",
+     "title": "Ozon Tech",
+     "subs": "30.2K"
+    },
+    {
+     "handle": "vkjobs",
+     "title": "VK Team",
+     "subs": "25.9K"
+    },
+    {
+     "handle": "kaspersky_career",
+     "title": "Карьера в Kaspersky",
+     "subs": "7.99K"
+    }
+   ]
+  }
+ ],
+ "week": {
+  "quotas": [
+   [
+    "150+",
+    "целевых откликов на площадках за неделю"
+   ],
+   [
+    "60+",
+    "личных сообщений руководителям и основателям"
+   ],
+   [
+    "20",
+    "просьб о рекомендации к знакомым и бывшим коллегам"
+   ],
+   [
+    "8–12",
+    "первых созвонов как цель к пятому дню"
+   ]
+  ],
+  "days": [
+   {
+    "d": "День 0",
+    "sub": "вечер накануне",
+    "title": "Позиционирование",
+    "items": [
+     "Одна роль, один стек, один уровень. Заголовок резюме: «Python backend‑разработчик, 2 года, финтех», а не «IT‑специалист».",
+     "Вилка зарплаты по калькулятору Хабр Карьеры и вакансиям: минимум, цель и первая цифра для разговора.",
+     "Три типа компаний, куда вы подходите лучше всего: по отрасли, размеру и стеку.",
+     "Таблица‑трекер: компания, канал, контакт, дата, статус, следующий шаг. Без неё на третий день вы потеряете половину диалогов."
+    ]
+   },
+   {
+    "d": "День 1",
+    "sub": "понедельник · упаковка",
+    "title": "Резюме, профили, доказательства",
+    "items": [
+     "Резюме на одну страницу. В каждой строке опыта результат с цифрой: что сделал, чем измерили, что изменилось.",
+     "Ключевые слова из 10 целевых вакансий перенесите в резюме дословно: отклики всё чаще разбирает ИИ‑помощник рекрутера.",
+     "Профили на hh.ru, Хабр Карьере, getmatch и LinkedIn со статусом «активно ищу» и одинаковым заголовком.",
+     "GitHub: закреплён один лучший проект с README, демо и инструкцией запуска за одну команду.",
+     "Рассказ о себе на 90 секунд и три истории по схеме «задача, действие, результат».",
+     "Вечером первые 30 откликов, чтобы утром вторника уже были ответы."
+    ]
+   },
+   {
+    "d": "День 2",
+    "sub": "вторник · объём",
+    "title": "Массовые отклики и своя база компаний",
+    "items": [
+     "50 откликов на вакансии не старше трёх дней. К каждому сопроводительное в 3–4 строки под конкретную вакансию.",
+     "Возьмите списки компаний из этого ликбеза и отберите 100 под свой стек: сайт, страница карьеры, имя руководителя разработки, контакт.",
+     "Подпишитесь на 10–15 каналов из списка по своему направлению и включите уведомления. На свежий пост отвечайте в первый час.",
+     "Настройте автопоиски с уведомлениями на hh.ru и Хабр Карьере, чтобы не обновлять выдачу руками."
+    ]
+   },
+   {
+    "d": "День 3",
+    "sub": "среда · прямые контакты",
+    "title": "Люди вместо форм",
+    "items": [
+     "30 личных сообщений тимлидам, CTO и основателям из вашей базы. Шаблон ниже.",
+     "20 сообщений знакомым, однокурсникам и бывшим коллегам: «ищу роль X, кого посоветуешь, можешь ли порекомендовать».",
+     "Пост о поиске в своих соцсетях и профильных чатах: кто вы, что ищете, ссылка на резюме и проект.",
+     "Ещё 30 откликов на площадках.",
+     "Компаниям без открытых вакансий пишите тоже: в небольших командах найм часто начинается с входящего письма."
+    ]
+   },
+   {
+    "d": "День 4",
+    "sub": "четверг · созвоны",
+    "title": "Скрининги и подготовка",
+    "items": [
+     "Утро и день оставьте под созвоны и ставьте их плотно: 3–4 в день.",
+     "Между ними: типовые вопросы по стеку, 2–3 задачи, разбор system design на своём уровне.",
+     "Тестовые берите только у компаний из верхней трети списка и сдавайте в тот же день.",
+     "Вечером 30 откликов и повторное сообщение тем, кто не ответил за два дня. Одно вежливое напоминание удваивает число ответов."
+    ]
+   },
+   {
+    "d": "День 5",
+    "sub": "пятница · техника",
+    "title": "Технические собеседования",
+    "items": [
+     "После каждого интервью записывайте вопросы, на которых споткнулись, и закрывайте их в тот же вечер.",
+     "Говорите прямо о сроках: «у меня финальные этапы в двух компаниях, решение принимаю в понедельник». Это правда, если вы выполнили план, и это ускоряет процесс.",
+     "Просите обратную связь и дату следующего этапа до конца созвона.",
+     "Ещё 30 сообщений по базе: вторая половина списка."
+    ]
+   },
+   {
+    "d": "День 6",
+    "sub": "суббота · добор",
+    "title": "Стартапы, проекты, контракты",
+    "items": [
+     "Каналы стартапов, Startup Fellows, Wellfound: основатели отвечают и в выходные.",
+     "Контрактные проекты на 1–3 месяца как запасной вход. Они часто превращаются в штат.",
+     "Маленький результат для 3–5 самых желанных компаний: прототип, разбор, найденная проблема в продукте.",
+     "Разбор недели: какие каналы дали созвоны, какие нет. Перенесите время туда, где есть ответы."
+    ]
+   },
+   {
+    "d": "День 7",
+    "sub": "воскресенье · решение",
+    "title": "Офферы и переговоры",
+    "items": [
+     "Сведите предложения в таблицу: деньги на руки, оформление, удалёнка, задачи, руководитель, испытательный срок.",
+     "Торгуйтесь при наличии второго предложения. Просите оффер письменно.",
+     "Перед согласием проверьте компанию: юрлицо, отзывы, аккредитацию, график выплат.",
+     "Если оффера нет, у вас есть воронка. Вторая неделя идёт в том же темпе с поправками по вопросам, на которых теряли баллы."
+    ]
+   }
+  ],
+  "templates": [
+   [
+    "Первое сообщение руководителю",
+    "Здравствуйте, [имя]. Я [роль] с опытом [N лет] в [область]. В [проект] сделал [результат с цифрой]. Посмотрел [их продукт] и вижу, где могу быть полезен: [одна конкретная вещь]. Проект и код: [ссылка]. Найдётся 15 минут на этой неделе?"
+   ],
+   [
+    "Напоминание через два дня",
+    "[Имя], добрый день. Писал вам в [день] по поводу роли [роль]. Понимаю, что много входящих. Если сейчас не нанимаете, подскажите, пожалуйста, к кому в команде лучше обратиться."
+   ],
+   [
+    "Просьба о рекомендации",
+    "Привет! Ищу роль [роль] на [стек]. Видел, что ты работаешь в [компания] или знаешь людей оттуда. Можешь порекомендовать меня или подсказать, кому написать? Резюме и проект: [ссылка]. С меня благодарность."
+   ],
+   [
+    "Сопроводительное к отклику",
+    "Откликаюсь на [вакансия]. Из требований закрываю [2–3 пункта дословно из вакансии]: в [проект] сделал [результат]. Готов к созвону [дни и время]. Код: [ссылка]."
+   ]
+  ],
+  "mistakes": [
+   "Не накручивайте опыт: проверки стали жёстче, выдуманные резюме вскрываются на первом техническом интервью.",
+   "Не делайте одно резюме на все роли. Отдельная версия под каждый тип вакансий.",
+   "Не ждите ответа перед следующим откликом. Воронка должна наполняться каждый день.",
+   "Не соглашайтесь на неоплачиваемое тестовое больше чем на 3–4 часа.",
+   "Не останавливайте поиск после первого устного «мы вас берём». Только письменный оффер."
+  ]
+ }
+}

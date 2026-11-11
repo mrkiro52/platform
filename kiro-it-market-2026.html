@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>body{margin:0}</style>
+</head>
+<body>
+<title>KIRO: рынок IT 2026</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;800&family=Onest:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap">
+<style>
+/* Layout: одна колонка-отчёт шириной 1040px; слева в каждой секции узкая колонка с номером главы и вопросом, справа содержание. Единственный акцент оранжевый, им отмечены только цифры и состояние. */
+:root{
+  color-scheme:dark;
+  --bg:#000000;
+  --surface:#0e0b08;
+  --surface-2:#17120d;
+  --line:#2b231b;
+  --fg:#ffffff;
+  --muted:#b3a99f;
+  --dim:#7d746b;
+  --accent:#ff6a00;
+  --accent-hi:#ff8c33;
+  --accent-wash:rgba(255,106,0,.12);
+  --down:#8f867d;
+  --display:"Unbounded","Onest",system-ui,sans-serif;
+  --body:"Onest",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased}
+a{color:var(--accent-hi);text-underline-offset:3px}
+a:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:4px}
+.wrap{max-width:1040px;margin:0 auto;padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;letter-spacing:-.01em}
+p{margin:0}
+.mono{font-family:var(--mono)}
+.num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+
+/* header */
+.top{border-bottom:1px solid var(--line)}
+.top .wrap{display:flex;justify-content:space-between;align-items:center;gap:16px;padding-block:18px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:12px;font-family:var(--display);font-weight:800;letter-spacing:.08em;font-size:18px}
+.brand svg{width:34px;height:34px;flex:none}
+.top .meta{font-family:var(--mono);font-size:12px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
+
+/* hero */
+.hero .wrap{padding-block:64px 40px;display:flex;flex-direction:column;gap:28px}
+.hero h1{font-size:clamp(34px,6.4vw,76px);font-weight:800;line-height:1.02}
+.hero h1 em{font-style:normal;color:var(--accent)}
+.lede{font-size:clamp(18px,2.1vw,22px);color:var(--muted);max-width:62ch}
+.lede b{color:var(--fg);font-weight:600}
+
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.kpi{padding:22px 20px 22px 0;display:flex;flex-direction:column;gap:6px;min-width:0}
+.kpi+.kpi{padding-left:20px;border-left:1px solid var(--line)}
+.kpi .v{font-family:var(--display);font-weight:700;font-size:clamp(28px,3.6vw,44px);color:var(--accent);line-height:1.05}
+.kpi .l{font-size:14px;color:var(--muted);line-height:1.4}
+.kpi .s{font-family:var(--mono);font-size:11px;color:var(--dim);letter-spacing:.04em}
+
+.toc{display:flex;flex-wrap:wrap;gap:8px;padding-block:22px 0}
+.toc a{font-family:var(--mono);font-size:12.5px;color:var(--fg);text-decoration:none;border:1px solid var(--line);padding:7px 12px;border-radius:999px}
+.toc a:hover{border-color:var(--accent);color:var(--accent-hi)}
+
+/* sections */
+section.ch{border-top:1px solid var(--line)}
+section.ch .wrap{display:grid;grid-template-columns:200px minmax(0,1fr);gap:40px;padding-block:64px}
+.side{display:flex;flex-direction:column;gap:10px;align-self:start;position:sticky;top:calc(env(safe-area-inset-top,0px) + 20px)}
+.side .n{font-family:var(--mono);font-size:13px;color:var(--accent);letter-spacing:.1em}
+.side .q{font-size:14px;color:var(--muted);line-height:1.45}
+.main{display:flex;flex-direction:column;gap:26px;min-width:0}
+.main h2{font-size:clamp(24px,3.2vw,36px);font-weight:700;line-height:1.12}
+.main h3{font-size:17px;font-weight:700;letter-spacing:0;line-height:1.3}
+.main>p,.prose p{max-width:68ch}
+.prose{display:flex;flex-direction:column;gap:14px}
+.answer{font-size:19px;line-height:1.5;border-left:3px solid var(--accent);padding-left:18px;max-width:64ch}
+.note{font-size:14px;color:var(--muted);max-width:70ch}
+strong{font-weight:600}
+.hl{color:var(--accent-hi);font-weight:600}
+
+/* tags */
+.tag{display:inline-block;font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;padding:2px 7px;border-radius:4px;vertical-align:middle;white-space:nowrap}
+.tag.d{color:var(--accent-hi);border:1px solid var(--accent)}
+.tag.o{color:var(--muted);border:1px solid var(--line)}
+.legend{display:flex;flex-wrap:wrap;gap:8px 18px;font-size:13px;color:var(--muted);align-items:center}
+
+/* rows list */
+.rows{display:flex;flex-direction:column;border-top:1px solid var(--line)}
+.row{display:grid;grid-template-columns:minmax(0,230px) minmax(0,1fr);gap:8px 28px;padding:18px 0;border-bottom:1px solid var(--line)}
+.row .t{font-weight:600;font-size:17px;line-height:1.35}
+.row .t small{display:block;font-family:var(--mono);font-size:12px;color:var(--accent-hi);font-weight:500;margin-top:5px}
+.row .b{color:var(--muted);font-size:15.5px;line-height:1.55;min-width:0}
+.row .b b{color:var(--fg);font-weight:600}
+
+/* tables */
+.tw{overflow-x:auto;border:1px solid var(--line);border-radius:10px}
+table{border-collapse:collapse;width:100%;font-size:15px;min-width:560px}
+th,td{text-align:left;padding:11px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+tr:last-child td{border-bottom:0}
+th{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:500;background:var(--surface)}
+td.r,th.r{text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+td.a{color:var(--accent-hi)}
+caption{caption-side:bottom;text-align:left;font-size:12.5px;color:var(--dim);padding:10px 14px;border-top:1px solid var(--line)}
+
+/* figures */
+figure{margin:0;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:22px;display:flex;flex-direction:column;gap:16px;min-width:0}
+figure h3{font-family:var(--body);font-size:15.5px;font-weight:600}
+figcaption{font-size:12.5px;color:var(--dim);line-height:1.5}
+.two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+
+/* diverging bars */
+.dv{display:grid;grid-template-columns:86px minmax(0,1fr) minmax(0,1fr);gap:8px 0;align-items:center;font-size:13px}
+.dv .lab{color:var(--muted);font-family:var(--mono);font-size:12px}
+.dv .neg{display:flex;justify-content:flex-end;align-items:center;gap:8px;border-right:1px solid var(--dim);height:26px}
+.dv .pos{display:flex;align-items:center;gap:8px;height:26px}
+.dv i{display:block;height:16px}
+.dv .neg i{background:var(--accent);border-radius:3px 0 0 3px}
+.dv .pos i{background:#5a5048;border-radius:0 3px 3px 0}
+.dv .hd{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--dim)}
+
+/* scale */
+.scale{position:relative;height:74px;margin-top:26px}
+.scale .track{position:absolute;left:0;right:0;top:30px;height:10px;background:var(--surface-2);border-radius:5px}
+.scale .norm{position:absolute;left:16%;width:16%;top:30px;height:10px;background:#5a5048;border-radius:5px}
+.scale .pt{position:absolute;top:22px;width:2px;height:26px;background:var(--accent)}
+.scale .pt span{position:absolute;bottom:30px;left:50%;transform:translateX(-50%);font-family:var(--mono);font-size:12px;color:var(--accent-hi);white-space:nowrap}
+.scale .tick{position:absolute;top:48px;font-family:var(--mono);font-size:11px;color:var(--dim);transform:translateX(-50%);white-space:nowrap}
+
+/* horizontal bars */
+.hb{display:grid;grid-template-columns:minmax(0,170px) minmax(0,1fr) 44px;gap:9px 12px;align-items:center;font-size:14px}
+.hb .bar{height:14px;background:var(--surface-2);border-radius:3px;overflow:hidden}
+.hb .bar i{display:block;height:100%;background:var(--accent);border-radius:3px}
+.hb .bar.g i{background:#5a5048}
+.hb .v{font-family:var(--mono);font-size:13px;text-align:right}
+.hb .k{min-width:0}
+
+/* stack tiers */
+.tiers{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.tier{background:var(--bg);padding:20px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.tier .lv{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
+.tier ul{margin:0;padding-left:18px;color:var(--muted);font-size:15px;display:flex;flex-direction:column;gap:5px}
+.tier ul b{color:var(--fg);font-weight:600}
+
+/* compare */
+.cmp{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.cmp>div{background:var(--bg);padding:22px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.cmp h3{font-size:16px}
+.cmp dl{margin:0;display:flex;flex-direction:column;gap:10px;font-size:14.5px}
+.cmp dt{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--dim)}
+.cmp dd{margin:2px 0 0;color:var(--muted);line-height:1.5}
+.cmp dd b{color:var(--fg);font-weight:600}
+
+/* directory */
+.dir{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:26px 32px}
+.dir>div{display:flex;flex-direction:column;gap:10px;min-width:0}
+.dir h3{font-family:var(--mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);font-weight:500}
+.dir ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;border-top:1px solid var(--line)}
+.dir li{padding:10px 0;border-bottom:1px solid var(--line);font-size:15px;color:var(--muted);line-height:1.45;overflow-wrap:anywhere}
+.dir li b{color:var(--fg);font-weight:600}
+
+/* week plan */
+.week{display:flex;flex-direction:column;border-top:1px solid var(--line)}
+.day{display:grid;grid-template-columns:110px minmax(0,1fr);gap:8px 24px;padding:20px 0;border-bottom:1px solid var(--line)}
+.day .d{font-family:var(--display);font-weight:700;font-size:15px;color:var(--accent);line-height:1.3}
+.day .d small{display:block;font-family:var(--mono);font-weight:400;font-size:11px;color:var(--dim);margin-top:4px;letter-spacing:.04em}
+.day .c{display:flex;flex-direction:column;gap:8px;min-width:0}
+.day .c h3{font-family:var(--body);font-size:17px;font-weight:600}
+.day ul{margin:0;padding-left:18px;color:var(--muted);font-size:15.5px;display:flex;flex-direction:column;gap:5px}
+.day ul b{color:var(--fg);font-weight:600}
+.quota{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.quota div{background:var(--surface);padding:16px;display:flex;flex-direction:column;gap:4px;min-width:0}
+.quota .v{font-family:var(--display);font-weight:700;font-size:24px;color:var(--accent)}
+.quota .l{font-size:13px;color:var(--muted);line-height:1.4}
+.tpl{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:20px;font-size:15px;color:var(--muted);line-height:1.6}
+.tpl .h{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin-bottom:10px}
+.tpl b{color:var(--fg);font-weight:600}
+
+
+/* lock */
+.lock{border:1px dashed rgba(255,106,0,.45);background:var(--accent-wash);border-radius:12px;padding:24px;display:flex;flex-direction:column;gap:14px}
+.lock h3{font-family:var(--body);font-size:18px;font-weight:600}
+.lock ul{margin:0;padding-left:18px;color:var(--muted);font-size:15.5px;display:flex;flex-direction:column;gap:5px}
+.lock .btns{display:flex;flex-wrap:wrap;gap:10px}
+.btn{display:inline-flex;align-items:center;gap:8px;border-radius:10px;padding:12px 18px;font-size:14.5px;font-weight:700;font-family:var(--body);line-height:1.3;text-decoration:none}
+.btn.off{background:var(--surface-2);border:1px solid var(--line);color:var(--muted);cursor:not-allowed}
+.btn.go{background:var(--accent);border:1px solid var(--accent);color:#000}
+.btn.go:hover{background:var(--accent-hi)}
+.lock .hint{font-size:13px;color:var(--dim)}
+
+/* sources */
+.src{margin:0;padding-left:22px;display:flex;flex-direction:column;gap:10px;font-size:14.5px;color:var(--muted)}
+.src li{overflow-wrap:anywhere;line-height:1.5}
+.src b{color:var(--fg);font-weight:600}
+footer .wrap{padding-block:36px 56px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-family:var(--mono);font-size:12px;color:var(--dim)}
+
+@media (max-width:860px){
+  section.ch .wrap{grid-template-columns:minmax(0,1fr);gap:18px;padding-block:44px}
+  .side{position:static;flex-direction:row;gap:14px;align-items:baseline}
+  .kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .kpi{padding:18px 14px 18px 0}
+  .kpi+.kpi{padding-left:14px}
+  .kpi:nth-child(3){border-left:0;padding-left:0}
+  .kpi:nth-child(n+3){border-top:1px solid var(--line)}
+  .two,.tiers,.cmp,.dir{grid-template-columns:minmax(0,1fr)}
+  .row{grid-template-columns:minmax(0,1fr)}
+  .quota{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .day{grid-template-columns:minmax(0,1fr)}
+  .hero .wrap{padding-block:40px 28px}
+}
+@media (max-width:480px){
+  body{font-size:16px}
+  .hb{grid-template-columns:minmax(0,112px) minmax(0,1fr) 40px}
+  .dv{grid-template-columns:64px minmax(0,1fr) minmax(0,1fr)}
+  figure{padding:16px}
+}
+</style>
+
+<header class="top">
+  <div class="wrap">
+    <div class="brand">
+      <svg viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="14" fill="#17120d"/><g fill="#ff6a00"><rect x="16" y="13" width="9.5" height="38" rx="1"/><polygon points="24,27.5 38,13 49.5,13 35,30.5 50,51 38.5,51 28.5,36.5 24,41"/></g></svg>
+      KIRO
+    </div>
+    <div class="meta">Аналитический отчёт · ноябрь 2026</div>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="wrap">
+    <h1>Рынок IT‑профессий: <em>кого нанимают</em> и как туда попасть</h1>
+    <p class="lede">Вакансий в российском IT стало примерно на треть меньше, резюме на 15–25% больше. При этом <b>спрос не исчез, а сместился</b>: в сторону опытных инженеров, инфраструктуры, безопасности и всего, что связано с внедрением ИИ в реальные продукты. Ниже цифры, списки ролей и навыков, каналы поиска и план на одну неделю.</p>
+
+    <div class="kpis">
+      <div class="kpi"><div class="v num">−33%</div><div class="l">активных IT‑вакансий на hh.ru, сентябрь 2026 к сентябрю 2025</div><div class="s">hh.ru</div></div>
+      <div class="kpi"><div class="v num">22,6</div><div class="l">резюме на одну IT‑вакансию в апреле. Нормой hh.ru считает 4–8</div><div class="s">hh.индекс</div></div>
+      <div class="kpi"><div class="v num">191K ₽</div><div class="l">медианная зарплата в IT, первое полугодие 2026. Рост 4%, ниже инфляции</div><div class="s">Хабр Карьера</div></div>
+      <div class="kpi"><div class="v num">+62%</div><div class="l">средняя надбавка к зарплате за навыки ИИ в мире</div><div class="s">PwC AI Jobs Barometer 2026</div></div>
+    </div>
+
+    <nav class="toc" aria-label="Разделы отчёта">
+      <a href="#market">01 Рынок</a><a href="#up">02 Востребованы</a><a href="#down">03 Теряют спрос</a><a href="#ai">04 Навыки ML/AI</a><a href="#new">05 Новые профессии</a><a href="#junior">06 Новичкам</a><a href="#where">07 Куда идти</a><a href="#startups">08 Проекты и стартапы</a><a href="#hidden">09 Неочевидные компании</a><a href="#companies">10 Компании в тени</a><a href="#telegram">11 Telegram‑каналы</a><a href="#week">12 Работа за неделю</a><a href="#sources">Источники</a>
+    </nav>
+    <div class="legend"><span><span class="tag d">данные</span> цифра из исследования или статистики площадки</span><span><span class="tag o">оценка</span> мнение практиков или вторичный источник</span></div>
+  </div>
+</div>
+
+<!-- 01 -->
+<section class="ch" id="market">
+  <div class="wrap">
+    <div class="side"><div class="n">01</div><div class="q">Что происходит с рынком прямо сейчас</div></div>
+    <div class="main">
+      <h2>Рынок работодателя: вакансий меньше, отбор жёстче</h2>
+      <p class="answer">За 2026 год российский IT‑рынок окончательно перешёл от рынка кандидата к рынку работодателя. Конкуренция на вакансию в три раза выше нормы, зарплаты растут медленнее инфляции, удалёнки становится меньше.</p>
+
+      <div class="two">
+        <figure>
+          <h3>IT на hh.ru: вакансии и резюме, год к году</h3>
+          <div class="dv">
+            <div></div><div class="hd" style="text-align:right;padding-right:8px">вакансии</div><div class="hd" style="padding-left:8px">резюме</div>
+            <div class="lab">апрель</div><div class="neg"><span class="num">−35%</span><i style="width:70%"></i></div><div class="pos"><i style="width:50%"></i><span class="num">+25%</span></div>
+            <div class="lab">июнь</div><div class="neg"><span class="num">−31%</span><i style="width:62%"></i></div><div class="pos"><i style="width:46%"></i><span class="num">+23%</span></div>
+            <div class="lab">сентябрь</div><div class="neg"><span class="num">−33%</span><i style="width:66%"></i></div><div class="pos"><i style="width:30%"></i><span class="num">+15%</span></div>
+          </div>
+          <figcaption>Каждый месяц 2026 года сравнивается с тем же месяцем 2025‑го. Данные hh.ru в пересказе Hi‑Tech Mail и блога Outlines Tech на Хабре.</figcaption>
+        </figure>
+        <figure>
+          <h3>hh.индекс в IT: резюме на одну вакансию</h3>
+          <div class="scale" role="img" aria-label="Шкала от 0 до 25. Норма 4–8. Февраль 2026: 19,6. Апрель 2026: 22,6.">
+            <div class="track"></div><div class="norm"></div>
+            <div class="pt" style="left:78.4%"><span style="transform:translateX(-90%)">19,6 фев</span></div>
+            <div class="pt" style="left:90.4%"><span style="transform:translateX(-20%)">22,6 апр</span></div>
+            <div class="tick" style="left:0;transform:none">0</div>
+            <div class="tick" style="left:24%">норма 4–8</div>
+            <div class="tick" style="left:100%;transform:translateX(-100%)">25</div>
+          </div>
+          <figcaption>Чем выше индекс, тем больше соискателей претендует на одну вакансию. Значения 2026 года приводят обзоры со ссылкой на hh.ru.</figcaption>
+        </figure>
+      </div>
+
+      <div class="rows">
+        <div class="row"><div class="t">Зарплаты почти стоят<small>191 000 ₽ медиана</small></div><div class="b"><span class="tag d">данные</span> Хабр Карьера изучила 45 226 зарплат: медиана выросла на 4% за полгода при прогнозе инфляции ЦБ 4,5–5,5%. Москва <b>235 000 ₽</b>, Санкт‑Петербург <b>200 000 ₽</b>, регионы <b>160 000 ₽</b>. У разработчиков рост всего 1%. Быстрее всех росли поддержка (+10%), маркетинг (+9%) и продажи (+8%).</div></div>
+        <div class="row"><div class="t">Удалёнки меньше<small>33% → 26% у аналитиков</small></div><div class="b"><span class="tag d">данные</span> Сравнение вакансий hh.ru за август 2025 и август 2026: доля предложений с удалённой работой у аналитиков упала с 33% до 26%, у системных администраторов и DevOps с 20% до 12%.</div></div>
+        <div class="row"><div class="t">В мире картина похожая, но со знаком плюс<small>+15% вакансий в разработке, США</small></div><div class="b"><span class="tag d">данные</span> По Indeed Hiring Lab число вакансий в разработке ПО в США выросло почти на 15% с февраля 2025 года, но остаётся на 27,5% ниже допандемийного уровня. <b>71% прироста дали senior‑позиции</b>, 37% дали вакансии со словом AI в названии. Доля вакансий начального уровня в разработке 4,5%, это минимум среди всех отраслей.</div></div>
+        <div class="row"><div class="t">Молодые разработчики под ударом<small>около −20% занятости, 22–25 лет</small></div><div class="b"><span class="tag o">оценка</span> Stanford AI Index 2026 в пересказе профильных изданий: занятость разработчиков 22–25 лет в США снизилась почти на 20% после распространения генеративного ИИ. Точка отсчёта в разных пересказах отличается, первоисточник стоит сверить.</div></div>
+        <div class="row"><div class="t">Дефицит при избытке резюме<small>парадокс 2026 года</small></div><div class="b"><span class="tag o">оценка</span> Откликов сотни, а закрыть позицию DevOps или специалиста по ИБ по‑прежнему трудно. Нанимающие менеджеры пишут прямо: тестировщика можно найти за день, инженера по инфраструктуре ищут неделями.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 02 -->
+<section class="ch" id="up">
+  <div class="wrap">
+    <div class="side"><div class="n">02</div><div class="q">Какие профессии востребованы</div></div>
+    <div class="main">
+      <h2>Кого ищут и кому платят</h2>
+      <p class="answer">Спрос держится там, где цена ошибки высока, а ИИ ускоряет работу, но не заменяет ответственность: ML и ИИ‑инженерия, инфраструктура, безопасность, данные, архитектура и бэкенд в финтехе.</p>
+
+      <div class="rows">
+        <div class="row"><div class="t">ML‑ и AI‑инженеры<small>184–345 тыс. ₽ в вакансиях</small></div><div class="b"><span class="tag d">данные</span> По hh.ru компании в 2025 году искали сотрудников с ИИ‑функционалом в два раза чаще, чем в 2024‑м, SuperJob даёт рост в 1,9 раза. ML‑инженер остаётся самой высокооплачиваемой ИИ‑ролью, у AI‑инженера медиана предложений около 220 тыс. ₽. В LinkedIn Jobs on the Rise AI Engineer второй год подряд на первом месте в США.</div></div>
+        <div class="row"><div class="t">DevOps, SRE, платформенные инженеры<small>кандидатов мало</small></div><div class="b"><span class="tag o">оценка</span> Самый заметный дефицит по наблюдениям нанимающих менеджеров. Сильные инженеры ведут несколько проектов одновременно, ИИ помогает им с шаблонами инфраструктуры. Вторичные обзоры со ссылкой на hh.ru говорят, что нехватку DevOps ощущают 42% работодателей.</div></div>
+        <div class="row"><div class="t">Информационная безопасность<small>224 тыс. ₽ медиана в Москве</small></div><div class="b"><span class="tag d">данные</span> Входит в топ‑5 по зарплатам на Хабр Карьере (Москва 224, Петербург 151, регионы 130 тыс. ₽). <span class="tag o">оценка</span> Эксперты SuperJob и карьерные консультанты называют ИБ вместе с ИИ направлением, где опыт ценится выше всего. По вторичным данным hh.ru нехватку таких специалистов отмечают 52% компаний.</div></div>
+        <div class="row"><div class="t">Data‑инженеры и Big Data<small>№1 в прогнозе WEF</small></div><div class="b"><span class="tag d">данные</span> В отчёте WEF Future of Jobs 2025 специалисты по большим данным, финтех‑инженеры и специалисты по ИИ и ML возглавляют список самых быстрорастущих профессий до 2030 года. <span class="tag o">оценка</span> «Эксель‑аналитика» уходит, работа с большими данными остаётся.</div></div>
+        <div class="row"><div class="t">Архитекторы ПО<small>497 тыс. ₽ медиана в Москве</small></div><div class="b"><span class="tag d">данные</span> Самая высокая зарплата среди разработчиков: Москва 497, Петербург 508, регионы 420 тыс. ₽. Когда код пишет ИИ, решения о том, что и как строить, дорожают.</div></div>
+        <div class="row"><div class="t">Бэкенд: Java, Go, Kotlin, Python<small>278 тыс. ₽ медиана в Москве</small></div><div class="b"><span class="tag d">данные</span> Go 325, Kotlin 320, Python 243 тыс. ₽ (+6% за полугодие). <span class="tag o">оценка</span> В финтехе стабильный спрос на Java: банковские и платёжные системы исторически написаны на ней.</div></div>
+        <div class="row"><div class="t">Мобильная разработка<small>320 тыс. ₽ медиана в Москве</small></div><div class="b"><span class="tag d">данные</span> Вторая строчка по зарплатам среди разработчиков. Swift 326 тыс. ₽ (+7%), Objective‑C 400 тыс. ₽ (+13%): людей с нативным iOS‑опытом мало.</div></div>
+        <div class="row"><div class="t">1С и корпоративные системы<small>272 тыс. ₽ медиана в Москве</small></div><div class="b"><span class="tag d">данные</span> Программисты 1С в топ‑5 по зарплатам среди разработчиков. Не модно, зато порог входа ниже и компаний‑нанимателей тысячи. При этом зарплаты ERP‑программистов в целом упали на 22%, так что ниша неоднородна.</div></div>
+      </div>
+
+      <div class="tw">
+        <table>
+          <thead><tr><th>Специализация</th><th class="r">Москва</th><th class="r">Санкт‑Петербург</th><th class="r">Регионы</th></tr></thead>
+          <tbody>
+            <tr><td>Архитектор ПО</td><td class="r a">497</td><td class="r">508</td><td class="r">420</td></tr>
+            <tr><td>Мобильный разработчик</td><td class="r a">320</td><td class="r">299</td><td class="r">263</td></tr>
+            <tr><td>Бэкенд‑разработчик</td><td class="r a">278</td><td class="r">251</td><td class="r">220</td></tr>
+            <tr><td>Программист 1С</td><td class="r a">272</td><td class="r">198</td><td class="r">174</td></tr>
+            <tr><td>Разработчик баз данных</td><td class="r a">264</td><td class="r">261</td><td class="r">177</td></tr>
+            <tr><td>Менеджмент в IT</td><td class="r a">260</td><td class="r">200</td><td class="r">152</td></tr>
+            <tr><td>Администрирование</td><td class="r a">229</td><td class="r">200</td><td class="r">150</td></tr>
+            <tr><td>Информационная безопасность</td><td class="r a">224</td><td class="r">151</td><td class="r">130</td></tr>
+            <tr><td>Аналитика</td><td class="r a">220</td><td class="r">180</td><td class="r">160</td></tr>
+          </tbody>
+          <caption>Медианные зарплаты на руки, тыс. ₽ в месяц, первое полугодие 2026. Это фактические оклады из калькулятора Хабр Карьеры, а не цифры из вакансий.</caption>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 03 -->
+<section class="ch" id="down">
+  <div class="wrap">
+    <div class="side"><div class="n">03</div><div class="q">Какие профессии перестают быть востребованы</div></div>
+    <div class="main">
+      <h2>Где спрос уходит</h2>
+      <p class="answer">Исчезают не профессии целиком, а их рутинная часть. Хуже всего ролям, где результат легко проверить и легко сгенерировать: вёрстка, ручное тестирование, типовой фронтенд, шаблонная аналитика, координация задач.</p>
+
+      <div class="rows">
+        <div class="row"><div class="t">HTML‑вёрстка<small>80 тыс. ₽, минимум среди разработчиков</small></div><div class="b"><span class="tag d">данные</span> Самая низкая медиана среди разработчиков на Хабр Карьере. Как отдельная профессия почти не существует: вёрстку закрывают фронтенд‑разработчик и ИИ‑инструменты.</div></div>
+        <div class="row"><div class="t">Junior‑фронтенд без специализации<small>21 резюме на вакансию</small></div><div class="b"><span class="tag d">данные</span> У начинающих фронтенд‑разработчиков около 21 резюме на вакансию, у начинающих аналитиков до 27. Зарплаты в JavaScript снизились на 2% за полугодие, единственное снижение среди массовых языков кроме Scala (−7%).</div></div>
+        <div class="row"><div class="t">Ручное тестирование<small>кандидатов больше, чем задач</small></div><div class="b"><span class="tag o">оценка</span> Нанимающие менеджеры называют QA самой лёгкой для закрытия позицией. Зарплаты тестировщиков при этом выросли на 5%: это рост у тех, кто автоматизирует и разбирается в продукте.</div></div>
+        <div class="row"><div class="t">Проектные менеджеры и администраторы<small>рутину отдают ИИ‑агентам</small></div><div class="b"><span class="tag o">оценка</span> По наблюдениям практиков, именно координационные роли компании пытаются заменить агентами в первую очередь. Зарплаты в менеджменте и администрировании за полугодие не изменились. Часть компаний после таких сокращений возвращает людей: команда теряет скорость.</div></div>
+        <div class="row"><div class="t">Аналитики «по шаблону»<small>остаются те, кто знает бизнес</small></div><div class="b"><span class="tag o">оценка</span> Первичные спецификации по записям встреч собирает ИИ за 20–30 минут вместо дня. Сохраняют позиции аналитики, которые общаются с заказчиком и могут проверить результат.</div></div>
+        <div class="row"><div class="t">ERP, разработка баз данных, геймдев<small>−22%, −13%, −8% к зарплате</small></div><div class="b"><span class="tag d">данные</span> Три специализации с самым заметным снижением зарплат за первое полугодие 2026 по Хабр Карьере. У системных инженеров −5%.</div></div>
+        <div class="row"><div class="t">Графические дизайнеры<small>впервые в антирейтинге WEF</small></div><div class="b"><span class="tag d">данные</span> В Future of Jobs 2025 графические дизайнеры впервые попали в десятку самых быстро сокращающихся профессий. WEF связывает это с генеративным ИИ.</div></div>
+        <div class="row"><div class="t">Промпт‑инженер как отдельная должность<small>60–90 тыс. ₽</small></div><div class="b"><span class="tag d">данные</span> По hh.ru это одна из самых низкооплачиваемых ИИ‑ролей, вместе с нейрокреатором (30–100 тыс. ₽). Умение работать с моделями стало базовым навыком любой профессии, а не профессией.</div></div>
+        <div class="row"><div class="t">Фриланс без ниши<small>105 тыс. ₽, −13%</small></div><div class="b"><span class="tag d">данные</span> Доход фрилансеров на Хабр Карьере упал на 13% за полугодие. Доход ИП, наоборот, вырос на 32% до 216 тыс. ₽: выигрывают те, кто продаёт бизнесу результат, а не часы.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 04 -->
+<section class="ch" id="ai">
+  <div class="wrap">
+    <div class="side"><div class="n">04</div><div class="q">Какие навыки ML/AI нужны и за что платят</div></div>
+    <div class="main">
+      <h2>Платят за ИИ в продакшене, а не за знание о нём</h2>
+      <p class="answer">Самый дорогой профиль 2026 года: инженер, который доводит LLM‑систему до работающего сервиса. Он умеет измерять качество, строить агентов и поиск по данным, следить за стоимостью и надёжностью. Классический ML остаётся фундаментом, но в вакансиях его обгоняют оценка качества и агенты.</p>
+
+      <div class="two">
+        <figure>
+          <h3>Что требуют в вакансиях AI‑инженеров</h3>
+          <div class="hb">
+            <div class="k">Python</div><div class="bar"><i style="width:66%"></i></div><div class="v">≈66%</div>
+            <div class="k">LLM</div><div class="bar"><i style="width:63%"></i></div><div class="v">63%</div>
+            <div class="k">Evals, оценка качества</div><div class="bar"><i style="width:56%"></i></div><div class="v">56%</div>
+            <div class="k">Облака: AWS, GCP, Azure</div><div class="bar"><i style="width:55%"></i></div><div class="v">55%</div>
+            <div class="k">Агенты</div><div class="bar"><i style="width:50%"></i></div><div class="v">50%</div>
+            <div class="k">Observability</div><div class="bar"><i style="width:40%"></i></div><div class="v">40%</div>
+            <div class="k">CI/CD</div><div class="bar"><i style="width:33%"></i></div><div class="v">33%</div>
+            <div class="k">PyTorch</div><div class="bar g"><i style="width:33%"></i></div><div class="v">33%</div>
+            <div class="k">RAG</div><div class="bar"><i style="width:32%"></i></div><div class="v">32%</div>
+            <div class="k">TensorFlow</div><div class="bar g"><i style="width:18%"></i></div><div class="v">18%</div>
+          </div>
+          <figcaption>Доля вакансий с упоминанием навыка. Сведены два независимых разбора англоязычных вакансий 2026 года (390 вакансий и выборка InterviewStack). Выборки небольшие, для Python взята середина диапазона 61–71%. Читайте как направление, а не как точную статистику. Серым отмечены классические фреймворки.</figcaption>
+        </figure>
+        <figure>
+          <h3>Сколько платят за ИИ‑роли в России</h3>
+          <div class="hb">
+            <div class="k">ML‑инженер</div><div class="bar"><i style="margin-left:53%;width:47%"></i></div><div class="v">345</div>
+            <div class="k">AI‑инженер</div><div class="bar"><i style="width:64%"></i></div><div class="v">220</div>
+            <div class="k">ИИ‑фасилитатор</div><div class="bar"><i style="margin-left:29%;width:20%"></i></div><div class="v">170</div>
+            <div class="k">Архитектор AI‑решений</div><div class="bar"><i style="margin-left:29%;width:14%"></i></div><div class="v">150</div>
+            <div class="k">AI‑тренер</div><div class="bar"><i style="width:30%"></i></div><div class="v">104</div>
+            <div class="k">Нейрокреатор</div><div class="bar g"><i style="margin-left:9%;width:20%"></i></div><div class="v">100</div>
+            <div class="k">Промпт‑инженер</div><div class="bar g"><i style="margin-left:17%;width:9%"></i></div><div class="v">90</div>
+          </div>
+          <figcaption>Медианные предложения в вакансиях hh.ru, тыс. ₽ в месяц, январь 2026. Полоса показывает диапазон от нижней до верхней медианы, число справа его верхнюю границу: ML‑инженер 184–345, ИИ‑фасилитатор 100–170, архитектор 100–150, нейрокреатор 30–100, промпт‑инженер 60–90. Шкала 0–345.</figcaption>
+        </figure>
+      </div>
+
+      <h3>Стек по уровням: что учить и в каком порядке</h3>
+      <div class="tiers">
+        <div class="tier"><div class="lv">Уровень 1 · фундамент</div><ul><li><b>Python</b> и SQL на уровне ежедневной работы</li><li>Статистика, линейная алгебра, метрики моделей</li><li>Классический ML: бустинги, валидация, работа с признаками</li><li>Git, Docker, базовый Linux</li></ul></div>
+        <div class="tier"><div class="lv">Уровень 2 · LLM‑приложения</div><ul><li><b>RAG</b>: чанкинг, эмбеддинги, векторный поиск, реранкинг</li><li><b>Агенты</b>: вызов инструментов, оркестрация, память, протокол MCP</li><li>Управление контекстом и структурированный вывод</li><li>Работа с API моделей, кэширование, стоимость запроса</li></ul></div>
+        <div class="tier"><div class="lv">Уровень 3 · за это доплачивают</div><ul><li><b>Evals</b>: наборы тестов, LLM‑судьи, регрессии качества</li><li><b>LLMOps</b>: трассировка, мониторинг, CI/CD для моделей</li><li>Kubernetes, облака, очереди, отказоустойчивость</li><li>Безопасность: prompt injection, утечки данных, доступы агентов</li></ul></div>
+        <div class="tier"><div class="lv">Уровень 4 · узкая экспертиза</div><ul><li>Дообучение моделей: LoRA, дистилляция, подготовка датасетов</li><li>Оптимизация инференса и работа с GPU</li><li>Рекомендательные системы, поиск, компьютерное зрение, речь</li><li>Доменная экспертиза: финтех, медицина, промышленность</li></ul></div>
+      </div>
+
+      <div class="rows">
+        <div class="row"><div class="t">Надбавка за навыки ИИ<small>62% в среднем по миру</small></div><div class="b"><span class="tag d">данные</span> PwC проанализировала более миллиарда объявлений в 27 странах. Надбавка выросла с 57% годом ранее и сильно зависит от отрасли: от 118% в потребительском секторе до 16% в госсекторе.</div></div>
+        <div class="row"><div class="t">Агентные навыки<small>0,06% → 0,23% вакансий за год</small></div><div class="b"><span class="tag o">оценка</span> Доля вакансий с упоминанием agentic AI выросла почти вчетверо, это около 90 тысяч объявлений. Спрос на RAG по одному из разборов вырос на 337% за год.</div></div>
+        <div class="row"><div class="t">Ориентир по миру<small>$140–190 тыс. в год, США</small></div><div class="b"><span class="tag o">оценка</span> Медиана базовой зарплаты в вакансиях AI‑инженеров с требованием GenAI около $140 тыс. (635 вакансий), по опросам разработчиков медиана AI/ML‑инженера $189 тыс. Для российских специалистов на международном рынке называют $7–12 тыс. в месяц на уровне senior.</div></div>
+        <div class="row"><div class="t">По протоколу MCP статистики нет<small>честная оговорка</small></div><div class="b">Его называют стандартом подключения агентов к инструментам и данным, но надёжных подсчётов по вакансиям мы не нашли. В стек он включён как часть агентной разработки.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 05 -->
+<section class="ch" id="new">
+  <div class="wrap">
+    <div class="side"><div class="n">05</div><div class="q">Какие интересные профессии появились</div></div>
+    <div class="main">
+      <h2>Новые роли 2025–2026</h2>
+      <p class="answer">Большинство новых профессий выросло из старых с добавлением ИИ. Самая быстрорастущая из них инженерная и клиентская одновременно: Forward Deployed Engineer.</p>
+
+      <div class="rows">
+        <div class="row"><div class="t">Forward Deployed Engineer<small>643 → 5 330 вакансий за год</small></div><div class="b"><span class="tag d">данные</span> Инженер, который внедряет ИИ‑продукт прямо у заказчика: разбирается в его процессах, пишет интеграции, доводит до результата. По Indeed число вакансий выросло на 729% с апреля 2025 по апрель 2026. Медиана раскрытой базовой зарплаты около $193 тыс. в год. База роста маленькая, но направление однозначное. В России ближайший аналог: инженер внедрения, solution engineer.</div></div>
+        <div class="row"><div class="t">AI Engineer<small>№1 в LinkedIn два года подряд</small></div><div class="b"><span class="tag d">данные</span> Собирает продукты на готовых моделях: RAG, агенты, оценка качества. Отличается от ML‑инженера тем, что реже обучает модели и чаще строит системы вокруг них.</div></div>
+        <div class="row"><div class="t">AI‑консультант и стратег<small>топ‑3 LinkedIn Jobs on the Rise</small></div><div class="b"><span class="tag d">данные</span> Менее техническая роль: помогает бизнесу выбрать, что автоматизировать и как посчитать эффект. Российский вариант по hh.ru называется <b>ИИ‑фасилитатор</b>: внедряет нейросети в процессы и обучает команды, 100–170 тыс. ₽.</div></div>
+        <div class="row"><div class="t">AI‑тренер, разметчик с экспертизой<small>около 104 тыс. ₽</small></div><div class="b"><span class="tag d">данные</span> Учит модели правильным ответам и пишет эталонные тексты. Ценятся тренеры с профессией: юристы, врачи, программисты. В LinkedIn data annotator входит в тройку самых быстрорастущих ролей в США.</div></div>
+        <div class="row"><div class="t">Архитектор AI‑решений<small>100–150 тыс. ₽ в вакансиях hh.ru</small></div><div class="b"><span class="tag d">данные</span> Строит и развивает ИИ‑платформу компании. Вилка в вакансиях пока ниже, чем у ML‑инженеров: роль только формируется, требования в объявлениях размыты.</div></div>
+        <div class="row"><div class="t">Инженер по оценке качества ИИ, агентный инженер<small>статистики пока нет</small></div><div class="b"><span class="tag o">оценка</span> Отдельные названия должностей встречаются всё чаще, но надёжных подсчётов нет. Сами навыки уже массовые: evals есть в 56% вакансий AI‑инженеров, агенты в 50%.</div></div>
+        <div class="row"><div class="t">ИИ‑саппорт и ИИ‑тестировщик<small>входные роли</small></div><div class="b"><span class="tag o">оценка</span> Проверяют ответы моделей, собирают сценарии ошибок, ведут пользователей ИИ‑продуктов. Карьерные эксперты называют их реалистичной точкой входа для новичков.</div></div>
+      </div>
+      <p class="note">hh.ru отмечает, что многие ИИ‑профессии ещё формируются: функционал пересекается, требования уточняются. Смотрите на задачи в вакансии, а не на название должности.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 06 -->
+<section class="ch" id="junior">
+  <div class="wrap">
+    <div class="side"><div class="n">06</div><div class="q">Какие варианты есть для новичков</div></div>
+    <div class="main">
+      <h2>Вход закрыт спереди, но открыт сбоку</h2>
+      <p class="answer">Прямой путь «курсы → джун‑разработчик» в 2026 году почти не работает. Работают обходные: стажировки крупных компаний, соседние роли с внутренним переходом, ниши с дефицитом и вход через свою прежнюю профессию.</p>
+
+      <div class="quota">
+        <div><div class="v num">10–11%</div><div class="l">IT‑вакансий доступны без опыта. По рынку в целом 37–38%</div></div>
+        <div><div class="v num">≈50%</div><div class="l">из них приходится на техподдержку и похожие роли</div></div>
+        <div><div class="v num">8 → 19</div><div class="l">резюме на junior‑вакансию, 2021 → 2025</div></div>
+        <div><div class="v num">50–70K ₽</div><div class="l">типичная стартовая зарплата по оценке экспертов</div></div>
+      </div>
+      <p class="note">Первые две цифры: SuperJob, январь 2026. Третья: исследование, которое цитирует «Инк». Четвёртая: экспертная оценка из опроса «Т—Ж».</p>
+
+      <div class="rows">
+        <div class="row"><div class="t">Оплачиваемые стажировки бигтеха<small>самый надёжный путь</small></div><div class="b">Крупные компании продолжают растить джунов: стажировка оплачивается, при переходе в штат дают полноценный оффер и ментора. Отбор жёсткий, иногда жёстче, чем на junior‑вакансию. Готовьтесь к алгоритмам и подавайтесь во все наборы сразу, а не в один.</div></div>
+        <div class="row"><div class="t">Соседняя роль и переход внутри<small>поддержка, ИИ‑саппорт, AI‑тренер</small></div><div class="b">Половина вакансий без опыта находится в поддержке. Это не тупик, если компания продуктовая: через 6–12 месяцев вы знаете продукт лучше внешнего кандидата и переходите в QA, аналитику или разработку.</div></div>
+        <div class="row"><div class="t">Ниши с дефицитом<small>ИБ, DevOps, данные, 1С</small></div><div class="b">Порог входа выше, зато конкуренция ниже. В ИБ реальная стартовая точка: аналитик SOC первой линии. В инфраструктуре: младший администратор или инженер поддержки. В 1С нанимают тысячи небольших интеграторов.</div></div>
+        <div class="row"><div class="t">Вход через свою профессию<small>домен + ИИ</small></div><div class="b">Бухгалтер, юрист, врач, логист с навыками автоматизации и ИИ ценнее безликого джуна. Это путь в AI‑тренеры, аналитики, продакты и специалисты по внедрению. Два требования 2026 года по словам экспертов: умение работать с ИИ и междисциплинарность.</div></div>
+        <div class="row"><div class="t">Малые компании и стартапы<small>берут за готовность делать всё</small></div><div class="b">В команде из пяти человек нет HR‑фильтра по годам опыта. Смотрят на проект, который можно открыть и потрогать. Каналы поиска в разделе 08, списки компаний в разделе 10.</div></div>
+        <div class="row"><div class="t">Диплом<small>важен, но не везде</small></div><div class="b">Критичен в финтехе, госсекторе, ИБ и R&amp;D. В остальных местах работодатели смотрят на доказательства: проекты, GitHub, контрибуции, рекомендации, тестовые задания.</div></div>
+      </div>
+
+      <div class="tpl"><div class="h">Что должно быть у новичка до первого отклика</div><b>Один доведённый до продакшена проект</b> с реальными пользователями или данными, а не пять учебных. <b>Понятная специализация</b> в заголовке резюме вместо «начинающий разработчик». <b>Уверенная работа с ИИ‑инструментами</b> и умение объяснить, что в коде написано вами и почему. <b>Понимание бизнеса</b>: на собеседовании говорите, как ваша работа помогает компании зарабатывать или экономить.</div>
+    </div>
+  </div>
+</section>
+
+<!-- 07 -->
+<section class="ch" id="where">
+  <div class="wrap">
+    <div class="side"><div class="n">07</div><div class="q">Куда идти работать: компании, стартапы, работа на себя</div></div>
+    <div class="main">
+      <h2>Три траектории и для кого каждая</h2>
+      <p class="answer">Без опыта лучше идти туда, где учат: в крупную компанию или в сильную небольшую команду. С опытом от двух лет стартап даёт самый быстрый рост. Работа на себя окупается, когда у вас есть ниша и клиенты, а не просто свободные часы.</p>
+
+      <div class="cmp">
+        <div>
+          <h3>Крупные компании</h3>
+          <dl>
+            <div><dt>Деньги</dt><dd><span class="tag d">данные</span> Лидеры рейтинга Хабр Карьеры: Райффайзен Банк <b>400 тыс. ₽</b>, Авито <b>389</b>, Иннотех <b>364</b>, далее RWB и VK.</dd></div>
+            <div><dt>Плюсы</dt><dd>Менторы, процессы, сильная строчка в резюме, стажировки, белая зарплата и льготы аккредитованных IT‑компаний.</dd></div>
+            <div><dt>Минусы</dt><dd>Длинный найм в 3–6 этапов, узкая зона ответственности, возврат в офисы.</dd></div>
+            <div><dt>Кому</dt><dd>Новичкам и тем, кому нужна глубина в одной области.</dd></div>
+          </dl>
+        </div>
+        <div>
+          <h3>Стартапы и малые команды</h3>
+          <dl>
+            <div><dt>Деньги</dt><dd>Обычно ниже рынка на старте, иногда с долей или опционом. Разброс огромный, договаривайтесь письменно.</dd></div>
+            <div><dt>Плюсы</dt><dd>Найм за дни, широкие задачи, прямой контакт с основателем, быстрый рост ответственности.</dd></div>
+            <div><dt>Минусы</dt><dd>Риск закрытия и задержек, нет наставника, процессы придётся строить самому.</dd></div>
+            <div><dt>Кому</dt><dd>Мидлам и самостоятельным джунам с готовым проектом.</dd></div>
+          </dl>
+        </div>
+        <div>
+          <h3>Работа на себя</h3>
+          <dl>
+            <div><dt>Деньги</dt><dd><span class="tag d">данные</span> Фриланс <b>105 тыс. ₽</b> (−13% за полгода). ИП <b>216 тыс. ₽</b> (+32%). В LinkedIn основатели и независимые консультанты среди растущих ролей.</dd></div>
+            <div><dt>Плюсы</dt><dd>Свобода выбора проектов, несколько клиентов сразу, потолок дохода выше.</dd></div>
+            <div><dt>Минусы</dt><dd>Продажи и документы на вас, доход неровный, новичку без портфолио почти не дают заказов.</dd></div>
+            <div><dt>Кому</dt><dd>Специалистам с нишей: внедрение ИИ, автоматизация, DevOps на несколько проектов.</dd></div>
+          </dl>
+        </div>
+      </div>
+      <p class="note">Разница между фрилансом и ИП в данных Хабр Карьеры показывает главное: зарабатывают те, кто оформил себя как подрядчика с понятной услугой и работает с бизнесом напрямую, а не через биржи.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 08 -->
+<section class="ch" id="startups">
+  <div class="wrap">
+    <div class="side"><div class="n">08</div><div class="q">Где искать работу в проектах и стартапах</div></div>
+    <div class="main">
+      <h2>Каналы, где вакансия появляется раньше, чем на hh</h2>
+      <p class="answer">Стартапы редко платят за размещение на больших площадках. Они пишут в Telegram, на профильные доски и в сообщества, а чаще всего нанимают по прямому сообщению основателю.</p>
+
+      <div class="dir">
+        <div>
+          <h3>Россия и СНГ</h3>
+          <ul>
+            <li><b>Хабр Карьера</b> career.habr.com: продуктовые команды, зарплаты и отзывы о работодателях</li>
+            <li><b>getmatch</b>: вакансии с открытыми вилками, сильные продуктовые компании</li>
+            <li><b>Startup Fellows</b> startupfellows.ru/vacancies: доска вакансий только от стартапов</li>
+            <li><b>Telegram: @startup_job_russia</b> и профильные каналы по вашему стеку. Для джунов это главный источник вакансий</li>
+            <li><b>vc.ru</b>: раздел вакансий и посты основателей о запусках</li>
+            <li><b>hh.ru</b> с фильтрами «аккредитованная IT‑компания» и размером компании</li>
+          </ul>
+        </div>
+        <div>
+          <h3>Международные и удалённые</h3>
+          <ul>
+            <li><b>Wellfound</b> wellfound.com: крупнейшая доска стартапов, отклик идёт напрямую основателям</li>
+            <li><b>Work at a Startup</b> workatastartup.com: компании из портфеля Y Combinator</li>
+            <li><b>Hacker News «Who is hiring?»</b>: ежемесячный тред первого числа</li>
+            <li><b>LinkedIn</b>: поиск по фразам hiring и founding engineer, сообщения основателям</li>
+            <li><b>We Work Remotely, Remote OK</b>: удалённые позиции</li>
+            <li><b>Contra, Upwork, Toptal</b>: проектная работа и контракты</li>
+          </ul>
+        </div>
+        <div>
+          <h3>Проекты без вакансий</h3>
+          <ul>
+            <li><b>Хакатоны</b>: команды и компании‑организаторы нанимают участников прямо с мероприятий</li>
+            <li><b>Open source</b>: несколько принятых пул‑реквестов в продукт компании работают лучше резюме</li>
+            <li><b>Акселераторы и демо‑дни</b>: ФРИИ, Сколково, университетские. Список выпускников это список команд, которым нужны руки</li>
+            <li><b>Product Hunt</b> и запуски в Telegram: пишите команде в неделю запуска</li>
+          </ul>
+        </div>
+        <div>
+          <h3>Как писать стартапу</h3>
+          <ul>
+            <li>Пишите <b>основателю или CTO</b>, а не на общий адрес</li>
+            <li>Три предложения: кто вы, что конкретно улучшите в их продукте, ссылка на работающий проект</li>
+            <li>Приложите <b>маленький результат</b>: найденный баг, прототип фичи, разбор воронки</li>
+            <li>Предложите оплачиваемое тестовое на 1–2 недели: стартапу так проще решиться</li>
+          </ul>
+        </div>
+      </div>
+      <p class="note">Этот раздел справочный: площадки подобраны по известности и назначению, а не по статистике. Перед откликом проверяйте компанию: юрлицо, отзывы, оформление и график выплат.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 09 -->
+<section class="ch" id="hidden">
+  <div class="wrap">
+    <div class="side"><div class="n">09</div><div class="q">Где искать все компании кроме основных известных</div></div>
+    <div class="main">
+      <h2>В России больше 21 тысячи аккредитованных IT‑компаний</h2>
+      <p class="answer">На десяток известных брендов приходят тысячи откликов. Остальные 21 тысяча компаний почти невидимы для соискателей, и конкуренция там в разы ниже. Находить их нужно не по вакансиям, а по реестрам, рейтингам и спискам участников.</p>
+
+      <div class="quota">
+        <div><div class="v num">21 000+</div><div class="l">компаний в реестре аккредитованных IT‑организаций на июль 2026</div></div>
+        <div><div class="v num">500+</div><div class="l">новых компаний получили аккредитацию за первое полугодие 2026</div></div>
+        <div><div class="v num">169</div><div class="l">компаний с открытыми вакансиями на Хабр Карьере 12 ноября 2026</div></div>
+        <div><div class="v num">91</div><div class="l">из них с отметкой об аккредитации</div></div>
+      </div>
+      <p>Последние две цифры объясняют, почему «вакансий нет». На самой профильной площадке страны представлено меньше одного процента аккредитованных компаний. Остальные нанимают через hh.ru, знакомых, Telegram и собственные сайты, а многие не публикуют вакансии, пока не придёт подходящий человек.</p>
+      <div class="rows">
+        <div class="row"><div class="t">Реестр аккредитованных IT‑компаний<small>gosuslugi.ru/itorgs</small></div><div class="b">На Госуслугах есть проверка по ИНН или названию. Сервис отвечает по одной компании и не выгружает список целиком, поэтому реестр удобен для проверки найденной компании, а не для поиска новых. Аккредитация означает, что IT для компании основной вид деятельности.</div></div>
+        <div class="row"><div class="t">Аккредитованные на hh.ru<small>фильтр в поиске</small></div><div class="b">В расширенном поиске hh.ru есть фильтр «аккредитованная IT‑компания». Сочетайте его с небольшим регионом и сортировкой по дате: получите вакансии, до которых не дошла основная масса откликов.</div></div>
+      </div>
+
+      <div class="dir">
+        <div>
+          <h3>Реестры и государственные списки</h3>
+          <ul>
+            <li><b>Реестр аккредитованных IT‑компаний</b> Минцифры на Госуслугах: свыше 21 тыс. компаний на июль 2026, более 500 новых за полугодие</li>
+            <li><b>Реестр российского ПО</b> reestr.digital.gov.ru: у каждого продукта указан разработчик</li>
+            <li><b>Участники Сколково</b> и резиденты <b>Иннополиса</b>, региональных технопарков и ОЭЗ</li>
+          </ul>
+        </div>
+        <div>
+          <h3>Рейтинги и каталоги</h3>
+          <ul>
+            <li><b>CNews100, TAdviser, RAEX</b>: крупнейшие IT‑компании, интеграторы и разработчики по выручке</li>
+            <li><b>РУССОФТ</b>: каталог экспортёров софта</li>
+            <li><b>Рейтинг работодателей Хабр Карьеры</b> и отзывы на <b>Dream Job</b></li>
+            <li><b>Рейтинг Рунета</b> и <b>Tagline</b>: студии и заказная разработка</li>
+          </ul>
+        </div>
+        <div>
+          <h3>IT‑отделы вне IT</h3>
+          <ul>
+            <li><b>Банки, страховые, ритейл, телеком</b>: свои большие команды разработки</li>
+            <li><b>Промышленность, логистика, энергетика</b>: цифровые «дочки» с меньшей конкуренцией на вакансию</li>
+            <li><b>Медицина, агро, образование</b>: растущий спрос на данные и ИИ</li>
+          </ul>
+        </div>
+        <div>
+          <h3>Косвенные следы</h3>
+          <ul>
+            <li><b>Спонсоры и докладчики конференций</b>: кто выступает, тот нанимает</li>
+            <li><b>Портфели фондов и акселераторов</b>, новости о раундах</li>
+            <li><b>Организации на GitHub</b> с активными репозиториями на вашем стеке</li>
+            <li><b>Кейсы интеграторов</b>: в них названы заказчики, у которых есть свои команды</li>
+            <li>За рубежом: <b>Crunchbase</b>, каталог <b>Y Combinator</b>, <b>Built In</b>, <b>Levels.fyi</b></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="tpl"><div class="h">Приём: собственная база на 100 компаний</div>Выберите одну отрасль и один стек. Из реестра ПО и двух рейтингов соберите таблицу: <b>компания, продукт, сайт, страница карьеры, имя руководителя разработки, контакт</b>. У половины не будет открытых вакансий. Пишите им всё равно: найм в небольших компаниях часто начинается с хорошего входящего письма, а не с объявления.</div>
+    </div>
+  </div>
+</section>
+
+<!-- 09a -->
+<section class="ch" id="companies">
+  <div class="wrap">
+    <div class="side"><div class="n">10</div><div class="q">Списки IT‑компаний с вакансиями, которые остаются в тени</div></div>
+    <div class="main">
+      <h2>Компании в тени: кто нанимает прямо сейчас</h2>
+      <div class="lock"><h3>Список из 99 компаний с открытыми вакансиями</h3><ul><li>34 малые команды и стартапа, 24 средние IT‑компании, 17 крупных, но не раскрученных, 24 IT‑отдела вне IT</li><li>У каждой: сайт, город, размер, стек, отметка об аккредитации и ссылка на открытые вакансии</li><li>Поиск по стеку и городу, фильтр по аккредитованным</li></ul><div class="btns"><button class="btn off" type="button" disabled id="lock-8786"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>Доступно только участникам лагеря KIRO IT CAMP</button><a class="btn go" href="https://forms.yandex.ru/u/6ae845b895add5074dae135b/">Оставь заявку на зимний поток</a></div><p class="hint">Участникам лагеря: раздел открыт в ликбезе на платформе, <a href="https://kiroplatform.ru/likebezy/it-market-2026">kiroplatform.ru/likebezy/it-market-2026</a></p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 09b -->
+<section class="ch" id="telegram">
+  <div class="wrap">
+    <div class="side"><div class="n">11</div><div class="q">Список телеграм‑каналов с вакансиями</div></div>
+    <div class="main">
+      <h2>Telegram‑каналы с вакансиями</h2>
+      <div class="lock"><h3>72 проверенных канала по 17 направлениям</h3><ul><li>Python, Data Science и ML, аналитика, бэкенд по языкам, фронтенд, QA, DevOps, ИБ, продакты, дизайн, геймдев</li><li>Отдельно каналы для джунов и стажёров, стартапов, удалёнки и релокации</li><li>Каждый канал проверен в ноябре 2026: открыт, активен, указано число подписчиков</li></ul><div class="btns"><button class="btn off" type="button" disabled id="lock-6791"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>Доступно только участникам лагеря KIRO IT CAMP</button><a class="btn go" href="https://forms.yandex.ru/u/6ae845b895add5074dae135b/">Оставь заявку на зимний поток</a></div><p class="hint">Участникам лагеря: раздел открыт в ликбезе на платформе, <a href="https://kiroplatform.ru/likebezy/it-market-2026">kiroplatform.ru/likebezy/it-market-2026</a></p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 10 -->
+<section class="ch" id="week">
+  <div class="wrap">
+    <div class="side"><div class="n">12</div><div class="q">Как найти работу в IT за неделю при максимальных усилиях и наличии навыков</div></div>
+    <div class="main">
+      <h2>Семь дней, работа с 9 до 21</h2>
+      <p class="answer">За неделю реально дойти до оффера в стартапе, небольшой компании, на аутсорсе или на контрактном проекте. В крупной компании цикл найма длится 3–6 недель, поэтому там цель недели: попасть на собеседования. План построен на объёме и на прямых контактах, потому что при 20 резюме на вакансию один канал откликов не срабатывает.</p>
+
+      <div class="lock"><h3>Пошаговый план на 7 дней</h3><ul><li>Расписание по дням: что делать с вечера накануне до переговоров об оффере</li><li>Квоты на неделю: отклики, личные сообщения, рекомендации, созвоны</li><li>Четыре готовых шаблона сообщений и список ошибок, которые срывают поиск</li></ul><div class="btns"><button class="btn off" type="button" disabled id="lock-6437"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>Доступно только участникам лагеря KIRO IT CAMP</button><a class="btn go" href="https://forms.yandex.ru/u/6ae845b895add5074dae135b/">Оставь заявку на зимний поток</a></div><p class="hint">Участникам лагеря: раздел открыт в ликбезе на платформе, <a href="https://kiroplatform.ru/likebezy/it-market-2026">kiroplatform.ru/likebezy/it-market-2026</a></p></div>
+    </div>
+  </div>
+</section>
+
+<!-- sources -->
+<section class="ch" id="sources">
+  <div class="wrap">
+    <div class="side"><div class="n">Источники</div><div class="q">Откуда цифры и насколько им можно верить</div></div>
+    <div class="main">
+      <h2>Источники и методика</h2>
+      <div class="prose">
+        <p>Отчёт собран в ноябре 2026 года по открытым исследованиям и статистике площадок. Российские цифры hh.ru частично взяты из пересказов в СМИ и блогах, потому что сами отчёты hh.ru публикует по месяцам и не всегда в открытом виде. Такие места помечены как «оценка» или прямо оговорены. Зарплаты Хабр Карьеры это фактические оклады, зарплаты hh.ru это предложения в вакансиях: сравнивать их напрямую нельзя.</p>
+      </div>
+      <ol class="src">
+        <li><b>Хабр Карьера.</b> Зарплаты IT‑специалистов в первой половине 2026 года, 45 226 зарплат. <a href="https://habr.com/ru/specials/1060148/">habr.com/ru/specials/1060148</a></li>
+        <li><b>hh.ru в пересказе Hi‑Tech Mail.</b> Вакансии −35%, резюме +25%, апрель 2026. <a href="https://hi-tech.mail.ru/articles/150067-pochemu-vakansij-na-35-menshe-chem-v-2025-godu/">hi-tech.mail.ru</a></li>
+        <li><b>Outlines Tech на Хабре.</b> «Крутое пике», 6 ноября 2026: сентябрьские данные hh.ru, удалёнка, наблюдения о найме. <a href="https://habr.com/ru/companies/outlines_tech/articles/1103868/">habr.com</a></li>
+        <li><b>hh.индекс за апрель 2026.</b> Обзор со ссылкой на hh.ru. <a href="https://bezpanikiit.ru/rynok-truda-aprel-2026">bezpanikiit.ru</a></li>
+        <li><b>Коммерсантъ со ссылкой на hh.ru.</b> Семь ИИ‑профессий и зарплаты, 29 января 2026. <a href="https://www.kommersant.ru/doc/8380362">kommersant.ru/doc/8380362</a></li>
+        <li><b>CNews.</b> Компании вдвое чаще ищут специалистов по ИИ, 28 января 2026. <a href="https://www.cnews.ru/news/top/2026-01-28_rossijskie_kompanii_stali">cnews.ru</a></li>
+        <li><b>Т—Ж.</b> Можно ли войти в ИТ в 2026 году: SuperJob, Т‑Банк, ВШЭ, 6 марта 2026. <a href="https://t-j.ru/voiti-v-it-2026/">t-j.ru/voiti-v-it-2026</a></li>
+        <li><b>Инк.</b> Конкуренция среди джунов выросла до 19 резюме на вакансию. <a href="https://incrussia.ru/news/v-it-tesno-na-vhode-konkurentsiya-sredi-dzhunov-vyrosla-do-19-rezyume-na-vakansiyu/">incrussia.ru</a></li>
+        <li><b>РБК Тренды.</b> IT‑рынок в России: прогноз в сфере HR на 2026 год. <a href="https://trends.rbc.ru/trends/social/cmrm/698da33a9a79474de4341261">trends.rbc.ru</a></li>
+        <li><b>Indeed Hiring Lab.</b> AI and Job Postings; The Labor Market Is Tilting Toward Seniority, июль 2026. <a href="https://www.hiringlab.org/2026/07/08/ai-and-job-postings-from-destruction-to-creation/">hiringlab.org</a>, <a href="https://www.hiringlab.org/2026/07/23/the-labor-market-is-tilting-toward-seniority/">hiringlab.org</a></li>
+        <li><b>PwC.</b> 2026 Global AI Jobs Barometer. <a href="https://www.pwc.com/gx/en/news-room/press-releases/2026/pwc-2026-ai-jobs-barometer.html">pwc.com</a></li>
+        <li><b>World Economic Forum.</b> Future of Jobs Report 2025. <a href="https://www.weforum.org/publications/the-future-of-jobs-report-2025/">weforum.org</a></li>
+        <li><b>Stanford HAI.</b> AI Index 2026, в пересказе LeadDev. <a href="https://leaddev.com/hiring/young-devs-steepest-losses-exposed-roles-stanford-study-finds">leaddev.com</a>. Первоисточник: aiindex.stanford.edu</li>
+        <li><b>LinkedIn Jobs on the Rise 2026</b> в пересказе Dice. <a href="https://www.dice.com/career-advice/ai-related-jobs-top-linkedins-fastest-growing-roles-list-for-2026">dice.com</a></li>
+        <li><b>Forward Deployed Engineer.</b> Данные Indeed и Lightcast в обзоре KDnuggets. <a href="https://www.kdnuggets.com/forward-deployed-engineer-ais-hottest-new-career-or-consulting-with-a-better-title">kdnuggets.com</a></li>
+        <li><b>Навыки AI‑инженеров в вакансиях.</b> Разбор 390 вакансий и выборка InterviewStack. <a href="https://dev.to/ali_82f3409ed625e8ba8515b/ai-engineer-roadmap-2026-what-390-job-postings-actually-require-3jdo">dev.to</a>, <a href="https://interviewstack.io/blog/how-ai-is-changing-ai-engineer-2026">interviewstack.io</a>. Блоги, небольшие выборки</li>
+        <li><b>Хабр Карьера.</b> Компании с открытыми вакансиями, выгрузка 12 ноября 2026. <a href="https://career.habr.com/companies?with_vacancies=1">career.habr.com/companies</a></li>
+        <li><b>Реестр аккредитованных IT‑компаний.</b> Свыше 21 тыс. на июль 2026. <a href="https://techora.ru/news/chislo-novykh-it-kompaniy-v-rf-2026-07-19">techora.ru</a></li>
+      </ol>
+      <p class="note">Разделы 08–12 это практические рекомендации KIRO. Список компаний выгружен с Хабр Карьеры 12 ноября 2026 года, Telegram‑каналы проверены по публичным страницам в тот же день.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap"><span>KIRO · kiroplatform.ru</span><span>Данные актуальны на 12 ноября 2026</span></div>
+</footer>
+
+</body>
+</html>

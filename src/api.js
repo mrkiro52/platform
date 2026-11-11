@@ -115,6 +115,7 @@ export const api = {
   saveHomework: (payload) => req('/api/homework/task', { method: 'PUT', body: JSON.stringify(payload) }),
 
   // Задания к главам индивидуальных программ октября
+  itMarketCamp:          ()                              => req('/api/likbez/it-market/camp'),
   programHomework:       ()                              => req('/api/programs/homework/mine'),
   submitProgramHomework: (direction, chapter, payload)   => req(`/api/programs/homework/${direction}/${chapter}`, { method: 'PUT', body: JSON.stringify(payload) }),
   vacancies:             (params = {})                   => req(`/api/vacancies?${new URLSearchParams(params)}`),

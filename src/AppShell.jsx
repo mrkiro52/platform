@@ -161,8 +161,8 @@ export default function AppShell({ user, onLogout }) {
             <Route path="/courses/:slug" element={<CoursesPage user={user} />} />
             <Route path="/courses/:slug/:lessonId" element={<CoursesPage user={user} />} />
             <Route path="/notifications" element={<NotificationsPage onRead={refreshBadges} />} />
-            <Route path="/likebezy"   element={<LikebezyPage />} />
-            <Route path="/likebezy/:id" element={<LikebezyPage />} />
+            <Route path="/likebezy"   element={<LikebezyPage user={user} />} />
+            <Route path="/likebezy/:id" element={<LikebezyPage user={user} />} />
             <Route path="/antireels" element={<AntiReels />} />
             <Route path="/autumn-camp" element={<AutumnCampPage user={user} />} />
             <Route path="/autumn-camp/program" element={<AutumnProgramPage user={user} />} />
