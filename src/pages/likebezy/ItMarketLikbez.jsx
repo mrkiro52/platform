@@ -180,14 +180,16 @@ const Gate = ({ camp, title, inside, children }) => {
 }
 
 const COMPANY_GROUPS = [
+  ['mid', 'Средние IT‑компании', '100–1000 человек или 10–29 открытых вакансий'],
+  ['large', 'Крупные, но не на слуху', 'от 1000 человек или от 30 открытых вакансий'],
   ['small', 'Малые команды и стартапы', 'до 100 человек'],
-  ['mid', 'Средние IT‑компании', '100–1000 человек'],
-  ['large', 'Крупные, но не на слуху', 'от 1000 человек'],
   ['nonit', 'IT‑отделы вне IT', 'ритейл, транспорт, промышленность, финансы'],
 ]
+const PAGE_SIZE = 10
 
 function Companies({ data }) {
-  const [group, setGroup] = useState('small')
+  const [group, setGroup] = useState('mid')
+  const [shown, setShown] = useState(PAGE_SIZE)
   const [q, setQ] = useState('')
   const [onlyAcc, setOnlyAcc] = useState(false)
   const total = COMPANY_GROUPS.reduce((n, [k]) => n + data.companies[k].length, 0)
@@ -197,13 +199,17 @@ function Companies({ data }) {
       (!onlyAcc || c.accredited) &&
       (!needle || [c.name, c.about, c.city, ...(c.skills || [])].join(' ').toLowerCase().includes(needle)))
   }, [data, group, q, onlyAcc])
+  // Любая смена группы или фильтра возвращает к первой десятке
+  useEffect(() => { setShown(PAGE_SIZE) }, [group, q, onlyAcc])
+  const visible = rows.slice(0, shown)
 
   return (
     <div style={{ margin: '18px 0' }}>
       <P>
-        В списке <B>{total} компаний с открытыми вакансиями</B> на {data.updated.split('-').reverse().join('.')}. Источник: {data.source}.
+        В списке <B>{total} компаний с открытыми вакансиями</B> на {data.updated.split('-').reverse().join('.')}. Источники: {data.source}.
         Убраны кадровые агентства и самые известные бренды, на которые откликаются все. Отметка «аккредитована» означает,
-        что компания заявила о себе в реестре аккредитованных IT‑организаций Минцифры.
+        что площадка показывает компанию как аккредитованную IT‑организацию из реестра Минцифры. Там, где площадка не называет
+        численность, компания отнесена к средним или крупным по числу открытых вакансий.
       </P>
       <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', margin: '14px 0' }}>
         {COMPANY_GROUPS.map(([key, label, hint]) => (
@@ -234,8 +240,8 @@ function Companies({ data }) {
             </tr>
           </thead>
           <tbody>
-            {rows.map(c => (
-              <tr key={c.habr}>
+            {visible.map(c => (
+              <tr key={c.url}>
                 <td style={{ padding: '10px 12px', borderBottom: '1px solid var(--border-color)', verticalAlign: 'top', minWidth: 170 }}>
                   <div style={{ color: 'var(--text-primary)', fontWeight: 700 }}>{c.name}</div>
                   {c.site && <div style={{ marginTop: 3, overflowWrap: 'anywhere' }}><A href={c.site}>{c.site.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '')}</A></div>}
@@ -245,10 +251,10 @@ function Companies({ data }) {
                   {c.about}
                   {c.skills?.length > 0 && <div style={{ color: 'var(--text-tertiary)', fontSize: 12, marginTop: 4 }}>{c.skills.join(' · ')}</div>}
                 </td>
-                <td style={{ padding: '10px 12px', borderBottom: '1px solid var(--border-color)', color: 'var(--text-secondary)', verticalAlign: 'top', whiteSpace: 'nowrap' }}>{c.city || 'удалённо'}</td>
-                <td style={{ padding: '10px 12px', borderBottom: '1px solid var(--border-color)', color: 'var(--text-secondary)', verticalAlign: 'top', whiteSpace: 'nowrap' }}>{c.size}</td>
+                <td style={{ padding: '10px 12px', borderBottom: '1px solid var(--border-color)', color: 'var(--text-secondary)', verticalAlign: 'top', whiteSpace: 'nowrap' }}>{c.city || '—'}</td>
+                <td style={{ padding: '10px 12px', borderBottom: '1px solid var(--border-color)', color: 'var(--text-secondary)', verticalAlign: 'top', whiteSpace: 'nowrap' }}>{c.size || '—'}</td>
                 <td style={{ padding: '10px 12px', borderBottom: '1px solid var(--border-color)', verticalAlign: 'top', textAlign: 'right', fontFamily: MONO, whiteSpace: 'nowrap' }}>
-                  <A href={`${c.habr}/vacancies`}>{c.vacancies}</A>
+                  <A href={c.vacUrl}>{c.vacancies}</A>
                 </td>
               </tr>
             ))}
@@ -258,8 +264,25 @@ function Companies({ data }) {
           </tbody>
         </table>
       </div>
+      {rows.length > 0 && (
+        <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap', alignItems: 'center', marginTop: 12 }}>
+          <span style={{ color: 'var(--text-tertiary)', fontFamily: MONO, fontSize: 12.5 }}>
+            Показано {visible.length} из {rows.length}
+          </span>
+          {shown < rows.length && (
+            <button type="button" onClick={() => setShown(n => n + PAGE_SIZE)} style={{ ...btn, padding: '9px 16px', fontSize: 13.5, background: 'var(--bg-secondary)', border: `1px solid ${ACCENT_LINE}`, color: ACCENT_HI, cursor: 'pointer' }}>
+              Показать ещё {Math.min(PAGE_SIZE, rows.length - shown)}
+            </button>
+          )}
+          {shown > PAGE_SIZE && (
+            <button type="button" onClick={() => setShown(PAGE_SIZE)} style={{ ...btn, padding: '9px 16px', fontSize: 13.5, background: 'none', border: '1px solid var(--border-color)', color: 'var(--text-secondary)', cursor: 'pointer' }}>
+              Свернуть
+            </button>
+          )}
+        </div>
+      )}
       <P style={{ fontSize: 12.5, color: 'var(--text-tertiary)' }}>
-        Число в последнем столбце ведёт на вакансии компании. Прямого показателя «мало откликов» ни одна площадка не публикует:
+        Число в последнем столбце — все открытые вакансии компании на площадке, не только IT; ссылка ведёт на них. Прямого показателя «мало откликов» ни одна площадка не публикует:
         список собран по косвенным признакам — небольшой размер, регион, непрофильная отрасль, отсутствие в топах работодателей.
       </P>
     </div>
@@ -267,28 +290,32 @@ function Companies({ data }) {
 }
 
 function Channels({ data }) {
+  const [cat, setCat] = useState(data.channels[0].category)
   const total = data.channels.reduce((n, c) => n + c.items.length, 0)
+  const current = data.channels.find(c => c.category === cat) || data.channels[0]
   return (
     <div style={{ margin: '18px 0' }}>
       <P>
         <B>{total} каналов</B> по {data.channels.length} направлениям. Каждый проверен {data.updated.split('-').reverse().join('.')}:
-        канал существует, открыт и публиковал посты осенью 2026 года. Число справа показывает подписчиков.
+        канал существует, открыт и публиковал посты осенью 2026 года. Выбери направление, число справа показывает подписчиков.
       </P>
-      <div className="itm-channels">
-        {data.channels.map(cat => (
-          <div key={cat.category} style={{ minWidth: 0 }}>
-            <div style={{ color: ACCENT, fontFamily: MONO, fontSize: 11.5, letterSpacing: 1, textTransform: 'uppercase', marginBottom: 8 }}>{cat.category}</div>
-            <div style={{ borderTop: '1px solid var(--border-color)' }}>
-              {cat.items.map(ch => (
-                <div key={ch.handle} style={{ display: 'flex', justifyContent: 'space-between', gap: 12, padding: '9px 0', borderBottom: '1px solid var(--border-color)', fontSize: 14 }}>
-                  <div style={{ minWidth: 0 }}>
-                    <A href={`https://t.me/${ch.handle}`}>@{ch.handle}</A>
-                    <div style={{ color: 'var(--text-tertiary)', fontSize: 12.5, marginTop: 2, overflowWrap: 'anywhere' }}>{ch.title}</div>
-                  </div>
-                  <div style={{ color: 'var(--text-secondary)', fontFamily: MONO, fontSize: 12.5, whiteSpace: 'nowrap' }}>{ch.subs}</div>
-                </div>
-              ))}
+      <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', margin: '14px 0' }}>
+        {data.channels.map(c => (
+          <button key={c.category} type="button" onClick={() => setCat(c.category)} style={{
+            background: cat === c.category ? ACCENT : 'var(--bg-secondary)', color: cat === c.category ? '#08080A' : 'var(--text-secondary)',
+            border: `1px solid ${cat === c.category ? ACCENT : 'var(--border-color)'}`, borderRadius: 999, padding: '7px 14px',
+            fontSize: 13, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit',
+          }}>{c.category} · {c.items.length}</button>
+        ))}
+      </div>
+      <div style={{ borderTop: '1px solid var(--border-color)', maxWidth: 640 }}>
+        {current.items.map(ch => (
+          <div key={ch.handle} style={{ display: 'flex', justifyContent: 'space-between', gap: 12, padding: '11px 0', borderBottom: '1px solid var(--border-color)', fontSize: 14.5 }}>
+            <div style={{ minWidth: 0 }}>
+              <A href={`https://t.me/${ch.handle}`}>@{ch.handle}</A>
+              <div style={{ color: 'var(--text-tertiary)', fontSize: 13, marginTop: 2, overflowWrap: 'anywhere' }}>{ch.title}</div>
             </div>
+            <div style={{ color: 'var(--text-secondary)', fontFamily: MONO, fontSize: 12.5, whiteSpace: 'nowrap' }}>{ch.subs}</div>
           </div>
         ))}
       </div>
@@ -371,6 +398,7 @@ const SOURCES = [
   ['Навыки AI‑инженеров: разбор 390 вакансий', 'https://dev.to/ali_82f3409ed625e8ba8515b/ai-engineer-roadmap-2026-what-390-job-postings-actually-require-3jdo'],
   ['Реестр аккредитованных IT‑компаний: свыше 21 тыс. на июль 2026', 'https://techora.ru/news/chislo-novykh-it-kompaniy-v-rf-2026-07-19'],
   ['Хабр Карьера. Компании с открытыми вакансиями, выгрузка 12 ноября 2026', 'https://career.habr.com/companies?with_vacancies=1'],
+  ['hh.ru. Каталог работодателей отрасли «Информационные технологии», выгрузка 12 ноября 2026', 'https://hh.ru/employers_company/informacionnye_tekhnologii_sistemnaya_integraciya_internet'],
 ]
 
 /* ═══════════════════════════ Main ═══════════════════════════ */
@@ -401,9 +429,8 @@ export default function ItMarketLikbez({ user, onBack }) {
         .itm-cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1px; background: var(--border-color); border: 1px solid var(--border-color); border-radius: 10px; overflow: hidden; margin: 16px 0; }
         .itm-two { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin: 18px 0; }
         .itm-three { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; background: var(--border-color); border: 1px solid var(--border-color); border-radius: 10px; overflow: hidden; margin: 16px 0; }
-        .itm-channels { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 26px 32px; margin: 18px 0; }
         @media (max-width: 860px) {
-          .itm-row, .itm-day, .itm-cards, .itm-two, .itm-three, .itm-channels { grid-template-columns: minmax(0, 1fr); }
+          .itm-row, .itm-day, .itm-cards, .itm-two, .itm-three { grid-template-columns: minmax(0, 1fr); }
           .itm-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
         }
       `}</style>
@@ -427,7 +454,7 @@ export default function ItMarketLikbez({ user, onBack }) {
           Здесь цифры, списки ролей и навыков, компании, каналы поиска и план на одну неделю.
         </p>
         <div style={{ marginTop: 18, display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-          {['12 глав', '18 источников', '99 компаний', '72 Telegram‑канала', 'план на 7 дней', '~40 мин'].map(t => (
+          {['12 глав', '19 источников', '468 компаний', '72 Telegram‑канала', 'план на 7 дней', '~40 мин'].map(t => (
             <span key={t} style={{ background: 'var(--bg-tertiary)', border: '1px solid var(--border-color)', borderRadius: 6, padding: '4px 10px', fontSize: 12, color: 'var(--text-tertiary)' }}>{t}</span>
           ))}
         </div>
@@ -837,9 +864,9 @@ export default function ItMarketLikbez({ user, onBack }) {
 
       {/* ═══════════ ГЛАВА 10 ═══════════ */}
       <SectionTitle id="m10" kicker="Глава 10 · для участников лагеря" question="Списки IT‑компаний с вакансиями, которые остаются в тени">Компании в тени: кто нанимает прямо сейчас</SectionTitle>
-      <Gate camp={camp} title="Список из 99 компаний с открытыми вакансиями" inside={[
-        '34 малые команды и стартапа, 24 средние IT‑компании, 17 крупных, но не раскрученных, 24 IT‑отдела вне IT',
-        'У каждой: сайт, город, размер, стек, отметка об аккредитации и ссылка на открытые вакансии',
+      <Gate camp={camp} title="Список из 468 компаний с открытыми вакансиями" inside={[
+        '247 средних IT‑компаний, 77 крупных, но не раскрученных, 34 малые команды и стартапа, 110 IT‑отделов вне IT',
+        'У каждой: сайт, город, описание, отметка об аккредитации и ссылка на открытые вакансии',
         'Поиск по стеку и городу, фильтр по аккредитованным',
       ]}>
         {data => <Companies data={data} />}
@@ -877,8 +904,9 @@ export default function ItMarketLikbez({ user, onBack }) {
         оклады, зарплаты hh.ru это предложения в вакансиях: сравнивать их напрямую нельзя.
       </P>
       <P>
-        Список компаний выгружен с Хабр Карьеры 12 ноября 2026 года. Сам реестр Минцифры на Госуслугах списком не выгружается,
-        поэтому отметка об аккредитации взята с площадки: это заявление самой компании. Telegram‑каналы проверены по их публичным
+        Список компаний выгружен 12 ноября 2026 года из каталога IT‑работодателей hh.ru (компании с 10 и более открытыми
+        вакансиями, часть каталога по алфавиту) и с Хабр Карьеры. Сам реестр Минцифры на Госуслугах списком не выгружается,
+        поэтому отметка об аккредитации взята с площадок. Telegram‑каналы проверены по их публичным
         страницам в тот же день.
       </P>
       <ol style={{ paddingLeft: 22, margin: '14px 0', display: 'grid', gap: 8 }}>
