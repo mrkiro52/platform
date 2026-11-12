@@ -196,10 +196,25 @@ const ALGO_TOPICS = [
 ]
 
 export const NOVEMBER_BLOCKS = {
+  // Блок с главами по направлениям: у каждого направления свой список глав (byDirection),
+  // студент видит главы своего направления — см. blockFor
+  deep: {
+    key: 'deep',
+    name: 'Углубляемся',
+    tag: 'Блок 1 · ноябрь · по твоему направлению',
+    lead: 'Продолжение индивидуальной программы: следующие большие темы твоего направления. У каждой главы есть конспект и задание к ней.',
+    base: '/autumn-camp/block/deep',
+    empty: 'Главы по твоему направлению скоро появятся.',
+    byDirection: {
+      ml: [
+        { num: 1, title: 'Deep Learning: введение', sections: 7, load: () => import('./deep-ml-1'), quiz: () => import('./deep-ml-1-quiz') },
+      ],
+    },
+  },
   career: {
     key: 'career',
     name: 'Карьера',
-    tag: 'Блок 1 · ноябрь · для всех участников',
+    tag: 'Блок 2 · ноябрь · для всех участников',
     lead: 'Как упаковать себя для поиска работы: резюме, рассказ о себе, соцсети и пет-проекты. У каждой главы есть конспект и практическое задание.',
     base: '/autumn-camp/block/career',
     submit: 'self',
@@ -210,7 +225,7 @@ export const NOVEMBER_BLOCKS = {
   algo: {
     key: 'algo',
     name: 'Алгособес',
-    tag: 'Блок 2 · ноябрь · для всех участников',
+    tag: 'Блок 3 · ноябрь · для всех участников',
     lead: 'Подготовка к алгоритмической секции собеседования по подборке LeetCode Top Interview 150. Глава 1 — как нарешивать задачи и сколько их нужно, дальше по главе на каждую тему: теория паттерна и разбор всех задач подборки по ней.',
     base: '/autumn-camp/block/algo',
     submit: 'self',
@@ -243,6 +258,15 @@ export function combineTrack(base, track) {
 // у дополнительных — key и label
 export function chapterRef(meta) { return String(meta.key ?? meta.num) }
 export function chapterName(meta) { return meta.label || `Глава ${meta.num}` }
+// Блок ноября для студента. У блока с главами по направлениям ключ становится «<блок>-<направление>»:
+// под ним сдаются и хранятся работы, чтобы они не смешивались с главами октября
+export function blockFor(key, user) {
+  const block = NOVEMBER_BLOCKS[key]
+  if (!block?.byDirection) return block || null
+  const direction = user?.autumnDirection
+  return { ...block, key: `${block.key}-${direction}`, chapters: block.byDirection[direction] || [] }
+}
+
 export function findChapter(dir, ref) {
   return [...dir.chapters, ...(dir.extra || []), ...(dir.express || [])].find(c => chapterRef(c) === String(ref)) || null
 }

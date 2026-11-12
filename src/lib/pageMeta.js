@@ -18,6 +18,7 @@ const PUBLIC = {
 
 // Самый длинный подходящий префикс задаёт название раздела
 const SECTIONS = [
+  ['/autumn-camp/block/deep', 'Углубляемся'],
   ['/autumn-camp/block/algo', 'Алгособес'],
   ['/autumn-camp/block/career', 'Карьера'],
   ['/autumn-camp/program', 'Индивидуальная программа'],

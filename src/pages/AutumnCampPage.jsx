@@ -6,7 +6,7 @@ import HomeworkReview from '../components/HomeworkReview'
 import { AUTUMN_MONTHS, CALL_MONTHS } from '../data/autumnCalls'
 import { MATH_SESSIONS, nextMathSession, dayOf } from '../data/mathCourse'
 import { materialsOf } from '../data/math'
-import { NOVEMBER_BLOCKS, PROGRAM_CONTACT, PROGRAM_PERIOD, directionOf } from '../data/programs'
+import { NOVEMBER_BLOCKS, PROGRAM_CONTACT, blockFor, PROGRAM_PERIOD, directionOf } from '../data/programs'
 
 // Даты созвонов мини-курса кружками. Ближайший выделен, прошедшие и будущие —
 // приглушённые.
@@ -137,15 +137,15 @@ function chaptersWord(n) {
   return 'глав'
 }
 
-function BlocksPlaques({ onOpen }) {
+function BlocksPlaques({ user, onOpen }) {
   return (
     <div className="wk-blocks">
-      {Object.values(NOVEMBER_BLOCKS).map((b, i) => (
+      {Object.keys(NOVEMBER_BLOCKS).map(key => blockFor(key, user)).map((b, i) => (
         <div key={b.key} className="wk-program is-block">
           <span className="wk-program-tag">Блок {i + 1}</span>
           <span className="wk-program-title">{b.name}</span>
-          <span className="wk-program-sub">{b.chapters.length} {chaptersWord(b.chapters.length)}</span>
-          <button type="button" className="wk-program-open" onClick={() => onOpen(b.key)}>
+          <span className="wk-program-sub">{b.chapters.length ? `${b.chapters.length} ${chaptersWord(b.chapters.length)}` : 'Скоро'}</span>
+          <button type="button" className="wk-program-open" onClick={() => onOpen(Object.keys(NOVEMBER_BLOCKS)[i])}>
             Открыть <span aria-hidden="true">→</span>
           </button>
         </div>
@@ -188,7 +188,7 @@ function WeekMaterials({ onOpenWeek, currentSlug, user, onOpenProgram, onOpenBlo
       {AUTUMN_WEEK_MONTHS.map(month => month.label === BLOCKS_MONTH ? (
         <div key={month.label} className="wk-month">
           <div className="wk-month-label">{month.label}</div>
-          <BlocksPlaques onOpen={onOpenBlock} />
+          <BlocksPlaques user={user} onOpen={onOpenBlock} />
         </div>
       ) : month.label === PROGRAM_MONTH ? (
         <div key={month.label} className="wk-month">

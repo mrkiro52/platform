@@ -23,7 +23,26 @@ const DIRECTION_NAMES = {
 // Задания, которые сдаются на платформе: направление → главы
 // Глава одного направления может повторять главу другого — тогда и файлы общие
 const FILE_ALIASES = { 'product-3': 'ml-1' }
-const SUBMITTABLE = { backend: [1, 2, 3, 4, 5, 6, 7], security: [1, 4], system: [5, 6, 8, 9, 10, 11, 12], business: [9], product: [7, 8, 9], ml: [10, 11, 12] }
+// Блоки ноября с главами по направлениям хранят работы под ключом «<блок>-<направление>», например deep-ml:
+// сдать такую работу может только студент этого направления
+const SUBMITTABLE = { backend: [1, 2, 3, 4, 5, 6, 7], security: [1, 4], system: [5, 6, 8, 9, 10, 11, 12], business: [9], product: [7, 8, 9], ml: [10, 11, 12], 'deep-ml': [1] }
+const BLOCK_NAMES = { deep: 'Углубляемся' }
+
+function splitKey(key) {
+  const [first, second] = String(key).split('-')
+  return BLOCK_NAMES[first] && second ? { block: first, direction: second } : { block: null, direction: key }
+}
+
+function directionName(key) {
+  const { block, direction } = splitKey(key)
+  const name = DIRECTION_NAMES[direction] || direction
+  return block ? `${BLOCK_NAMES[block]} · ${name}` : name
+}
+
+function taskLink(key, chapter) {
+  const { block } = splitKey(key)
+  return block ? `/autumn-camp/block/${block}/${chapter}/task` : `/autumn-camp/program/${chapter}/task`
+}
 // Варианты вопросов есть не у всех заданий: ключ — направление и глава
 const VARIANTS = { 'backend-1': ['base', 'python'] }
 const MAX_ANSWERS = 200
@@ -53,7 +72,7 @@ function mapRow(row) {
   return {
     id: row.id,
     direction: row.direction,
-    directionName: DIRECTION_NAMES[row.direction] || row.direction,
+    directionName: directionName(row.direction),
     chapter: row.chapter,
     variant: row.variant || null,
     answers: parseAnswers(row.answers),
@@ -87,7 +106,7 @@ router.put('/homework/:direction/:chapter', requireCampStudent, (req, res) => {
     if (!(SUBMITTABLE[direction] || []).includes(chapter)) {
       return res.status(404).json({ message: 'Это задание не сдаётся на платформе' })
     }
-    if (req.student.autumn_direction !== direction) {
+    if (req.student.autumn_direction !== splitKey(direction).direction) {
       return res.status(403).json({ message: 'Это задание другой программы' })
     }
 
@@ -224,14 +243,14 @@ router.patch('/admin/homework/:id', requireHomeworkReview, (req, res) => {
     db.prepare('UPDATE program_homework SET status = ?, comment = ?, reviewer = ?, reviewed_at = ? WHERE id = ?')
       .run(status, status === 'rework' ? String(comment).trim() : null, req.user.username || null, new Date().toISOString(), row.id)
 
-    const where = `Задание к главе ${row.chapter} программы «${DIRECTION_NAMES[row.direction] || row.direction}»`
+    const where = `Задание к главе ${row.chapter} программы «${directionName(row.direction)}»`
     notify({
       userId: row.user_id,
       type: status === 'approved' ? 'hw_approved' : 'hw_rework',
       preview: status === 'approved'
         ? `${where} — проверено и принято`
         : `${where} — есть правки, посмотри комментарий и отправь снова`,
-      link: `/autumn-camp/program/${row.chapter}/task`,
+      link: taskLink(row.direction, row.chapter),
     })
 
     res.json(mapAdminRow(db.prepare(`${ADMIN_SELECT} WHERE h.id = ?`).get(row.id)))

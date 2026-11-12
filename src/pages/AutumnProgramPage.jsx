@@ -1,6 +1,6 @@
 import { Fragment, useEffect, useState } from 'react'
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
-import { NOVEMBER_BLOCKS, PROGRAM_CONTACT, PROGRAM_PERIOD, chapterName, chapterRef, combineTrack, directionOf, findChapter, taskKind } from '../data/programs'
+import { PROGRAM_CONTACT, PROGRAM_PERIOD, blockFor, chapterName, chapterRef, combineTrack, directionOf, findChapter, taskKind } from '../data/programs'
 import ProgramBlocks, { ProgramContext, Rich } from '../components/program/ProgramBlocks'
 import ProgramQuiz from '../components/program/ProgramQuiz'
 import { api } from '../api'
@@ -14,6 +14,7 @@ import { api } from '../api'
 // Та же страница показывает блоки ноября (NOVEMBER_BLOCKS) — общие для всех участников:
 // /autumn-camp/block/:block, /autumn-camp/block/:block/:chapter и …/task. У блока свой адрес (dir.base),
 // своя подпись (dir.tag) и нет плашки про смену направления.
+// Блок с главами по направлениям (byDirection, например «Углубляемся») показывает главы направления студента — blockFor.
 
 const basePath = dir => dir.base || '/autumn-camp/program'
 const heroTag = dir => dir.tag || `Индивидуальная программа · ${PROGRAM_PERIOD}`
@@ -146,7 +147,7 @@ function Overview({ dir }) {
 
       <h2 className="prg-list-title">Главы программы</h2>
       {dir.chapters.length === 0 ? (
-        <div className="prg-empty">Первая глава программы скоро появится.</div>
+        <div className="prg-empty">{dir.empty || 'Первая глава программы скоро появится.'}</div>
       ) : (
         <div className="prg-chapters">
           {dir.chapters.map(ch => <ChapterCard key={chapterRef(ch)} dir={dir} ch={ch} homework={homework} />)}
@@ -518,7 +519,7 @@ function Task({ dir, chapterRef: ref, user }) {
 
 export default function AutumnProgramPage({ user, task = false }) {
   const { chapter, block } = useParams()
-  const dir = block ? NOVEMBER_BLOCKS[block] : directionOf(user)
+  const dir = block ? blockFor(block, user) : directionOf(user)
 
   if (!user?.isAutumnCamp2026) return <Pending title={block ? 'Блок доступен участникам осеннего лагеря' : 'Программа доступна участникам осеннего лагеря'} />
   if (!dir) return <Pending title={block ? 'Такого блока нет' : 'Твоя индивидуальная программа ещё готовится'} />
