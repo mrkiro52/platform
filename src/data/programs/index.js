@@ -160,6 +160,7 @@ export const DIRECTIONS = {
       { num: 1, title: 'Фундамент, стандарты и регуляторика', sections: 5, load: () => import('./security-1'), quiz: () => import('./security-1-quiz') },
       { num: 2, title: 'С чего начать: PortSwigger и первые лабы', sections: 1, load: () => import('./security-2') },
       { num: 3, title: 'CORS, XSS, CSRF', sections: 5, load: () => import('./security-3') },
+      { num: 4, title: 'Сети', sections: 11, load: () => import('./security-4'), quiz: () => import('./security-4-quiz') },
     ],
   },
 }
