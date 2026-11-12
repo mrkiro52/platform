@@ -10,6 +10,8 @@ import { DAY5_THEORY } from './day5Theory'
 import { DAY5_HOMEWORK } from './day5Homework'
 import { DAY6_THEORY } from './day6Theory'
 import { DAY6_HOMEWORK } from './day6Homework'
+import { DAY7_THEORY } from './day7Theory'
+import { DAY7_HOMEWORK } from './day7Homework'
 
 // Материалы занятий: конспект, домашнее задание и запись.
 // Для дня без материалов записи здесь просто нет — карточка покажет «скоро».
@@ -43,6 +45,11 @@ export const MATH_MATERIALS = {
     theory: DAY6_THEORY,
     homework: DAY6_HOMEWORK,
     recording: 'https://t.me/c/3964673023/26',
+  },
+  7: {
+    theory: DAY7_THEORY,
+    homework: DAY7_HOMEWORK,
+    recording: 'https://t.me/c/3964673023/34',
   },
 }
 

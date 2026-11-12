@@ -358,10 +358,52 @@ function CiCoverageFigure() {
   )
 }
 
+// ── Рисунки к занятию 7: проверка гипотез ───────────────────────────────────
+
+// Распределение статистики при верной H₀; p-value — площадь хвоста правее наблюдаемого значения
+function PValueFigure() {
+  const px = x => 170 + x * 40, py = v => 170 - v * 360
+  const f = x => normalPdf(x, 0, 1)
+  const obs = 1.9
+  return (
+    <svg className="math-svg" viewBox="0 0 340 200" role="img" aria-label="Распределение статистики при верной нулевой гипотезе, p-value — площадь хвоста">
+      <path d={`${curvePath(f, obs, 3.8, px, py)} L${px(3.8)} ${py(0)} L${px(obs)} ${py(0)} Z`} fill={ORANGE} fillOpacity="0.45" />
+      <path d={curvePath(f, -3.8, 3.8, px, py)} fill="none" stroke={BLUE} strokeWidth="2" />
+      <Axes px={px} py={py} x0={-3.9} x1={3.9} y1={0.44} xTicks={[[0, 'H₀'], [obs, 'набл.']]} />
+      <path d={`M${px(obs)} ${py(0)} V${py(f(obs)) - 8}`} stroke={ORANGE} strokeWidth="1.6" strokeDasharray="4 3" />
+      <path d={`M${px(2.4)} ${py(0.02)} L${px(2.85)} ${py(0.14)}`} stroke="currentColor" strokeWidth="0.9" opacity="0.6" />
+      <text x={px(2.9)} y={py(0.15)} fontSize="12" fontFamily="Georgia, serif" fill={ORANGE}>p-value</text>
+    </svg>
+  )
+}
+
+// Распределения статистики при H₀ (сплошная) и при H₁ (пунктир): α правее t_кр под H₀, β левее t_кр под H₁
+function PowerFigure() {
+  const px = x => 40 + (x + 3) * 34, py = v => 170 - v * 330
+  const f0 = x => normalPdf(x, 0, 1), f1 = x => normalPdf(x, 2.5, 1)
+  const crit = 1.645
+  return (
+    <svg className="math-svg" viewBox="0 0 340 200" role="img" aria-label="Распределения при нулевой и альтернативной гипотезах, ошибки первого и второго рода">
+      <path d={`${curvePath(f1, -1.2, crit, px, py)} L${px(crit)} ${py(0)} L${px(-1.2)} ${py(0)} Z`} fill={BLUE} fillOpacity="0.35" />
+      <path d={`${curvePath(f0, crit, 3.8, px, py)} L${px(3.8)} ${py(0)} L${px(crit)} ${py(0)} Z`} fill="#F85149" fillOpacity="0.45" />
+      <path d={curvePath(f0, -3, 3.8, px, py)} fill="none" stroke="currentColor" strokeWidth="1.8" />
+      <path d={curvePath(f1, -1.2, 5.9, px, py)} fill="none" stroke={ORANGE} strokeWidth="1.8" strokeDasharray="6 4" />
+      <Axes px={px} py={py} x0={-3} x1={6} y1={0.46} xTicks={[[0, 'H₀'], [crit, ''], [2.5, 'H₁']]} />
+      <text x={px(crit)} y={py(0) + 16} textAnchor="middle" fontSize="11" fontFamily="Georgia, serif" fill="currentColor" opacity="0.75"><tspan fontStyle="italic">t</tspan><tspan fontSize="8" dy="3">кр</tspan></text>
+      <path d={`M${px(crit)} ${py(0)} V${py(0.44)}`} stroke="currentColor" strokeWidth="1.2" opacity="0.8" />
+      <path d={`M${px(1.2)} ${py(0.07)} L${px(0.3)} ${py(0.25)}`} stroke="currentColor" strokeWidth="0.9" opacity="0.6" />
+      <text x={px(0.2)} y={py(0.27)} textAnchor="end" fontSize="13" fontFamily="Georgia, serif" fontStyle="italic" fill={BLUE}>β</text>
+      <path d={`M${px(2.05)} ${py(0.02)} L${px(3.6)} ${py(0.25)}`} stroke="currentColor" strokeWidth="0.9" opacity="0.6" />
+      <text x={px(3.7)} y={py(0.27)} fontSize="13" fontFamily="Georgia, serif" fontStyle="italic" fill="#F85149">α</text>
+    </svg>
+  )
+}
+
 const FIGURES = {
   binomial: BinomialFigure, uniform: UniformFigure, 'normal-params': NormalParamsFigure,
   'three-sigma': ThreeSigmaFigure, cdf: CdfFigure,
   skewed: SkewedFigure, boxplot: BoxplotFigure, 'ci-coverage': CiCoverageFigure,
+  'p-value': PValueFigure, power: PowerFigure,
 }
 
 export default function MathBlocks({ blocks }) {

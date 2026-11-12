@@ -23,6 +23,7 @@ const SYMBOLS = {
   neq: '≠', Longrightarrow: '⟹', mid: '∣', vdots: '⋮', cdots: '⋯', ddots: '⋱',
   Omega: 'Ω', Longleftrightarrow: '⟺',
   sum: '∑', int: '∫', leq: '≤', geq: '≥',
+  chi: 'χ', ll: '≪', gg: '≫',
 }
 
 // Имена функций пишутся прямым шрифтом, а не курсивом переменных
