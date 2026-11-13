@@ -5059,6 +5059,14 @@ a.prg-chapter-link, a.prg-chip { text-decoration: none; }
 .plot-label { fill: currentColor; font-size: 12.5px; font-weight: 600; }
 .plot-note { font-size: 12px; font-weight: 700; }
 .plot-legend { fill: var(--text-primary); font-size: 12px; }
+.prg-diagram .plot-svg .dg-strong { fill: var(--text-primary); }
+.prg-diagram .plot-svg .dg-box { fill: var(--bg-secondary); }
+.prg-diagram .plot-svg .dg-bg { fill: var(--bg-tertiary); }
+/* На телефоне схема не ужимается до нечитаемого размера — её можно прокрутить внутри рамки */
+@media (max-width: 600px) {
+  .prg-diagram .prg-plot-svg { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .prg-diagram .prg-plot-svg .plot-svg { min-width: 500px; }
+}
 .prg-plot figcaption { margin-top: 6px; color: var(--text-tertiary); font-size: 13px; line-height: 1.5; text-align: center; }
 
 /* Шапка программы с плашкой вопросов с собеседований справа */

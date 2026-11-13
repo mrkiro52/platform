@@ -252,6 +252,14 @@ function Block({ b }) {
           {b.caption && <figcaption><Rich text={b.caption} /></figcaption>}
         </figure>
       )
+    // Схема: готовая разметка SVG из файла главы (рисуется скриптом сборки), width — предельная ширина в пикселях
+    case 'svg':
+      return (
+        <figure className="prg-plot prg-diagram">
+          <div className="prg-plot-svg" style={b.width ? { maxWidth: b.width, margin: '0 auto' } : undefined} dangerouslySetInnerHTML={{ __html: b.svg }} />
+          {b.caption && <figcaption><Rich text={b.caption} /></figcaption>}
+        </figure>
+      )
     case 'flow':
       return (
         <div className="prg-flow" role="list">

@@ -81,6 +81,7 @@ function prgBlock(b) {
       const labeled = rows.some(([label]) => label)
       return `<div class="prg-texblock${labeled ? ' is-labeled' : ''}">${rows.map(([label, tex]) => `<div class="prg-texrow">${labeled ? `<span class="prg-texlabel">${prgRich(label)}</span>` : ''}<div class="prg-tex-display">${prgTex(tex, true)}</div></div>`).join('')}</div>`
     }
+    case 'svg': return `<figure class="prg-plot"><div style="${b.width ? `max-width:${b.width}px;margin:0 auto` : ''}">${b.svg}</div>${b.caption ? `<figcaption>${prgRich(b.caption)}</figcaption>` : ''}</figure>`
     case 'plot': return `<figure class="prg-plot">${window.PRG_PLOT ? window.PRG_PLOT.plotSvg(b) : ''}${b.caption ? `<figcaption>${prgRich(b.caption)}</figcaption>` : ''}</figure>`
     case 'flow': return `<div class="prg-flow">${b.steps.map(s => `<span class="prg-flow-step">${esc(s)}</span>`).join('<span class="prg-flow-arrow">→</span>')}</div>`
     case 'reading': return `

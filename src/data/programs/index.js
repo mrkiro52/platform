@@ -208,6 +208,10 @@ export const NOVEMBER_BLOCKS = {
     byDirection: {
       ml: [
         { num: 1, title: 'Deep Learning: введение', sections: 7, load: () => import('./deep-ml-1'), quiz: () => import('./deep-ml-1-quiz') },
+        { num: 2, title: 'Нейронные сети: введение', sections: 12, load: () => import('./deep-ml-2'), submit: 'soon' },
+        { num: 3, title: 'Свёрточные нейросети', sections: 11, load: () => import('./deep-ml-3'), submit: 'soon' },
+        { num: 4, title: 'Нейросети для NLP', sections: 10, load: () => import('./deep-ml-4'), submit: 'soon' },
+        { num: 5, title: 'Трансформеры', sections: 12, load: () => import('./deep-ml-5'), submit: 'soon', video: 'https://youtu.be/iOrNbK2T92M', videoLabel: 'Видео по теме' },
       ],
     },
   },

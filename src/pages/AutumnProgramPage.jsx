@@ -229,7 +229,7 @@ function ChapterCard({ dir, ch, homework }) {
         </button>
         {ch.video && (
           <a className="prg-chapter-link is-video" href={ch.video} target="_blank" rel="noopener noreferrer">
-            <span className="prg-chapter-link-name">Запись встречи</span>
+            <span className="prg-chapter-link-name">{ch.videoLabel || 'Запись встречи'}</span>
             <span className="prg-chapter-link-meta">{/t\.me\//.test(ch.video) ? 'запись в Telegram' : 'видео на YouTube'}</span>
             <span className="prg-chapter-link-go">↗</span>
           </a>
@@ -403,7 +403,7 @@ function Chapter({ dir, chapterRef: ref }) {
         <div className="prg-hero-meta">
           <span className="prg-chip">{chapter.sections.length} {plural(chapter.sections.length, 'раздел', 'раздела', 'разделов')}</span>
           <button type="button" className="prg-chip is-link" onClick={() => navigate(`${basePath(dir)}/${chapterRef(meta)}/task`)}>Задание к главе →</button>
-          {meta.video && <a className="prg-chip is-link" href={meta.video} target="_blank" rel="noopener noreferrer">▶ Запись встречи</a>}
+          {meta.video && <a className="prg-chip is-link" href={meta.video} target="_blank" rel="noopener noreferrer">▶ {meta.videoLabel || 'Запись встречи'}</a>}
         </div>
         {meta.tracks && (
           <div className="prg-track-switch" role="group" aria-label="Язык">
