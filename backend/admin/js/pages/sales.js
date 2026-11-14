@@ -40,6 +40,15 @@ const Sales = {
   },
   clock(minutes) { return `${String(Math.floor(minutes / 60) % 24).padStart(2, '0')}:${String(minutes % 60).padStart(2, '0')}` },
   monday(day) { return addDays(day, -((dayDate(day).getUTCDay() + 6) % 7)) },
+  // Сколько дней лид висит заявкой: до двух дней — зелёная плашка, три — жёлтая, дальше красная
+  age(iso) {
+    const days = Math.max(0, daysBetween(mskDay(Date.parse(iso)), mskDay()))
+    return {
+      days,
+      label: days ? `${days} ${plural(days, 'день', 'дня', 'дней')}` : 'сегодня',
+      tone: days <= 2 ? 'is-ok' : days === 3 ? 'is-warn' : 'is-late',
+    }
+  },
   showError(id, message) { const el = $(id); el.textContent = message; el.hidden = false },
 }
 
@@ -48,6 +57,7 @@ const SalesCrmPage = {
   data: null,
   filter: 'all',
   q: '',
+  tab: 'leads',    // leads | referrals (выплаты рефералам видит только главный админ)
 
   async render(view, ctx) {
     view.innerHTML = SalesCrmPage.head() + skeleton({ rows: 6, kpis: 4 })
@@ -55,16 +65,67 @@ const SalesCrmPage = {
     if (ctx.stale()) return
     Sales.use(data)
     SalesCrmPage.data = data
+    SalesCrmPage.tab = data.referrals && ctx.query.get('tab') === 'referrals' ? 'referrals' : 'leads'
     view.innerHTML = SalesCrmPage.head() + `
       <div id="crm-rewards"></div>
+      <div id="crm-tabs"></div>
+      <div id="crm-body"></div>`
+    SalesCrmPage.paintRewards()
+    SalesCrmPage.paintBody()
+  },
+
+  setTab(value) {
+    SalesCrmPage.tab = value
+    Router.setQuery({ tab: value === 'referrals' ? 'referrals' : null })
+    SalesCrmPage.paintBody()
+  },
+
+  // Вкладки «Лиды» и «Выплаты рефералам» — вторая есть только у главного админа
+  paintBody() {
+    const { leads, referrals } = SalesCrmPage.data
+    $('#crm-tabs').innerHTML = referrals ? `<div class="toolbar sales-tabs">${seg([
+      ['leads', `${icon('target', 14)}Лиды <span class="count">${leads.length}</span>`],
+      ['referrals', `${icon('users', 14)}Выплаты рефералам <span class="count">${referrals.list.length}</span>`],
+    ], SalesCrmPage.tab, 'SalesCrmPage.setTab')}</div>` : ''
+    if (SalesCrmPage.tab === 'referrals') return SalesCrmPage.paintReferrals()
+    $('#crm-body').innerHTML = `
       <div class="toolbar">
         <div id="crm-seg"></div>
         <div class="spacer"></div>
-        ${searchBox('crm-q', SalesCrmPage.q, 'Контакт или заметка', 'SalesCrmPage.search')}
+        ${searchBox('crm-q', SalesCrmPage.q, 'Контакт, реферал или заметка', 'SalesCrmPage.search')}
       </div>
       <div id="crm-list"></div>`
-    SalesCrmPage.paintRewards()
     SalesCrmPage.paint()
+  },
+
+  // Рефералы: кого привели и сколько каждому положено — доля от суммы закрытых лидов
+  paintReferrals() {
+    const { list, total, share } = SalesCrmPage.data.referrals
+    const percent = Math.round(share * 100)
+    const el = $('#crm-body')
+    if (!list.length) {
+      el.innerHTML = `<div class="card">${emptyState('users', 'Рефералов пока нет', 'Укажи в карточке лида, кто его порекомендовал, — реферал появится здесь')}</div>`
+      return
+    }
+    const leadCount = list.reduce((sum, ref) => sum + ref.leads.length, 0)
+    el.innerHTML = `
+      <p class="sales-ref-note">Реферал получает ${percent}% от суммы каждого своего лида, закрытого в продажу. Всего к выплате: <b>${Sales.rub(total)}</b> · ${fmt(list.length)} ${plural(list.length, 'реферал', 'реферала', 'рефералов')} · ${fmt(leadCount)} ${plural(leadCount, 'лид', 'лида', 'лидов')}</p>
+      <div class="table-wrap">
+        <table class="tbl sales-tbl sales-ref-tbl">
+          <thead><tr><th>Реферал</th><th class="r">Привёл лидов</th><th>Его лиды</th><th class="num">Закрыто на сумму</th><th class="num">К выплате</th></tr></thead>
+          <tbody>${list.map(ref => `
+            <tr>
+              <td><div class="cell-main sales-contact">${Sales.contact(ref.contact)}</div></td>
+              <td class="r"><b class="sales-ref-count">${fmt(ref.leads.length)}</b>${ref.closedCount ? `<div class="cell-sub nowrap">в продажу — ${fmt(ref.closedCount)}</div>` : ''}</td>
+              <td><div class="sales-ref-leads">${ref.leads.map(l => {
+                const [label, badge] = SALES_STATUS[l.status] || [l.status, 'badge-gray']
+                return `<div class="sales-ref-lead"><span class="sales-contact">${Sales.contact(l.contact)}</span><span class="badge ${badge}">${label}</span>${l.amount ? `<span class="sales-ref-amount">${Sales.rub(l.amount)}</span>` : ''}</div>`
+              }).join('')}</div></td>
+              <td class="num nowrap">${ref.closedAmount ? Sales.rub(ref.closedAmount) : '<span class="muted">—</span>'}</td>
+              <td class="num nowrap">${ref.payout ? `<span class="sales-reward sales-ref-payout">${Sales.rub(ref.payout)}</span>` : '<span class="muted">—</span>'}</td>
+            </tr>`).join('')}</tbody>
+        </table>
+      </div>`
   },
 
   head() {
@@ -120,7 +181,7 @@ const SalesCrmPage = {
 
     const q = SalesCrmPage.q
     const list = leads.filter(l => (SalesCrmPage.filter === 'all' || l.status === SalesCrmPage.filter)
-      && (!q || l.contact.toLowerCase().includes(q) || l.description.toLowerCase().includes(q)))
+      && (!q || l.contact.toLowerCase().includes(q) || l.description.toLowerCase().includes(q) || l.referral.toLowerCase().includes(q)))
     const el = $('#crm-list')
     if (!leads.length) {
       el.innerHTML = `<div class="card">${emptyState('target', 'Лидов пока нет', 'Внеси первого — кнопка «Новый лид» справа сверху')}</div>`
@@ -136,16 +197,18 @@ const SalesCrmPage = {
     el.innerHTML = `
       <div class="table-wrap">
         <table class="tbl sales-tbl">
-          <thead><tr><th>Лид</th><th>Статус</th><th>Внесён</th><th>Продажа</th><th class="num">Сумма</th><th></th></tr></thead>
+          <thead><tr><th>Лид</th><th>Статус</th><th>Ответственный</th><th>Продажа</th><th class="num">Сумма</th><th></th></tr></thead>
           <tbody>${list.map(l => {
             const [label, badge] = SALES_STATUS[l.status] || [l.status, 'badge-gray']
+            // Плашка «Оставил заявку» — только пока лид в статусе заявки
+            const age = l.status === 'new' ? Sales.age(l.createdAt) : null
             const mine = seller && l.status === 'closed' && l.closedBy === Sales.me
             const sale = [l.closedBy ? esc(Sales.name(l.closedBy)) : '', l.paymentFormat ? SALES_FORMAT[l.paymentFormat].toLowerCase() : ''].filter(Boolean).join(' · ')
             return `
             <tr>
-              <td><div class="cell-main sales-contact">${Sales.contact(l.contact)}</div>${l.description ? `<div class="cell-sub sales-note" title="${esc(l.description)}">${esc(l.description)}</div>` : ''}</td>
-              <td><span class="badge ${badge}">${label}</span></td>
-              <td class="nowrap"><div>${esc(stampLabel(l.createdAt))}</div><div class="cell-sub">${esc(Sales.name(l.createdBy))}</div></td>
+              <td><div class="cell-main sales-contact">${Sales.contact(l.contact)}</div>${l.description ? `<div class="cell-sub sales-note" title="${esc(l.description)}">${esc(l.description)}</div>` : ''}${l.referral ? `<div class="cell-sub sales-note" title="Реферал: ${esc(l.referral)}">от реферала ${esc(l.referral)}</div>` : ''}</td>
+              <td><span class="badge ${badge}">${label}</span>${age ? `<div class="lead-age ${age.tone}" title="Лид внесён ${esc(stampLabel(l.createdAt))} и всё ещё в статусе заявки">Оставил заявку: ${age.label}</div>` : ''}</td>
+              <td class="nowrap"><div>${esc(Sales.name(l.createdBy))}</div><div class="cell-sub">внесён ${esc(stampLabel(l.createdAt))}</div></td>
               <td class="nowrap">${sale || '<span class="muted">—</span>'}${l.discount ? `<div class="cell-sub">скидка ${fmt(l.discountPercent)}%</div>` : ''}</td>
               <td class="num nowrap">${l.amount ? Sales.rub(l.amount) : '<span class="muted">—</span>'}${mine ? `<div class="cell-sub sales-reward" title="Твоё вознаграждение за этого лида">тебе ${Sales.rub(l.amount * share)}</div>` : ''}</td>
               <td class="actions"><div>
@@ -171,7 +234,11 @@ const SalesCrmPage = {
       </div>
       <div class="form-row">
         <div class="field"><label for="l-status">Статус</label><select id="l-status" onchange="SalesCrmPage.onStatus()">${options(Object.entries(SALES_STATUS).map(([k, [label]]) => [k, label]), l ? l.status : 'new')}</select></div>
-        <div class="field"><label for="l-created">Кто внёс</label><select id="l-created">${options(people, l ? l.createdBy : Sales.me)}</select></div>
+        <div class="field"><label for="l-created">Ответственный</label><select id="l-created">${options(people, l ? l.createdBy : Sales.me)}</select></div>
+      </div>
+      <div class="field">
+        <label for="l-referral">Реферал</label>
+        <input id="l-referral" value="${esc(l ? l.referral : '')}" maxlength="200" placeholder="Контакт того, кто порекомендовал лиду проект — если такой есть"/>
       </div>
       <div class="field"><label for="l-desc">Описание</label><textarea id="l-desc" rows="4" placeholder="Заметка про лида: откуда пришёл, что хочет, о чём договорились">${esc(l ? l.description : '')}</textarea></div>
       <div class="field-label sales-group">Продажа</div>
@@ -215,6 +282,7 @@ const SalesCrmPage = {
       contact: $('#l-contact').value.trim(),
       status: $('#l-status').value,
       createdBy: $('#l-created').value,
+      referral: $('#l-referral').value.trim(),
       description: $('#l-desc').value.trim(),
       closedBy: $('#l-closed').value || null,
       paymentFormat: $('#l-format').value || null,

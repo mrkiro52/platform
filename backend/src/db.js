@@ -1359,6 +1359,19 @@ function migrate() {
       console.error('❌ Migration 45 failed:', err.message)
     }
   }
+
+  // Migration 46: реферал лида — контакт того, кто порекомендовал лиду проект.
+  // По нему главный админ считает выплаты рефералам.
+  if (schemaVersion < 46) {
+    try {
+      const cols = db.prepare('PRAGMA table_info(sales_leads)').all().map(c => c.name)
+      if (!cols.includes('referral')) db.exec("ALTER TABLE sales_leads ADD COLUMN referral TEXT NOT NULL DEFAULT ''")
+      db.pragma('user_version = 46')
+      console.log('✅ Migration 46 completed: added sales_leads.referral')
+    } catch (err) {
+      console.error('❌ Migration 46 failed:', err.message)
+    }
+  }
 }
 
 migrate()

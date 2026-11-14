@@ -19,6 +19,8 @@ const LIMITS = { contact: 200, description: 5000, title: 200 }
 const DENIS_SHARE = 0.3
 const SELLER_SHARE = 0.1
 const SELLERS = ['sasha', 'emil']
+// Реферал получает долю от суммы каждого лида, который пришёл по его рекомендации и закрыт в продажу
+const REFERRAL_SHARE = 0.1
 
 function requireSales(req, res, next) {
   verifyToken(req, res, () => {
@@ -46,6 +48,7 @@ function mapLead(row) {
     description: row.description,
     status: row.status,
     createdBy: row.created_by,
+    referral: row.referral || '',
     closedBy: row.closed_by || null,
     paymentFormat: row.payment_format || null,
     discount: !!row.discount,
@@ -56,13 +59,14 @@ function mapLead(row) {
   }
 }
 
-// Проверка карточки лида. Закрытому в продажу лиду нужны продавец, формат оплаты и сумма —
+// Проверка карточки лида. created_by — ответственный за лида (по умолчанию тот, кто его внёс). Закрытому в продажу лиду нужны продавец, формат оплаты и сумма —
 // по ним считаются вознаграждения.
 function cleanLead(body, person) {
   const contact = String(body?.contact || '').trim()
   const description = String(body?.description || '').trim()
   const status = STATUSES.includes(body?.status) ? body.status : 'new'
   const createdBy = PEOPLE_KEYS.includes(body?.createdBy) ? body.createdBy : person
+  const referral = String(body?.referral || '').trim()
   const closedBy = PEOPLE_KEYS.includes(body?.closedBy) ? body.closedBy : null
   const paymentFormat = FORMATS.includes(body?.paymentFormat) ? body.paymentFormat : null
   const discount = !!body?.discount
@@ -72,6 +76,7 @@ function cleanLead(body, person) {
   if (!contact) return { error: 'Укажи контакт лида: ник в Telegram или номер телефона' }
   if (contact.length > LIMITS.contact) return { error: 'Слишком длинный контакт' }
   if (description.length > LIMITS.description) return { error: 'Слишком длинное описание' }
+  if (referral.length > LIMITS.contact) return { error: 'Слишком длинный контакт реферала' }
   if (!Number.isFinite(percent) || percent < 0 || percent > 100) return { error: 'Скидка — от 0 до 100 процентов' }
   if (amount < 0 || amount > 1e9) return { error: 'Некорректная сумма' }
   if (status === 'closed') {
@@ -79,7 +84,39 @@ function cleanLead(body, person) {
     if (!paymentFormat) return { error: 'Укажи формат оплаты: рассрочка или оплата разом' }
     if (amount <= 0) return { error: 'Укажи сумму, на которую закрыли лида' }
   }
-  return { value: { contact, description, status, createdBy, closedBy, paymentFormat, discount, percent, amount } }
+  return { value: { contact, description, status, createdBy, referral, closedBy, paymentFormat, discount, percent, amount } }
+}
+
+// Один и тот же реферал может быть записан по-разному: «@ivan», «ivan», «t.me/ivan»,
+// «8 999 000-11-22» и «+7 (999) 000-11-22». Сводим такие записи к одному ключу.
+function referralKey(value) {
+  const v = String(value || '').trim().toLowerCase()
+  if (!v) return ''
+  if (/^\+?[\d\s()-]{7,}$/.test(v)) {
+    const digits = v.replace(/\D/g, '')
+    return `tel:${digits.length === 11 && digits[0] === '8' ? `7${digits.slice(1)}` : digits}`
+  }
+  return v.replace(/^(https?:\/\/)?t\.me\//, '').replace(/^@/, '')
+}
+
+// Выплаты рефералам: кто кого привёл и сколько за это положено. Видит только Ханиль.
+function referralsFor(leads) {
+  const byKey = new Map()
+  for (const l of leads) {
+    const key = referralKey(l.referral)
+    if (!key) continue
+    // Показываем реферала ником: ссылку t.me/ivan превращаем в @ivan
+    const label = l.referral.trim().replace(/^(https?:\/\/)?t\.me\//i, '@')
+    if (!byKey.has(key)) byKey.set(key, { contact: label, leads: [], closedCount: 0, closedAmount: 0 })
+    const ref = byKey.get(key)
+    if (label.startsWith('@') && !ref.contact.startsWith('@')) ref.contact = label
+    const closed = l.status === 'closed' && l.amount > 0
+    ref.leads.push({ id: l.id, contact: l.contact, status: l.status, amount: closed ? l.amount : 0 })
+    if (closed) { ref.closedCount += 1; ref.closedAmount += l.amount }
+  }
+  const list = [...byKey.values()].map(ref => ({ ...ref, payout: Math.round(ref.closedAmount * REFERRAL_SHARE) }))
+  list.sort((a, b) => b.payout - a.payout || b.leads.length - a.leads.length || a.contact.localeCompare(b.contact, 'ru'))
+  return { share: REFERRAL_SHARE, total: list.reduce((sum, ref) => sum + ref.payout, 0), list }
 }
 
 // Вознаграждения. Считаются только лиды, закрытые в продажу. Каждый видит своё;
@@ -117,22 +154,23 @@ router.get('/leads', requireSales, (req, res) => {
       sellerShare: SELLER_SHARE,
       leads: rows.map(mapLead),
       rewards: rewardsFor(req.person, rows),
+      ...(req.person === 'khanil' ? { referrals: referralsFor(rows) } : {}),
     })
   } catch (e) {
     res.status(500).json({ message: e.message })
   }
 })
 
-// POST /api/sales/leads — внести лида; дата внесения ставится автоматически
+// POST /api/sales/leads — внести лида; дата внесения ставится автоматически, ответственный — тот, кто внёс
 router.post('/leads', requireSales, (req, res) => {
   try {
     const { value: v, error } = cleanLead(req.body, req.person)
     if (error) return res.status(400).json({ message: error })
     const stamp = now()
     const info = db.prepare(`
-      INSERT INTO sales_leads (contact, description, status, created_by, closed_by, payment_format, discount, discount_percent, amount, created_at, updated_at)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    `).run(v.contact, v.description, v.status, v.createdBy, v.closedBy, v.paymentFormat, v.discount ? 1 : 0, v.percent, v.amount, stamp, stamp)
+      INSERT INTO sales_leads (contact, description, status, created_by, referral, closed_by, payment_format, discount, discount_percent, amount, created_at, updated_at)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `).run(v.contact, v.description, v.status, v.createdBy, v.referral, v.closedBy, v.paymentFormat, v.discount ? 1 : 0, v.percent, v.amount, stamp, stamp)
     logStatus(info.lastInsertRowid, v.status, req.person, stamp)
     res.status(201).json(mapLead(db.prepare('SELECT * FROM sales_leads WHERE id = ?').get(info.lastInsertRowid)))
   } catch (e) {
@@ -145,12 +183,12 @@ router.put('/leads/:id', requireSales, (req, res) => {
   try {
     const row = db.prepare('SELECT * FROM sales_leads WHERE id = ?').get(req.params.id)
     if (!row) return res.status(404).json({ message: 'Лид не найден' })
-    const { value: v, error } = cleanLead({ createdBy: row.created_by, ...req.body }, req.person)
+    const { value: v, error } = cleanLead({ createdBy: row.created_by, referral: row.referral, ...req.body }, req.person)
     if (error) return res.status(400).json({ message: error })
     db.prepare(`
-      UPDATE sales_leads SET contact = ?, description = ?, status = ?, created_by = ?, closed_by = ?, payment_format = ?,
+      UPDATE sales_leads SET contact = ?, description = ?, status = ?, created_by = ?, referral = ?, closed_by = ?, payment_format = ?,
         discount = ?, discount_percent = ?, amount = ?, updated_at = ? WHERE id = ?
-    `).run(v.contact, v.description, v.status, v.createdBy, v.closedBy, v.paymentFormat, v.discount ? 1 : 0, v.percent, v.amount, now(), row.id)
+    `).run(v.contact, v.description, v.status, v.createdBy, v.referral, v.closedBy, v.paymentFormat, v.discount ? 1 : 0, v.percent, v.amount, now(), row.id)
     if (v.status !== row.status) logStatus(row.id, v.status, req.person)
     res.json(mapLead(db.prepare('SELECT * FROM sales_leads WHERE id = ?').get(row.id)))
   } catch (e) {
