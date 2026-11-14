@@ -3,7 +3,7 @@ const { verifyToken } = require('../middleware/auth')
 const db = require('../db')
 const { SALES_PEOPLE, salesPersonOf } = require('../admins')
 
-// Отдел продаж в админке: CRM с лидами и календарь встреч. Раздел открыт
+// Отдел продаж в админке: CRM с лидами, календарь встреч и статистика по дням. Раздел открыт
 // четырём людям — Ханилю (главный админ), Денису, Саше и Эмилю; кто есть кто,
 // решает salesPersonOf по учётной записи. У всех четверых одинаковые права на
 // лиды и встречи, различается только то, какие вознаграждения они видят.
@@ -30,6 +30,12 @@ function requireSales(req, res, next) {
 }
 
 const now = () => new Date().toISOString()
+
+// Журнал смены статусов: по нему статистика считает движение лидов по дням
+function logStatus(leadId, status, person, at = now()) {
+  db.prepare('INSERT INTO sales_lead_status_log (lead_id, status, changed_by, changed_at) VALUES (?, ?, ?, ?)')
+    .run(leadId, status, person, at)
+}
 
 // ── Лиды ─────────────────────────────────────────────────────────────────────
 
@@ -93,8 +99,7 @@ function rewardsFor(person, leads) {
   if (person === 'denis') {
     return { view: 'denis', total, closedCount: closed.length, mine: denis }
   }
-  const mine = sold(person)
-  return { view: 'seller', mine: sellers[person], closedCount: mine.length, closedAmount: mine.reduce((sum, l) => sum + l.amount, 0) }
+  return { view: 'seller', mine: sellers[person] }
 }
 
 // GET /api/sales/me — кто я в отделе продаж и состав отдела
@@ -128,6 +133,7 @@ router.post('/leads', requireSales, (req, res) => {
       INSERT INTO sales_leads (contact, description, status, created_by, closed_by, payment_format, discount, discount_percent, amount, created_at, updated_at)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `).run(v.contact, v.description, v.status, v.createdBy, v.closedBy, v.paymentFormat, v.discount ? 1 : 0, v.percent, v.amount, stamp, stamp)
+    logStatus(info.lastInsertRowid, v.status, req.person, stamp)
     res.status(201).json(mapLead(db.prepare('SELECT * FROM sales_leads WHERE id = ?').get(info.lastInsertRowid)))
   } catch (e) {
     res.status(500).json({ message: e.message })
@@ -145,6 +151,7 @@ router.put('/leads/:id', requireSales, (req, res) => {
       UPDATE sales_leads SET contact = ?, description = ?, status = ?, created_by = ?, closed_by = ?, payment_format = ?,
         discount = ?, discount_percent = ?, amount = ?, updated_at = ? WHERE id = ?
     `).run(v.contact, v.description, v.status, v.createdBy, v.closedBy, v.paymentFormat, v.discount ? 1 : 0, v.percent, v.amount, now(), row.id)
+    if (v.status !== row.status) logStatus(row.id, v.status, req.person)
     res.json(mapLead(db.prepare('SELECT * FROM sales_leads WHERE id = ?').get(row.id)))
   } catch (e) {
     res.status(500).json({ message: e.message })
@@ -157,7 +164,50 @@ router.delete('/leads/:id', requireSales, (req, res) => {
     const info = db.prepare('DELETE FROM sales_leads WHERE id = ?').run(req.params.id)
     if (!info.changes) return res.status(404).json({ message: 'Лид не найден' })
     db.prepare('UPDATE sales_events SET lead_id = NULL WHERE lead_id = ?').run(req.params.id)
+    db.prepare('DELETE FROM sales_lead_status_log WHERE lead_id = ?').run(req.params.id)
     res.json({ ok: true })
+  } catch (e) {
+    res.status(500).json({ message: e.message })
+  }
+})
+
+// ── Статистика ───────────────────────────────────────────────────────────────
+
+const MSK = 3 * 3600 * 1000
+const mskDay = (iso) => new Date(Date.parse(iso) + MSK).toISOString().slice(0, 10)
+const PERIODS = [7, 14, 30, 90]
+
+// GET /api/sales/stats?days=30 — сколько лидов внесли и сколько перешло в каждый статус
+// по дням (дни московские). Только количества: денег в статистике нет.
+router.get('/stats', requireSales, (req, res) => {
+  try {
+    const period = PERIODS.includes(Number(req.query.days)) ? Number(req.query.days) : 30
+    const today = mskDay(now())
+    const days = Array.from({ length: period }, (_, i) =>
+      new Date(Date.parse(`${today}T00:00:00Z`) - (period - 1 - i) * 86400000).toISOString().slice(0, 10))
+    const empty = () => Object.fromEntries(STATUSES.map(s => [s, 0]))
+    const byDay = new Map(days.map(day => [day, { day, added: 0, statuses: empty() }]))
+
+    const leads = db.prepare('SELECT status, created_at FROM sales_leads').all()
+    const current = empty()
+    for (const lead of leads) {
+      if (lead.status in current) current[lead.status] += 1
+      const row = byDay.get(mskDay(lead.created_at))
+      if (row) row.added += 1
+    }
+
+    // Лид считается в статусе за день один раз, даже если его переводили туда-обратно
+    const from = new Date(Date.parse(`${days[0]}T00:00:00Z`) - MSK).toISOString()
+    const seen = new Set()
+    for (const entry of db.prepare('SELECT lead_id, status, changed_at FROM sales_lead_status_log WHERE changed_at >= ?').all(from)) {
+      const row = byDay.get(mskDay(entry.changed_at))
+      const key = `${entry.lead_id}|${entry.status}|${row && row.day}`
+      if (!row || !(entry.status in row.statuses) || seen.has(key)) continue
+      seen.add(key)
+      row.statuses[entry.status] += 1
+    }
+
+    res.json({ me: req.person, people: SALES_PEOPLE, period, today, days: [...byDay.values()], current, total: leads.length })
   } catch (e) {
     res.status(500).json({ message: e.message })
   }
@@ -227,6 +277,7 @@ router.post('/events', requireSales, (req, res) => {
     let leadMoved = false
     if (lead && ['new', 'dialog'].includes(lead.status)) {
       db.prepare("UPDATE sales_leads SET status = 'call_scheduled', updated_at = ? WHERE id = ?").run(now(), lead.id)
+      logStatus(lead.id, 'call_scheduled', req.person)
       leadMoved = true
     }
     res.status(201).json({ event: mapEvent(db.prepare('SELECT * FROM sales_events WHERE id = ?').get(info.lastInsertRowid)), leadMoved })

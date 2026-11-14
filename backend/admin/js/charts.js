@@ -25,11 +25,14 @@ const Charts = (() => {
     observer.observe(el)
   }
 
-  // «Красивый» потолок оси: 1, 2, 5 × 10^k
+  // «Красивый» потолок оси. Всегда делится на 4 нацело: на оси пять подписей,
+  // и у счётчиков (лиды, регистрации) они должны быть целыми, а не округлёнными 2,5 → 3
   function niceMax(v) {
     if (v <= 4) return 4
+    if (v <= 8) return 8
+    if (v <= 12) return 12
     const pow = 10 ** Math.floor(Math.log10(v))
-    for (const m of [1, 2, 2.5, 5, 10]) if (m * pow >= v) return m * pow
+    for (const m of [1.2, 1.6, 2, 2.4, 3.2, 4, 6, 8, 10]) if (m * pow >= v) return Math.round(m * pow)
     return 10 * pow
   }
 

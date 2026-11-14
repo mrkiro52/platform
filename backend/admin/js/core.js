@@ -292,6 +292,7 @@ const NAV = [
   { label: 'Отдел продаж', items: [
     { id: 'sales-crm', path: '/sales/crm', label: 'CRM', icon: 'target', sales: true },
     { id: 'sales-calendar', path: '/sales/calendar', label: 'Календарь', icon: 'calendar-days', sales: true },
+    { id: 'sales-stats', path: '/sales/stats', label: 'Статистика', icon: 'chart-column', sales: true },
   ] },
   { label: 'Обзор', items: [
     { id: 'dashboard', path: '/dashboard', label: 'Дашборд', icon: 'layout-dashboard', scopes: MAIN },
@@ -317,6 +318,7 @@ const NAV = [
 const ROUTES = [
   { re: /^\/sales\/crm$/, page: 'salesCrm', nav: 'sales-crm', title: 'CRM', sales: true },
   { re: /^\/sales\/calendar$/, page: 'salesCalendar', nav: 'sales-calendar', title: 'Календарь', sales: true },
+  { re: /^\/sales\/stats$/, page: 'salesStats', nav: 'sales-stats', title: 'Статистика', sales: true },
   { re: /^\/dashboard$/, page: 'dashboard', nav: 'dashboard', title: 'Дашборд', scopes: MAIN },
   { re: /^\/tasks$/, page: 'tasks', nav: 'tasks', title: 'Задачи', scopes: ALL },
   { re: /^\/users$/, page: 'users', nav: 'users', title: 'Пользователи', scopes: MAIN },

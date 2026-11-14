@@ -1333,6 +1333,32 @@ function migrate() {
       console.error('❌ Migration 44 failed:', err.message)
     }
   }
+
+  // Migration 45: журнал смены статусов лидов — по нему статистика отдела продаж
+  // считает, сколько лидов и в какой статус перешло за каждый день. У лидов, внесённых
+  // до журнала, история неизвестна: записываем их текущий статус датой последней правки.
+  if (schemaVersion < 45) {
+    try {
+      db.exec(`
+        CREATE TABLE IF NOT EXISTS sales_lead_status_log (
+          id         INTEGER PRIMARY KEY AUTOINCREMENT,
+          lead_id    INTEGER NOT NULL,
+          status     TEXT    NOT NULL,
+          changed_by TEXT,
+          changed_at TEXT    NOT NULL
+        );
+        CREATE INDEX IF NOT EXISTS idx_sales_status_log_at ON sales_lead_status_log(changed_at);
+        INSERT INTO sales_lead_status_log (lead_id, status, changed_by, changed_at)
+          SELECT id, status, NULL, CASE WHEN status = 'new' THEN created_at ELSE updated_at END
+          FROM sales_leads
+          WHERE NOT EXISTS (SELECT 1 FROM sales_lead_status_log);
+      `)
+      db.pragma('user_version = 45')
+      console.log('✅ Migration 45 completed: added sales_lead_status_log')
+    } catch (err) {
+      console.error('❌ Migration 45 failed:', err.message)
+    }
+  }
 }
 
 migrate()

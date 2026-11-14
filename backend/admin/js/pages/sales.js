@@ -1,5 +1,5 @@
 'use strict'
-// Отдел продаж: CRM с лидами и календарь встреч. Раздел видят четверо —
+// Отдел продаж: CRM с лидами, календарь встреч и статистика по дням. Раздел видят четверо —
 // Ханиль (главный админ), Денис, Саша и Эмиль. Кто из них вошёл, говорит сервер (me).
 
 const SALES_STATUS = {
@@ -9,6 +9,11 @@ const SALES_STATUS = {
   call_done: ['Провёл созвон', 'badge-orange'],
   closed: ['Закрыт в продажу', 'badge-green'],
   lost: ['Слился', 'badge-red'],
+}
+// Цвета статусов на графиках
+const SALES_COLOR = {
+  new: 'var(--text3)', dialog: 'var(--blue)', call_scheduled: 'var(--violet)',
+  call_done: 'var(--orange)', closed: 'var(--green)', lost: 'var(--red)',
 }
 const SALES_FORMAT = { installment: 'Рассрочка', full: 'Оплата разом' }
 const SALES_DURATIONS = [15, 30, 45, 60]
@@ -97,10 +102,9 @@ const SalesCrmPage = {
     } else {
       cards = [
         card('Твоё вознаграждение', Sales.rub(r.mine), '10% от суммы лидов, которые закрыл ты', true, 'crown'),
-        card('Закрыто тобой', Sales.rub(r.closedAmount), deals(r.closedCount), false, 'trending-up'),
       ]
     }
-    $('#crm-rewards').innerHTML = `<div class="sales-kpis">${cards.join('')}</div>`
+    $('#crm-rewards').innerHTML = `<div class="sales-kpis${cards.length === 1 ? ' is-single' : ''}">${cards.join('')}</div>`
   },
 
   search: debounce((value) => { SalesCrmPage.q = value.trim().toLowerCase(); SalesCrmPage.paint() }, 150),
@@ -502,5 +506,106 @@ const SalesCalendarPage = {
   },
 }
 
+// ═══ Статистика ════════════════════════════════════════════════════════
+// Только количества лидов и статусов по дням — денег здесь нет.
+const SALES_PERIODS = [7, 14, 30, 90]
+
+const SalesStatsPage = {
+  async render(view, ctx) {
+    const asked = Number(ctx.query.get('days'))
+    const period = SALES_PERIODS.includes(asked) ? asked : 30
+    view.innerHTML = SalesStatsPage.head() + skeleton({ rows: 8, kpis: 4 })
+    const d = await api(`/api/sales/stats?days=${period}`)
+    if (ctx.stale()) return
+    Sales.use(d)
+
+    const statuses = Object.entries(SALES_STATUS)
+    const sum = pick => d.days.reduce((acc, row) => acc + pick(row), 0)
+    const today = d.days[d.days.length - 1]
+    const span = `${period} ${plural(period, 'день', 'дня', 'дней')}`
+    const card = (label, value, todayValue, iconName, accent = false) => `
+      <div class="kpi">
+        <div class="kpi-top"><span class="kpi-label">${label}</span><span class="kpi-icon${accent ? ' is-lime' : ''}">${icon(iconName, 15)}</span></div>
+        <div class="kpi-value">${fmt(value)}</div>
+        <div class="kpi-foot">сегодня — ${fmt(todayValue)}</div>
+      </div>`
+    const cell = n => (n ? fmt(n) : '<span class="sstat-zero">0</span>')
+    const dayRow = row => {
+      const empty = !row.added && statuses.every(([key]) => !row.statuses[key])
+      return `
+        <tr class="${empty ? 'is-empty' : ''}">
+          <td class="nowrap">${esc(dayLabel(row.day, { weekday: true }))}${row.day === d.today ? ' <span class="badge badge-lime">сегодня</span>' : ''}</td>
+          <td class="r sstat-added">${cell(row.added)}</td>
+          ${statuses.map(([key]) => `<td class="r">${cell(row.statuses[key])}</td>`).join('')}
+        </tr>`
+    }
+
+    view.innerHTML = SalesStatsPage.head() + `
+      <div class="toolbar">
+        ${seg(SALES_PERIODS.map(p => [String(p), `${p} дней`]), String(period), 'SalesStatsPage.setPeriod')}
+        <div class="spacer"></div>
+        <span class="sstat-hint">Время московское</span>
+      </div>
+      <div class="kpi-grid" style="margin-bottom:16px">
+        ${card('Внесено лидов', sum(r => r.added), today.added, 'user-plus', true)}
+        ${card('Проведено созвонов', sum(r => r.statuses.call_done), today.statuses.call_done, 'video')}
+        ${card('Закрыто в продажу', sum(r => r.statuses.closed), today.statuses.closed, 'circle-check')}
+        ${card('Слилось', sum(r => r.statuses.lost), today.statuses.lost, 'x')}
+      </div>
+      <div class="grid-2-1">
+        <div class="card">
+          <div class="card-head">
+            <div><div class="card-title">${icon('activity')}Лиды по дням</div><div class="card-sub">Сколько внесли, закрыли в продажу и сколько слилось</div></div>
+            <div class="legend">
+              <span class="legend-item"><i class="dot" style="background:var(--lime)"></i>Внесено</span>
+              <span class="legend-item"><i class="dot" style="background:var(--green)"></i>Закрыто</span>
+              <span class="legend-item"><i class="dot" style="background:var(--red)"></i>Слилось</span>
+            </div>
+          </div>
+          <div id="sstat-chart"></div>
+        </div>
+        <div class="card">
+          <div class="card-head">
+            <div><div class="card-title">${icon('filter')}Сейчас в CRM</div><div class="card-sub">${fmt(d.total)} ${plural(d.total, 'лид', 'лида', 'лидов')} — в каком статусе каждый</div></div>
+          </div>
+          ${Charts.hbars(statuses.map(([key, [label]]) => ({ label, value: d.current[key] || 0, color: SALES_COLOR[key] })))}
+        </div>
+      </div>
+      <div class="section-title sstat-title">По дням</div>
+      <p class="sstat-note">«Внесено» — новые лиды за день. Остальные столбцы — сколько лидов перешло в этот статус за день.</p>
+      <div class="table-wrap sstat-wrap">
+        <table class="tbl sstat-tbl">
+          <thead><tr><th>День</th><th class="r">Внесено</th>${statuses.map(([, [label]]) => `<th class="r">${label}</th>`).join('')}</tr></thead>
+          <tbody>
+            <tr class="sstat-total">
+              <td>Итого за ${span}</td>
+              <td class="r sstat-added">${cell(sum(r => r.added))}</td>
+              ${statuses.map(([key]) => `<td class="r">${cell(sum(r => r.statuses[key]))}</td>`).join('')}
+            </tr>
+            ${[...d.days].reverse().map(dayRow).join('')}
+          </tbody>
+        </table>
+      </div>`
+
+    Charts.line($('#sstat-chart'), {
+      labels: d.days.map(r => r.day), height: 250,
+      xLabel: day => dayLabel(day, { short: true }),
+      tipTitle: day => dayLabel(day, { weekday: true }),
+      series: [
+        { name: 'Внесено', color: 'var(--lime)', values: d.days.map(r => r.added), area: true },
+        { name: 'Закрыто в продажу', color: 'var(--green)', values: d.days.map(r => r.statuses.closed) },
+        { name: 'Слилось', color: 'var(--red)', values: d.days.map(r => r.statuses.lost) },
+      ],
+    })
+  },
+
+  head() {
+    return pageHead({ title: 'Статистика', sub: 'Сколько лидов внесли и как они двигались по статусам — по дням' })
+  },
+
+  setPeriod(value) { Router.go(`/sales/stats?days=${value}`) },
+}
+
 PAGES.salesCrm = SalesCrmPage
+PAGES.salesStats = SalesStatsPage
 PAGES.salesCalendar = SalesCalendarPage
