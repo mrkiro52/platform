@@ -4,12 +4,7 @@ import { api } from '../api'
 
 // Вакансии и контакты для участников лагеря:
 // /autumn-camp/vacancies — карточки, /autumn-camp/vacancies/:id — вакансия целиком.
-// Временно закрыто PIN-кодом, который проверяется только на фронтенде: страница
-// ещё в работе и не должна попадаться участникам. Это не защита данных — API
-// вакансий открыт любому вошедшему пользователю.
-
-const PIN = '0239'
-const PIN_KEY = 'kiro-vacancies-pin'
+// Раздел открыт всем участникам осеннего лагеря.
 
 export const VACANCY_CATEGORIES = {
   fullstack: { label: 'Fullstack', color: '#BC8CFF' },
@@ -18,53 +13,6 @@ export const VACANCY_CATEGORIES = {
   ml: { label: 'ML / AI', color: '#FF8C42' },
   security: { label: 'Кибербезопасность', color: '#F85149' },
   other: { label: 'Другое', color: '#8B949E' },
-}
-
-function readPinOk() { try { return sessionStorage.getItem(PIN_KEY) === '1' } catch { return false } }
-function savePinOk() { try { sessionStorage.setItem(PIN_KEY, '1') } catch { /* без сохранения */ } }
-
-function PinGate({ onPass }) {
-  const navigate = useNavigate()
-  const [value, setValue] = useState('')
-  const [error, setError] = useState(false)
-
-  const change = (e) => {
-    const v = e.target.value.replace(/\D/g, '').slice(0, 4)
-    setValue(v)
-    setError(false)
-    if (v.length === 4) {
-      if (v === PIN) { savePinOk(); onPass() }
-      else { setError(true); setTimeout(() => setValue(''), 350) }
-    }
-  }
-
-  return (
-    <section className="page active prg-page vac-page">
-      <Link className="prg-back" to="/autumn-camp">← Осенний лагерь</Link>
-      <div className="vac-pin">
-        <div className="vac-pin-icon" aria-hidden="true">🔒</div>
-        <h1 className="vac-pin-title">Раздел в разработке</h1>
-        <p className="vac-pin-text">Введи код доступа из 4 цифр</p>
-        <label className={`vac-pin-boxes${error ? ' is-error' : ''}`}>
-          <input
-            className="vac-pin-input"
-            value={value}
-            onChange={change}
-            inputMode="numeric"
-            autoComplete="off"
-            autoFocus
-            maxLength={4}
-            aria-label="Код доступа"
-          />
-          {[0, 1, 2, 3].map(i => (
-            <span key={i} className={`vac-pin-box${i === value.length ? ' is-active' : ''}`}>{value[i] ? '•' : ''}</span>
-          ))}
-        </label>
-        <div className="vac-pin-error" role="alert">{error ? 'Неверный код' : ''}</div>
-        <button type="button" className="vac-pin-back" onClick={() => navigate('/autumn-camp')}>Вернуться в лагерь</button>
-      </div>
-    </section>
-  )
 }
 
 // Категорий у вакансии несколько — показываем плашку на каждую
@@ -264,7 +212,5 @@ function VacancyItem({ id }) {
 
 export default function VacanciesPage() {
   const { id } = useParams()
-  const [ok, setOk] = useState(readPinOk)
-  if (!ok) return <PinGate onPass={() => setOk(true)} />
   return id ? <VacancyItem id={id} /> : <VacancyList />
 }

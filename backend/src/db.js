@@ -1294,6 +1294,45 @@ function migrate() {
       console.error('❌ Migration 43 failed:', err.message)
     }
   }
+
+  // Migration 44: отдел продаж в админке — лиды CRM и встречи календаря.
+  // Люди хранятся ключами (khanil, denis, sasha, emil), время встреч — ISO в UTC.
+  if (schemaVersion < 44) {
+    try {
+      db.exec(`
+        CREATE TABLE IF NOT EXISTS sales_leads (
+          id               INTEGER PRIMARY KEY AUTOINCREMENT,
+          contact          TEXT    NOT NULL,
+          description      TEXT    NOT NULL DEFAULT '',
+          status           TEXT    NOT NULL DEFAULT 'new',
+          created_by       TEXT    NOT NULL,
+          closed_by        TEXT,
+          payment_format   TEXT,
+          discount         INTEGER NOT NULL DEFAULT 0,
+          discount_percent REAL    NOT NULL DEFAULT 0,
+          amount           INTEGER NOT NULL DEFAULT 0,
+          created_at       TEXT    NOT NULL,
+          updated_at       TEXT    NOT NULL
+        );
+        CREATE TABLE IF NOT EXISTS sales_events (
+          id           INTEGER PRIMARY KEY AUTOINCREMENT,
+          title        TEXT    NOT NULL,
+          description  TEXT    NOT NULL DEFAULT '',
+          participants TEXT    NOT NULL DEFAULT '[]',
+          starts_at    TEXT    NOT NULL,
+          duration     INTEGER NOT NULL DEFAULT 30,
+          lead_id      INTEGER,
+          created_by   TEXT    NOT NULL,
+          created_at   TEXT    NOT NULL
+        );
+        CREATE INDEX IF NOT EXISTS idx_sales_events_start ON sales_events(starts_at);
+      `)
+      db.pragma('user_version = 44')
+      console.log('✅ Migration 44 completed: added sales_leads and sales_events')
+    } catch (err) {
+      console.error('❌ Migration 44 failed:', err.message)
+    }
+  }
 }
 
 migrate()

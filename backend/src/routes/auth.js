@@ -2,7 +2,7 @@ const router = require('express').Router()
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const db = require('../db')
-const { adminAccounts } = require('../admins')
+const { adminAccounts, salesPersonOf } = require('../admins')
 const { recordEvent } = require('../analytics')
 const { parseCourses } = require('../courses')
 
@@ -125,7 +125,9 @@ router.post('/admin-login', (req, res) => {
   if (!account) {
     return res.status(401).json({ message: 'Неверный логин или пароль' })
   }
-  const token = makeToken({ role: 'admin', username, scope: account.scope }, ADMIN_SESSION_TTL)
+  // person — роль в отделе продаж (или null): по ней админка решает, показывать ли раздел
+  const person = salesPersonOf({ role: 'admin', username, scope: account.scope })
+  const token = makeToken({ role: 'admin', username, scope: account.scope, person }, ADMIN_SESSION_TTL)
   res.json({ token, scope: account.scope })
 })
 

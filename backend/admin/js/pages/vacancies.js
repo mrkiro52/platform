@@ -25,7 +25,7 @@ const VacanciesPage = {
   head() {
     return pageHead({
       title: 'Вакансии',
-      sub: 'Карточки на странице «Вакансии и контакты» в осеннем лагере. Пока страница закрыта кодом доступа на фронтенде',
+      sub: 'Карточки на странице «Вакансии и контакты» в осеннем лагере. Страница открыта всем участникам лагеря',
       actions: `<button class="btn btn-primary" onclick="VacanciesPage.open(null)">${icon('plus')}Новая вакансия</button>`,
     })
   },

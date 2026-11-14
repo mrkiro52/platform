@@ -5151,18 +5151,7 @@ a.prg-chapter-link, a.prg-chip { text-decoration: none; }
 .vac-item-contact { display: flex; flex-direction: column; gap: 4px; padding: 14px 18px; border-radius: var(--radius-md); border: 1px solid rgba(255,140,66,0.45); background: var(--prg-dim); font-size: 15px; font-weight: 600; color: var(--text-primary); }
 .vac-item-contact a { color: var(--prg-text); text-decoration: underline; text-underline-offset: 3px; word-break: break-all; }
 .vac-item-contact-label { font-size: 11.5px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-tertiary); }
-.vac-pin { max-width: 380px; margin: 40px auto 0; text-align: center; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 32px 28px; display: flex; flex-direction: column; align-items: center; gap: 10px; }
-.vac-pin-icon { font-size: 30px; }
-.vac-pin-title { font-family: var(--font-syne); font-size: 20px; font-weight: 700; color: var(--text-primary); margin: 0; }
-.vac-pin-text { margin: 0; color: var(--text-secondary); font-size: 14px; }
-.vac-pin-boxes { position: relative; display: flex; gap: 10px; margin-top: 8px; cursor: text; }
-.vac-pin-input { position: absolute; inset: 0; opacity: 0; width: 100%; height: 100%; font-size: 16px; caret-color: transparent; }
-.vac-pin-box { width: 48px; height: 56px; display: grid; place-items: center; font-size: 26px; color: var(--text-primary); background: var(--bg-tertiary); border: 1.5px solid var(--border-color); border-radius: 12px; }
-.vac-pin-input:focus ~ .vac-pin-box.is-active { border-color: var(--prg-text); box-shadow: 0 0 0 3px var(--prg-dim); }
-.vac-pin-boxes.is-error .vac-pin-box { border-color: #F85149; animation: vac-shake .3s; }
 @keyframes vac-shake { 25% { transform: translateX(-4px); } 75% { transform: translateX(4px); } }
-.vac-pin-error { min-height: 18px; color: #F85149; font-size: 13px; font-weight: 600; }
-.vac-pin-back { margin-top: 4px; background: none; border: none; color: var(--prg-text); font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; }
 @media (max-width: 640px) {
   .vac-hero, .vac-item { padding: 20px 18px; }
 }

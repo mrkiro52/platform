@@ -20,6 +20,9 @@ function decodeToken(token) {
 
 const Session = {
   token: '', username: '', scope: 'full', exp: 0,
+  // Роль в отделе продаж: khanil, denis, sasha, emil или null. personKnown = false —
+  // токен выдан до появления отдела, роль надо спросить у сервера (resolvePerson)
+  person: null, personKnown: false,
   load() {
     const token = localStorage.getItem('kiro_admin_token') || ''
     const payload = token ? decodeToken(token) : null
@@ -28,6 +31,8 @@ const Session = {
     this.username = payload.username || 'admin'
     this.scope = payload.scope || 'full'
     this.exp = (payload.exp || 0) * 1000
+    this.personKnown = 'person' in payload || this.scope === 'full'
+    this.person = 'person' in payload ? payload.person : (this.scope === 'full' ? 'khanil' : null)
     return !this.expired
   },
   set(token) {
@@ -41,7 +46,12 @@ const Session = {
   },
   get expired() { return this.exp && Date.now() > this.exp },
   get isMain() { return this.scope === 'full' },
-  get roleLabel() { return { full: 'Главный админ', homework: 'Проверка ДЗ', tasks: 'Помощник', producer: 'Продюсер' }[this.scope] || 'Админ' },
+  get roleLabel() { return { full: 'Главный админ', homework: 'Проверка ДЗ', tasks: 'Помощник', producer: 'Продюсер', sales: 'Отдел продаж' }[this.scope] || 'Админ' },
+  async resolvePerson() {
+    if (this.personKnown) return
+    try { this.person = (await api('/api/sales/me')).person || null } catch { this.person = null }
+    this.personKnown = true
+  },
 }
 
 // ═══ Утилиты ═══════════════════════════════════════════════════════════
@@ -274,7 +284,15 @@ const MAIN = ['full']
 // Задачи видят все админы, включая помощников с доступом только к ним
 const ALL = ['full', 'homework', 'tasks', 'producer']
 
+// Раздел отдела продаж открыт не по области доступа, а по роли в отделе (Session.person):
+// у таких пунктов и маршрутов стоит sales: true
+const canSee = (item) => (item.sales ? !!Session.person : item.scopes.includes(Session.scope))
+
 const NAV = [
+  { label: 'Отдел продаж', items: [
+    { id: 'sales-crm', path: '/sales/crm', label: 'CRM', icon: 'target', sales: true },
+    { id: 'sales-calendar', path: '/sales/calendar', label: 'Календарь', icon: 'calendar-days', sales: true },
+  ] },
   { label: 'Обзор', items: [
     { id: 'dashboard', path: '/dashboard', label: 'Дашборд', icon: 'layout-dashboard', scopes: MAIN },
     { id: 'tasks', path: '/tasks', label: 'Задачи', icon: 'square-kanban', scopes: ALL, badge: 'tasks' },
@@ -297,6 +315,8 @@ const NAV = [
 ]
 
 const ROUTES = [
+  { re: /^\/sales\/crm$/, page: 'salesCrm', nav: 'sales-crm', title: 'CRM', sales: true },
+  { re: /^\/sales\/calendar$/, page: 'salesCalendar', nav: 'sales-calendar', title: 'Календарь', sales: true },
   { re: /^\/dashboard$/, page: 'dashboard', nav: 'dashboard', title: 'Дашборд', scopes: MAIN },
   { re: /^\/tasks$/, page: 'tasks', nav: 'tasks', title: 'Задачи', scopes: ALL },
   { re: /^\/users$/, page: 'users', nav: 'users', title: 'Пользователи', scopes: MAIN },
@@ -327,7 +347,8 @@ const Router = {
     return p.replace(/\/+$/, '') || '/'
   },
 
-  defaultPath() { return { full: '/dashboard', homework: '/homework' }[Session.scope] || '/tasks' },
+  // Отдел продаж открывается первым у всех, кто в нём состоит
+  defaultPath() { return Session.person ? '/sales/crm' : ({ full: '/dashboard', homework: '/homework' }[Session.scope] || '/tasks') },
 
   async canLeave() {
     const msg = Router.guard && Router.guard()
@@ -369,7 +390,7 @@ const Router = {
       const m = r.re.exec(path)
       if (m) { route = r; (r.keys || []).forEach((k, i) => { params[k] = m[i + 1] }); break }
     }
-    if (!route || !route.scopes.includes(Session.scope)) {
+    if (!route || !canSee(route)) {
       // Раздел по умолчанию тоже недоступен — роль незнакомая, дальше не идём
       if (path === Router.defaultPath()) {
         $('#view').innerHTML = pageHead({ title: 'Нет доступа' }) + errorBox('У этой учётной записи нет доступа к разделам админки')
@@ -436,7 +457,7 @@ const Badges = { homework: 0, tasks: 0, programHomework: 0 }
 const Shell = {
   renderNav() {
     $('#sb-nav').innerHTML = NAV.map(group => {
-      const items = group.items.filter(i => i.scopes.includes(Session.scope))
+      const items = group.items.filter(canSee)
       if (!items.length) return ''
       return `
         <div class="sb-group">
@@ -488,7 +509,7 @@ const Shell = {
       const list = await api('/api/programs/admin/homework')
       Badges.programHomework = list.filter(h => h.status === 'submitted').length
     } catch { /* до миграции таблицы ещё нет — бейдж просто не появится */ }
-    try {
+    if (ALL.includes(Session.scope)) try {
       const { me, tasks } = await api('/api/admin-tasks')
       Badges.tasks = tasksNeedingAttention(tasks, me)
     } catch { /* бэкенд без задач — бейдж просто не появится */ }
@@ -536,7 +557,8 @@ const App = {
     setTimeout(() => $('#au').focus(), 30)
   },
 
-  showApp() {
+  async showApp() {
+    await Session.resolvePerson()
     $('#login-screen').hidden = true
     $('#app').hidden = false
     Shell.renderNav()
@@ -561,8 +583,9 @@ const App = {
       if (!Session.set(data.token)) throw new Error('Сервер вернул неподходящий токен')
       $('#ap').value = ''
       // Пришли по ссылке на раздел — после входа открываем именно его
+      await Session.resolvePerson()
       if (Router.path() === '/') history.replaceState(null, '', BASE + Router.defaultPath())
-      App.showApp()
+      await App.showApp()
     } catch (ex) {
       err.textContent = ex.message === 'Неверный логин или пароль' ? ex.message : `Не удалось войти: ${ex.message}`
       err.hidden = false

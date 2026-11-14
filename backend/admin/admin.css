@@ -609,3 +609,72 @@ a.kpi:hover{border-color:var(--lime-line)}
 .vac-cats{display:flex;flex-wrap:wrap;gap:5px;max-width:220px}
 .vac-cat-checks{display:flex;flex-wrap:wrap;gap:10px 18px;padding:6px 0 2px}
 .vac-contact{width:130px;max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* ═══ Отдел продаж ═══ */
+.sales-kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px;margin-bottom:16px}
+.sales-kpis .kpi-value{font-size:24px}
+.sales-tbl .num{text-align:right}
+.sales-tbl td a{color:var(--text);text-decoration:underline;text-decoration-color:var(--border-strong);text-underline-offset:3px}
+.sales-tbl td a:hover{color:var(--lime);text-decoration-color:var(--lime-line)}
+/* Кнопки действий прилипают к правому краю: на узком экране таблица прокручивается, а они остаются под рукой */
+.sales-tbl th:last-child,.sales-tbl td.actions{position:sticky;right:0}
+.sales-tbl th:last-child{z-index:2}
+.sales-tbl td.actions,.sales-tbl tbody tr:hover td.actions{background:var(--bg2);box-shadow:-10px 0 12px -10px rgba(0,0,0,.6)}
+.sales-contact{white-space:nowrap}
+.sales-note{max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sales-reward{color:var(--lime);font-weight:700;font-variant-numeric:tabular-nums}
+.sales-group{margin:6px 0 12px;padding-top:16px;border-top:1px solid var(--border)}
+.sales-discount{display:flex;align-items:center;gap:12px}
+.sales-discount input[type=number]{width:96px;flex:0 0 96px}
+.sales-discount input:disabled{opacity:.45}
+.sales-discount-unit{color:var(--text3);font-size:14px;font-weight:600;margin-left:-4px}
+.modal-actions .sales-left{margin-right:auto}
+
+/* Цвета участников: полоса и фон встречи в календаре, точка в легенде */
+.sp-khanil{--sp:var(--lime)}
+.sp-denis{--sp:var(--blue)}
+.sp-sasha{--sp:var(--orange)}
+.sp-emil{--sp:var(--violet)}
+
+/* Недельный календарь: слева шкала времени, дальше семь колонок дней */
+.scal-nav{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.scal-range{font-size:14px;font-weight:700;color:var(--text);margin:0 8px 0 4px;white-space:nowrap}
+.scal{padding:0;overflow:hidden}
+.scal-scroll{overflow:auto;max-height:calc(100vh - 250px);min-height:380px}
+.scal-inner{min-width:700px}
+.scal-head,.scal-body{display:grid;grid-template-columns:56px repeat(7,minmax(0,1fr))}
+.scal-head{position:sticky;top:0;z-index:5;background:var(--bg2);border-bottom:1px solid var(--border)}
+.scal-corner{display:grid;place-items:center;font-size:10.5px;font-weight:700;color:var(--text3);letter-spacing:.06em}
+.scal-day{display:flex;align-items:center;justify-content:center;gap:8px;padding:10px 4px;border-left:1px solid var(--border)}
+.scal-wd{font-size:11.5px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.05em}
+.scal-num{font-family:var(--font-syne);font-size:16px;font-weight:700;color:var(--text);width:30px;height:30px;border-radius:50%;display:grid;place-items:center}
+.scal-day.is-today .scal-wd{color:var(--lime)}
+.scal-day.is-today .scal-num{background:var(--lime);color:var(--on-accent)}
+.scal-body{position:relative}
+.scal-times{position:relative}
+.scal-time{position:absolute;right:8px;transform:translateY(-50%);font-size:11px;font-weight:600;color:var(--text3);font-variant-numeric:tabular-nums}
+.scal-col{position:relative;border-left:1px solid var(--border);cursor:pointer;background-image:linear-gradient(to bottom,var(--border) 1px,transparent 1px);background-size:100% var(--scal-hour,52px)}
+.scal-col:hover{background-color:rgba(255,255,255,.015)}
+.scal-col.is-today{background-color:rgba(255,214,10,.035)}
+.scal-now{position:absolute;left:0;right:0;height:2px;background:var(--red);z-index:3;pointer-events:none}
+.scal-now::before{content:'';position:absolute;left:-4px;top:-3px;width:8px;height:8px;border-radius:50%;background:var(--red)}
+.scal-ev{position:absolute;z-index:2;display:flex;flex-direction:column;align-items:flex-start;gap:0;padding:3px 7px;border-radius:7px;text-align:left;overflow:hidden;cursor:pointer;
+  background:color-mix(in srgb,var(--sp) 20%,var(--bg2));border:1px solid color-mix(in srgb,var(--sp) 45%,transparent);border-left:3px solid var(--sp);color:var(--text);transition:filter .15s,box-shadow .15s}
+.scal-ev:hover{filter:brightness(1.15);box-shadow:0 4px 14px rgba(0,0,0,.35);z-index:4}
+.scal-ev:focus-visible{outline:2px solid var(--lime);outline-offset:1px}
+.scal-ev-title{font-size:12px;font-weight:700;line-height:1.25;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.scal-ev-time{font-size:11px;font-weight:600;color:var(--sp);font-variant-numeric:tabular-nums;white-space:nowrap}
+.scal-ev-who{font-size:11px;color:var(--text2);max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+/* Короткая встреча — одна строка: название и время, участники в подсказке */
+.scal-ev.is-short{flex-direction:row;align-items:center;gap:6px;padding:0 7px}
+.scal-ev.is-short .scal-ev-time{flex:0 0 auto}
+.scal-ev.is-short .scal-ev-title{flex:1 1 auto;min-width:0}
+.scal-legend{display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:11px 16px;border-top:1px solid var(--border);font-size:12px;color:var(--text2)}
+.scal-legend-item{display:inline-flex;align-items:center;gap:6px;font-weight:600}
+.scal-legend-item i{width:10px;height:10px;border-radius:3px;background:var(--sp)}
+.scal-legend-hint{margin-left:auto;color:var(--text3)}
+@media (max-width:720px){
+  .scal-scroll{max-height:calc(100vh - 300px)}
+  .scal-legend-hint{margin-left:0;width:100%}
+  .sales-discount input[type=number]{width:80px;flex-basis:80px}
+}

@@ -39,10 +39,10 @@ function requireHomeworkReview(req, res, next) {
   })
 }
 
-// Любой вход в админку, независимо от области доступа: задачи видят все админы
+// Любой вход в админку, кроме менеджеров отдела продаж: задачи видят все остальные админы
 function requireAnyAdmin(req, res, next) {
   verifyToken(req, res, () => {
-    if (req.user.role !== 'admin' || !req.user.username) {
+    if (req.user.role !== 'admin' || !req.user.username || scopeOf(req.user) === 'sales') {
       return res.status(403).json({ message: 'Недостаточно прав' })
     }
     next()
