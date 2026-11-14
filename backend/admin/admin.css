@@ -624,11 +624,14 @@ a.kpi:hover{border-color:var(--lime-line)}
 .sales-ref-note{font-size:13px;color:var(--text2);margin:0 0 14px}
 .sales-ref-note b{color:var(--lime);font-variant-numeric:tabular-nums;white-space:nowrap}
 .sales-ref-tbl td{vertical-align:top}
+.sales-ref-tbl th:last-child{right:auto}
 .sales-ref-count{color:var(--text);font-size:14px}
 .sales-ref-leads{display:flex;flex-direction:column;gap:7px}
-.sales-ref-lead{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.sales-ref-lead{display:flex;align-items:center;gap:8px;white-space:nowrap}
 .sales-ref-amount{font-size:12px;color:var(--text2);font-variant-numeric:tabular-nums;white-space:nowrap}
-.sales-ref-payout{font-size:14px}
+.sales-ref-payout{font-size:14px;font-weight:700;color:var(--text);font-variant-numeric:tabular-nums}
+.sales-ref-note b.is-paid{color:var(--green)}
+.sales-ref-paid-mark{font-size:11px;font-weight:700;color:var(--green)}
 /* Статистика отдела продаж */
 .sstat-hint{font-size:12px;color:var(--text3)}
 .sstat-title{margin:22px 0 4px}

@@ -54,6 +54,7 @@ function mapLead(row) {
     discount: !!row.discount,
     discountPercent: row.discount_percent || 0,
     amount: row.amount || 0,
+    referralPaid: row.referral_paid_at ? row.referral_paid_amount : 0,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
   }
@@ -99,7 +100,16 @@ function referralKey(value) {
   return v.replace(/^(https?:\/\/)?t\.me\//, '').replace(/^@/, '')
 }
 
-// Выплаты рефералам: кто кого привёл и сколько за это положено. Видит только Ханиль.
+// Реферальные по одному лиду. Выплаченное зафиксировано на лиде и больше не меняется;
+// невыплаченное — доля от суммы, если лид закрыт в продажу и у него указан реферал.
+const isClosed = l => l.status === 'closed' && l.amount > 0
+function referralDue(l) {
+  if (l.referral_paid_at) return l.referral_paid_amount
+  return isClosed(l) && referralKey(l.referral) ? Math.round(l.amount * REFERRAL_SHARE) : 0
+}
+
+// Выплаты рефералам: кто кого привёл, сколько положено, сколько выплачено и сколько осталось.
+// Видит только Ханиль.
 function referralsFor(leads) {
   const byKey = new Map()
   for (const l of leads) {
@@ -107,31 +117,37 @@ function referralsFor(leads) {
     if (!key) continue
     // Показываем реферала ником: ссылку t.me/ivan превращаем в @ivan
     const label = l.referral.trim().replace(/^(https?:\/\/)?t\.me\//i, '@')
-    if (!byKey.has(key)) byKey.set(key, { contact: label, leads: [], closedCount: 0, closedAmount: 0 })
+    if (!byKey.has(key)) byKey.set(key, { contact: label, leads: [], closedCount: 0, closedAmount: 0, earned: 0, paid: 0, paidAt: null })
     const ref = byKey.get(key)
     if (label.startsWith('@') && !ref.contact.startsWith('@')) ref.contact = label
-    const closed = l.status === 'closed' && l.amount > 0
-    ref.leads.push({ id: l.id, contact: l.contact, status: l.status, amount: closed ? l.amount : 0 })
-    if (closed) { ref.closedCount += 1; ref.closedAmount += l.amount }
+    const paid = l.referral_paid_at ? l.referral_paid_amount : 0
+    ref.leads.push({ id: l.id, contact: l.contact, status: l.status, amount: isClosed(l) ? l.amount : 0, paid: !!l.referral_paid_at })
+    if (isClosed(l)) { ref.closedCount += 1; ref.closedAmount += l.amount }
+    ref.earned += referralDue(l)
+    ref.paid += paid
+    if (l.referral_paid_at && (!ref.paidAt || l.referral_paid_at > ref.paidAt)) ref.paidAt = l.referral_paid_at
   }
-  const list = [...byKey.values()].map(ref => ({ ...ref, payout: Math.round(ref.closedAmount * REFERRAL_SHARE) }))
-  list.sort((a, b) => b.payout - a.payout || b.leads.length - a.leads.length || a.contact.localeCompare(b.contact, 'ru'))
-  return { share: REFERRAL_SHARE, total: list.reduce((sum, ref) => sum + ref.payout, 0), list }
+  const list = [...byKey.values()].map(ref => ({ ...ref, pending: ref.earned - ref.paid }))
+  list.sort((a, b) => b.pending - a.pending || b.earned - a.earned || b.leads.length - a.leads.length || a.contact.localeCompare(b.contact, 'ru'))
+  const sum = field => list.reduce((acc, ref) => acc + ref[field], 0)
+  return { share: REFERRAL_SHARE, total: sum('earned'), paid: sum('paid'), pending: sum('pending'), list }
 }
 
 // Вознаграждения. Считаются только лиды, закрытые в продажу. Каждый видит своё;
-// полную раскладку — только Ханиль.
+// полную раскладку — только Ханиль. Его доля — 70% минус выплаты Саше, Эмилю и рефералам.
 function rewardsFor(person, leads) {
-  const closed = leads.filter(l => l.status === 'closed' && l.amount > 0)
+  const closed = leads.filter(isClosed)
   const total = closed.reduce((sum, l) => sum + l.amount, 0)
   const sold = key => closed.filter(l => l.closed_by === key)
   const sellerReward = key => Math.round(sold(key).reduce((sum, l) => sum + l.amount, 0) * SELLER_SHARE)
   const denis = Math.round(total * DENIS_SHARE)
   const sellers = Object.fromEntries(SELLERS.map(key => [key, sellerReward(key)]))
-  const khanil = total - denis - SELLERS.reduce((sum, key) => sum + sellers[key], 0)
+  // Реферальные (и выплаченные, и ещё не выплаченные) идут из доли Ханиля
+  const referrals = leads.reduce((sum, l) => sum + referralDue(l), 0)
+  const khanil = total - denis - SELLERS.reduce((sum, key) => sum + sellers[key], 0) - referrals
 
   if (person === 'khanil') {
-    return { view: 'all', total, closedCount: closed.length, denis, sasha: sellers.sasha, emil: sellers.emil, khanil }
+    return { view: 'all', total, closedCount: closed.length, denis, sasha: sellers.sasha, emil: sellers.emil, referrals, khanil }
   }
   if (person === 'denis') {
     return { view: 'denis', total, closedCount: closed.length, mine: denis }
@@ -178,6 +194,44 @@ router.post('/leads', requireSales, (req, res) => {
   }
 })
 
+// POST /api/sales/leads/import — внести сразу список лидов с общими статусом, ответственным
+// и заметкой. Контакты, которые уже есть в CRM или повторяются в списке, пропускаются.
+const IMPORT_LIMIT = 500
+router.post('/leads/import', requireSales, (req, res) => {
+  try {
+    const raw = Array.isArray(req.body?.contacts) ? req.body.contacts : []
+    const contacts = raw.map(c => String(c || '').trim()).filter(Boolean)
+    if (!contacts.length) return res.status(400).json({ message: 'Вставь хотя бы один контакт' })
+    if (contacts.length > IMPORT_LIMIT) return res.status(400).json({ message: `За раз можно внести не больше ${IMPORT_LIMIT} контактов` })
+    if (req.body?.status === 'closed') return res.status(400).json({ message: 'Списком нельзя внести лидов сразу закрытыми в продажу' })
+    const { value: base, error } = cleanLead({ ...req.body, contact: contacts[0] }, req.person)
+    if (error) return res.status(400).json({ message: error })
+    const tooLong = contacts.find(c => c.length > LIMITS.contact)
+    if (tooLong) return res.status(400).json({ message: `Слишком длинный контакт: ${tooLong.slice(0, 40)}…` })
+
+    const seen = new Set(db.prepare('SELECT contact FROM sales_leads').all().map(r => referralKey(r.contact)))
+    const added = [], skipped = []
+    const stamp = now()
+    const insert = db.prepare(`
+      INSERT INTO sales_leads (contact, description, status, created_by, referral, created_at, updated_at)
+      VALUES (?, ?, ?, ?, ?, ?, ?)
+    `)
+    db.transaction(() => {
+      for (const contact of contacts) {
+        const key = referralKey(contact)
+        if (seen.has(key)) { skipped.push(contact); continue }
+        seen.add(key)
+        const info = insert.run(contact, base.description, base.status, base.createdBy, base.referral, stamp, stamp)
+        logStatus(info.lastInsertRowid, base.status, req.person, stamp)
+        added.push(contact)
+      }
+    })()
+    res.status(201).json({ added: added.length, skipped })
+  } catch (e) {
+    res.status(500).json({ message: e.message })
+  }
+})
+
 // PUT /api/sales/leads/:id — изменить карточку лида
 router.put('/leads/:id', requireSales, (req, res) => {
   try {
@@ -204,6 +258,30 @@ router.delete('/leads/:id', requireSales, (req, res) => {
     db.prepare('UPDATE sales_events SET lead_id = NULL WHERE lead_id = ?').run(req.params.id)
     db.prepare('DELETE FROM sales_lead_status_log WHERE lead_id = ?').run(req.params.id)
     res.json({ ok: true })
+  } catch (e) {
+    res.status(500).json({ message: e.message })
+  }
+})
+
+// POST /api/sales/referrals/pay — зафиксировать выплату рефералу: все его закрытые лиды,
+// за которые ещё не платили, помечаются выплаченными. Только для Ханиля. expected — сумма,
+// которую он видел на экране: если с тех пор что-то поменялось, выплату не фиксируем.
+router.post('/referrals/pay', requireSales, (req, res) => {
+  try {
+    if (req.person !== 'khanil') return res.status(403).json({ message: 'Выплаты рефералам фиксирует только главный админ' })
+    const key = referralKey(req.body?.referral)
+    if (!key) return res.status(400).json({ message: 'Не указан реферал' })
+    const due = db.prepare("SELECT * FROM sales_leads WHERE status = 'closed' AND amount > 0 AND referral_paid_at IS NULL").all()
+      .filter(l => referralKey(l.referral) === key)
+    const amount = due.reduce((sum, l) => sum + referralDue(l), 0)
+    if (!due.length || !amount) return res.status(400).json({ message: 'Этому рефералу сейчас нечего выплачивать' })
+    if (req.body?.expected !== undefined && Number(req.body.expected) !== amount) {
+      return res.status(409).json({ message: 'Сумма к выплате изменилась — обнови страницу и проверь ещё раз' })
+    }
+    const stamp = now()
+    const mark = db.prepare('UPDATE sales_leads SET referral_paid_amount = ?, referral_paid_at = ? WHERE id = ?')
+    db.transaction(() => { for (const l of due) mark.run(referralDue(l), stamp, l.id) })()
+    res.json({ ok: true, amount, leads: due.length })
   } catch (e) {
     res.status(500).json({ message: e.message })
   }

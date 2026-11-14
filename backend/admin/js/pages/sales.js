@@ -98,9 +98,9 @@ const SalesCrmPage = {
     SalesCrmPage.paint()
   },
 
-  // Рефералы: кого привели и сколько каждому положено — доля от суммы закрытых лидов
+  // Рефералы: кого привели, сколько положено, сколько уже выплачено
   paintReferrals() {
-    const { list, total, share } = SalesCrmPage.data.referrals
+    const { list, total, paid, pending, share } = SalesCrmPage.data.referrals
     const percent = Math.round(share * 100)
     const el = $('#crm-body')
     if (!list.length) {
@@ -109,30 +109,121 @@ const SalesCrmPage = {
     }
     const leadCount = list.reduce((sum, ref) => sum + ref.leads.length, 0)
     el.innerHTML = `
-      <p class="sales-ref-note">Реферал получает ${percent}% от суммы каждого своего лида, закрытого в продажу. Всего к выплате: <b>${Sales.rub(total)}</b> · ${fmt(list.length)} ${plural(list.length, 'реферал', 'реферала', 'рефералов')} · ${fmt(leadCount)} ${plural(leadCount, 'лид', 'лида', 'лидов')}</p>
+      <p class="sales-ref-note">Реферал получает ${percent}% от суммы каждого своего лида, закрытого в продажу. Выплаты идут из твоей доли.
+        Начислено <b>${Sales.rub(total)}</b> · выплачено <b class="is-paid">${Sales.rub(paid)}</b> · осталось выплатить <b>${Sales.rub(pending)}</b>
+        · ${fmt(list.length)} ${plural(list.length, 'реферал', 'реферала', 'рефералов')} · ${fmt(leadCount)} ${plural(leadCount, 'лид', 'лида', 'лидов')}</p>
       <div class="table-wrap">
         <table class="tbl sales-tbl sales-ref-tbl">
-          <thead><tr><th>Реферал</th><th class="r">Привёл лидов</th><th>Его лиды</th><th class="num">Закрыто на сумму</th><th class="num">К выплате</th></tr></thead>
-          <tbody>${list.map(ref => `
+          <thead><tr><th>Реферал</th><th class="r">Привёл лидов</th><th>Его лиды</th><th class="num">Реферальные</th><th>Выплата</th></tr></thead>
+          <tbody>${list.map((ref, i) => `
             <tr>
               <td><div class="cell-main sales-contact">${Sales.contact(ref.contact)}</div></td>
-              <td class="r"><b class="sales-ref-count">${fmt(ref.leads.length)}</b>${ref.closedCount ? `<div class="cell-sub nowrap">в продажу — ${fmt(ref.closedCount)}</div>` : ''}</td>
+              <td class="r"><b class="sales-ref-count">${fmt(ref.leads.length)}</b>${ref.closedCount ? `<div class="cell-sub nowrap">в продажу — ${fmt(ref.closedCount)}</div><div class="cell-sub nowrap">на ${Sales.rub(ref.closedAmount)}</div>` : ''}</td>
               <td><div class="sales-ref-leads">${ref.leads.map(l => {
                 const [label, badge] = SALES_STATUS[l.status] || [l.status, 'badge-gray']
-                return `<div class="sales-ref-lead"><span class="sales-contact">${Sales.contact(l.contact)}</span><span class="badge ${badge}">${label}</span>${l.amount ? `<span class="sales-ref-amount">${Sales.rub(l.amount)}</span>` : ''}</div>`
+                return `<div class="sales-ref-lead"><span class="sales-contact">${Sales.contact(l.contact)}</span><span class="badge ${badge}">${label}</span>${l.amount ? `<span class="sales-ref-amount">${Sales.rub(l.amount)}</span>` : ''}${l.paid ? '<span class="sales-ref-paid-mark">выплачено</span>' : ''}</div>`
               }).join('')}</div></td>
-              <td class="num nowrap">${ref.closedAmount ? Sales.rub(ref.closedAmount) : '<span class="muted">—</span>'}</td>
-              <td class="num nowrap">${ref.payout ? `<span class="sales-reward sales-ref-payout">${Sales.rub(ref.payout)}</span>` : '<span class="muted">—</span>'}</td>
+              <td class="num nowrap">${ref.earned ? `<span class="sales-ref-payout">${Sales.rub(ref.earned)}</span>${ref.paid && ref.pending ? `<div class="cell-sub">выплачено ${Sales.rub(ref.paid)}</div>` : ''}` : '<span class="muted">—</span>'}</td>
+              <td class="nowrap">${ref.pending
+                ? `<button class="btn btn-primary btn-sm" onclick="SalesCrmPage.payReferral(${i})">${icon('check', 14)}Выплатить ${Sales.rub(ref.pending)}</button>`
+                : ref.paid
+                  ? `<span class="badge badge-green">${icon('circle-check', 12)}Оплачено</span><div class="cell-sub">${esc(stampLabel(ref.paidAt))}</div>`
+                  : '<span class="muted">нечего выплачивать</span>'}</td>
             </tr>`).join('')}</tbody>
         </table>
       </div>`
+  },
+
+  // Зафиксировать выплату рефералу: все его закрытые и ещё не оплаченные лиды становятся оплаченными
+  async payReferral(index) {
+    const ref = SalesCrmPage.data.referrals.list[index]
+    if (!ref || !ref.pending) return
+    const ok = await confirmDialog({
+      title: 'Зафиксировать оплату рефералу?',
+      text: `Реферал <b>${esc(ref.contact)}</b> — <b>${Sales.rub(ref.pending)}</b>. Его закрытые лиды будут отмечены как оплаченные.`,
+      confirm: 'Да', cancel: 'Нет',
+    })
+    if (!ok) return
+    try {
+      await api('/api/sales/referrals/pay', { method: 'POST', body: { referral: ref.contact, expected: ref.pending } })
+      toast(`Выплата ${Sales.rub(ref.pending)} зафиксирована`)
+      Router.reload()
+    } catch (e) { toast(e.message, 'err') }
+  },
+
+  // ── Импорт списком ──
+  // Контакты — по одному в строке (можно через запятую или пробел, если это ники @...)
+  parseContacts(text) {
+    const out = []
+    for (const part of String(text || '').split(/[\n,;]+/)) {
+      const line = part.trim()
+      if (!line) continue
+      if (/^@\S+(\s+@\S+)+$/.test(line)) out.push(...line.split(/\s+/))
+      else out.push(line)
+    }
+    return out
+  },
+
+  openImport() {
+    const options = (list, selected) => list.map(([value, label]) => `<option value="${value}"${value === selected ? ' selected' : ''}>${esc(label)}</option>`).join('')
+    Modal.open(`
+      ${modalHead('Импорт списком', 'Внеси сразу много лидов с одинаковым статусом и заметкой')}
+      <div class="field">
+        <label for="i-list">Контакты</label>
+        <textarea id="i-list" rows="9" placeholder="@nick1&#10;@nick2&#10;+7 999 000-00-00" oninput="SalesCrmPage.onImportInput()"></textarea>
+        <div class="field-hint" id="i-count">По одному контакту в строке</div>
+      </div>
+      <div class="form-row">
+        <div class="field"><label for="i-status">Статус</label><select id="i-status">${options(Object.entries(SALES_STATUS).filter(([k]) => k !== 'closed').map(([k, [label]]) => [k, label]), 'new')}</select></div>
+        <div class="field"><label for="i-created">Ответственный</label><select id="i-created">${options(Sales.people.map(p => [p.key, p.name]), Sales.me)}</select></div>
+      </div>
+      <div class="field"><label for="i-desc">Описание для всех</label><textarea id="i-desc" rows="2" placeholder="Например: контакт из канала, откуда пришёл"></textarea></div>
+      <div class="field"><label for="i-referral">Реферал для всех</label><input id="i-referral" maxlength="200" placeholder="Необязательно"/></div>
+      <div class="form-error" id="i-err" hidden></div>
+      <div class="modal-actions">
+        <button class="btn btn-secondary" onclick="Modal.close()">Отмена</button>
+        <button class="btn btn-primary" id="i-save" onclick="SalesCrmPage.saveImport()">${icon('plus')}Внести</button>
+      </div>`, { size: 'lg' })
+  },
+
+  onImportInput() {
+    const contacts = SalesCrmPage.parseContacts($('#i-list').value)
+    const existing = new Set(SalesCrmPage.data.leads.map(l => l.contact.trim().toLowerCase().replace(/^@/, '')))
+    const unique = [...new Set(contacts.map(c => c.toLowerCase().replace(/^@/, '')))]
+    const dupes = unique.filter(c => existing.has(c)).length
+    $('#i-count').textContent = contacts.length
+      ? `Контактов: ${fmt(unique.length)}${dupes ? ` · уже в CRM: ${fmt(dupes)} — их пропустим` : ''}`
+      : 'По одному контакту в строке'
+  },
+
+  async saveImport() {
+    const contacts = SalesCrmPage.parseContacts($('#i-list').value)
+    if (!contacts.length) return Sales.showError('#i-err', 'Вставь хотя бы один контакт')
+    $('#i-save').disabled = true
+    try {
+      const res = await api('/api/sales/leads/import', { method: 'POST', body: {
+        contacts,
+        status: $('#i-status').value,
+        createdBy: $('#i-created').value,
+        description: $('#i-desc').value.trim(),
+        referral: $('#i-referral').value.trim(),
+      } })
+      Modal.close()
+      toast(`Внесено ${fmt(res.added)} ${plural(res.added, 'лид', 'лида', 'лидов')}${res.skipped.length ? `, пропущено ${fmt(res.skipped.length)} — уже есть в CRM` : ''}`)
+      Router.reload()
+    } catch (e) {
+      Sales.showError('#i-err', e.message)
+      $('#i-save').disabled = false
+    }
   },
 
   head() {
     return pageHead({
       title: 'CRM',
       sub: 'Лиды отдела продаж: от заявки до оплаты',
-      actions: `<button class="btn btn-primary" onclick="SalesCrmPage.open(null)">${icon('plus')}Новый лид</button>`,
+      actions: `
+        <button class="btn btn-secondary" onclick="SalesCrmPage.openImport()">${icon('list-todo')}Импорт списком</button>
+        <button class="btn btn-primary" onclick="SalesCrmPage.open(null)">${icon('plus')}Новый лид</button>`,
     })
   },
 
@@ -150,10 +241,11 @@ const SalesCrmPage = {
     if (r.view === 'all') {
       cards = [
         card('Сумма продаж', Sales.rub(r.total), deals(r.closedCount), false, 'trending-up'),
-        card('Тебе', Sales.rub(r.khanil), '70% от суммы минус выплаты Саше и Эмилю', true, 'crown'),
+        card('Тебе', Sales.rub(r.khanil), '70% от суммы минус выплаты Саше, Эмилю и рефералам', true, 'crown'),
         card('Денису', Sales.rub(r.denis), '30% от всей суммы продаж', false, 'user'),
         card('Саше', Sales.rub(r.sasha), '10% с лидов, которые закрыл Саша', false, 'user'),
         card('Эмилю', Sales.rub(r.emil), '10% с лидов, которые закрыл Эмиль', false, 'user'),
+        card('Рефералам', Sales.rub(r.referrals || 0), '10% с лидов, которых привели рефералы, — из твоей доли', false, 'users'),
       ]
     } else if (r.view === 'denis') {
       cards = [

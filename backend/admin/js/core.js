@@ -193,7 +193,7 @@ function modalHead(title, sub = '') {
 
 // Подтверждение действия. text — уже экранированный HTML.
 // word — слово, которое нужно ввести для необратимых действий.
-function confirmDialog({ title, text = '', confirm = 'Подтвердить', danger = false, word = '' }) {
+function confirmDialog({ title, text = '', confirm = 'Подтвердить', cancel = 'Отмена', danger = false, word = '' }) {
   return new Promise(resolve => {
     let done = false
     const finish = (ok) => { if (done) return; done = true; resolve(ok) }
@@ -202,7 +202,7 @@ function confirmDialog({ title, text = '', confirm = 'Подтвердить', d
       <div class="modal-text">${text}</div>
       ${word ? `<div class="field" style="margin-top:16px;margin-bottom:0"><label for="confirm-word">Введи слово «${esc(word)}»</label><input id="confirm-word" autocomplete="off" placeholder="${esc(word)}"/></div>` : ''}
       <div class="modal-actions">
-        <button class="btn btn-secondary" id="confirm-no">Отмена</button>
+        <button class="btn btn-secondary" id="confirm-no">${esc(cancel)}</button>
         <button class="btn ${danger ? 'btn-danger' : 'btn-primary'}" id="confirm-yes" ${word ? 'disabled' : ''}>${esc(confirm)}</button>
       </div>`)
     Modal.onClose = () => finish(false)

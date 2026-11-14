@@ -1372,6 +1372,20 @@ function migrate() {
       console.error('❌ Migration 46 failed:', err.message)
     }
   }
+
+  // Migration 47: выплата реферальных. Сумма фиксируется на каждом лиде в момент выплаты —
+  // если сумму продажи потом поправят, уже выплаченное не изменится.
+  if (schemaVersion < 47) {
+    try {
+      const cols = db.prepare('PRAGMA table_info(sales_leads)').all().map(c => c.name)
+      if (!cols.includes('referral_paid_amount')) db.exec('ALTER TABLE sales_leads ADD COLUMN referral_paid_amount INTEGER NOT NULL DEFAULT 0')
+      if (!cols.includes('referral_paid_at')) db.exec('ALTER TABLE sales_leads ADD COLUMN referral_paid_at TEXT')
+      db.pragma('user_version = 47')
+      console.log('✅ Migration 47 completed: added referral payout fields')
+    } catch (err) {
+      console.error('❌ Migration 47 failed:', err.message)
+    }
+  }
 }
 
 migrate()
