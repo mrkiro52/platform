@@ -96,8 +96,8 @@ function ChapterRow({ mod, ch, index, hw, visited }) {
       <div className="wm-row-links">
         {!ch.taskOnly && (
           <button type="button" className={`prg-chapter-link${visited ? ' is-visited' : ''}`} onClick={() => navigate(lessonUrl)}>
-            <span className="prg-chapter-link-name">Конспект{visited && <span className="wm-check" aria-label="открывал">✓</span>}</span>
-            <span className="prg-chapter-link-meta">{ch.sections ? `${ch.sections} ${plural(ch.sections, 'раздел', 'раздела', 'разделов')}` : 'теория по теме'}</span>
+            <span className="prg-chapter-link-name">Конспект{visited && <span className="wm-check" aria-label="прочитан">✓</span>}</span>
+            <span className="prg-chapter-link-meta">{visited ? 'прочитан' : ch.sections ? `${ch.sections} ${plural(ch.sections, 'раздел', 'раздела', 'разделов')}` : 'теория по теме'}</span>
             <span className="prg-chapter-link-go">→</span>
           </button>
         )}
@@ -277,12 +277,29 @@ function Lesson({ mod, meta, user, homework }) {
   const prev = pos > 0 ? lessons[pos - 1] : null
   const next = pos >= 0 && pos < lessons.length - 1 ? lessons[pos + 1] : null
   const hw = homework.byKey[id]
+  const [read, setRead] = useState(() => loadVisited(user).has(id))
 
   useEffect(() => {
     window.scrollTo(0, 0)
-    markVisited(user, id)
+    setRead(loadVisited(user).has(id))
     track('material_open', { camp: 'winter', module: mod.key, chapter: meta.ref, title: String(meta.title || '').slice(0, 80) })
   }, [id])
+
+  // Конспект считается прочитанным, когда студент долистал до 80 % страницы
+  useEffect(() => {
+    if (!lesson || read) return
+    const check = () => {
+      const doc = document.documentElement
+      const scrollable = doc.scrollHeight - window.innerHeight
+      if (scrollable <= 0) return
+      if (window.scrollY / scrollable >= 0.8) {
+        markVisited(user, id)
+        setRead(true)
+      }
+    }
+    window.addEventListener('scroll', check, { passive: true })
+    return () => window.removeEventListener('scroll', check)
+  }, [lesson, read, id])
 
   if (!lesson) return <section className="page active prg-page is-winter"><p className="prg-loading">Загружаем главу…</p></section>
 
@@ -299,6 +316,7 @@ function Lesson({ mod, meta, user, homework }) {
         {(lesson.intro || lesson.summary) && <p className="prg-lead">{lesson.intro || lesson.summary}</p>}
         <div className="prg-hero-meta">
           <span className="prg-chip">{sections.length} {plural(sections.length, 'раздел', 'раздела', 'разделов')}</span>
+          {read && <span className="prg-chip wm-chip-done">✓ прочитано</span>}
           <Difficulty level={meta.difficulty} />
           {meta.task && (
             <button type="button" className="prg-chip is-link" onClick={() => navigate(taskUrl)}>

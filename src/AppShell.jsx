@@ -37,6 +37,8 @@ const WinterCampPage = lazy(() => import('./pages/winter/WinterCampPage'))
 const WinterModulePage = lazy(() => import('./pages/winter/WinterModulePage'))
 const WinterMathPage = lazy(() => import('./pages/winter/WinterMathPage'))
 const WinterEnglishPage = lazy(() => import('./pages/winter/WinterEnglishPage'))
+const WinterMathTheoryPage = lazy(() => import('./pages/winter/WinterMathTheoryPage'))
+const WinterMathHomeworkPage = lazy(() => import('./pages/winter/WinterMathHomeworkPage'))
 
 const SqlTableView = lazy(() => import('./pages/trainings/SqlTableView'))
 
@@ -196,8 +198,8 @@ export default function AppShell({ user, onLogout }) {
             <Route path="/winter-camp/m/:module/:chapter" element={<Winter><WinterModulePage user={user} /></Winter>} />
             <Route path="/winter-camp/m/:module/:chapter/task" element={<Winter><WinterModulePage user={user} task /></Winter>} />
             <Route path="/winter-camp/math" element={<Winter><WinterMathPage user={user} /></Winter>} />
-            <Route path="/winter-camp/math/:day/theory" element={<MathTheoryPage base="/winter-camp" />} />
-            <Route path="/winter-camp/math/:day/homework" element={<MathHomeworkPage base="/winter-camp" />} />
+            <Route path="/winter-camp/math/:day/theory" element={<Winter><WinterMathTheoryPage /></Winter>} />
+            <Route path="/winter-camp/math/:day/homework" element={<Winter><WinterMathHomeworkPage /></Winter>} />
             <Route path="/winter-camp/english" element={<Winter><WinterEnglishPage user={user} /></Winter>} />
             <Route path="/winter-camp/vacancies" element={<VacanciesPage winter />} />
             <Route path="/winter-camp/vacancies/:id" element={<VacanciesPage winter />} />

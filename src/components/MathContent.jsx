@@ -36,7 +36,7 @@ function TangentFigure() {
         <text x={px(3.1) - 2} y={Y0 - 8} fontStyle="italic">x</text>
         <text x={X0 + 8} y={py(6.2) + 10} fontStyle="italic">y</text>
       </g>
-      <path d={curve.join(' ')} fill="none" stroke="#FFB870" strokeWidth="2" />
+      <path d={curve.join(' ')} fill="none" stroke="var(--camp-text, #FFB870)" strokeWidth="2" />
       <path d={`M${px(-0.2)} ${py(-2.4)} L${px(2.6)} ${py(4.2)}`} fill="none" stroke="#7EE787" strokeWidth="1.6" strokeDasharray="5 4" />
       <circle cx={px(1)} cy={py(1)} r="3.6" fill="#FFD60A" />
       <g fontSize="12" fontFamily="Georgia, serif" fontStyle="italic" fill="currentColor">
@@ -86,7 +86,7 @@ function VectorGrid({ kind }) {
           <g stroke="currentColor" strokeDasharray="4 3" opacity="0.6" fill="none">
             <path d={`M${px(1)} ${py(2)} H${px(4)} V${py(4)}`} />
           </g>
-          <Arrow from={[1, 2]} to={[4, 4]} color="#FFB870" />
+          <Arrow from={[1, 2]} to={[4, 4]} color="var(--camp-text, #FFB870)" />
           <g fontSize="12" fontFamily="Georgia, serif" fill="currentColor">
             <text x={px(1) - 6} y={py(2) - 8} textAnchor="end" fontStyle="italic">A(1; 2)</text>
             <text x={px(4) + 6} y={py(4) - 6} fontStyle="italic">B(4; 4)</text>
@@ -99,11 +99,11 @@ function VectorGrid({ kind }) {
           <g stroke="currentColor" strokeDasharray="2 3" opacity="0.55" fill="none">
             <path d={`M${px(3)} ${py(1)} L${px(4)} ${py(4)} L${px(1)} ${py(3)}`} />
           </g>
-          <Arrow from={[0, 0]} to={[3, 1]} color="#FFB870" />
+          <Arrow from={[0, 0]} to={[3, 1]} color="var(--camp-text, #FFB870)" />
           <Arrow from={[0, 0]} to={[1, 3]} color="#79C0FF" />
           <Arrow from={[0, 0]} to={[4, 4]} color="#7EE787" dash="6 4" />
           <g fontSize="12" fontFamily="Georgia, serif" fontStyle="italic">
-            <text x={px(3) + 6} y={py(1) + 14} fill="#FFB870">a = (3; 1)</text>
+            <text x={px(3) + 6} y={py(1) + 14} fill="var(--camp-text, #FFB870)">a = (3; 1)</text>
             <text x={px(1) - 4} y={py(3) - 8} textAnchor="end" fill="#79C0FF">b = (1; 3)</text>
             <text x={px(4) + 6} y={py(4) - 4} fill="#7EE787">a + b = (4; 4)</text>
           </g>
@@ -118,11 +118,11 @@ function VennFigure() {
   return (
     <svg className="math-svg" viewBox="0 0 300 200" role="img" aria-label="Диаграмма Венна: события A и B внутри Ω, пересечение A ∩ B">
       <rect x="20" y="12" width="260" height="176" rx="4" fill="none" stroke="currentColor" strokeWidth="1.2" opacity="0.55" />
-      <circle cx="122" cy="100" r="58" fill="#FFB870" fillOpacity="0.16" stroke="#FFB870" strokeWidth="2" />
+      <circle cx="122" cy="100" r="58" fill="var(--camp-text, #FFB870)" fillOpacity="0.16" stroke="var(--camp-text, #FFB870)" strokeWidth="2" />
       <circle cx="178" cy="100" r="58" fill="#79C0FF" fillOpacity="0.16" stroke="#79C0FF" strokeWidth="2" />
       <g fontSize="14" fontFamily="Georgia, serif" fontStyle="italic" fill="currentColor">
         <text x="32" y="34">Ω</text>
-        <text x="92" y="105" fill="#FFB870">A</text>
+        <text x="92" y="105" fill="var(--camp-text, #FFB870)">A</text>
         <text x="200" y="105" fill="#79C0FF">B</text>
         <text x="150" y="178" textAnchor="middle" fontSize="12">A ∩ B</text>
       </g>
@@ -134,7 +134,7 @@ function VennFigure() {
 
 // ── Рисунки к занятию 5: распределения ─────────────────────────────────────
 
-const ORANGE = '#FFB870', BLUE = '#79C0FF', GREEN = '#7EE787'
+const ORANGE = 'var(--camp-text, #FFB870)', BLUE = '#79C0FF', GREEN = '#7EE787'
 const normalPdf = (x, mu, s) => Math.exp(-((x - mu) ** 2) / (2 * s * s)) / (s * Math.sqrt(2 * Math.PI))
 
 // Оси с подписанными засечками: px/py переводят значения в координаты рисунка

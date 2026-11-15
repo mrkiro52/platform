@@ -18,8 +18,7 @@ export function lessonFromWeek(ch) {
     else if (b.t === 'note') cur.blocks.push({ t: 'note', text: b.v })
     else if (b.t === 'cards') cur.blocks.push({ t: 'cards', items: b.v })
     else if (b.t === 'viz') cur.blocks.push({ t: 'viz', block: b })
-    else if (b.t === 'video') cur.blocks.push({ t: 'video', set: b.v })
-    else if (b.t === 'mp4') cur.blocks.push({ t: 'mp4', src: b.src })
+    // Видеозаписи осеннего потока (b.t === 'video' и 'mp4') в зимний лагерь не переносим
     else if (b.t === 'link') cur.blocks.push({ t: 'linkcard', href: b.href, title: b.title, text: b.text })
   }
   return {
@@ -39,6 +38,13 @@ export function guessKind(text) {
   return CODE_HINT.test(String(text)) ? 'code' : 'text'
 }
 
+// Задания осенних недель, которые просили скриншот или работу на бумаге. В зимнем лагере ответ
+// сдаётся только текстом или кодом — формулировки заменены. Ключ — «<id главы>:<номер задачи>».
+const TEXT_FIX = {
+  'it-world:0': 'Установи VS Code и Python по инструкции из этой главы. Создай файл `hello.py` с единственной строкой `print("Привет, лагерь!")` и запусти его в терминале. В ответ вставь текстом: команду, которой запускал файл, и всё, что вывел терминал. Если что-то не получилось — опиши ошибку и что ты пробовал.',
+  'python-list:4': 'Объясни, почему стратегия увеличения массива в два раза лучше, чем увеличение на одну ячейку. Посчитай, сколько раз произойдёт переезд при добавлении 1000 элементов в обоих случаях, и запиши ход расчёта в ответе — текстом или кодом, который это считает.',
+}
+
 // Домашнее задание главы недельного формата → задание из задач, которое сдаётся на проверку
 // code: true — все задачи главы на код (недели Python и алгоритмов), иначе вид угадывается по условию
 export function quizFromWeekHomework(ch, { code = false } = {}) {
@@ -53,7 +59,7 @@ export function quizFromWeekHomework(ch, { code = false } = {}) {
     questions: list.map((t, i) => ({
       id: `t${i + 1}`,
       topic: list.length > 1 ? `Задача ${i + 1} · ${i < 3 ? 'базовый уровень' : 'средний уровень'}` : 'Практическое задание',
-      text: t.text,
+      text: TEXT_FIX[`${ch.id}:${i}`] || t.text,
       hint: t.hint || null,
       kind: hw.kind === 'simple' ? 'text' : code ? 'code' : guessKind(t.text),
     })),

@@ -40,8 +40,7 @@ function Task({ task, index }) {
   )
 }
 
-// base — адрес лагеря, из которого открыта страница: осенний по умолчанию, зимний передаёт /winter-camp
-export default function MathTheoryPage({ base = '/autumn-camp' }) {
+export default function MathTheoryPage() {
   const { day } = useParams()
   const navigate = useNavigate()
   const dayNum = Number(String(day).replace('day', ''))
@@ -51,7 +50,7 @@ export default function MathTheoryPage({ base = '/autumn-camp' }) {
   if (!theory) {
     return (
       <section className="page active">
-        <button className="math-back" onClick={() => navigate(`${base}/math`)}>
+        <button className="math-back" onClick={() => navigate('/autumn-camp/math')}>
           ← Мини-курс: математика
         </button>
         <div className="page-header"><h1 className="page-title">Конспект пока не готов</h1></div>
@@ -66,7 +65,7 @@ export default function MathTheoryPage({ base = '/autumn-camp' }) {
 
   return (
     <section className="page active">
-      <button className="math-back" onClick={() => navigate(`${base}/math`)}>
+      <button className="math-back" onClick={() => navigate('/autumn-camp/math')}>
         ← Мини-курс: математика
       </button>
 

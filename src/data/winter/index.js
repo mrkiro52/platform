@@ -58,8 +58,8 @@ function programChapter(dirKey, num, extra = {}) {
     ref: `${dirKey}-${num}`,
     title: src.title,
     sections: src.sections,
-    video: src.video || null,
-    videoLabel: src.videoLabel || null,
+    // Записи осенних встреч не прикрепляем — записи зимних добавляются в поле video по ходу лагеря
+    video: null,
     // Файлы к заданию главы лежат на сервере под исходным направлением и номером
     files: { direction: dirKey, chapter: num },
     load: () => src.load().then(m => m.default),
@@ -74,8 +74,8 @@ function blockChapter(src, ref, extra = {}) {
     ref,
     title: src.title,
     sections: src.sections,
-    video: src.video || null,
-    videoLabel: src.videoLabel || null,
+    // Записи осенних встреч не прикрепляем — записи зимних добавляются в поле video по ходу лагеря
+    video: null,
     load: () => src.load().then(m => m.default),
     task: src.quiz ? { kind: 'quiz', load: () => src.quiz().then(m => quizFromProgram(m.default)) } : null,
     ...extra,

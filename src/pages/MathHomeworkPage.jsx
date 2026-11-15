@@ -42,8 +42,7 @@ function tasksWord(n) {
   return 'задач'
 }
 
-// base — адрес лагеря, из которого открыта страница: осенний по умолчанию, зимний передаёт /winter-camp
-export default function MathHomeworkPage({ base = '/autumn-camp' }) {
+export default function MathHomeworkPage() {
   const { day } = useParams()
   const navigate = useNavigate()
   const dayNum = Number(String(day).replace('day', ''))
@@ -53,7 +52,7 @@ export default function MathHomeworkPage({ base = '/autumn-camp' }) {
   if (!homework) {
     return (
       <section className="page active">
-        <button className="math-back" onClick={() => navigate(`${base}/math`)}>
+        <button className="math-back" onClick={() => navigate('/autumn-camp/math')}>
           ← Мини-курс: математика
         </button>
         <div className="page-header"><h1 className="page-title">Задание пока не готово</h1></div>
@@ -70,7 +69,7 @@ export default function MathHomeworkPage({ base = '/autumn-camp' }) {
 
   return (
     <section className="page active">
-      <button className="math-back" onClick={() => navigate(`${base}/math`)}>
+      <button className="math-back" onClick={() => navigate('/autumn-camp/math')}>
         ← Мини-курс: математика
       </button>
 

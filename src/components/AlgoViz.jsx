@@ -8,7 +8,7 @@ const TONE = {
   hit:    { bg: 'rgba(63,185,80,0.18)',   border: 'rgba(63,185,80,0.7)',    color: '#7EE787' },
   miss:   { bg: 'rgba(255,95,95,0.14)',   border: 'rgba(255,95,95,0.55)',   color: '#FF8B8B' },
   done:   { bg: 'rgba(255,255,255,0.03)', border: 'var(--border-color)',    color: 'var(--text-tertiary)' },
-  window: { bg: 'rgba(255,140,66,0.16)',  border: 'rgba(255,140,66,0.65)',  color: '#FFB870' },
+  window: { bg: 'rgb(var(--camp-rgb, 255 140 66) / 0.16)',  border: 'rgb(var(--camp-rgb, 255 140 66) / 0.65)',  color: 'var(--camp-text, #FFB870)' },
   off:    { bg: 'transparent',            border: 'transparent',            color: 'transparent' },
 }
 
@@ -108,7 +108,7 @@ function BarsViz({ block }) {
                 className="viz-bar-fill"
                 style={{
                   width: `${Math.max((scale(item.value) / max) * 100, 3)}%`,
-                  background: item.color || 'rgba(255,140,66,0.55)',
+                  background: item.color || 'rgb(var(--camp-rgb, 255 140 66) / 0.55)',
                 }}
               />
             </div>

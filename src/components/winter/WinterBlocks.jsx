@@ -1,13 +1,9 @@
 import { useEffect, useState } from 'react'
 import ProgramBlocks, { Rich } from '../program/ProgramBlocks'
 import AlgoViz from '../AlgoViz'
-import VideoPlayer from '../VideoPlayer'
-import MultiPartVideo, { PYTHON_BASICS_PARTS } from '../MultiPartVideo'
 
 // Блоки урока зимнего лагеря: всё, что умеет ProgramBlocks, плюс блоки недельных материалов
-// (карточки, пошаговые схемы, видео), которые приходят из lessonFromWeek.
-
-const VIDEO_SETS = { 'python-basics': PYTHON_BASICS_PARTS }
+// (карточки, пошаговые схемы, ссылки), которые приходят из lessonFromWeek.
 
 function Special({ b }) {
   switch (b.t) {
@@ -24,10 +20,6 @@ function Special({ b }) {
       )
     case 'viz':
       return <div className="wl-viz"><AlgoViz block={b.block} /></div>
-    case 'video':
-      return VIDEO_SETS[b.set] ? <div className="wl-video"><MultiPartVideo parts={VIDEO_SETS[b.set]} /></div> : null
-    case 'mp4':
-      return <div className="wl-video"><VideoPlayer src={b.src} /></div>
     case 'linkcard':
       return (
         <a className="wl-linkcard" href={b.href} target="_blank" rel="noopener noreferrer">
@@ -40,7 +32,7 @@ function Special({ b }) {
   }
 }
 
-const SPECIAL = new Set(['cards', 'viz', 'video', 'mp4', 'linkcard'])
+const SPECIAL = new Set(['cards', 'viz', 'linkcard'])
 
 export default function WinterBlocks({ blocks }) {
   // Подряд идущие обычные блоки отдаём ProgramBlocks пачкой

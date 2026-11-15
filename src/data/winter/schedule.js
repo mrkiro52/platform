@@ -88,11 +88,12 @@ export const LEETCODE_CALLS = [
   '2027-02-16', '2027-02-18', '2027-02-23', '2027-02-25',
 ].map((date, i) => ({ n: i + 1, date }))
 
+// label — полное название, short — для списка событий, tag — короткая метка в ячейке календаря
 export const EVENT_TYPES = {
-  group: { label: 'Групповой созвон', short: 'Группа' },
-  math: { label: 'Математика', short: 'Математика' },
-  mentor: { label: 'Созвон с ментором', short: 'Ментор' },
-  leetcode: { label: 'Нарешиваем LeetCode', short: 'LeetCode' },
+  group: { label: 'Групповой созвон', short: 'Группа', tag: 'Созвон' },
+  math: { label: 'Математика', short: 'Математика', tag: 'Матем.' },
+  mentor: { label: 'Созвон с ментором', short: 'Ментор', tag: 'Ментор' },
+  leetcode: { label: 'Нарешиваем LeetCode', short: 'LeetCode', tag: 'LeetCode' },
 }
 
 function videosOf(video) {
