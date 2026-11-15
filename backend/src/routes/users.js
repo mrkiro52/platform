@@ -20,7 +20,7 @@ const upload = multer({
 
 // GET /api/users/me — current user's own profile
 router.get('/me', verifyToken, (req, res) => {
-  const user = db.prepare('SELECT id, name, nickname, email, bio, position, birthday, avatar_url, is_summer_camp_2026, is_autumn_camp_2026, autumn_direction, courses FROM users WHERE id = ?').get(req.user.id)
+  const user = db.prepare('SELECT id, name, nickname, email, bio, position, birthday, avatar_url, is_summer_camp_2026, is_autumn_camp_2026, autumn_direction, is_winter_camp_2027, winter_direction, courses FROM users WHERE id = ?').get(req.user.id)
   if (!user) return res.status(404).json({ message: 'Пользователь не найден' })
   res.json({
     ...user,
@@ -28,6 +28,8 @@ router.get('/me', verifyToken, (req, res) => {
     isSummerCamp2026: !!user.is_summer_camp_2026,
     isAutumnCamp2026: !!user.is_autumn_camp_2026,
     autumnDirection: user.is_autumn_camp_2026 ? (user.autumn_direction || null) : null,
+    isWinterCamp2027: !!user.is_winter_camp_2027,
+    winterDirection: user.is_winter_camp_2027 ? (user.winter_direction || null) : null,
   })
 })
 
@@ -86,13 +88,15 @@ router.put('/me', verifyToken, (req, res) => {
 router.get('/', requireAdmin, (req, res) => {
   const last = lastActiveDays()
   const users = db.prepare(`
-    SELECT id, name, nickname, created_at, is_autumn_camp_2026, autumn_direction, courses
+    SELECT id, name, nickname, created_at, is_autumn_camp_2026, autumn_direction, is_winter_camp_2027, winter_direction, courses
       FROM users ORDER BY created_at DESC`).all()
   res.json(users.map(u => ({
     ...u,
     courses: parseCourses(u.courses),
     autumnCamp: !!u.is_autumn_camp_2026,
     autumnDirection: u.autumn_direction || null,
+    winterCamp: !!u.is_winter_camp_2027,
+    winterDirection: u.winter_direction || null,
     lastActiveDay: last.get(u.id) || null,
   })))
 })
@@ -104,6 +108,27 @@ router.patch('/:id/camp', requireAdmin, (req, res) => {
   const r = db.prepare('UPDATE users SET is_autumn_camp_2026 = ? WHERE id = ?').run(autumnCamp ? 1 : 0, req.params.id)
   if (!r.changes) return res.status(404).json({ message: 'Пользователь не найден' })
   res.json({ id: Number(req.params.id), autumnCamp })
+})
+
+// PATCH /api/users/:id/winter — доступ к зимнему лагерю и направление в нём.
+// Оба поля необязательны: { winterCamp: true|false } и/или { direction: 'ml'|'backend'|'security'|null }.
+// Лагеря независимы: зимний флаг не трогает осенний.
+const WINTER_DIRECTIONS = ['ml', 'backend', 'security']
+router.patch('/:id/winter', requireAdmin, (req, res) => {
+  const { winterCamp, direction } = req.body || {}
+  if (winterCamp !== undefined && typeof winterCamp !== 'boolean') {
+    return res.status(400).json({ message: 'winterCamp должен быть true или false' })
+  }
+  if (direction !== undefined && direction !== null && !WINTER_DIRECTIONS.includes(direction)) {
+    return res.status(400).json({ message: 'Неизвестное направление' })
+  }
+  if (winterCamp === undefined && direction === undefined) return res.status(400).json({ message: 'Нечего менять' })
+  const user = db.prepare('SELECT id FROM users WHERE id = ?').get(req.params.id)
+  if (!user) return res.status(404).json({ message: 'Пользователь не найден' })
+  if (winterCamp !== undefined) db.prepare('UPDATE users SET is_winter_camp_2027 = ? WHERE id = ?').run(winterCamp ? 1 : 0, user.id)
+  if (direction !== undefined) db.prepare('UPDATE users SET winter_direction = ? WHERE id = ?').run(direction, user.id)
+  const row = db.prepare('SELECT is_winter_camp_2027, winter_direction FROM users WHERE id = ?').get(user.id)
+  res.json({ id: user.id, winterCamp: !!row.is_winter_camp_2027, winterDirection: row.winter_direction || null })
 })
 
 // PATCH /api/users/:id/courses — открыть или закрыть купленные мини-курсы:

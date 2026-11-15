@@ -95,6 +95,8 @@ export default function App() {
   useEffect(() => {
     if (!user) return
     api.profile().then(p => {
+      // При истёкшем токене api сам чистит сессию и перезагружает страницу — профиля в ответе нет
+      if (!p) return
       setUser(prev => {
         if (!prev) return prev
         const updated = {
@@ -102,6 +104,8 @@ export default function App() {
           isSummerCamp2026: !!p.isSummerCamp2026,
           isAutumnCamp2026: !!p.isAutumnCamp2026,
           autumnDirection: p.autumnDirection || null,
+          isWinterCamp2027: !!p.isWinterCamp2027,
+          winterDirection: p.winterDirection || null,
           courses: Array.isArray(p.courses) ? p.courses : [],
         }
         localStorage.setItem('kiro_user', JSON.stringify(updated))

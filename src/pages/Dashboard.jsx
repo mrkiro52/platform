@@ -6,6 +6,8 @@ import FocusTimer from '../components/dashboard/FocusTimer'
 import NotesTasks from '../components/dashboard/NotesTasks'
 import SqlProgress from '../components/dashboard/SqlProgress'
 import CampPanel from '../components/dashboard/CampPanel'
+import WinterPanel from '../components/dashboard/WinterPanel'
+import { WINTER_DIRECTIONS } from '../data/winter'
 import DailyQuestion from '../components/dashboard/DailyQuestion'
 import { allEvents, upcoming, countdown, dayLabel } from '../lib/dashEvents'
 
@@ -46,6 +48,8 @@ function NextEvent({ event, now }) {
 
 export default function Dashboard({ user }) {
   const isCamp = !!user?.isAutumnCamp2026
+  const isWinter = !!user?.isWinterCamp2027
+  const winterDirection = WINTER_DIRECTIONS[user?.winterDirection]?.name || null
   const [myCalls, setMyCalls] = useState([])
   const [now, setNow] = useState(() => new Date())
 
@@ -61,7 +65,7 @@ export default function Dashboard({ user }) {
     return () => clearInterval(t)
   }, [])
 
-  const events = useMemo(() => allEvents({ isCamp, myCalls }), [isCamp, myCalls])
+  const events = useMemo(() => allEvents({ isCamp, myCalls, isWinter, winterDirection }), [isCamp, myCalls, isWinter, winterDirection])
   const weekAhead = new Date(now.getTime() + 7 * 86400000)
   const next = upcoming(events, now).find(e => new Date(`${e.date}T00:00:00`) <= weekAhead)
 
@@ -83,7 +87,8 @@ export default function Dashboard({ user }) {
 
       <div className="dsh-grid">
         <div className="dsh-col dsh-col-main">
-          <DashCalendar events={events} isCamp={isCamp} />
+          <DashCalendar events={events} isCamp={isCamp || isWinter} />
+          {isWinter && <WinterPanel user={user} />}
           {isCamp && <CampPanel user={user} />}
         </div>
         <div className="dsh-col dsh-col-side">

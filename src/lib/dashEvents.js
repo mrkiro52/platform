@@ -3,6 +3,7 @@
 
 import { CALL_MONTHS } from '../data/autumnCalls'
 import { MATH_SESSIONS } from '../data/mathCourse'
+import { winterEvents } from '../data/winter/schedule'
 
 export function pad(n) { return String(n).padStart(2, '0') }
 export function isoOf(date) {
@@ -50,9 +51,21 @@ function personalCallEvents(myCalls) {
   }))
 }
 
-export function allEvents({ isCamp, myCalls }) {
-  if (!isCamp) return []
-  const list = [...campEvents(), ...personalCallEvents(myCalls)]
+// События зимнего лагеря в формате дэшборда. Созвоны с ментором и встречи по LeetCode —
+// отдельные типы (свои цвета точек в календаре)
+function winterCampEvents(directionName) {
+  return winterEvents(directionName).map(e => ({
+    id: e.id, type: e.type, date: e.date, time: e.time, title: e.title, note: e.note, link: e.link.replace('#calendar', ''),
+  }))
+}
+
+// isCamp — участник осеннего лагеря, isWinter — зимнего; человек может быть в обоих
+export function allEvents({ isCamp, myCalls, isWinter = false, winterDirection = null }) {
+  if (!isCamp && !isWinter) return []
+  const list = [
+    ...(isCamp ? [...campEvents(), ...personalCallEvents(myCalls)] : []),
+    ...(isWinter ? winterCampEvents(winterDirection) : []),
+  ]
   return list.sort((a, b) =>
     a.date.localeCompare(b.date) || (a.time || '').localeCompare(b.time || ''))
 }

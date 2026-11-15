@@ -126,6 +126,9 @@ export const api = {
   setDatingVisible:      (visible)                       => req('/api/dating/me/visibility', { method: 'POST', body: JSON.stringify({ visible }) }),
   vacancy:               (id)                            => req(`/api/vacancies/${id}`),
   downloadProgramFile:   (direction, chapter, name)      => download(`/api/programs/files/${direction}/${chapter}/${encodeURIComponent(name)}`, name),
+  // Зимний лагерь: свои работы и сдача задания главы (key — «<блок>:<глава>»)
+  winterHomework:       ()             => req('/api/winter/homework/mine'),
+  submitWinterHomework: (key, payload) => req(`/api/winter/homework/${encodeURIComponent(key)}`, { method: 'PUT', body: JSON.stringify(payload) }),
   bookSlot:     (slotId) => req(`/api/calls/slots/${slotId}/book`, { method: 'POST' }),
   cancelSlot:   (slotId) => req(`/api/calls/slots/${slotId}/book`, { method: 'DELETE' }),
   unreadNotifications:()  => req('/api/notifications/unread-count'),

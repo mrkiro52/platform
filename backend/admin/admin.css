@@ -712,3 +712,15 @@ a.kpi:hover{border-color:var(--lime-line)}
   .scal-legend-hint{margin-left:0;width:100%}
   .sales-discount input[type=number]{width:80px;flex-basis:80px}
 }
+
+/* ── Зимний лагерь ─────────────────────────────────────────────────────── */
+.switch.is-winter input:checked + .switch-track{background:rgba(91,200,245,.2);border-color:#5BC8F5}
+.switch.is-winter input:checked + .switch-track .switch-knob{background:#5BC8F5}
+.dir-select.is-empty{border-color:rgba(255,159,80,.55);color:var(--orange)}
+.avatar.is-winter{background:rgba(91,200,245,.14);color:#9EDFFF}
+.whw-mod{margin-top:0;max-width:260px}
+.whw-code{margin-top:10px;max-height:520px}
+.phw-answers.is-winter .phw-num{background:rgba(91,200,245,.14);color:#9EDFFF}
+.phw-answers.is-winter .phw-q{white-space:pre-wrap}
+.wst-bar{height:6px;border-radius:6px;background:var(--bg3);overflow:hidden;min-width:140px;margin-bottom:5px}
+.wst-bar span{display:block;height:100%;border-radius:6px;background:#5BC8F5}

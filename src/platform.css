@@ -484,6 +484,40 @@ img { max-width: 100%; display: block; }
   box-shadow: 0 0 0 1px rgba(255,140,66,0.55) inset, 0 0 18px rgba(255,140,66,0.22);
 }
 
+/* Плашка зимнего лагеря: та же форма, что у осенней, в ледяных тонах */
+.nav-item--winter {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, rgba(91,200,245,0.22), rgba(147,197,253,0.08));
+  border: 1px solid rgba(91,200,245,0.42);
+  color: #9EDFFF;
+  font-family: var(--font-syne);
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.nav-item--winter::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(120deg, transparent 0%, rgba(255,255,255,0.18) 45%, transparent 60%);
+  transform: translateX(-120%);
+  transition: transform 0.6s ease;
+  pointer-events: none;
+}
+.nav-item--winter:hover::before { transform: translateX(120%); }
+.nav-item--winter:hover {
+  background: linear-gradient(135deg, rgba(91,200,245,0.32), rgba(147,197,253,0.16));
+  color: #C4ECFF;
+  border-color: rgba(91,200,245,0.62);
+}
+.nav-item--winter.active {
+  background: linear-gradient(135deg, rgba(91,200,245,0.38), rgba(147,197,253,0.2));
+  color: #D6F1FF;
+  box-shadow: 0 0 0 1px rgba(91,200,245,0.55) inset, 0 0 18px rgba(91,200,245,0.22);
+}
+.nav-item--autumn + .nav-item--winter { margin-top: 6px; }
+
 .sidebar-footer { padding: 10px; border-top: 1px solid var(--border-color); flex-shrink: 0; }
 .nav-item--logout { color: var(--text-tertiary); }
 .nav-item--logout:hover { color: var(--danger); background: rgba(225,75,75,0.06); }
@@ -4308,7 +4342,7 @@ body.reels-lock {
    DASHBOARD v2 — календарь, фокус, задачи, SQL, лагерь
    Сетка: слева основное (календарь, лагерь, SQL), справа инструменты.
 ================================================================ */
-.dsh { --c-group: #FFD60A; --c-math: #8AB4FF; --c-mine: #3FB950; }
+.dsh { --c-group: #FFD60A; --c-math: #8AB4FF; --c-mine: #3FB950; --c-mentor: #C4A1FF; --c-leetcode: #5EE0B5; }
 .dsh-head { margin-bottom: 18px; }
 .dsh-grid { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: 16px; align-items: start; }
 .dsh-col { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
@@ -4369,6 +4403,10 @@ body.reels-lock {
 }
 .dsh-next.is-math .dsh-next-when { background: var(--c-math); }
 .dsh-next.is-mine .dsh-next-when { background: var(--c-mine); }
+.dsh-next.is-mentor { background: linear-gradient(90deg, rgba(196,161,255,0.12), rgba(196,161,255,0.02)); border-color: rgba(196,161,255,0.3); }
+.dsh-next.is-mentor .dsh-next-when { background: var(--c-mentor); }
+.dsh-next.is-leetcode { background: linear-gradient(90deg, rgba(94,224,181,0.12), rgba(94,224,181,0.02)); border-color: rgba(94,224,181,0.3); }
+.dsh-next.is-leetcode .dsh-next-when { background: var(--c-leetcode); }
 .dsh-next.is-live .dsh-next-when { animation: dsh-pulse 1.6s ease-in-out infinite; }
 @keyframes dsh-pulse { 50% { opacity: .65; } }
 .dsh-next-main { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
@@ -4403,6 +4441,8 @@ body.reels-lock {
 .dot-group { background: var(--c-group); }
 .dot-math { background: var(--c-math); }
 .dot-mine { background: var(--c-mine); }
+.dot-mentor { background: var(--c-mentor); }
+.dot-leetcode { background: var(--c-leetcode); }
 .dsh-cal-day.is-selected .dot-group { background: var(--on-accent); }
 .dsh-cal-legend { display: flex; flex-wrap: wrap; gap: 6px 14px; margin-top: 10px; font-size: 11.5px; color: var(--text-tertiary); }
 .dsh-cal-legend i { width: 7px; height: 7px; margin-right: 6px; }
@@ -5812,3 +5852,16 @@ a.cs-lesson:hover { border-color: color-mix(in srgb, var(--c) 60%, transparent);
 .prg-express-meta { font-size: 12px; font-weight: 600; opacity: .75; }
 @media (max-width: 600px) { .prg-express-btn { flex: 1 1 100%; } }
 @media (prefers-reduced-motion: reduce) { .prg-express-btn:hover { transform: none; } }
+
+/* ── Дэшборд: панель зимнего лагеря ─────────────────────────────────────── */
+.dsh-winter { border-color: rgba(91,200,245,0.32); background: radial-gradient(520px 200px at 100% 0%, rgba(91,200,245,0.10), transparent 70%), var(--bg-secondary); }
+.dsh-winter .widget-title { color: #9EDFFF; }
+.dsh-winter .widget-link { color: #9EDFFF; }
+.dsh-winter .dsh-camp-card.is-week { border-color: rgba(91,200,245,0.4); background: rgba(91,200,245,0.08); }
+.dsh-winter .dsh-btn-primary { background: #5BC8F5; border-color: #5BC8F5; color: #06121A; }
+.dsh-winter .dsh-btn-secondary { background: rgba(91,200,245,0.12); color: #9EDFFF; border-color: rgba(91,200,245,0.32); }
+.dsh-winter-bar { height: 6px; border-radius: 6px; background: var(--bg-tertiary); overflow: hidden; display: flex; margin: 8px 0 10px; }
+.dsh-winter-bar span { display: block; height: 100%; }
+.dsh-winter-bar .is-approved { background: #3FB950; }
+.dsh-winter-bar .is-submitted { background: #FFD60A; }
+.dsh-winter-bar .is-rework { background: #FF9F50; }

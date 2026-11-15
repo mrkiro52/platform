@@ -18,6 +18,11 @@ const PUBLIC = {
 
 // Самый длинный подходящий префикс задаёт название раздела
 const SECTIONS = [
+  ['/winter-camp/math', 'Математика · Winter Camp'],
+  ['/winter-camp/english', 'Английский · Winter Camp'],
+  ['/winter-camp/vacancies', 'Вакансии'],
+  ['/winter-camp/m/', 'Winter Camp · программа'],
+  ['/winter-camp', 'Winter Camp'],
   ['/autumn-camp/block/deep', 'Углубляемся'],
   ['/autumn-camp/block/algo', 'Алгособес'],
   ['/autumn-camp/block/career', 'Карьера'],

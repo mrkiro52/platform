@@ -32,6 +32,12 @@ import HomeworkTaskPage from './pages/HomeworkTaskPage'
 import AutumnWeekPage from './pages/AutumnWeekPage'
 import AutumnProgramPage from './pages/AutumnProgramPage'
 
+// Зимний лагерь нужен только его участникам — грузится отдельными чанками
+const WinterCampPage = lazy(() => import('./pages/winter/WinterCampPage'))
+const WinterModulePage = lazy(() => import('./pages/winter/WinterModulePage'))
+const WinterMathPage = lazy(() => import('./pages/winter/WinterMathPage'))
+const WinterEnglishPage = lazy(() => import('./pages/winter/WinterEnglishPage'))
+
 const SqlTableView = lazy(() => import('./pages/trainings/SqlTableView'))
 
 function TheoryRoute() {
@@ -50,6 +56,11 @@ function HomeworkRoute() {
   const { day } = useParams()
   const navigate = useNavigate()
   return <HomeworkPage selectedDay={Number(day)} onBack={() => navigate('/library')} />
+}
+
+// Пока чанк зимнего лагеря подгружается, показываем нейтральную заглушку
+function Winter({ children }) {
+  return <Suspense fallback={<section className="page active"><p style={{ color: 'var(--text-secondary)' }}>Загрузка…</p></section>}>{children}</Suspense>
 }
 
 function AnnouncementsRoute() {
@@ -180,6 +191,16 @@ export default function AppShell({ user, onLogout }) {
             <Route path="/autumn-camp/upload-homework" element={<HomeworkUploadPage user={user} />} />
             <Route path="/autumn-camp/homework/:week/:chapterId/:taskIndex" element={<HomeworkTaskPage />} />
             <Route path="/autumn-camp/:week" element={<AutumnWeekPage user={user} />} />
+            <Route path="/winter-camp" element={<Winter><WinterCampPage user={user} /></Winter>} />
+            <Route path="/winter-camp/m/:module" element={<Winter><WinterModulePage user={user} /></Winter>} />
+            <Route path="/winter-camp/m/:module/:chapter" element={<Winter><WinterModulePage user={user} /></Winter>} />
+            <Route path="/winter-camp/m/:module/:chapter/task" element={<Winter><WinterModulePage user={user} task /></Winter>} />
+            <Route path="/winter-camp/math" element={<Winter><WinterMathPage user={user} /></Winter>} />
+            <Route path="/winter-camp/math/:day/theory" element={<MathTheoryPage base="/winter-camp" />} />
+            <Route path="/winter-camp/math/:day/homework" element={<MathHomeworkPage base="/winter-camp" />} />
+            <Route path="/winter-camp/english" element={<Winter><WinterEnglishPage user={user} /></Winter>} />
+            <Route path="/winter-camp/vacancies" element={<VacanciesPage winter />} />
+            <Route path="/winter-camp/vacancies/:id" element={<VacanciesPage winter />} />
             <Route path="/announcements" element={<AnnouncementsRoute />} />
             <Route path="*" element={<Navigate to="/dashboard" replace />} />
           </Routes>

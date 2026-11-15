@@ -167,8 +167,11 @@ router.get('/files/:direction/:chapter/:name', verifyToken, (req, res) => {
     return res.status(400).json({ message: 'Некорректный путь' })
   }
   if (req.user.role !== 'admin') {
-    const user = db.prepare('SELECT is_autumn_camp_2026, autumn_direction FROM users WHERE id = ?').get(req.user.id)
-    if (!user?.is_autumn_camp_2026 || user.autumn_direction !== direction) {
+    // Файлы глав общие для лагерей: зимний лагерь переиспользует главы осенних программ
+    const user = db.prepare('SELECT is_autumn_camp_2026, autumn_direction, is_winter_camp_2027, winter_direction FROM users WHERE id = ?').get(req.user.id)
+    const autumn = user?.is_autumn_camp_2026 && user.autumn_direction === direction
+    const winter = user?.is_winter_camp_2027 && user.winter_direction === direction
+    if (!autumn && !winter) {
       return res.status(403).json({ message: 'Файл доступен студентам этой программы' })
     }
   }

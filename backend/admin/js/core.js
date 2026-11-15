@@ -308,6 +308,10 @@ const NAV = [
     { id: 'calls', path: '/calls', label: 'Слоты созвонов', icon: 'calendar-plus', scopes: MAIN },
     { id: 'calls-calendar', path: '/calls/calendar', label: 'Календарь записей', icon: 'calendar-days', scopes: MAIN },
   ] },
+  { label: 'Зимний лагерь', items: [
+    { id: 'winter-homework', path: '/winter/homework', label: 'Проверка ДЗ', icon: 'snowflake', scopes: BOTH, badge: 'winterHomework' },
+    { id: 'winter-students', path: '/winter/students', label: 'Студенты и прогресс', icon: 'graduation-cap', scopes: BOTH },
+  ] },
   { label: 'Домашние задания', items: [
     { id: 'homework', path: '/homework', label: 'Проверка ДЗ', icon: 'clipboard-check', scopes: BOTH, badge: 'homework' },
     { id: 'homework-stats', path: '/homework/stats', label: 'Аналитика проверки', icon: 'chart-column', scopes: BOTH },
@@ -329,6 +333,9 @@ const ROUTES = [
   { re: /^\/vacancies$/, page: 'vacancies', nav: 'vacancies', title: 'Вакансии', scopes: MAIN },
   { re: /^\/calls$/, page: 'calls', nav: 'calls', title: 'Слоты созвонов', scopes: MAIN },
   { re: /^\/calls\/calendar$/, page: 'callsCalendar', nav: 'calls-calendar', title: 'Календарь записей', scopes: MAIN },
+  { re: /^\/winter\/homework$/, page: 'winterHomework', nav: 'winter-homework', title: 'Проверка ДЗ · зимний лагерь', scopes: BOTH },
+  { re: /^\/winter\/homework\/(\d+)$/, page: 'winterHomeworkItem', nav: 'winter-homework', title: 'Проверка ДЗ · зимний лагерь', scopes: BOTH, keys: ['id'] },
+  { re: /^\/winter\/students$/, page: 'winterStudents', nav: 'winter-students', title: 'Студенты · зимний лагерь', scopes: BOTH },
   { re: /^\/homework$/, page: 'homework', nav: 'homework', title: 'Проверка ДЗ', scopes: BOTH },
   { re: /^\/homework\/stats$/, page: 'homeworkStats', nav: 'homework-stats', title: 'Аналитика проверки', scopes: BOTH },
   { re: /^\/homework\/october$/, page: 'programHomework', nav: 'homework-october', title: 'ДЗ второго месяца', scopes: BOTH },
@@ -454,7 +461,7 @@ document.addEventListener('click', e => {
 })
 
 // ═══ Оболочка ══════════════════════════════════════════════════════════
-const Badges = { homework: 0, tasks: 0, programHomework: 0 }
+const Badges = { homework: 0, tasks: 0, programHomework: 0, winterHomework: 0 }
 
 const Shell = {
   renderNav() {
@@ -511,6 +518,10 @@ const Shell = {
       const list = await api('/api/programs/admin/homework')
       Badges.programHomework = list.filter(h => h.status === 'submitted').length
     } catch { /* до миграции таблицы ещё нет — бейдж просто не появится */ }
+    if (BOTH.includes(Session.scope)) try {
+      const list = await api('/api/winter/admin/homework')
+      Badges.winterHomework = list.filter(h => h.status === 'submitted').length
+    } catch { /* бэкенд без зимнего лагеря — бейдж просто не появится */ }
     if (ALL.includes(Session.scope)) try {
       const { me, tasks } = await api('/api/admin-tasks')
       Badges.tasks = tasksNeedingAttention(tasks, me)

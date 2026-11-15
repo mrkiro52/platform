@@ -109,6 +109,7 @@ export default function Sidebar({
     if (path === '/messages') return location.pathname.startsWith('/messages')
     if (path === '/courses') return location.pathname.startsWith('/courses')
     if (path === '/autumn-camp') return location.pathname.startsWith('/autumn-camp')
+    if (path === '/winter-camp') return location.pathname.startsWith('/winter-camp')
     return location.pathname === path
   }
 
@@ -152,18 +153,26 @@ export default function Sidebar({
       </div>
 
       <nav className="sidebar-nav">
+        {/* Плашки лагерей: участник осеннего видит осеннюю, зимнего — зимнюю, обоих — обе */}
         {user?.isAutumnCamp2026 && (
-          <>
-            <button
-              className={`nav-item nav-item--autumn${isActive('/autumn-camp') ? ' active' : ''}`}
-              onClick={() => handleNav('/autumn-camp')}
-            >
-              <span className="nav-icon">🍂</span>
-              AUTUMN CAMP
-            </button>
-            <div className="nav-divider" />
-          </>
+          <button
+            className={`nav-item nav-item--autumn${isActive('/autumn-camp') ? ' active' : ''}`}
+            onClick={() => handleNav('/autumn-camp')}
+          >
+            <span className="nav-icon">🍂</span>
+            AUTUMN CAMP
+          </button>
         )}
+        {user?.isWinterCamp2027 && (
+          <button
+            className={`nav-item nav-item--winter${isActive('/winter-camp') ? ' active' : ''}`}
+            onClick={() => handleNav('/winter-camp')}
+          >
+            <span className="nav-icon">❄️</span>
+            WINTER CAMP
+          </button>
+        )}
+        {(user?.isAutumnCamp2026 || user?.isWinterCamp2027) && <div className="nav-divider" />}
         {NAV_ITEMS.filter(item => !item.visible || item.visible(user)).map(item => (
           <button
             key={item.path}

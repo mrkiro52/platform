@@ -88,7 +88,7 @@ function VacancySkeleton() {
   )
 }
 
-function VacancyList() {
+function VacancyList({ camp }) {
   const navigate = useNavigate()
   const [params, setParams] = useSearchParams()
   const [data, setData] = useState(null)
@@ -127,10 +127,10 @@ function VacancyList() {
   const hasAny = data && (data.total > 0 || selected.length > 0 || Object.values(counts).some(n => n > 0))
 
   return (
-    <section className="page active prg-page vac-page">
-      <Link className="prg-back" to="/autumn-camp">← Осенний лагерь</Link>
+    <section className={`page active prg-page vac-page${camp.winter ? ' is-winter' : ''}`}>
+      <Link className="prg-back" to={camp.base}>← {camp.label}</Link>
       <div className="vac-hero">
-        <span className="prg-tag">Autumn Camp 2026</span>
+        <span className="prg-tag">{camp.tag}</span>
         <h1 className="prg-title vac-title">
           Вакансии и контакты
           {data?.all > 0 && <span className="vac-total" title="Всего вакансий на платформе">{data.all}</span>}
@@ -157,7 +157,7 @@ function VacancyList() {
       {!loading && (
         <div className="vac-grid">
           {shown.map(v => (
-            <button key={v.id} type="button" className="vac-card" onClick={() => navigate(`/autumn-camp/vacancies/${v.id}`)}>
+            <button key={v.id} type="button" className="vac-card" onClick={() => navigate(`${camp.base}/vacancies/${v.id}`)}>
               <CategoryBadges vacancy={v} />
               <span className="vac-card-title">{titleOf(v)}</span>
               <span className="vac-card-desc">{v.description}</span>
@@ -179,7 +179,7 @@ function VacancyList() {
   )
 }
 
-function VacancyItem({ id }) {
+function VacancyItem({ id, camp }) {
   const [v, setV] = useState(null)
   const [error, setError] = useState('')
 
@@ -191,8 +191,8 @@ function VacancyItem({ id }) {
   }, [id])
 
   return (
-    <section className="page active prg-page vac-page">
-      <Link className="prg-back" to="/autumn-camp/vacancies">← Вакансии и контакты</Link>
+    <section className={`page active prg-page vac-page${camp.winter ? ' is-winter' : ''}`}>
+      <Link className="prg-back" to={`${camp.base}/vacancies`}>← Вакансии и контакты</Link>
       {error && <div className="prg-empty">{error}</div>}
       {!v && !error && <p className="prg-loading">Загружаем вакансию…</p>}
       {v && (
@@ -210,7 +210,14 @@ function VacancyItem({ id }) {
   )
 }
 
-export default function VacanciesPage() {
+// Страница одна на оба лагеря: winter — открыта из зимнего лагеря (свои адреса и подписи)
+const CAMPS = {
+  autumn: { base: '/autumn-camp', label: 'Осенний лагерь', tag: 'Autumn Camp 2026', winter: false },
+  winter: { base: '/winter-camp', label: 'Winter Camp', tag: 'Winter Camp 2026/27', winter: true },
+}
+
+export default function VacanciesPage({ winter = false }) {
   const { id } = useParams()
-  return id ? <VacancyItem id={id} /> : <VacancyList />
+  const camp = winter ? CAMPS.winter : CAMPS.autumn
+  return id ? <VacancyItem id={id} camp={camp} /> : <VacancyList camp={camp} />
 }

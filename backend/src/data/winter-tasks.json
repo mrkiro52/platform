@@ -1,0 +1,637 @@
+{
+  "note": "Снимок блоков и заданий зимнего лагеря. Живой источник — src/data/winter/index.js, пересобрать: node backend/scripts/gen-winter-tasks.mjs",
+  "modules": {
+    "py": {
+      "name": "Основы программирования на Python",
+      "directions": null
+    },
+    "algo": {
+      "name": "Алгоритмы",
+      "directions": null
+    },
+    "ds": {
+      "name": "Структуры данных",
+      "directions": null
+    },
+    "git": {
+      "name": "Git",
+      "directions": null
+    },
+    "sql": {
+      "name": "SQL",
+      "directions": [
+        "ml",
+        "backend"
+      ]
+    },
+    "docker": {
+      "name": "Docker",
+      "directions": [
+        "backend"
+      ]
+    },
+    "db": {
+      "name": "Базы данных",
+      "directions": [
+        "backend"
+      ]
+    },
+    "sysdesign": {
+      "name": "Основы системного дизайна",
+      "directions": [
+        "backend"
+      ]
+    },
+    "ml-base": {
+      "name": "NumPy, pandas и Matplotlib",
+      "directions": [
+        "ml"
+      ]
+    },
+    "sec-base": {
+      "name": "Основы информационной безопасности",
+      "directions": [
+        "security"
+      ]
+    },
+    "ml-classic": {
+      "name": "Классическое машинное обучение",
+      "directions": [
+        "ml"
+      ]
+    },
+    "ml-dl": {
+      "name": "Основы Deep Learning и NLP",
+      "directions": [
+        "ml"
+      ]
+    },
+    "be-core": {
+      "name": "Backend-разработка на Python",
+      "directions": [
+        "backend"
+      ]
+    },
+    "sec-core": {
+      "name": "База специалиста по ИБ",
+      "directions": [
+        "security"
+      ]
+    },
+    "interview-ml": {
+      "name": "Вопросы с собеседований: ML",
+      "directions": [
+        "ml"
+      ]
+    },
+    "interview-backend": {
+      "name": "Вопросы с собеседований: Backend",
+      "directions": [
+        "backend"
+      ]
+    },
+    "interview-security": {
+      "name": "Вопросы с собеседований: ИБ",
+      "directions": [
+        "security"
+      ]
+    },
+    "ml-deep": {
+      "name": "Углубление: CV, трансформеры и LLM",
+      "directions": [
+        "ml"
+      ]
+    },
+    "be-deep": {
+      "name": "Углубление: Git в команде и второй язык",
+      "directions": [
+        "backend"
+      ]
+    },
+    "sec-deep": {
+      "name": "Углубление: практика на полигонах",
+      "directions": [
+        "security"
+      ]
+    },
+    "career": {
+      "name": "Карьера",
+      "directions": null
+    },
+    "algosobes": {
+      "name": "Алгособес",
+      "directions": null
+    }
+  },
+  "totals": {
+    "ml": 48,
+    "backend": 54,
+    "security": 48
+  },
+  "tasks": {
+    "py:it-world": {
+      "module": "py",
+      "title": "Введение в мир айти",
+      "kind": "quiz",
+      "required": true
+    },
+    "py:programming-intro": {
+      "module": "py",
+      "title": "Введение в программирование",
+      "kind": "quiz",
+      "required": true
+    },
+    "py:variables": {
+      "module": "py",
+      "title": "Переменные и правила именования",
+      "kind": "quiz",
+      "required": true
+    },
+    "py:types": {
+      "module": "py",
+      "title": "Базовые типы данных",
+      "kind": "quiz",
+      "required": true
+    },
+    "py:io": {
+      "module": "py",
+      "title": "Ввод и вывод данных",
+      "kind": "quiz",
+      "required": true
+    },
+    "py:fstrings": {
+      "module": "py",
+      "title": "Форматирование строк (f-строки)",
+      "kind": "quiz",
+      "required": true
+    },
+    "py:conditions": {
+      "module": "py",
+      "title": "Условные операторы и сравнения",
+      "kind": "quiz",
+      "required": true
+    },
+    "py:logic": {
+      "module": "py",
+      "title": "Логические операторы",
+      "kind": "quiz",
+      "required": true
+    },
+    "py:while": {
+      "module": "py",
+      "title": "Цикл while",
+      "kind": "quiz",
+      "required": true
+    },
+    "py:for": {
+      "module": "py",
+      "title": "Цикл for",
+      "kind": "quiz",
+      "required": true
+    },
+    "py:break-continue": {
+      "module": "py",
+      "title": "Операторы управления: break и continue",
+      "kind": "quiz",
+      "required": true
+    },
+    "py:range": {
+      "module": "py",
+      "title": "Функция range()",
+      "kind": "quiz",
+      "required": true
+    },
+    "py:containers": {
+      "module": "py",
+      "title": "Базовые структуры данных: list, tuple, dict, set",
+      "kind": "quiz",
+      "required": true
+    },
+    "py:functions": {
+      "module": "py",
+      "title": "Создание функций",
+      "kind": "quiz",
+      "required": true
+    },
+    "py:string-methods": {
+      "module": "py",
+      "title": "Методы строк",
+      "kind": "quiz",
+      "required": true
+    },
+    "py:comprehensions": {
+      "module": "py",
+      "title": "Генераторы списков и функции map, filter, zip",
+      "kind": "quiz",
+      "required": true
+    },
+    "py:oop": {
+      "module": "py",
+      "title": "Основы ООП",
+      "kind": "quiz",
+      "required": true
+    },
+    "py:decorators-generators": {
+      "module": "py",
+      "title": "Декораторы и генераторы",
+      "kind": "quiz",
+      "required": true
+    },
+    "py:async": {
+      "module": "py",
+      "title": "Асинхронность: async и await",
+      "kind": "quiz",
+      "required": true
+    },
+    "algo:big-o-basics": {
+      "module": "algo",
+      "title": "Big O: как оценивают скорость алгоритма",
+      "kind": "quiz",
+      "required": true
+    },
+    "algo:linear-search": {
+      "module": "algo",
+      "title": "Линейный поиск: перебираем по одному",
+      "kind": "quiz",
+      "required": true
+    },
+    "algo:bubble-sort": {
+      "module": "algo",
+      "title": "Сортировка пузырьком",
+      "kind": "quiz",
+      "required": true
+    },
+    "algo:recursion-basics": {
+      "module": "algo",
+      "title": "Рекурсия: задача внутри задачи",
+      "kind": "quiz",
+      "required": true
+    },
+    "algo:two-pointers-basics": {
+      "module": "algo",
+      "title": "Два указателя",
+      "kind": "quiz",
+      "required": true
+    },
+    "algo:strings-palindrome": {
+      "module": "algo",
+      "title": "Строки: палиндромы и анаграммы",
+      "kind": "quiz",
+      "required": true
+    },
+    "algo:big-o-advanced": {
+      "module": "algo",
+      "title": "Big O: логарифмы, n log n и факториал",
+      "kind": "quiz",
+      "required": false
+    },
+    "algo:binary-search": {
+      "module": "algo",
+      "title": "Бинарный поиск",
+      "kind": "quiz",
+      "required": false
+    },
+    "algo:quick-sort": {
+      "module": "algo",
+      "title": "Быстрая сортировка",
+      "kind": "quiz",
+      "required": false
+    },
+    "algo:merge-sort": {
+      "module": "algo",
+      "title": "Сортировка слиянием",
+      "kind": "quiz",
+      "required": false
+    },
+    "algo:recursion-fibonacci": {
+      "module": "algo",
+      "title": "Рекурсия: стек вызовов и проблема Фибоначчи",
+      "kind": "quiz",
+      "required": false
+    },
+    "algo:sliding-window": {
+      "module": "algo",
+      "title": "Скользящее окно",
+      "kind": "quiz",
+      "required": false
+    },
+    "algo:greedy": {
+      "module": "algo",
+      "title": "Жадные алгоритмы",
+      "kind": "quiz",
+      "required": false
+    },
+    "algo:primality": {
+      "module": "algo",
+      "title": "Проверка числа на простоту",
+      "kind": "quiz",
+      "required": false
+    },
+    "algo:sort-comparison": {
+      "module": "algo",
+      "title": "Сравнение сортировок: что и когда выбирать",
+      "kind": "quiz",
+      "required": false
+    },
+    "algo:dynamic-programming": {
+      "module": "algo",
+      "title": "Динамическое программирование",
+      "kind": "quiz",
+      "required": false
+    },
+    "algo:divide-and-conquer": {
+      "module": "algo",
+      "title": "Разделяй и властвуй, и чем это отличается от ДП",
+      "kind": "quiz",
+      "required": false
+    },
+    "algo:backtracking": {
+      "module": "algo",
+      "title": "Перебор с возвратом (Backtracking)",
+      "kind": "quiz",
+      "required": false
+    },
+    "algo:bitwise": {
+      "module": "algo",
+      "title": "Побитовые операции",
+      "kind": "quiz",
+      "required": false
+    },
+    "algo:substring-search": {
+      "module": "algo",
+      "title": "Поиск подстроки",
+      "kind": "quiz",
+      "required": false
+    },
+    "algo:math-algorithms": {
+      "module": "algo",
+      "title": "Математические алгоритмы: НОД и решето",
+      "kind": "quiz",
+      "required": false
+    },
+    "ds:array": {
+      "module": "ds",
+      "title": "Массив: как он устроен на самом деле",
+      "kind": "quiz",
+      "required": true
+    },
+    "ds:python-list": {
+      "module": "ds",
+      "title": "Список Python: массив, который умеет расти",
+      "kind": "quiz",
+      "required": true
+    },
+    "ds:singly-linked-list": {
+      "module": "ds",
+      "title": "Односвязный список",
+      "kind": "quiz",
+      "required": true
+    },
+    "ds:doubly-linked-list": {
+      "module": "ds",
+      "title": "Двусвязный список",
+      "kind": "quiz",
+      "required": true
+    },
+    "ds:stack": {
+      "module": "ds",
+      "title": "Стек",
+      "kind": "quiz",
+      "required": true
+    },
+    "ds:queue": {
+      "module": "ds",
+      "title": "Очередь",
+      "kind": "quiz",
+      "required": true
+    },
+    "ds:hash-table": {
+      "module": "ds",
+      "title": "Хеш-таблицы",
+      "kind": "quiz",
+      "required": true
+    },
+    "ds:graphs": {
+      "module": "ds",
+      "title": "Графы",
+      "kind": "quiz",
+      "required": true
+    },
+    "ds:trees": {
+      "module": "ds",
+      "title": "Деревья, обход в глубину и в ширину",
+      "kind": "quiz",
+      "required": true
+    },
+    "git:test": {
+      "module": "git",
+      "title": "Тест по Git",
+      "kind": "auto",
+      "required": true
+    },
+    "sql:tasks": {
+      "module": "sql",
+      "title": "Задачи на запросы",
+      "kind": "quiz",
+      "required": true
+    },
+    "docker:test": {
+      "module": "docker",
+      "title": "Тест по Docker",
+      "kind": "auto",
+      "required": true
+    },
+    "db:test": {
+      "module": "db",
+      "title": "Тест по базам данных",
+      "kind": "auto",
+      "required": true
+    },
+    "sysdesign:basics": {
+      "module": "sysdesign",
+      "title": "Основы системного дизайна: кеш, очереди, репликация, шардирование",
+      "kind": "quiz",
+      "required": true
+    },
+    "ml-base:ml-1": {
+      "module": "ml-base",
+      "title": "Основы NumPy, pandas и Matplotlib",
+      "kind": "quiz",
+      "required": true
+    },
+    "sec-base:security-1": {
+      "module": "sec-base",
+      "title": "Фундамент, стандарты и регуляторика",
+      "kind": "quiz",
+      "required": true
+    },
+    "ml-dl:deep-ml-1": {
+      "module": "ml-dl",
+      "title": "Deep Learning: введение",
+      "kind": "quiz",
+      "required": true
+    },
+    "ml-dl:deep-ml-2": {
+      "module": "ml-dl",
+      "title": "Нейронные сети: введение",
+      "kind": "quiz",
+      "required": true
+    },
+    "ml-dl:deep-ml-4": {
+      "module": "ml-dl",
+      "title": "Нейросети для NLP",
+      "kind": "quiz",
+      "required": true
+    },
+    "be-core:python": {
+      "module": "be-core",
+      "title": "Python глубоко: объекты, ООП, итераторы, память и GIL",
+      "kind": "quiz",
+      "required": true
+    },
+    "be-core:backend-1": {
+      "module": "be-core",
+      "title": "Профессия, конкурентность, сети и проектирование API",
+      "kind": "quiz",
+      "required": true
+    },
+    "be-core:frameworks": {
+      "module": "be-core",
+      "title": "Веб-фреймворки: FastAPI, Django, WSGI и ASGI",
+      "kind": "quiz",
+      "required": true
+    },
+    "be-core:backend-2": {
+      "module": "be-core",
+      "title": "Базы данных",
+      "kind": "quiz",
+      "required": true
+    },
+    "be-core:backend-3": {
+      "module": "be-core",
+      "title": "Очереди и асинхронная обработка",
+      "kind": "quiz",
+      "required": true
+    },
+    "be-core:backend-4": {
+      "module": "be-core",
+      "title": "Архитектура приложений",
+      "kind": "quiz",
+      "required": true
+    },
+    "be-core:backend-5": {
+      "module": "be-core",
+      "title": "Безопасность",
+      "kind": "quiz",
+      "required": true
+    },
+    "be-core:backend-6": {
+      "module": "be-core",
+      "title": "Тестирование",
+      "kind": "quiz",
+      "required": true
+    },
+    "sec-core:crypto": {
+      "module": "sec-core",
+      "title": "Криптография: основы без матана",
+      "kind": "quiz",
+      "required": true
+    },
+    "sec-core:linux": {
+      "module": "sec-core",
+      "title": "Linux: база администрирования",
+      "kind": "quiz",
+      "required": true
+    },
+    "sec-core:windows": {
+      "module": "sec-core",
+      "title": "Windows: та же база, другие инструменты",
+      "kind": "quiz",
+      "required": true
+    },
+    "sec-core:security-4": {
+      "module": "sec-core",
+      "title": "Сети",
+      "kind": "quiz",
+      "required": true
+    },
+    "sec-core:web": {
+      "module": "sec-core",
+      "title": "Веб: архитектура, сессии, токены и уязвимости",
+      "kind": "quiz",
+      "required": true
+    },
+    "interview-ml:questions": {
+      "module": "interview-ml",
+      "title": "Вопросы с собеседований на ML-инженера",
+      "kind": "quiz",
+      "required": true
+    },
+    "interview-backend:questions": {
+      "module": "interview-backend",
+      "title": "Вопросы с собеседований на backend-разработчика",
+      "kind": "quiz",
+      "required": true
+    },
+    "interview-security:questions": {
+      "module": "interview-security",
+      "title": "Вопросы с собеседований на специалиста по ИБ",
+      "kind": "quiz",
+      "required": true
+    },
+    "ml-deep:deep-ml-3": {
+      "module": "ml-deep",
+      "title": "Свёрточные нейросети",
+      "kind": "quiz",
+      "required": true
+    },
+    "ml-deep:deep-ml-5": {
+      "module": "ml-deep",
+      "title": "Трансформеры",
+      "kind": "quiz",
+      "required": true
+    },
+    "be-deep:backend-7": {
+      "module": "be-deep",
+      "title": "Git",
+      "kind": "quiz",
+      "required": true
+    },
+    "sec-deep:practice": {
+      "module": "sec-deep",
+      "title": "Практика: полигоны, лаборатория и отчёт об уязвимости",
+      "kind": "quiz",
+      "required": true
+    },
+    "career:career-1": {
+      "module": "career",
+      "title": "Как составить резюме",
+      "kind": "quiz",
+      "required": true
+    },
+    "career:career-2": {
+      "module": "career",
+      "title": "Как рассказать о себе и отвечать на вопросы",
+      "kind": "quiz",
+      "required": true
+    },
+    "career:career-3": {
+      "module": "career",
+      "title": "Как оформить соцсети и аккаунты",
+      "kind": "quiz",
+      "required": true
+    },
+    "career:career-4": {
+      "module": "career",
+      "title": "Как оформить пет-проекты",
+      "kind": "quiz",
+      "required": true
+    },
+    "career:career-5": {
+      "module": "career",
+      "title": "Как искать компании и вакансии",
+      "kind": "quiz",
+      "required": true
+    }
+  }
+}

@@ -10,6 +10,8 @@ const TYPES = {
   group: 'Групповой созвон',
   math:  'Математика',
   mine:  'Личный созвон',
+  mentor: 'Созвон с ментором',
+  leetcode: 'Нарешиваем LeetCode',
 }
 
 // Сетка месяца с понедельника: 6 недель, чтобы высота не прыгала
@@ -105,7 +107,7 @@ export default function DashCalendar({ events, isCamp }) {
           </div>
           {isCamp && (
           <div className="dsh-cal-legend">
-            {Object.keys(TYPES).map(t => <span key={t}><i className={`dot-${t}`} />{TYPES[t]}</span>)}
+            {Object.keys(TYPES).filter(t => events.some(e => e.type === t) || t === 'group').map(t => <span key={t}><i className={`dot-${t}`} />{TYPES[t]}</span>)}
           </div>
           )}
         </div>

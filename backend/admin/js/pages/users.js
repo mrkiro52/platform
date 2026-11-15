@@ -1,5 +1,5 @@
 'use strict'
-// Пользователи: поиск, фильтр по лагерю, доступ к Autumn Camp и мини-курсам, правка и удаление.
+// Пользователи: поиск, фильтр по лагерю, доступ к Autumn Camp, Winter Camp и мини-курсам, правка и удаление.
 
 const UsersPage = {
   list: [],
@@ -10,7 +10,7 @@ const UsersPage = {
 
   async render(view, ctx) {
     UsersPage.q = ctx.query.get('q') || ''
-    UsersPage.filter = ['camp', 'nocamp'].includes(ctx.query.get('filter')) ? ctx.query.get('filter') : 'all'
+    UsersPage.filter = ['camp', 'winter', 'nocamp'].includes(ctx.query.get('filter')) ? ctx.query.get('filter') : 'all'
     UsersPage.sort = ctx.query.get('sort') === 'active' ? 'active' : 'created'
     UsersPage.limit = 50
     view.innerHTML = UsersPage.head() + skeleton({ rows: 10 })
@@ -33,7 +33,7 @@ const UsersPage = {
     const camp = UsersPage.list.filter(u => u.autumnCamp).length
     return pageHead({
       title: 'Пользователи',
-      sub: total ? `${fmt(total)} ${plural(total, 'аккаунт', 'аккаунта', 'аккаунтов')} · ${fmt(camp)} в осеннем лагере` : 'Участники платформы',
+      sub: total ? `${fmt(total)} ${plural(total, 'аккаунт', 'аккаунта', 'аккаунтов')} · ${fmt(camp)} в осеннем лагере · ${fmt(UsersPage.list.filter(u => u.winterCamp).length)} в зимнем` : 'Участники платформы',
       actions: `<button class="btn btn-primary" onclick="UsersPage.openCreate()">${icon('user-plus')}Добавить</button>`,
     })
   },
@@ -67,7 +67,8 @@ const UsersPage = {
     const q = UsersPage.q.toLowerCase()
     let rows = UsersPage.list.filter(u => {
       if (UsersPage.filter === 'camp' && !u.autumnCamp) return false
-      if (UsersPage.filter === 'nocamp' && u.autumnCamp) return false
+      if (UsersPage.filter === 'winter' && !u.winterCamp) return false
+      if (UsersPage.filter === 'nocamp' && (u.autumnCamp || u.winterCamp)) return false
       return !q || String(u.nickname || '').toLowerCase().includes(q) || String(u.name || '').toLowerCase().includes(q)
     })
     const by = {
@@ -81,16 +82,19 @@ const UsersPage = {
     const sub = document.querySelector('.page-sub')
     const total = UsersPage.list.length
     const camp = UsersPage.list.filter(u => u.autumnCamp).length
-    if (sub) sub.textContent = `${fmt(total)} ${plural(total, 'аккаунт', 'аккаунта', 'аккаунтов')} · ${fmt(camp)} в осеннем лагере`
+    if (sub) sub.textContent = `${fmt(total)} ${plural(total, 'аккаунт', 'аккаунта', 'аккаунтов')} · ${fmt(camp)} в осеннем лагере · ${fmt(UsersPage.list.filter(u => u.winterCamp).length)} в зимнем`
   },
 
   paintFilter() {
     const all = UsersPage.list
     const camp = all.filter(u => u.autumnCamp).length
+    const winter = all.filter(u => u.winterCamp).length
+    const none = all.filter(u => !u.autumnCamp && !u.winterCamp).length
     $('#users-filter').innerHTML = seg([
       ['all', `Все <span class="count">${fmt(all.length)}</span>`],
-      ['camp', `В лагере <span class="count">${fmt(camp)}</span>`],
-      ['nocamp', `Без лагеря <span class="count">${fmt(all.length - camp)}</span>`],
+      ['camp', `Осенний <span class="count">${fmt(camp)}</span>`],
+      ['winter', `Зимний <span class="count">${fmt(winter)}</span>`],
+      ['nocamp', `Без лагеря <span class="count">${fmt(none)}</span>`],
     ], UsersPage.filter, 'UsersPage.setFilter')
   },
 
@@ -114,6 +118,7 @@ const UsersPage = {
           <thead><tr>
             <th>Пользователь</th>
             <th>Осенний лагерь</th>
+            <th>Зимний лагерь</th>
             <th>Курсы</th>
             ${sortHead('created', 'Регистрация')}
             ${sortHead('active', 'Активность')}
@@ -152,6 +157,16 @@ const UsersPage = {
           </label>
           ${u.autumnCamp ? `<select class="dir-select" aria-label="Направление программы" onchange="UsersPage.setDirection(${u.id}, this)">
             ${UsersPage.DIRECTIONS.map(([v, l]) => `<option value="${v}" ${(u.autumnDirection || '') === v ? 'selected' : ''}>${l}</option>`).join('')}
+          </select>` : ''}
+        </td>
+        <td>
+          <label class="switch is-winter" title="${u.winterCamp ? 'Забрать доступ к Winter Camp' : 'Дать доступ к Winter Camp'}">
+            <input type="checkbox" ${u.winterCamp ? 'checked' : ''} onchange="UsersPage.toggleWinter(${u.id}, this)"/>
+            <span class="switch-track"><span class="switch-knob"></span></span>
+            <span class="switch-label">${u.winterCamp ? 'участник' : 'нет'}</span>
+          </label>
+          ${u.winterCamp ? `<select class="dir-select${u.winterDirection ? '' : ' is-empty'}" aria-label="Направление в зимнем лагере" onchange="UsersPage.setWinterDirection(${u.id}, this)">
+            ${UsersPage.WINTER_DIRECTIONS.map(([v, l]) => `<option value="${v}" ${(u.winterDirection || '') === v ? 'selected' : ''}>${l}</option>`).join('')}
           </select>` : ''}
         </td>
         <td>
@@ -211,6 +226,56 @@ const UsersPage = {
       toast(e.message, 'err')
     } finally {
       select.disabled = false
+    }
+  },
+
+  // Зимний лагерь: три направления; без направления студент видит только общие блоки
+  WINTER_DIRECTIONS: [['', 'Направление не выбрано'], ['ml', 'Машинное обучение'], ['backend', 'Backend-разработка'], ['security', 'Информационная безопасность']],
+
+  async setWinterDirection(id, select) {
+    const user = UsersPage.list.find(u => u.id === id)
+    if (!user) return
+    const direction = select.value || null
+    select.disabled = true
+    try {
+      await api(`/api/users/${id}/winter`, { method: 'PATCH', body: { direction } })
+      user.winterDirection = direction
+      select.classList.toggle('is-empty', !direction)
+      const label = UsersPage.WINTER_DIRECTIONS.find(([v]) => v === (direction || ''))[1]
+      toast(`${user.nickname || user.name}: зимний лагерь — ${direction ? label : 'направление снято'}`)
+    } catch (e) {
+      select.value = user.winterDirection || ''
+      toast(e.message, 'err')
+    } finally {
+      select.disabled = false
+    }
+  },
+
+  async toggleWinter(id, input) {
+    const user = UsersPage.list.find(u => u.id === id)
+    if (!user) return
+    const next = input.checked
+    const login = esc(user.nickname || user.name)
+    if (!next) {
+      const ok = await confirmDialog({
+        title: 'Забрать доступ к зимнему лагерю?',
+        text: `У <b>${login}</b> пропадут материалы Winter Camp и сдача ДЗ. Сданные работы сохранятся. Осенний лагерь это не затрагивает.`,
+        confirm: 'Забрать доступ', danger: true,
+      })
+      if (!ok) { input.checked = true; return }
+    }
+    input.disabled = true
+    try {
+      await api(`/api/users/${id}/winter`, { method: 'PATCH', body: { winterCamp: next } })
+      user.winterCamp = next
+      toast(next ? `${user.nickname || user.name} — теперь в зимнем лагере. Выбери направление` : `${user.nickname || user.name} — доступ к зимнему лагерю снят`)
+      UsersPage.paintSub()
+      if (UsersPage.filter !== 'all') UsersPage.paint()
+      else { $(`#user-${id}`).outerHTML = UsersPage.row(user); UsersPage.paintFilter() }
+    } catch (e) {
+      input.checked = !next
+      input.disabled = false
+      toast(e.message, 'err')
     }
   },
 

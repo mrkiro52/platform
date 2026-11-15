@@ -1386,6 +1386,47 @@ function migrate() {
       console.error('❌ Migration 47 failed:', err.message)
     }
   }
+
+  // Migration 48: зимний лагерь 2026/27. Участие хранится отдельным флагом — человек может
+  // быть студентом и осеннего, и зимнего лагеря сразу. У зимнего своё направление
+  // (ml / backend / security) и своя таблица домашних заданий: одна строка — одна работа
+  // студента по заданию главы. task_key — «<модуль>:<глава>», ответы лежат JSON-массивом
+  // [{ id, question, answer, kind }]; у тестов с автопроверкой (kind = 'auto') — счёт.
+  if (schemaVersion < 48) {
+    try {
+      const cols = db.prepare('PRAGMA table_info(users)').all().map(c => c.name)
+      if (!cols.includes('is_winter_camp_2027')) db.exec('ALTER TABLE users ADD COLUMN is_winter_camp_2027 INTEGER NOT NULL DEFAULT 0')
+      if (!cols.includes('winter_direction')) db.exec('ALTER TABLE users ADD COLUMN winter_direction TEXT')
+      db.prepare(`
+        CREATE TABLE IF NOT EXISTS winter_homework (
+          id           INTEGER PRIMARY KEY AUTOINCREMENT,
+          user_id      INTEGER NOT NULL,
+          task_key     TEXT    NOT NULL,
+          kind         TEXT    NOT NULL DEFAULT 'quiz',
+          title        TEXT    NOT NULL DEFAULT '',
+          answers      TEXT    NOT NULL DEFAULT '[]',
+          score        INTEGER,
+          total        INTEGER,
+          status       TEXT    NOT NULL DEFAULT 'submitted',
+          comment      TEXT,
+          reviewer     TEXT,
+          submitted_at TEXT,
+          reviewed_at  TEXT,
+          UNIQUE(user_id, task_key),
+          FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+        )
+      `).run()
+      db.prepare('CREATE INDEX IF NOT EXISTS idx_winter_hw_status ON winter_homework(status)').run()
+      // Первые студенты: аккаунты, которых ещё нет, пропускаются — доступ им выдаётся в админке
+      const first = [['khani', 'ml'], ['test_ml', 'ml'], ['test_be', 'backend'], ['test_is', 'security']]
+      const grant = db.prepare('UPDATE users SET is_winter_camp_2027 = 1, winter_direction = ? WHERE nickname = ? COLLATE NOCASE')
+      const granted = first.filter(([nickname, direction]) => grant.run(direction, nickname).changes > 0).map(([nickname]) => nickname)
+      db.pragma('user_version = 48')
+      console.log(`✅ Migration 48 completed: winter camp (доступ выдан: ${granted.join(', ') || 'никому — аккаунтов пока нет'})`)
+    } catch (err) {
+      console.error('❌ Migration 48 failed:', err.message)
+    }
+  }
 }
 
 migrate()

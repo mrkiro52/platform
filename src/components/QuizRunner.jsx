@@ -11,7 +11,8 @@ function loadResult(quizId) {
 
 const LETTERS = ['А', 'Б', 'В', 'Г']
 
-export default function QuizRunner({ quiz }) {
+// onFinish(result) — необязательный колбэк: зимний лагерь сохраняет результат теста на сервере.
+export default function QuizRunner({ quiz, onFinish }) {
   const total = quiz.questions.length
   const [answers, setAnswers] = useState(() => Array(total).fill(null))
   const [current, setCurrent] = useState(0)
@@ -38,6 +39,7 @@ export default function QuizRunner({ quiz }) {
     try { localStorage.setItem(storageKey(quiz.id), JSON.stringify(result)) } catch { /* не критично */ }
     setLastResult(result)
     setFinished(true)
+    if (onFinish) onFinish(result)
   }
 
   const restart = () => {

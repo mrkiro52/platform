@@ -23,6 +23,12 @@ const PAGE_LABELS = {
   'math-homework': 'ДЗ по математике',
   'homework-upload': 'Сдача ДЗ',
   'homework-task': 'Страница задачи',
+  'winter-camp': 'Winter Camp — главная',
+  'winter-module': 'Winter Camp — блоки программы',
+  'winter-lesson': 'Winter Camp — конспекты',
+  'winter-task': 'Winter Camp — задания',
+  'winter-math': 'Winter Camp — математика',
+  'winter-english': 'Winter Camp — английский',
   other: 'Другие страницы',
 }
 

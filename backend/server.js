@@ -35,6 +35,7 @@ app.use('/api/vacancies',     require('./src/routes/vacancies'))
 app.use('/api/dating',        require('./src/routes/dating'))
 app.use('/api/courses',       require('./src/routes/courses'))
 app.use('/api/likbez',        require('./src/routes/likbez'))
+app.use('/api/winter',        require('./src/routes/winter'))
 
 // ── Admin Panel ──────────────────────────────────────────────────────────────
 app.use('/admin', express.static(path.join(__dirname, 'admin')))
