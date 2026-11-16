@@ -56,6 +56,7 @@ const Sales = {
 const SalesCrmPage = {
   data: null,
   statuses: null, // какие статусы показывать; null — все
+  people: null,   // чьих лидов показывать (ответственный); null — всех
   q: '',
   tab: 'leads',    // leads | referrals (выплаты рефералам видит только главный админ)
 
@@ -263,27 +264,40 @@ const SalesCrmPage = {
   search: debounce((value) => { SalesCrmPage.q = value.trim().toLowerCase(); SalesCrmPage.paint() }, 150),
   setFilter(value) { SalesCrmPage.statuses = value === 'all' ? null : [value]; SalesCrmPage.paint() },
 
-  // Клик по заголовку «Статус» — выпадашка с галочками: какие статусы показывать
-  toggleStatusMenu(event) {
-    event.stopPropagation()
-    const old = $('#crm-status-menu')
-    if (old) return SalesCrmPage.closeStatusMenu()
-    const chosen = SalesCrmPage.statuses
+  // Выпадашки в заголовках таблицы: «Статус» и «Ответственный» — галочками выбираешь, что показывать
+  menuOptions(kind) {
     const { leads } = SalesCrmPage.data
+    if (kind === 'statuses') return Object.entries(SALES_STATUS).map(([key, [label, badge]]) => ({
+      key, html: `<span class="badge ${badge}">${label}</span>`, count: leads.filter(l => l.status === key).length,
+    }))
+    return Sales.people.map(p => ({
+      key: p.key,
+      html: `<span>${esc(p.name)}</span>${p.key === Sales.me ? ' <span class="badge badge-lime">ты</span>' : ''}`,
+      count: leads.filter(l => l.createdBy === p.key).length,
+    }))
+  },
+  toggleMenu(event, kind) {
+    event.stopPropagation()
+    const open = $('#crm-filter-menu')
+    const same = open && open.dataset.kind === kind
+    SalesCrmPage.closeMenu()
+    if (same) return
+    const chosen = SalesCrmPage[kind]
     const menu = document.createElement('div')
-    menu.id = 'crm-status-menu'
+    menu.id = 'crm-filter-menu'
     menu.className = 'status-menu'
+    menu.dataset.kind = kind
     menu.innerHTML = `
-      <div class="status-menu-head">Показывать статусы</div>
-      ${Object.entries(SALES_STATUS).map(([key, [label, badge]]) => `
+      <div class="status-menu-head">${kind === 'statuses' ? 'Показывать статусы' : 'Чьих лидов показывать'}</div>
+      ${SalesCrmPage.menuOptions(kind).map(o => `
         <label class="status-menu-row">
-          <input type="checkbox" value="${key}"${!chosen || chosen.includes(key) ? ' checked' : ''} onchange="SalesCrmPage.applyStatusMenu()"/>
-          <span class="badge ${badge}">${label}</span>
-          <span class="status-menu-count">${leads.filter(l => l.status === key).length}</span>
+          <input type="checkbox" value="${o.key}"${!chosen || chosen.includes(o.key) ? ' checked' : ''} onchange="SalesCrmPage.applyMenu()"/>
+          ${o.html}
+          <span class="status-menu-count">${o.count}</span>
         </label>`).join('')}
       <div class="status-menu-foot">
-        <button class="btn btn-sm" onclick="SalesCrmPage.setStatusMenu(true)">Все</button>
-        <button class="btn btn-sm" onclick="SalesCrmPage.setStatusMenu(false)">Снять все</button>
+        <button class="btn btn-sm" onclick="SalesCrmPage.setMenu(true)">Все</button>
+        <button class="btn btn-sm" onclick="SalesCrmPage.setMenu(false)">Снять все</button>
       </div>`
     menu.addEventListener('click', e => e.stopPropagation())
     document.body.appendChild(menu)
@@ -291,26 +305,30 @@ const SalesCrmPage = {
     menu.style.top = `${r.bottom + 6}px`
     menu.style.left = `${Math.max(8, Math.min(r.left, window.innerWidth - menu.offsetWidth - 8))}px`
     setTimeout(() => {
-      document.addEventListener('click', SalesCrmPage.closeStatusMenu)
-      window.addEventListener('scroll', SalesCrmPage.closeStatusMenu, true)
+      document.addEventListener('click', SalesCrmPage.closeMenu)
+      window.addEventListener('scroll', SalesCrmPage.closeMenu, true)
       document.addEventListener('keydown', SalesCrmPage.onMenuKey)
     })
   },
-  closeStatusMenu() {
-    const menu = $('#crm-status-menu')
+  closeMenu() {
+    const menu = $('#crm-filter-menu')
     if (menu) menu.remove()
-    document.removeEventListener('click', SalesCrmPage.closeStatusMenu)
-    window.removeEventListener('scroll', SalesCrmPage.closeStatusMenu, true)
+    document.removeEventListener('click', SalesCrmPage.closeMenu)
+    window.removeEventListener('scroll', SalesCrmPage.closeMenu, true)
     document.removeEventListener('keydown', SalesCrmPage.onMenuKey)
   },
-  onMenuKey(e) { if (e.key === 'Escape') SalesCrmPage.closeStatusMenu() },
-  setStatusMenu(all) {
-    document.querySelectorAll('#crm-status-menu input').forEach(el => { el.checked = all })
-    SalesCrmPage.applyStatusMenu()
+  resetFilters() { SalesCrmPage.statuses = null; SalesCrmPage.people = null; SalesCrmPage.closeMenu(); SalesCrmPage.paint() },
+  onMenuKey(e) { if (e.key === 'Escape') SalesCrmPage.closeMenu() },
+  setMenu(all) {
+    document.querySelectorAll('#crm-filter-menu input').forEach(el => { el.checked = all })
+    SalesCrmPage.applyMenu()
   },
-  applyStatusMenu() {
-    const checked = [...document.querySelectorAll('#crm-status-menu input:checked')].map(el => el.value)
-    SalesCrmPage.statuses = checked.length === Object.keys(SALES_STATUS).length ? null : checked
+  applyMenu() {
+    const menu = $('#crm-filter-menu')
+    if (!menu) return
+    const kind = menu.dataset.kind
+    const checked = [...menu.querySelectorAll('input:checked')].map(el => el.value)
+    SalesCrmPage[kind] = checked.length === menu.querySelectorAll('input').length ? null : checked
     SalesCrmPage.paint()
   },
 
@@ -327,7 +345,8 @@ const SalesCrmPage = {
 
     const q = SalesCrmPage.q
     // Сначала лиды, где ответственный — ты; внутри групп порядок сервера (новые сверху)
-    const list = leads.filter(l => (!chosen || chosen.includes(l.status))
+    const owners = SalesCrmPage.people
+    const list = leads.filter(l => (!chosen || chosen.includes(l.status)) && (!owners || owners.includes(l.createdBy))
       && (!q || l.contact.toLowerCase().includes(q) || l.description.toLowerCase().includes(q) || l.referral.toLowerCase().includes(q)))
       .map((l, i) => [l, i])
       .sort(([a, i], [b, j]) => (b.createdBy === Sales.me) - (a.createdBy === Sales.me) || i - j)
@@ -338,17 +357,18 @@ const SalesCrmPage = {
       return
     }
     if (!list.length) {
-      el.innerHTML = `<div class="card">${emptyState('search', 'Ничего не нашлось', 'Попробуй другой статус или запрос', true)}</div>`
+      const reset = chosen || owners ? `<div class="crm-reset"><button class="btn btn-sm" onclick="SalesCrmPage.resetFilters()">Сбросить фильтры по статусу и ответственному</button></div>` : ''
+      el.innerHTML = `<div class="card">${emptyState('search', 'Ничего не нашлось', 'Попробуй другой статус, ответственного или запрос', true)}${reset}</div>`
       return
     }
-    const filtered = !!chosen
+    const filterTh = (kind, label, title, picked) => `<th class="sortable${picked ? ' active' : ''}" onclick="SalesCrmPage.toggleMenu(event, '${kind}')" title="${title}">${label}${icon('filter', 12)}${picked ? ` <span class="th-count">${picked.length}</span>` : ''}</th>`
     // Менеджеру показываем его вознаграждение по каждому лиду, который он закрыл
     const seller = SalesCrmPage.data.rewards.view === 'seller'
     const share = SalesCrmPage.data.sellerShare || 0.1
     el.innerHTML = `
       <div class="table-wrap">
         <table class="tbl sales-tbl">
-          <thead><tr><th>Лид</th><th class="sortable${filtered ? ' active' : ''}" onclick="SalesCrmPage.toggleStatusMenu(event)" title="Выбрать, какие статусы показывать">Статус${icon('filter', 12)}${filtered ? ` <span class="th-count">${chosen.length}</span>` : ''}</th><th>Ответственный</th><th>Продажа</th><th class="num">Сумма</th><th></th></tr></thead>
+          <thead><tr><th>Лид</th>${filterTh('statuses', 'Статус', 'Выбрать, какие статусы показывать', chosen)}${filterTh('people', 'Ответственный', 'Выбрать, чьих лидов показывать', owners)}<th>Продажа</th><th class="num">Сумма</th><th></th></tr></thead>
           <tbody>${list.map(l => {
             const [label, badge] = SALES_STATUS[l.status] || [l.status, 'badge-gray']
             // Плашка «Оставил заявку» — только пока лид в статусе заявки
