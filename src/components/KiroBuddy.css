@@ -1,0 +1,155 @@
+/* Пингвин KIRO с инструментами — только компьютер */
+.kiro-buddy-slot { height: 87px; margin-bottom: 6px; }
+.kiro-buddy-free .kiro-buddy-slot { display: none; }
+@media not all and (min-width: 1024px) and (hover: hover) and (pointer: fine) {
+  .kiro-buddy-slot { display: none; }
+}
+.sidebar.is-collapsed .kiro-buddy-slot { display: none; }
+
+.kb-root { position: fixed; inset: 0; pointer-events: none; z-index: 9999; }
+
+.kb-buddy {
+  position: absolute; left: 0; top: 0; width: 75px; height: 75px;
+  pointer-events: none; will-change: transform;
+}
+
+.kb-face {
+  position: absolute; inset: 0; padding: 0; border: none; border-radius: 50%;
+  background: #08080A; cursor: grab; pointer-events: auto; touch-action: none;
+  -webkit-user-select: none; user-select: none; -webkit-touch-callout: none;
+  box-shadow: 0 0 0 2px rgba(255, 214, 10, 0.55), 0 8px 24px rgba(0, 0, 0, 0.5), 0 0 18px rgba(255, 214, 10, 0.18);
+  transition: transform 0.2s cubic-bezier(0.3, 1.4, 0.5, 1), box-shadow 0.2s ease;
+}
+.kb-face img { display: block; width: 100%; height: 100%; border-radius: 50%; pointer-events: none; }
+.kb-face:hover { transform: scale(1.05); box-shadow: 0 0 0 2px #FFD60A, 0 10px 28px rgba(0, 0, 0, 0.55), 0 0 26px rgba(255, 214, 10, 0.35); }
+.kb-face:focus-visible { outline: 2px solid #FFD60A; outline-offset: 4px; }
+.kb-buddy.is-dragging .kb-face { cursor: grabbing; transform: scale(1.1); box-shadow: 0 0 0 2px #FFD60A, 0 18px 40px rgba(0, 0, 0, 0.6); }
+.kb-buddy.is-open .kb-face { box-shadow: 0 0 0 2px #FFD60A, 0 8px 24px rgba(0, 0, 0, 0.5), 0 0 30px rgba(255, 214, 10, 0.4); }
+
+/* Пульсация, пока заполняется кольцо */
+.kb-buddy.is-charging .kb-face { animation: kb-pulse 0.5s ease-in-out infinite; }
+@keyframes kb-pulse {
+  0%, 100% { transform: scale(1); box-shadow: 0 0 0 2px #FFD60A, 0 0 16px rgba(255, 214, 10, 0.35); }
+  50% { transform: scale(1.09); box-shadow: 0 0 0 3px #FFD60A, 0 0 34px rgba(255, 214, 10, 0.7); }
+}
+
+/* Кольцо удержания: по часовой от 12 часов */
+.kb-ring {
+  position: absolute; left: -12.5px; top: -12.5px; width: 100px; height: 100px;
+  transform: rotate(-90deg); pointer-events: none; overflow: visible;
+  opacity: 0; transition: opacity 0.2s ease;
+}
+.kb-buddy.is-charging .kb-ring { opacity: 1; }
+.kb-ring circle { fill: none; stroke-width: 4; }
+.kb-ring-track { stroke: rgba(255, 214, 10, 0.16); }
+.kb-ring-fill {
+  stroke: #FFD60A; stroke-linecap: round; filter: drop-shadow(0 0 4px rgba(255, 214, 10, 0.8));
+  transition: stroke-dashoffset 0.25s ease;
+}
+.kb-buddy.is-charging .kb-ring-fill { transition: stroke-dashoffset 1.5s linear; }
+
+/* Вспышка, когда кольцо замкнулось */
+.kb-burst {
+  position: absolute; inset: -6px; border-radius: 50%; border: 3px solid #FFD60A;
+  pointer-events: none; animation: kb-burst 0.55s ease-out forwards;
+}
+@keyframes kb-burst { from { transform: scale(1); opacity: 0.9; } to { transform: scale(1.8); opacity: 0; } }
+
+/* Инструменты вокруг плашки */
+.kb-tool {
+  position: absolute; left: 15.5px; top: 15.5px; width: 44px; height: 44px; border-radius: 50%;
+  display: grid; place-items: center; padding: 0; cursor: pointer; pointer-events: auto;
+  background: #101014; color: #FFD60A; border: 1.5px solid rgba(255, 214, 10, 0.55);
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.5);
+  transform: translate(0, 0) scale(0.2); opacity: 0;
+  transition: transform 0.32s cubic-bezier(0.3, 1.5, 0.5, 1), opacity 0.2s ease, background 0.15s, color 0.15s;
+}
+.kb-tool.is-shown { transform: translate(var(--tx), var(--ty)) scale(1); opacity: 1; }
+.kb-tool:hover, .kb-tool.is-active { background: #FFD60A; color: #08080A; }
+.kb-tool:focus-visible { outline: 2px solid #FFD60A; outline-offset: 3px; }
+
+/* Бейдж с оставшимся временем, когда панель таймера скрыта */
+.kb-badge {
+  position: absolute; left: 50%; bottom: -12px; transform: translateX(-50%);
+  padding: 2px 8px; border-radius: 999px; font: 700 11px/1.4 'JetBrains Mono', ui-monospace, monospace;
+  background: #FFD60A; color: #08080A; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.45); pointer-events: none;
+  animation: kb-badge-in 0.25s ease;
+}
+.kb-badge.is-rest { background: #3FB950; }
+.kb-badge.is-paused { background: #34343F; color: #F6F6F4; }
+@keyframes kb-badge-in { from { opacity: 0; transform: translate(-50%, 4px); } }
+
+/* Панель таймера */
+.kb-panel {
+  position: absolute; pointer-events: auto; padding: 14px 16px 16px; border-radius: 16px;
+  background: rgba(16, 16, 20, 0.97); border: 1px solid rgba(255, 214, 10, 0.3);
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.6); color: #F6F6F4;
+  font-family: 'Manrope', system-ui, sans-serif;
+  opacity: 0; transition: opacity 0.22s ease, transform 0.24s cubic-bezier(0.3, 1.3, 0.5, 1);
+}
+.kb-panel.from-left { transform: translateX(-14px) scale(0.96); transform-origin: left center; }
+.kb-panel.from-right { transform: translateX(14px) scale(0.96); transform-origin: right center; }
+.kb-panel.is-shown { opacity: 1; transform: none; }
+
+.kb-panel-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.kb-panel-title { display: inline-flex; align-items: center; gap: 7px; font-weight: 800; font-size: 14px; color: #FFD60A; }
+.kb-x {
+  width: 28px; height: 28px; border-radius: 8px; display: grid; place-items: center;
+  border: none; background: transparent; color: #8B8B96; cursor: pointer; transition: background 0.15s, color 0.15s;
+}
+.kb-x:hover { background: #1E1E26; color: #F6F6F4; }
+
+.kb-fields { display: flex; flex-direction: column; gap: 8px; }
+.kb-field { display: grid; grid-template-columns: 64px 1fr 28px; align-items: center; gap: 8px; }
+.kb-field-label { font-size: 13px; font-weight: 600; color: #C2C2BE; }
+.kb-field-suffix { font-size: 12px; color: #8B8B96; }
+.kb-field-box {
+  display: grid; grid-template-columns: 28px 1fr 28px; align-items: center; height: 34px;
+  background: #17171D; border: 1px solid #26262E; border-radius: 10px; overflow: hidden;
+}
+.kb-field-box:focus-within { border-color: rgba(255, 214, 10, 0.55); }
+.kb-field-box button {
+  height: 100%; border: none; background: transparent; color: #8B8B96; font-size: 16px; cursor: pointer;
+  transition: color 0.15s, background 0.15s;
+}
+.kb-field-box button:hover { color: #FFD60A; background: #1E1E26; }
+.kb-field-box input {
+  width: 100%; min-width: 0; border: none; background: transparent; color: #F6F6F4; text-align: center;
+  font: 700 14px 'JetBrains Mono', ui-monospace, monospace; outline: none; -moz-appearance: textfield;
+}
+.kb-field-box input::-webkit-outer-spin-button, .kb-field-box input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+.kb-total { margin: 10px 0 12px; font-size: 12px; color: #8B8B96; }
+
+.kb-btn {
+  flex: 1; height: 36px; padding: 0 14px; border-radius: 999px; cursor: pointer;
+  font: 700 13px 'Manrope', system-ui, sans-serif; color: #F6F6F4;
+  background: #1E1E26; border: 1px solid #34343F; transition: filter 0.15s, background 0.15s;
+}
+.kb-btn:hover { background: #26262E; }
+.kb-btn-main { background: #FFD60A; color: #08080A; border-color: #FFD60A; }
+.kb-btn-main:hover { background: #FFD60A; filter: brightness(1.08); }
+.kb-panel-inner > .kb-btn-main { width: 100%; }
+
+.kb-run { --phase: #FFD60A; }
+.kb-run.is-rest { --phase: #3FB950; }
+.kb-run-meta { display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: #8B8B96; }
+.kb-run-phase {
+  padding: 2px 9px; border-radius: 999px; font-weight: 800; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em;
+  color: var(--phase); background: color-mix(in srgb, var(--phase) 14%, transparent);
+}
+.kb-run-clock {
+  margin: 10px 0 8px; text-align: center; font: 700 42px/1 'JetBrains Mono', ui-monospace, monospace;
+  color: #F6F6F4; font-variant-numeric: tabular-nums; letter-spacing: -0.02em;
+}
+.kb-run-bar { height: 6px; border-radius: 6px; background: #1E1E26; overflow: hidden; }
+.kb-run-bar span { display: block; height: 100%; background: var(--phase); border-radius: 6px; transition: width 0.25s linear; }
+.kb-run-btns { display: flex; gap: 8px; margin-top: 14px; }
+
+.kb-done { text-align: center; padding-top: 4px; }
+.kb-done-title { font-family: 'Unbounded', system-ui, sans-serif; font-weight: 700; font-size: 20px; color: #FFD60A; }
+.kb-done-sub { margin-top: 4px; font-size: 13px; color: #C2C2BE; }
+
+@media (prefers-reduced-motion: reduce) {
+  .kb-buddy.is-charging .kb-face { animation: none; }
+  .kb-tool, .kb-panel { transition: opacity 0.15s ease; }
+}

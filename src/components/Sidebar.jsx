@@ -187,6 +187,8 @@ export default function Sidebar({
       </nav>
 
       <div className="sidebar-footer">
+        {/* Место пингвина KIRO (сама плашка рисуется поверх всего в KiroBuddy) */}
+        <div className="kiro-buddy-slot" id="kiro-buddy-slot" aria-hidden="true" />
         {confirmLogout ? (
           <div className="logout-confirm">
             <div className="logout-confirm-text">Выйти из аккаунта?</div>

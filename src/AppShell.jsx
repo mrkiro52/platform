@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState, lazy, Suspense } from 'react'
 import { Routes, Route, Navigate, useNavigate, useParams, useLocation } from 'react-router-dom'
 import Sidebar from './components/Sidebar'
 import TopBar from './components/TopBar'
+import KiroBuddy from './components/KiroBuddy'
 import { api } from './api'
 import { startAnalytics, trackPage } from './lib/analytics'
 import Dashboard from './pages/Dashboard'
@@ -132,6 +133,8 @@ export default function AppShell({ user, onLogout }) {
           onToggleCollapse={toggleCollapsed}
         />
       </aside>
+
+      <KiroBuddy />
 
       {sidebarOpen && (
         <div className="sidebar-overlay active" onClick={() => setSidebarOpen(false)} />
