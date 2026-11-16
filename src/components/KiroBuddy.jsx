@@ -235,7 +235,32 @@ function usePresence(open, ms = 260) {
 }
 
 // ═══ Плашка ════════════════════════════════════════════════════════════
-const TOOLS = [{ key: 'timer', label: 'Таймер', Icon: TimerIcon }]
+const InfoIcon = ({ size = 20 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <circle cx="12" cy="12" r="10" /><path d="M12 16v-4" /><path d="M12 8h.01" />
+  </svg>
+)
+
+function InfoPanel({ onClose }) {
+  return (
+    <div className="kb-panel-inner">
+      <div className="kb-panel-head">
+        <span className="kb-panel-title"><InfoIcon size={16} />Инфо</span>
+        <button type="button" className="kb-x" onClick={onClose} aria-label="Скрыть" title="Скрыть"><CloseIcon /></button>
+      </div>
+      <div className="kb-info">
+        <img src="/kiro-buddy.webp" alt="" className="kb-info-ava" />
+        <div className="kb-info-title">Привет! Я Пингви, приятно познакомиться!</div>
+        <p className="kb-info-text">Я твой личный помощник, предоставляющий кучу полезных инструментов. Со временем мой арсенал будет только расширяться. Успехов в обучении. Все получится!</p>
+      </div>
+    </div>
+  )
+}
+
+const TOOLS = [
+  { key: 'timer', label: 'Таймер', Icon: TimerIcon },
+  { key: 'info', label: 'Инфо', Icon: InfoIcon },
+]
 
 export default function KiroBuddy() {
   const desktop = useDesktop()
@@ -244,7 +269,22 @@ export default function KiroBuddy() {
   const [dragging, setDragging] = useState(false)
   const [charging, setCharging] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
-  const [panelOpen, setPanelOpen] = useState(false)
+  // Открытый инструмент: одновременно показываем только один
+  const [tool, setTool] = useState(null)
+  const panelOpen = tool !== null
+  const lastTool = useRef(null)
+  if (tool) lastTool.current = tool
+  const switchRef = useRef(null)
+  const setPanelOpen = (open) => { clearTimeout(switchRef.current); setTool(open ? 'timer' : null) }
+  // Клик по инструменту: тот же — свернуть; другой — сначала свернуть открытый, потом показать новый
+  const pickTool = (key) => {
+    clearTimeout(switchRef.current)
+    if (tool === key) return setTool(null)
+    if (tool) {
+      setTool(null)
+      switchRef.current = setTimeout(() => setTool(key), 200)
+    } else setTool(key)
+  }
   const [burst, setBurst] = useState(0)
   const gesture = useRef(null)
   const menuRef = useRef(false)
@@ -344,14 +384,14 @@ export default function KiroBuddy() {
         store.set(POS_KEY, next)
         return next
       })
-    } else if (g.mode === 'pending' && timer.active && !panelOpen) {
+    } else if (g.mode === 'pending' && timer.active && tool !== 'timer') {
       // Короткий клик, пока идёт таймер, — показать его
       setPanelOpen(true)
     }
     gesture.current = null
   }
 
-  useEffect(() => () => clearTimers(), [])
+  useEffect(() => () => { clearTimers(); clearTimeout(switchRef.current) }, [])
 
   if (!desktop || !place) return null
 
@@ -369,8 +409,12 @@ export default function KiroBuddy() {
   const PANEL_W = 268
   const toRight = cx < window.innerWidth / 2
   const panelLeft = toRight ? place.x + SIZE + 64 : place.x - PANEL_W - 64
-  const panelTop = clamp(cy - 120, 8, window.innerHeight - 300)
-  const showBadge = timer.active && !panelOpen
+  // В нижней половине экрана панель растёт вверх от плашки, в верхней — вниз: так она не уходит за край
+  const lower = cy > window.innerHeight / 2
+  const panelY = lower
+    ? { bottom: clamp(window.innerHeight - cy - 110, 8, window.innerHeight - 200) }
+    : { top: clamp(cy - 110, 8, window.innerHeight - 200) }
+  const showBadge = timer.active && tool !== 'timer'
 
   return createPortal(
     <div className="kb-root" aria-live="polite">
@@ -378,19 +422,19 @@ export default function KiroBuddy() {
         className={`kb-buddy${dragging ? ' is-dragging' : ''}${charging ? ' is-charging' : ''}${menuOpen ? ' is-open' : ''}`}
         style={{ transform: `translate3d(${place.x}px, ${place.y}px, 0)` }}
       >
-        {menuMounted && TOOLS.map((tool, i) => {
+        {menuMounted && TOOLS.map((t, i) => {
           const p = toolPos(i)
           return (
             <button
-              key={tool.key}
+              key={t.key}
               type="button"
-              className={`kb-tool${menuShown ? ' is-shown' : ''}${tool.key === 'timer' && panelOpen ? ' is-active' : ''}`}
+              className={`kb-tool${menuShown ? ' is-shown' : ''}${t.key === tool ? ' is-active' : ''}`}
               style={{ '--tx': `${p.x}px`, '--ty': `${p.y}px`, transitionDelay: menuShown ? `${60 + i * 50}ms` : '0ms' }}
-              onClick={() => setPanelOpen(o => !o)}
-              title={tool.label}
-              aria-label={tool.label}
+              onClick={() => pickTool(t.key)}
+              title={t.label}
+              aria-label={t.label}
             >
-              <tool.Icon />
+              <t.Icon />
             </button>
           )
         })}
@@ -423,9 +467,11 @@ export default function KiroBuddy() {
       {panelMounted && (
         <div
           className={`kb-panel${panelShown ? ' is-shown' : ''}${toRight ? ' from-left' : ' from-right'}`}
-          style={{ left: clamp(panelLeft, 8, window.innerWidth - PANEL_W - 8), top: panelTop, width: PANEL_W }}
+          style={{ left: clamp(panelLeft, 8, window.innerWidth - PANEL_W - 8), ...panelY, width: PANEL_W, maxHeight: window.innerHeight - 16, overflowY: 'auto' }}
         >
-          <TimerPanel timer={timer} onClose={() => setPanelOpen(false)} />
+          {lastTool.current === 'info'
+            ? <InfoPanel onClose={() => setPanelOpen(false)} />
+            : <TimerPanel timer={timer} onClose={() => setPanelOpen(false)} />}
         </div>
       )}
     </div>,

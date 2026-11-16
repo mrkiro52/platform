@@ -153,3 +153,9 @@
   .kb-buddy.is-charging .kb-face { animation: none; }
   .kb-tool, .kb-panel { transition: opacity 0.15s ease; }
 }
+
+/* Инфо: знакомство с Пингви */
+.kb-info { display: flex; flex-direction: column; align-items: center; text-align: center; padding: 2px 4px 2px; }
+.kb-info-ava { width: 56px; height: 56px; border-radius: 50%; box-shadow: 0 0 0 2px rgba(255, 214, 10, 0.55), 0 0 18px rgba(255, 214, 10, 0.25); margin-bottom: 12px; }
+.kb-info-title { font-family: 'Unbounded', system-ui, sans-serif; font-weight: 700; font-size: 13px; line-height: 1.4; color: #F6F6F4; }
+.kb-info-text { margin-top: 8px; font-size: 13px; line-height: 1.6; color: #C2C2BE; }
