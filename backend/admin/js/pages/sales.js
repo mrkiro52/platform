@@ -55,7 +55,7 @@ const Sales = {
 // ═══ CRM ═══════════════════════════════════════════════════════════════
 const SalesCrmPage = {
   data: null,
-  filter: 'all',
+  statuses: null, // какие статусы показывать; null — все
   q: '',
   tab: 'leads',    // leads | referrals (выплаты рефералам видит только главный админ)
 
@@ -261,19 +261,77 @@ const SalesCrmPage = {
   },
 
   search: debounce((value) => { SalesCrmPage.q = value.trim().toLowerCase(); SalesCrmPage.paint() }, 150),
-  setFilter(value) { SalesCrmPage.filter = value; SalesCrmPage.paint() },
+  setFilter(value) { SalesCrmPage.statuses = value === 'all' ? null : [value]; SalesCrmPage.paint() },
+
+  // Клик по заголовку «Статус» — выпадашка с галочками: какие статусы показывать
+  toggleStatusMenu(event) {
+    event.stopPropagation()
+    const old = $('#crm-status-menu')
+    if (old) return SalesCrmPage.closeStatusMenu()
+    const chosen = SalesCrmPage.statuses
+    const { leads } = SalesCrmPage.data
+    const menu = document.createElement('div')
+    menu.id = 'crm-status-menu'
+    menu.className = 'status-menu'
+    menu.innerHTML = `
+      <div class="status-menu-head">Показывать статусы</div>
+      ${Object.entries(SALES_STATUS).map(([key, [label, badge]]) => `
+        <label class="status-menu-row">
+          <input type="checkbox" value="${key}"${!chosen || chosen.includes(key) ? ' checked' : ''} onchange="SalesCrmPage.applyStatusMenu()"/>
+          <span class="badge ${badge}">${label}</span>
+          <span class="status-menu-count">${leads.filter(l => l.status === key).length}</span>
+        </label>`).join('')}
+      <div class="status-menu-foot">
+        <button class="btn btn-sm" onclick="SalesCrmPage.setStatusMenu(true)">Все</button>
+        <button class="btn btn-sm" onclick="SalesCrmPage.setStatusMenu(false)">Снять все</button>
+      </div>`
+    menu.addEventListener('click', e => e.stopPropagation())
+    document.body.appendChild(menu)
+    const r = event.currentTarget.getBoundingClientRect()
+    menu.style.top = `${r.bottom + 6}px`
+    menu.style.left = `${Math.max(8, Math.min(r.left, window.innerWidth - menu.offsetWidth - 8))}px`
+    setTimeout(() => {
+      document.addEventListener('click', SalesCrmPage.closeStatusMenu)
+      window.addEventListener('scroll', SalesCrmPage.closeStatusMenu, true)
+      document.addEventListener('keydown', SalesCrmPage.onMenuKey)
+    })
+  },
+  closeStatusMenu() {
+    const menu = $('#crm-status-menu')
+    if (menu) menu.remove()
+    document.removeEventListener('click', SalesCrmPage.closeStatusMenu)
+    window.removeEventListener('scroll', SalesCrmPage.closeStatusMenu, true)
+    document.removeEventListener('keydown', SalesCrmPage.onMenuKey)
+  },
+  onMenuKey(e) { if (e.key === 'Escape') SalesCrmPage.closeStatusMenu() },
+  setStatusMenu(all) {
+    document.querySelectorAll('#crm-status-menu input').forEach(el => { el.checked = all })
+    SalesCrmPage.applyStatusMenu()
+  },
+  applyStatusMenu() {
+    const checked = [...document.querySelectorAll('#crm-status-menu input:checked')].map(el => el.value)
+    SalesCrmPage.statuses = checked.length === Object.keys(SALES_STATUS).length ? null : checked
+    SalesCrmPage.paint()
+  },
 
   paint() {
     const { leads } = SalesCrmPage.data
     const count = key => leads.filter(l => l.status === key).length
+    const chosen = SalesCrmPage.statuses
+    // Подсвечиваем чип, если выбран ровно один статус (или все); набор из выпадашки — ни один
+    const active = !chosen ? 'all' : chosen.length === 1 ? chosen[0] : ''
     $('#crm-seg').innerHTML = seg([
       ['all', `Все <span class="count">${leads.length}</span>`],
       ...Object.entries(SALES_STATUS).map(([key, [label]]) => [key, `${label} <span class="count">${count(key)}</span>`]),
-    ], SalesCrmPage.filter, 'SalesCrmPage.setFilter')
+    ], active, 'SalesCrmPage.setFilter')
 
     const q = SalesCrmPage.q
-    const list = leads.filter(l => (SalesCrmPage.filter === 'all' || l.status === SalesCrmPage.filter)
+    // Сначала лиды, где ответственный — ты; внутри групп порядок сервера (новые сверху)
+    const list = leads.filter(l => (!chosen || chosen.includes(l.status))
       && (!q || l.contact.toLowerCase().includes(q) || l.description.toLowerCase().includes(q) || l.referral.toLowerCase().includes(q)))
+      .map((l, i) => [l, i])
+      .sort(([a, i], [b, j]) => (b.createdBy === Sales.me) - (a.createdBy === Sales.me) || i - j)
+      .map(([l]) => l)
     const el = $('#crm-list')
     if (!leads.length) {
       el.innerHTML = `<div class="card">${emptyState('target', 'Лидов пока нет', 'Внеси первого — кнопка «Новый лид» справа сверху')}</div>`
@@ -283,13 +341,14 @@ const SalesCrmPage = {
       el.innerHTML = `<div class="card">${emptyState('search', 'Ничего не нашлось', 'Попробуй другой статус или запрос', true)}</div>`
       return
     }
+    const filtered = !!chosen
     // Менеджеру показываем его вознаграждение по каждому лиду, который он закрыл
     const seller = SalesCrmPage.data.rewards.view === 'seller'
     const share = SalesCrmPage.data.sellerShare || 0.1
     el.innerHTML = `
       <div class="table-wrap">
         <table class="tbl sales-tbl">
-          <thead><tr><th>Лид</th><th>Статус</th><th>Ответственный</th><th>Продажа</th><th class="num">Сумма</th><th></th></tr></thead>
+          <thead><tr><th>Лид</th><th class="sortable${filtered ? ' active' : ''}" onclick="SalesCrmPage.toggleStatusMenu(event)" title="Выбрать, какие статусы показывать">Статус${icon('filter', 12)}${filtered ? ` <span class="th-count">${chosen.length}</span>` : ''}</th><th>Ответственный</th><th>Продажа</th><th class="num">Сумма</th><th></th></tr></thead>
           <tbody>${list.map(l => {
             const [label, badge] = SALES_STATUS[l.status] || [l.status, 'badge-gray']
             // Плашка «Оставил заявку» — только пока лид в статусе заявки
@@ -300,7 +359,7 @@ const SalesCrmPage = {
             <tr>
               <td><div class="cell-main sales-contact">${Sales.contact(l.contact)}</div>${l.description ? `<div class="cell-sub sales-note" title="${esc(l.description)}">${esc(l.description)}</div>` : ''}${l.referral ? `<div class="cell-sub sales-note" title="Реферал: ${esc(l.referral)}">от реферала ${esc(l.referral)}</div>` : ''}</td>
               <td><span class="badge ${badge}">${label}</span>${age ? `<div class="lead-age ${age.tone}" title="Лид внесён ${esc(stampLabel(l.createdAt))} и всё ещё в статусе заявки">Оставил заявку: ${age.label}</div>` : ''}</td>
-              <td class="nowrap"><div>${esc(Sales.name(l.createdBy))}</div><div class="cell-sub">внесён ${esc(stampLabel(l.createdAt))}</div></td>
+              <td class="nowrap"><div>${esc(Sales.name(l.createdBy))}${l.createdBy === Sales.me ? ' <span class="badge badge-lime">ты</span>' : ''}</div><div class="cell-sub">внесён ${esc(stampLabel(l.createdAt))}</div></td>
               <td class="nowrap">${sale || '<span class="muted">—</span>'}${l.discount ? `<div class="cell-sub">скидка ${fmt(l.discountPercent)}%</div>` : ''}</td>
               <td class="num nowrap">${l.amount ? Sales.rub(l.amount) : '<span class="muted">—</span>'}${mine ? `<div class="cell-sub sales-reward" title="Твоё вознаграждение за этого лида">тебе ${Sales.rub(l.amount * share)}</div>` : ''}</td>
               <td class="actions"><div>

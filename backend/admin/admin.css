@@ -724,3 +724,13 @@ a.kpi:hover{border-color:var(--lime-line)}
 .phw-answers.is-winter .phw-q{white-space:pre-wrap}
 .wst-bar{height:6px;border-radius:6px;background:var(--bg3);overflow:hidden;min-width:140px;margin-bottom:5px}
 .wst-bar span{display:block;height:100%;border-radius:6px;background:#5BC8F5}
+
+/* CRM: выпадашка фильтра по статусам (клик по заголовку «Статус») */
+.tbl th .th-count{display:inline-block;margin-left:4px;padding:0 6px;border-radius:var(--r-pill);background:rgba(255,214,10,.14);color:var(--lime);font-size:10px;letter-spacing:0}
+.status-menu{position:fixed;z-index:60;min-width:240px;padding:8px;background:var(--bg2);border:1px solid var(--border-strong);border-radius:var(--r-lg);box-shadow:var(--shadow-md)}
+.status-menu-head{padding:6px 8px 8px;font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.05em}
+.status-menu-row{display:flex;align-items:center;gap:10px;padding:7px 8px;border-radius:8px;cursor:pointer}
+.status-menu-row:hover{background:var(--bg3)}
+.status-menu-row input{width:15px;height:15px;margin:0;accent-color:var(--lime);cursor:pointer}
+.status-menu-count{margin-left:auto;font-size:12px;color:var(--text3);font-variant-numeric:tabular-nums}
+.status-menu-foot{display:flex;gap:6px;padding:8px 8px 4px;border-top:1px solid var(--border);margin-top:6px}
