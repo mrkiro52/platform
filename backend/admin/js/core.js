@@ -293,6 +293,7 @@ const NAV = [
     { id: 'sales-crm', path: '/sales/crm', label: 'CRM', icon: 'target', sales: true },
     { id: 'sales-calendar', path: '/sales/calendar', label: 'Календарь', icon: 'calendar-days', sales: true },
     { id: 'sales-stats', path: '/sales/stats', label: 'Статистика', icon: 'chart-column', sales: true },
+    { id: 'sales-storage', path: '/sales/storage', label: 'Хранилище', icon: 'archive', sales: true },
   ] },
   { label: 'Обзор', items: [
     { id: 'dashboard', path: '/dashboard', label: 'Дашборд', icon: 'layout-dashboard', scopes: MAIN },
@@ -323,6 +324,7 @@ const ROUTES = [
   { re: /^\/sales\/crm$/, page: 'salesCrm', nav: 'sales-crm', title: 'CRM', sales: true },
   { re: /^\/sales\/calendar$/, page: 'salesCalendar', nav: 'sales-calendar', title: 'Календарь', sales: true },
   { re: /^\/sales\/stats$/, page: 'salesStats', nav: 'sales-stats', title: 'Статистика', sales: true },
+  { re: /^\/sales\/storage$/, page: 'salesStorage', nav: 'sales-storage', title: 'Хранилище', sales: true },
   { re: /^\/dashboard$/, page: 'dashboard', nav: 'dashboard', title: 'Дашборд', scopes: MAIN },
   { re: /^\/tasks$/, page: 'tasks', nav: 'tasks', title: 'Задачи', scopes: ALL },
   { re: /^\/users$/, page: 'users', nav: 'users', title: 'Пользователи', scopes: MAIN },

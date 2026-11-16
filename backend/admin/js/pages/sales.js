@@ -15,7 +15,8 @@ const SALES_COLOR = {
   new: 'var(--text3)', dialog: 'var(--blue)', call_scheduled: 'var(--violet)',
   call_done: 'var(--orange)', closed: 'var(--green)', lost: 'var(--red)',
 }
-const SALES_FORMAT = { installment: 'Рассрочка', full: 'Оплата разом' }
+const SALES_FORMAT = { installment: 'Рассрочка', full: 'Сумма разом' }
+const SALES_CHEERS = ['красавчик!', 'отличная работа!', 'поздравляю!', 'супер!']
 const SALES_DURATIONS = [15, 30, 45, 60]
 const MSK = 3 * 3600 * 1000
 
@@ -50,6 +51,22 @@ const Sales = {
     }
   },
   showError(id, message) { const el = $(id); el.textContent = message; el.hidden = false },
+  // Плавный досчёт суммы от from до to (замедляется к концу)
+  countUp(el, from, to, ms = 1400) {
+    const start = performance.now()
+    const step = (t) => {
+      const k = Math.min(1, (t - start) / ms)
+      el.textContent = Sales.rub(from + (to - from) * (1 - Math.pow(1 - k, 3)))
+      if (k < 1) requestAnimationFrame(step)
+      else el.closest('.kpi')?.classList.add('is-grown')
+    }
+    requestAnimationFrame(step)
+  },
+  // «70 000 ₽», «70.000», «70 000р» → 70000: срезаем буквы и знаки по краям, убираем пробелы и точки внутри
+  parseAmount(text) {
+    const v = String(text || '').replace(/^[^\d]+|[^\d]+$/g, '').replace(/[\s.,]/g, '')
+    return /^\d+$/.test(v) ? Number(v) : NaN
+  },
 }
 
 // ═══ CRM ═══════════════════════════════════════════════════════════════
@@ -58,6 +75,7 @@ const SalesCrmPage = {
   statuses: null, // какие статусы показывать; null — все
   people: null,   // чьих лидов показывать (ответственный); null — всех
   q: '',
+  saleDraft: null,  // открытое окно «Закрываем в продажу»
   tab: 'leads',    // leads | referrals (выплаты рефералам видит только главный админ)
 
   async render(view, ctx) {
@@ -229,36 +247,43 @@ const SalesCrmPage = {
   },
 
   // Вознаграждения: каждый видит своё, полную раскладку — только Ханиль
-  paintRewards() {
+  // prev — вознаграждения до закрытия сделки: изменившиеся числа плавно досчитываются до новых
+  paintRewards(prev = null) {
     const r = SalesCrmPage.data.rewards
-    const card = (label, value, foot, accent = false, iconName = 'zap') => `
-      <div class="kpi">
+    const card = (label, value, foot, accent = false, iconName = 'zap', key = '') => {
+      const from = prev && key ? Math.round(prev[key] || 0) : null
+      const to = Math.round(r[key] || 0)
+      const grow = from !== null && from !== to
+      return `
+      <div class="kpi${grow ? ' is-growing' : ''}">
         <div class="kpi-top"><span class="kpi-label">${label}</span><span class="kpi-icon${accent ? ' is-lime' : ''}">${icon(iconName, 15)}</span></div>
-        <div class="kpi-value">${value}</div>
+        <div class="kpi-value"${grow ? ` data-from="${from}" data-to="${to}"` : ''}>${grow ? Sales.rub(from) : value}</div>
         <div class="kpi-foot">${foot}</div>
       </div>`
+    }
     const deals = n => `${fmt(n)} ${plural(n, 'лид закрыт', 'лида закрыто', 'лидов закрыто')} в продажу`
     let cards = []
     if (r.view === 'all') {
       cards = [
-        card('Сумма продаж', Sales.rub(r.total), deals(r.closedCount), false, 'trending-up'),
-        card('Тебе', Sales.rub(r.khanil), '70% от суммы минус выплаты Саше, Эмилю и рефералам', true, 'crown'),
-        card('Денису', Sales.rub(r.denis), '30% от всей суммы продаж', false, 'user'),
-        card('Саше', Sales.rub(r.sasha), '10% с лидов, которые закрыл Саша', false, 'user'),
-        card('Эмилю', Sales.rub(r.emil), '10% с лидов, которые закрыл Эмиль', false, 'user'),
-        card('Рефералам', Sales.rub(r.referrals || 0), '10% с лидов, которых привели рефералы, — из твоей доли', false, 'users'),
+        card('Сумма продаж', Sales.rub(r.total), deals(r.closedCount), false, 'trending-up', 'total'),
+        card('Тебе', Sales.rub(r.khanil), '70% от суммы минус выплаты Саше, Эмилю и рефералам', true, 'crown', 'khanil'),
+        card('Денису', Sales.rub(r.denis), '30% от всей суммы продаж', false, 'user', 'denis'),
+        card('Саше', Sales.rub(r.sasha), '10% с лидов, которые закрыл Саша', false, 'user', 'sasha'),
+        card('Эмилю', Sales.rub(r.emil), '10% с лидов, которые закрыл Эмиль', false, 'user', 'emil'),
+        card('Рефералам', Sales.rub(r.referrals || 0), '10% с лидов, которых привели рефералы, — из твоей доли', false, 'users', 'referrals'),
       ]
     } else if (r.view === 'denis') {
       cards = [
-        card('Твоё вознаграждение', Sales.rub(r.mine), '30% от всей суммы продаж', true, 'crown'),
-        card('Сумма продаж', Sales.rub(r.total), deals(r.closedCount), false, 'trending-up'),
+        card('Твоё вознаграждение', Sales.rub(r.mine), '30% от всей суммы продаж', true, 'crown', 'mine'),
+        card('Сумма продаж', Sales.rub(r.total), deals(r.closedCount), false, 'trending-up', 'total'),
       ]
     } else {
       cards = [
-        card('Твоё вознаграждение', Sales.rub(r.mine), '10% от суммы лидов, которые закрыл ты', true, 'crown'),
+        card('Твоё вознаграждение', Sales.rub(r.mine), '10% от суммы лидов, которые закрыл ты', true, 'crown', 'mine'),
       ]
     }
     $('#crm-rewards').innerHTML = `<div class="sales-kpis${cards.length === 1 ? ' is-single' : ''}">${cards.join('')}</div>`
+    document.querySelectorAll('#crm-rewards [data-to]').forEach(el => Sales.countUp(el, Number(el.dataset.from), Number(el.dataset.to)))
   },
 
   search: debounce((value) => { SalesCrmPage.q = value.trim().toLowerCase(); SalesCrmPage.paint() }, 150),
@@ -383,6 +408,7 @@ const SalesCrmPage = {
               <td class="nowrap">${sale || '<span class="muted">—</span>'}${l.discount ? `<div class="cell-sub">скидка ${fmt(l.discountPercent)}%</div>` : ''}</td>
               <td class="num nowrap">${l.amount ? Sales.rub(l.amount) : '<span class="muted">—</span>'}${mine ? `<div class="cell-sub sales-reward" title="Твоё вознаграждение за этого лида">тебе ${Sales.rub(l.amount * share)}</div>` : ''}</td>
               <td class="actions"><div>
+                <button class="btn-icon btn-sm is-money${l.status === 'closed' ? ' is-done' : ''}" onclick="SalesCrmPage.closeSale(${l.id})" title="${l.status === 'closed' ? 'Изменить данные продажи' : 'Закрыть в продажу'}" aria-label="Закрыть в продажу">${icon('dollar-sign', 15)}</button>
                 <button class="btn-icon btn-sm" onclick="SalesCrmPage.schedule(${l.id})" title="Назначить созвон" aria-label="Назначить созвон">${icon('calendar-plus', 15)}</button>
                 <button class="btn-icon btn-sm" onclick="SalesCrmPage.open(${l.id})" title="Изменить" aria-label="Изменить">${icon('pencil', 15)}</button>
                 <button class="btn-icon btn-sm is-danger" onclick="SalesCrmPage.remove(${l.id})" title="Удалить" aria-label="Удалить">${icon('trash-2', 15)}</button>
@@ -404,7 +430,7 @@ const SalesCrmPage = {
         <input id="l-contact" value="${esc(l ? l.contact : '')}" maxlength="200" placeholder="@telegram или номер телефона" autofocus/>
       </div>
       <div class="form-row">
-        <div class="field"><label for="l-status">Статус</label><select id="l-status" onchange="SalesCrmPage.onStatus()">${options(Object.entries(SALES_STATUS).map(([k, [label]]) => [k, label]), l ? l.status : 'new')}</select></div>
+        <div class="field"><label for="l-status">Статус</label><select id="l-status">${options(Object.entries(SALES_STATUS).map(([k, [label]]) => [k, label]), l ? l.status : 'new')}</select></div>
         <div class="field"><label for="l-created">Ответственный</label><select id="l-created">${options(people, l ? l.createdBy : Sales.me)}</select></div>
       </div>
       <div class="field">
@@ -412,22 +438,6 @@ const SalesCrmPage = {
         <input id="l-referral" value="${esc(l ? l.referral : '')}" maxlength="200" placeholder="Контакт того, кто порекомендовал лиду проект — если такой есть"/>
       </div>
       <div class="field"><label for="l-desc">Описание</label><textarea id="l-desc" rows="4" placeholder="Заметка про лида: откуда пришёл, что хочет, о чём договорились">${esc(l ? l.description : '')}</textarea></div>
-      <div class="field-label sales-group">Продажа</div>
-      <div class="form-row">
-        <div class="field"><label for="l-closed">Кто закрыл в продажу</label><select id="l-closed">${options([['', 'Пока никто'], ...people], l && l.closedBy ? l.closedBy : '')}</select></div>
-        <div class="field"><label for="l-format">Формат оплаты</label><select id="l-format">${options([['', 'Не выбран'], ...Object.entries(SALES_FORMAT)], l && l.paymentFormat ? l.paymentFormat : '')}</select></div>
-      </div>
-      <div class="form-row">
-        <div class="field"><label for="l-amount">Сумма продажи, ₽</label><input id="l-amount" type="number" min="0" step="1" inputmode="numeric" value="${l && l.amount ? l.amount : ''}" placeholder="0"/></div>
-        <div class="field">
-          <label for="l-percent">Скидка</label>
-          <div class="sales-discount">
-            <label class="switch"><input type="checkbox" id="l-discount"${l && l.discount ? ' checked' : ''} onchange="SalesCrmPage.onDiscount()"/><span class="switch-track"><span class="switch-knob"></span></span><span class="switch-label" id="l-discount-label">${l && l.discount ? 'Да' : 'Нет'}</span></label>
-            <input id="l-percent" type="number" min="0" max="100" step="1" inputmode="numeric" value="${l && l.discount ? l.discountPercent : 0}"${l && l.discount ? '' : ' disabled'} aria-label="Процент скидки"/>
-            <span class="sales-discount-unit">%</span>
-          </div>
-        </div>
-      </div>
       <div class="form-error" id="l-err" hidden></div>
       <div class="modal-actions">
         <button class="btn btn-secondary" onclick="Modal.close()">Отмена</button>
@@ -435,33 +445,30 @@ const SalesCrmPage = {
       </div>`, { size: 'lg' })
   },
 
-  // Лида закрыли в продажу — по умолчанию его закрыл тот, кто сейчас в карточке
-  onStatus() {
-    if ($('#l-status').value === 'closed' && !$('#l-closed').value) $('#l-closed').value = Sales.me
-  },
-
-  onDiscount() {
-    const on = $('#l-discount').checked
-    $('#l-discount-label').textContent = on ? 'Да' : 'Нет'
-    $('#l-percent').disabled = !on
-    if (!on) $('#l-percent').value = 0
-    else $('#l-percent').focus()
+  // Данные продажи в карточке не правятся — они задаются кнопкой «$», здесь просто сохраняем как были
+  saleOf(l) {
+    return {
+      closedBy: l ? l.closedBy : null,
+      paymentFormat: l ? l.paymentFormat : null,
+      amount: l ? l.amount : 0,
+      discount: l ? l.discount : false,
+      discountPercent: l ? l.discountPercent : 0,
+    }
   },
 
   async save(id) {
+    const l = id ? SalesCrmPage.data.leads.find(x => x.id === id) : null
     const body = {
       contact: $('#l-contact').value.trim(),
       status: $('#l-status').value,
       createdBy: $('#l-created').value,
       referral: $('#l-referral').value.trim(),
       description: $('#l-desc').value.trim(),
-      closedBy: $('#l-closed').value || null,
-      paymentFormat: $('#l-format').value || null,
-      amount: Number($('#l-amount').value) || 0,
-      discount: $('#l-discount').checked,
-      discountPercent: Number($('#l-percent').value) || 0,
+      ...SalesCrmPage.saleOf(l),
     }
     if (!body.contact) return Sales.showError('#l-err', 'Укажи контакт лида: ник в Telegram или номер телефона')
+    // «Закрыт в продажу» без суммы — сразу открываем окно продажи с уже введёнными данными карточки
+    if (body.status === 'closed' && !(body.closedBy && body.amount > 0)) return SalesCrmPage.closeSale(id, body)
     $('#l-save').disabled = true
     try {
       if (id) await api(`/api/sales/leads/${id}`, { method: 'PUT', body })
@@ -491,6 +498,80 @@ const SalesCrmPage = {
     } catch (e) { toast(e.message, 'err') }
   },
 
+  // Окно «Закрываем в продажу». draft — карточка лида, если в продажу переводят из неё
+  closeSale(id, draft = null) {
+    const l = id ? SalesCrmPage.data.leads.find(x => x.id === id) : null
+    const base = draft || (l ? { contact: l.contact, status: l.status, createdBy: l.createdBy, referral: l.referral, description: l.description } : null)
+    if (!base) return
+    SalesCrmPage.saleDraft = { id, base, format: l && l.paymentFormat ? l.paymentFormat : 'full' }
+    const again = l && l.status === 'closed' && l.amount > 0
+    const options = Sales.people.map(p => `<option value="${p.key}"${p.key === (again && l.closedBy ? l.closedBy : Sales.me) ? ' selected' : ''}>${esc(p.name)}</option>`).join('')
+    Modal.open(`
+      ${modalHead(`${icon('dollar-sign', 18)}Закрываем в продажу`, `Лид ${esc(base.contact)}`)}
+      <div class="field"><label for="s-closer">Кто закрывает</label><select id="s-closer">${options}</select></div>
+      <div class="field">
+        <label>Формат оплаты</label>
+        <div class="seg sale-format" id="s-format" role="radiogroup">${Object.entries(SALES_FORMAT).map(([k, label]) => `<button type="button" role="radio" data-v="${k}" aria-checked="${k === SalesCrmPage.saleDraft.format}" class="${k === SalesCrmPage.saleDraft.format ? 'active' : ''}" onclick="SalesCrmPage.setSaleFormat('${k}')">${label}</button>`).join('')}</div>
+      </div>
+      <div class="field">
+        <label for="s-amount">Сумма продажи, ₽</label>
+        <input id="s-amount" inputmode="numeric" autocomplete="off" placeholder="70 000" value="${again ? esc(fmt(l.amount)) : ''}" autofocus onkeydown="if(event.key==='Enter')SalesCrmPage.confirmSale()"/>
+      </div>
+      <div class="form-error" id="s-err" hidden></div>
+      <div class="modal-actions">
+        <button class="btn btn-secondary" onclick="Modal.close()">Отмена</button>
+        <button class="btn btn-primary btn-money" id="s-save" onclick="SalesCrmPage.confirmSale()">${icon('check')}${again ? 'Сохранить продажу' : 'Закрыть в продажу'}</button>
+      </div>`)
+  },
+
+  setSaleFormat(value) {
+    SalesCrmPage.saleDraft.format = value
+    document.querySelectorAll('#s-format button').forEach(b => {
+      const on = b.dataset.v === value
+      b.classList.toggle('active', on)
+      b.setAttribute('aria-checked', on)
+    })
+  },
+
+  async confirmSale() {
+    const { id, base, format } = SalesCrmPage.saleDraft
+    const closer = $('#s-closer').value
+    const amount = Sales.parseAmount($('#s-amount').value)
+    if (!amount) return Sales.showError('#s-err', 'Укажи сумму продажи цифрами, например 70 000')
+    const body = { ...base, status: 'closed', closedBy: closer, paymentFormat: format, amount, discount: false, discountPercent: 0 }
+    const prev = { ...SalesCrmPage.data.rewards }
+    $('#s-save').disabled = true
+    try {
+      if (id) await api(`/api/sales/leads/${id}`, { method: 'PUT', body })
+      else await api('/api/sales/leads', { method: 'POST', body })
+      const data = await api('/api/sales/leads')
+      SalesCrmPage.cheer(closer, () => {
+        if (!$('#crm-rewards')) return Router.reload()
+        Sales.use(data)
+        SalesCrmPage.data = data
+        SalesCrmPage.paintRewards(prev)
+        SalesCrmPage.paintBody()
+      })
+    } catch (e) {
+      Sales.showError('#s-err', e.message)
+      $('#s-save').disabled = false
+    }
+  },
+
+  // Зелёное окно с поздравлением; по закрытию — досчёт вознаграждения
+  cheer(person, after) {
+    const phrase = SALES_CHEERS[Math.floor(Math.random() * SALES_CHEERS.length)]
+    Modal.open(`
+      <div class="sale-cheer">
+        <div class="sale-cheer-icon">${icon('party-popper', 30)}</div>
+        <div class="sale-cheer-title">${esc(Sales.name(person))}, ${phrase}</div>
+        <div class="sale-cheer-sub">Лид закрыт в продажу — вознаграждение уже пересчитано</div>
+        <button class="btn sale-cheer-btn" onclick="Modal.close()" autofocus>Ура!</button>
+      </div>`)
+    $('#modal-box').classList.add('is-cheer')
+    Modal.onClose = after
+  },
+
   // Назначить созвон: открываем календарь с заготовкой встречи по этому лиду
   schedule(id) { Router.go(`/sales/calendar?lead=${id}`) },
 }
@@ -502,6 +583,7 @@ const SalesCalendarPage = {
   week: null,      // понедельник показанной недели
   events: [],
   draft: null,     // встреча, открытая в форме
+  hidden: new Set(), // чьи созвоны скрыты кликом по имени в легенде; по умолчанию видны все
 
   async render(view, ctx) {
     const asked = ctx.query.get('week') || ''
@@ -514,7 +596,7 @@ const SalesCalendarPage = {
     if (ctx.stale()) return
     Sales.use(data)
     SalesCalendarPage.events = data.events
-    view.innerHTML = SalesCalendarPage.head() + SalesCalendarPage.grid()
+    view.innerHTML = SalesCalendarPage.head() + `<div id="scal-wrap">${SalesCalendarPage.grid()}</div>`
     // Открываем на рабочем утре, а не на полуночи
     $('#scal-scroll').scrollTop = SCAL_HOUR * 8 - 8
 
@@ -590,7 +672,9 @@ const SalesCalendarPage = {
     const nowMin = Sales.parts(new Date().toISOString()).minutes
     const days = Array.from({ length: 7 }, (_, i) => addDays(week, i))
     const byDay = Object.fromEntries(days.map(d => [d, []]))
-    for (const e of SalesCalendarPage.events) {
+    const hidden = SalesCalendarPage.hidden
+    // Созвон виден, если в нём участвует хотя бы один из выбранных в легенде
+    for (const e of SalesCalendarPage.events.filter(x => x.participants.some(p => !hidden.has(p)))) {
       const { day } = Sales.parts(e.startsAt)
       if (byDay[day]) byDay[day].push(e)
     }
@@ -603,9 +687,10 @@ const SalesCalendarPage = {
           const height = Math.max(Math.min(e.duration, 1440 - start) / 60 * SCAL_HOUR, 22)
           const time = `${Sales.clock(start)}–${Sales.clock(start + e.duration)}`
           return `
-          <button type="button" class="scal-ev sp-${esc(e.participants[0] || 'khanil')}${e.duration <= 30 ? ' is-short' : ''}"
+          <button type="button" class="scal-ev${e.duration <= 30 ? ' is-short' : ''}"
             style="top:${top.toFixed(1)}px;height:${(height - 2).toFixed(1)}px;left:calc(${(c / cols * 100).toFixed(2)}% + 2px);width:calc(${(100 / cols).toFixed(2)}% - 4px)"
             onclick="event.stopPropagation();SalesCalendarPage.open(${e.id})" title="${esc(`${time} · ${e.title} · ${who(e)}`)}">
+            <span class="scal-ev-dots">${e.participants.map(p => `<i class="sp-${esc(p)}"></i>`).join('')}</span>
             ${e.duration <= 30
               ? `<span class="scal-ev-time">${Sales.clock(start)}</span><span class="scal-ev-title">${esc(e.title)}</span>`
               : `<span class="scal-ev-title">${esc(e.title)}</span><span class="scal-ev-time">${time}</span><span class="scal-ev-who">${esc(who(e))}</span>`}
@@ -629,8 +714,21 @@ const SalesCalendarPage = {
             </div>
           </div>
         </div>
-        <div class="scal-legend">${Sales.people.map(p => `<span class="scal-legend-item"><i class="sp-${p.key}"></i>${esc(p.name)}</span>`).join('')}<span class="scal-legend-hint">Нажми на свободное время, чтобы завести встречу</span></div>
+        <div class="scal-legend">${Sales.people.map(p => {
+          const on = !SalesCalendarPage.hidden.has(p.key)
+          return `<button type="button" class="scal-legend-item sp-${p.key}${on ? ' is-on' : ''}" aria-pressed="${on}" onclick="SalesCalendarPage.togglePerson('${p.key}')" title="${on ? 'Скрыть' : 'Показать'} созвоны, где участвует ${esc(p.name)}"><i></i>${esc(p.name)}</button>`
+        }).join('')}<span class="scal-legend-hint">Нажми на имя, чтобы скрыть или показать его созвоны · на свободное время — чтобы завести встречу</span></div>
       </div>`
+  },
+
+  // Клик по имени в легенде: прячем или возвращаем созвоны этого человека, не теряя прокрутку
+  togglePerson(key) {
+    const hidden = SalesCalendarPage.hidden
+    if (hidden.has(key)) hidden.delete(key)
+    else hidden.add(key)
+    const top = $('#scal-scroll') ? $('#scal-scroll').scrollTop : 0
+    $('#scal-wrap').innerHTML = SalesCalendarPage.grid()
+    $('#scal-scroll').scrollTop = top
   },
 
   // Клик по свободному месту колонки — новая встреча на это время (с шагом 15 минут)
