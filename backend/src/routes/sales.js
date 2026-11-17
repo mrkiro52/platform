@@ -1,4 +1,5 @@
 const express = require('express')
+const crypto = require('crypto')
 const { verifyToken } = require('../middleware/auth')
 const db = require('../db')
 const { SALES_PEOPLE, salesPersonOf } = require('../admins')
@@ -267,6 +268,88 @@ router.put('/leads/:id', requireSales, (req, res) => {
     res.json(mapLead(db.prepare('SELECT * FROM sales_leads WHERE id = ?').get(row.id)))
   } catch (e) {
     res.status(500).json({ message: e.message })
+  }
+})
+
+// ── Заявки с Яндекс Формы ────────────────────────────────────────────────────
+// Форма шлёт ответы сюда интеграцией «Запрос JSON-RPC POST» (или обычным HTTP POST с JSON).
+// Доступ — по секрету SALES_FORM_TOKEN из .env: заголовок «Authorization: Bearer <секрет>»
+// или «X-Kiro-Token: <секрет>». Каждая заявка — лид со статусом «Заявка», ответственный Ханиль,
+// без реферала; в описание складываются все поля формы «Вопрос: ответ». Контакт — поле,
+// в названии которого есть telegram / телеграм / ник / контакт (или первый ответ вида @ник).
+// Если такой контакт уже есть в CRM, новый лид не создаётся — новая анкета дописывается
+// в описание существующего.
+const FORM_OWNER = 'khanil'
+const FORM_CONTACT_KEY = /^(contact|контакт)$|telegram|телеграм|tg\b|ник/i
+
+function formToken(req) {
+  const auth = String(req.get('authorization') || '')
+  return (auth.match(/^Bearer\s+(.+)$/i) || [])[1] || req.get('x-kiro-token') || ''
+}
+
+function sameSecret(given, expected) {
+  const a = crypto.createHash('sha256').update(String(given)).digest()
+  const b = crypto.createHash('sha256').update(String(expected)).digest()
+  return crypto.timingSafeEqual(a, b)
+}
+
+// Ответ формы в строку: списки через запятую, вложенное — как JSON
+function formValue(v) {
+  if (v == null) return ''
+  if (Array.isArray(v)) return v.map(formValue).filter(Boolean).join(', ')
+  if (typeof v === 'object') return JSON.stringify(v)
+  return String(v).trim()
+}
+
+// Ник из ответа: «t.me/nick», «nick», «@nick» → «@nick»; телефон и прочее — как есть
+function formContact(value) {
+  const v = value.trim().replace(/^(https?:\/\/)?(t\.me|telegram\.me)\//i, '')
+  if (/^@?[A-Za-z][\w]{3,31}$/.test(v)) return v.startsWith('@') ? v : `@${v}`
+  return v
+}
+
+router.post('/form', express.text({ type: () => true, limit: '200kb' }), (req, res) => {
+  const reply = (status, result, error) => res.status(status).json({ jsonrpc: '2.0', id: rpcId, ...(error ? { error: { code: status, message: error } } : { result }) })
+  let rpcId = null
+  try {
+    const secret = String(process.env.SALES_FORM_TOKEN || '').trim()
+    if (!secret) return reply(503, null, 'Приём заявок с формы не настроен')
+    if (!sameSecret(formToken(req), secret)) return reply(401, null, 'Неверный токен')
+
+    let body = req.body
+    if (typeof body === 'string') { try { body = JSON.parse(body || '{}') } catch { return reply(400, null, 'Ожидается JSON') } }
+    if (!body || typeof body !== 'object') return reply(400, null, 'Ожидается JSON')
+    rpcId = body.id ?? null
+    // JSON-RPC: поля в params; обычный POST — поля прямо в теле
+    let fields = body.jsonrpc && body.params && typeof body.params === 'object' ? body.params : body
+    if (Array.isArray(fields)) fields = Object.fromEntries(fields.map((v, i) => [`Поле ${i + 1}`, v]))
+    const entries = Object.entries(fields)
+      .filter(([key]) => !(fields === body && ['jsonrpc', 'method', 'id'].includes(key)))
+      .map(([key, value]) => [String(key).trim(), formValue(value)])
+      .filter(([key, value]) => key && value)
+    if (!entries.length) return reply(400, null, 'В заявке нет ни одного заполненного поля')
+
+    const contactEntry = entries.find(([key]) => FORM_CONTACT_KEY.test(key)) || entries.find(([, value]) => /^@\w{3,}$/.test(value))
+    const contact = contactEntry ? formContact(contactEntry[1]).slice(0, LIMITS.contact) : `Без контакта · заявка ${new Date().toISOString().slice(0, 16).replace('T', ' ')}`
+    const stamp = now()
+    const header = `Заявка с Яндекс Формы, ${new Date(Date.parse(stamp) + 3 * 3600 * 1000).toISOString().slice(0, 16).replace('T', ' ')} МСК`
+    const text = [header, ...entries.map(([key, value]) => `${key}: ${value}`)].join('\n')
+
+    const key = referralKey(contact)
+    const existing = contactEntry && db.prepare('SELECT id, contact, description FROM sales_leads').all().find(r => referralKey(r.contact) === key)
+    if (existing) {
+      const description = [existing.description, text].filter(Boolean).join('\n\n').slice(0, LIMITS.description)
+      db.prepare('UPDATE sales_leads SET description = ?, updated_at = ? WHERE id = ?').run(description, stamp, existing.id)
+      return reply(200, { ok: true, leadId: existing.id, duplicate: true })
+    }
+    const info = db.prepare(`
+      INSERT INTO sales_leads (contact, description, status, created_by, referral, created_at, updated_at)
+      VALUES (?, ?, 'new', ?, '', ?, ?)
+    `).run(contact, text.slice(0, LIMITS.description), FORM_OWNER, stamp, stamp)
+    logStatus(info.lastInsertRowid, 'new', FORM_OWNER, stamp)
+    reply(201, { ok: true, leadId: info.lastInsertRowid })
+  } catch (e) {
+    reply(500, null, e.message)
   }
 })
 
