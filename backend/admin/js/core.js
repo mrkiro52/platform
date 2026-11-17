@@ -463,7 +463,74 @@ document.addEventListener('click', e => {
 })
 
 // ═══ Оболочка ══════════════════════════════════════════════════════════
-const Badges = { homework: 0, tasks: 0, programHomework: 0, winterHomework: 0 }
+const Badges = { homework: 0, tasks: 0, programHomework: 0, winterHomework: 0, salesNotify: 0 }
+
+// ═══ Колокольчик: уведомления отдела продаж («вам назначен новый лид») ═══
+// Виден всем, у кого есть раздел продаж; уведомления приходят только Денису, Саше и Эмилю.
+const Bell = {
+  list: [],
+  paint() {
+    const show = !!Session.person
+    document.querySelectorAll('.bell').forEach(el => {
+      el.hidden = !show
+      if (show && !el.firstChild) el.innerHTML = `${icon('bell', 18)}<span class="bell-dot" data-badge="salesNotify" hidden></span>`
+    })
+  },
+  async load() {
+    if (!Session.person) return
+    try {
+      const data = await api('/api/sales/notifications')
+      Bell.list = data.list
+      Badges.salesNotify = data.unread
+    } catch { /* бэкенд без уведомлений — колокольчик просто пустой */ }
+  },
+  text(n) {
+    return n.count > 1
+      ? `Вам ${plural(n.count, 'назначен', 'назначено', 'назначено')} ${fmt(n.count)} ${plural(n.count, 'новый лид', 'новых лида', 'новых лидов')}`
+      : 'Вам назначен новый лид'
+  },
+  close() {
+    const menu = $('#bell-menu')
+    if (menu) menu.remove()
+    document.removeEventListener('click', Bell.close)
+    document.removeEventListener('keydown', Bell.onKey)
+    window.removeEventListener('resize', Bell.close)
+  },
+  onKey(e) { if (e.key === 'Escape') Bell.close() },
+  async toggle(event) {
+    event.stopPropagation()
+    if ($('#bell-menu')) return Bell.close()
+    const btn = event.currentTarget
+    await Bell.load()
+    const menu = document.createElement('div')
+    menu.id = 'bell-menu'
+    menu.className = 'bell-menu'
+    menu.innerHTML = `
+      <div class="bell-menu-head">Уведомления</div>
+      ${Bell.list.length ? `<div class="bell-list">${Bell.list.map(n => `
+        <button class="bell-item${n.read ? '' : ' is-new'}" onclick="Bell.close(); Router.go('/sales/crm')">
+          <span class="bell-item-icon">${icon('target', 15)}</span>
+          <span class="bell-item-body"><span class="bell-item-text">${esc(Bell.text(n))}</span><span class="bell-item-time">${esc(stampLabel(n.createdAt))}</span></span>
+        </button>`).join('')}</div>`
+        : `<div class="bell-empty">${icon('bell', 22)}<div>Пока уведомлений нет</div></div>`}`
+    menu.addEventListener('click', e => e.stopPropagation())
+    document.body.appendChild(menu)
+    const r = btn.getBoundingClientRect()
+    menu.style.top = `${r.bottom + 8}px`
+    menu.style.left = `${Math.max(8, Math.min(r.left, window.innerWidth - menu.offsetWidth - 8))}px`
+    setTimeout(() => {
+      document.addEventListener('click', Bell.close)
+      document.addEventListener('keydown', Bell.onKey)
+      window.addEventListener('resize', Bell.close)
+    })
+    // Открыл — значит увидел: гасим счётчик, а новые в списке остаются подсвеченными до следующего открытия
+    if (Badges.salesNotify) {
+      Badges.salesNotify = 0
+      Shell.paintBadges()
+      try { await api('/api/sales/notifications/read', { method: 'POST' }) } catch { /* не страшно — погасим в следующий раз */ }
+    }
+  },
+}
 
 const Shell = {
   renderNav() {
@@ -481,6 +548,7 @@ const Shell = {
         </div>`
     }).join('')
     $('#sb-role').textContent = Session.isMain ? 'Admin Panel' : Session.roleLabel
+    Bell.paint()
     $('#sb-foot').innerHTML = `
       <div class="me">
         <div class="me-avatar">${esc(initials(Session.username))}</div>
@@ -524,6 +592,7 @@ const Shell = {
       const list = await api('/api/winter/admin/homework')
       Badges.winterHomework = list.filter(h => h.status === 'submitted').length
     } catch { /* бэкенд без зимнего лагеря — бейдж просто не появится */ }
+    await Bell.load()
     if (ALL.includes(Session.scope)) try {
       const { me, tasks } = await api('/api/admin-tasks')
       Badges.tasks = tasksNeedingAttention(tasks, me)
@@ -614,6 +683,9 @@ const App = {
     Router.guard = null
     Session.clear()
     clearInterval(App.badgeTimer)
+    Bell.close()
+    Bell.list = []
+    Badges.salesNotify = 0
     Modal.close()
     App.showLogin(message)
   },

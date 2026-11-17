@@ -39,6 +39,16 @@ function logStatus(leadId, status, person, at = now()) {
     .run(leadId, status, person, at)
 }
 
+// ── Уведомления ──────────────────────────────────────────────────────────────
+// «Вам назначен новый лид» получают только Денис, Саша и Эмиль — и только о лидах, которые
+// назначил им кто-то другой. Импорт и передача списком дают одно уведомление с числом лидов.
+const NOTIFIED = ['denis', 'sasha', 'emil']
+function notifyAssigned(person, by, count = 1) {
+  if (!NOTIFIED.includes(person) || person === by || count < 1) return
+  db.prepare('INSERT INTO sales_notifications (person, kind, count, created_at) VALUES (?, ?, ?, ?)')
+    .run(person, 'lead_assigned', count, now())
+}
+
 // ── Лиды ─────────────────────────────────────────────────────────────────────
 
 function mapLead(row) {
@@ -188,6 +198,7 @@ router.post('/leads', requireSales, (req, res) => {
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `).run(v.contact, v.description, v.status, v.createdBy, v.referral, v.closedBy, v.paymentFormat, v.discount ? 1 : 0, v.percent, v.amount, stamp, stamp)
     logStatus(info.lastInsertRowid, v.status, req.person, stamp)
+    notifyAssigned(v.createdBy, req.person)
     res.status(201).json(mapLead(db.prepare('SELECT * FROM sales_leads WHERE id = ?').get(info.lastInsertRowid)))
   } catch (e) {
     res.status(500).json({ message: e.message })
@@ -232,6 +243,7 @@ router.post('/leads/import', requireSales, (req, res) => {
         logStatus(info.lastInsertRowid, base.status, req.person, stamp)
         added.push(contact)
       }
+      notifyAssigned(base.createdBy, req.person, added.length)
     })()
     res.status(201).json({ added: added.length, skipped })
   } catch (e) {
@@ -251,7 +263,70 @@ router.put('/leads/:id', requireSales, (req, res) => {
         discount = ?, discount_percent = ?, amount = ?, updated_at = ? WHERE id = ?
     `).run(v.contact, v.description, v.status, v.createdBy, v.referral, v.closedBy, v.paymentFormat, v.discount ? 1 : 0, v.percent, v.amount, now(), row.id)
     if (v.status !== row.status) logStatus(row.id, v.status, req.person)
+    if (v.createdBy !== row.created_by) notifyAssigned(v.createdBy, req.person)
     res.json(mapLead(db.prepare('SELECT * FROM sales_leads WHERE id = ?').get(row.id)))
+  } catch (e) {
+    res.status(500).json({ message: e.message })
+  }
+})
+
+// POST /api/sales/leads/transfer — передать лидов списком ников другому ответственному.
+// Только Ханиль. Ники сравниваются без @ и регистра; ненайденные возвращаются списком.
+router.post('/leads/transfer', requireSales, (req, res) => {
+  try {
+    if (req.person !== 'khanil') return res.status(403).json({ message: 'Передавать лидов может только главный админ' })
+    const to = String(req.body?.to || '')
+    if (!NOTIFIED.includes(to)) return res.status(400).json({ message: 'Выбери, кому передать: Денис, Саша или Эмиль' })
+    const raw = Array.isArray(req.body?.contacts) ? req.body.contacts : []
+    const contacts = [...new Set(raw.map(c => String(c || '').trim()).filter(Boolean))]
+    if (!contacts.length) return res.status(400).json({ message: 'Вставь хотя бы один ник' })
+    if (contacts.length > IMPORT_LIMIT) return res.status(400).json({ message: `За раз можно передать не больше ${IMPORT_LIMIT} лидов` })
+
+    const byKey = new Map()
+    for (const row of db.prepare('SELECT id, contact, created_by FROM sales_leads').all()) {
+      const key = referralKey(row.contact)
+      if (!byKey.has(key)) byKey.set(key, [])
+      byKey.get(key).push(row)
+    }
+    const moved = [], already = [], notFound = []
+    const stamp = now()
+    const update = db.prepare('UPDATE sales_leads SET created_by = ?, updated_at = ? WHERE id = ?')
+    db.transaction(() => {
+      for (const contact of contacts) {
+        const rows = byKey.get(referralKey(contact))
+        if (!rows) { notFound.push(contact); continue }
+        const toMove = rows.filter(r => r.created_by !== to)
+        if (!toMove.length) { already.push(contact); continue }
+        for (const r of toMove) { update.run(to, stamp, r.id); r.created_by = to }
+        moved.push(contact)
+      }
+      notifyAssigned(to, req.person, moved.length)
+    })()
+    res.json({ moved: moved.length, already, notFound })
+  } catch (e) {
+    res.status(500).json({ message: e.message })
+  }
+})
+
+// GET /api/sales/notifications — мои уведомления (последние 30) и сколько непрочитанных
+router.get('/notifications', requireSales, (req, res) => {
+  try {
+    const list = db.prepare('SELECT * FROM sales_notifications WHERE person = ? ORDER BY id DESC LIMIT 30').all(req.person)
+    const unread = db.prepare('SELECT COUNT(*) AS n FROM sales_notifications WHERE person = ? AND read_at IS NULL').get(req.person).n
+    res.json({
+      unread,
+      list: list.map(n => ({ id: n.id, kind: n.kind, count: n.count, createdAt: n.created_at, read: !!n.read_at })),
+    })
+  } catch (e) {
+    res.status(500).json({ message: e.message })
+  }
+})
+
+// POST /api/sales/notifications/read — отметить все мои уведомления прочитанными
+router.post('/notifications/read', requireSales, (req, res) => {
+  try {
+    db.prepare('UPDATE sales_notifications SET read_at = ? WHERE person = ? AND read_at IS NULL').run(now(), req.person)
+    res.json({ ok: true })
   } catch (e) {
     res.status(500).json({ message: e.message })
   }

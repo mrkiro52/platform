@@ -1427,6 +1427,28 @@ function migrate() {
       console.error('❌ Migration 48 failed:', err.message)
     }
   }
+
+  // Migration 49: уведомления отдела продаж — «вам назначен новый лид». person — кому
+  // (denis / sasha / emil), count — сколько лидов назначено этим действием, read_at — когда прочитано.
+  if (schemaVersion < 49) {
+    try {
+      db.exec(`
+        CREATE TABLE IF NOT EXISTS sales_notifications (
+          id         INTEGER PRIMARY KEY AUTOINCREMENT,
+          person     TEXT    NOT NULL,
+          kind       TEXT    NOT NULL DEFAULT 'lead_assigned',
+          count      INTEGER NOT NULL DEFAULT 1,
+          created_at TEXT    NOT NULL,
+          read_at    TEXT
+        );
+        CREATE INDEX IF NOT EXISTS idx_sales_notif_person ON sales_notifications(person, read_at);
+      `)
+      db.pragma('user_version = 49')
+      console.log('✅ Migration 49 completed: added sales_notifications')
+    } catch (err) {
+      console.error('❌ Migration 49 failed:', err.message)
+    }
+  }
 }
 
 migrate()

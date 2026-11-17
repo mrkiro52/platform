@@ -335,6 +335,85 @@ const SalesCrmPage = {
     }
   },
 
+  // ── Передать лидов (только главный админ): ники столбиком → Денису, Саше или Эмилю ──
+  openTransfer() {
+    const targets = Sales.people.filter(p => ['denis', 'sasha', 'emil'].includes(p.key))
+    Modal.open(`
+      ${modalHead('Передать лидов', 'Вставь ники столбиком и выбери, кому их передать — он получит уведомление')}
+      <div class="field">
+        <label for="t-list">Ники лидов</label>
+        <textarea id="t-list" rows="10" spellcheck="false" placeholder="@nickname1&#10;@nickname2&#10;@nickname3" oninput="SalesCrmPage.onTransferInput()" autofocus></textarea>
+        <div class="field-hint" id="t-count">По одному нику в строке, с @ в начале</div>
+      </div>
+      <div class="field">
+        <label>Кому передать</label>
+        <div class="transfer-to" id="t-to">${targets.map((p, i) => `
+          <label class="transfer-opt sp-${p.key}"><input type="radio" name="t-to" value="${p.key}"${i === 0 ? ' checked' : ''} onchange="SalesCrmPage.onTransferInput()"/><i></i><span>${esc(p.name)}</span></label>`).join('')}
+        </div>
+      </div>
+      <div class="form-error" id="t-err" hidden></div>
+      <div class="modal-actions">
+        <button class="btn btn-secondary" onclick="Modal.close()">Отмена</button>
+        <button class="btn btn-primary" id="t-save" onclick="SalesCrmPage.saveTransfer()">${icon('arrow-right-left')}Передать</button>
+      </div>`)
+  },
+
+  transferPlan() {
+    const key = c => c.trim().toLowerCase().replace(/^@/, '').replace(/^(https?:\/\/)?t\.me\//, '')
+    const contacts = [...new Map(SalesCrmPage.parseContacts($('#t-list').value).map(c => [key(c), c])).values()]
+    const to = ($('#t-to input:checked') || {}).value
+    const leads = new Map()
+    for (const l of SalesCrmPage.data.leads) {
+      const k = key(l.contact)
+      if (!leads.has(k)) leads.set(k, [])
+      leads.get(k).push(l)
+    }
+    const found = contacts.filter(c => leads.has(key(c)))
+    const already = found.filter(c => leads.get(key(c)).every(l => l.createdBy === to))
+    return { contacts, to, found, already, notFound: contacts.filter(c => !leads.has(key(c))) }
+  },
+
+  onTransferInput() {
+    const { contacts, found, already, notFound } = SalesCrmPage.transferPlan()
+    const hint = $('#t-count')
+    hint.classList.toggle('is-error', !!notFound.length && !found.length)
+    if (!contacts.length) { hint.textContent = 'По одному нику в строке, с @ в начале'; return }
+    hint.textContent = [
+      `Передадим: ${fmt(found.length - already.length)}`,
+      already.length ? `уже у него: ${fmt(already.length)}` : '',
+      notFound.length ? `нет в CRM: ${fmt(notFound.length)}` : '',
+    ].filter(Boolean).join(' · ')
+  },
+
+  async saveTransfer() {
+    const { contacts, to } = SalesCrmPage.transferPlan()
+    if (!contacts.length) return Sales.showError('#t-err', 'Вставь хотя бы один ник')
+    if (!to) return Sales.showError('#t-err', 'Выбери, кому передать')
+    $('#t-save').disabled = true
+    try {
+      const res = await api('/api/sales/leads/transfer', { method: 'POST', body: { contacts, to } })
+      const name = Sales.name(to)
+      const done = `${name}: ${plural(res.moved, 'передан', 'передано', 'передано')} ${fmt(res.moved)} ${plural(res.moved, 'лид', 'лида', 'лидов')}`
+      Router.reload()
+      if (!res.notFound.length) {
+        Modal.close()
+        return toast(done + (res.already.length ? `, ещё ${fmt(res.already.length)} уже были у него` : ''))
+      }
+      // Часть ников не нашлась — показываем, какие именно, чтобы их можно было поправить
+      Modal.open(`
+        ${modalHead('Передать лидов', done)}
+        ${res.already.length ? `<div class="field-hint" style="margin:0 0 12px">Уже были у него: ${fmt(res.already.length)}</div>` : ''}
+        <div class="field">
+          <label>Нет в CRM — ${fmt(res.notFound.length)}</label>
+          <textarea rows="${Math.min(10, res.notFound.length + 1)}" readonly>${esc(res.notFound.join('\n'))}</textarea>
+        </div>
+        <div class="modal-actions"><button class="btn btn-primary" onclick="Modal.close()">Понятно</button></div>`)
+    } catch (e) {
+      Sales.showError('#t-err', e.message)
+      $('#t-save').disabled = false
+    }
+  },
+
   head() {
     return pageHead({
       title: 'CRM',
@@ -342,6 +421,7 @@ const SalesCrmPage = {
       actions: `
         <button class="btn btn-secondary" onclick="SalesCrmPage.exportMd()" title="Скачать .md с массивом никнеймов всех лидов">${icon('download')}Выгрузить</button>
         <button class="btn btn-secondary" onclick="SalesCrmPage.openImport()">${icon('list-todo')}Импорт списком</button>
+        ${Session.person === 'khanil' ? `<button class="btn btn-secondary" onclick="SalesCrmPage.openTransfer()" title="Передать лидов списком ников Денису, Саше или Эмилю">${icon('arrow-right-left')}Передать лидов</button>` : ''}
         <button class="btn btn-secondary" onclick="SalesCrmPage.openJsonImport()" title="Внести лидов из JSON: { &quot;@ник&quot;: &quot;описание&quot; }">${icon('braces')}Импорт JSON</button>
         <button class="btn btn-primary" onclick="SalesCrmPage.open(null)">${icon('plus')}Новый лид</button>`,
     })

@@ -44,6 +44,7 @@
   <aside class="sidebar" id="sidebar" aria-label="Разделы админки">
     <div class="sb-head">
       <div class="sb-logo">KIRO <span id="sb-role">Admin Panel</span></div>
+      <button class="bell" id="sb-bell" hidden onclick="Bell.toggle(event)" aria-label="Уведомления" title="Уведомления"></button>
       <button class="sb-close" id="sb-close" aria-label="Закрыть меню"></button>
     </div>
     <nav class="sb-nav" id="sb-nav"></nav>
@@ -52,6 +53,7 @@
   <header class="top-bar">
     <button class="btn-icon" id="menu-btn" aria-label="Открыть меню"></button>
     <div class="top-bar-title" id="top-title">KIRO Admin</div>
+    <button class="bell" id="top-bell" hidden onclick="Bell.toggle(event)" aria-label="Уведомления" title="Уведомления"></button>
   </header>
   <main class="content"><div class="view" id="view"></div></main>
 </div>

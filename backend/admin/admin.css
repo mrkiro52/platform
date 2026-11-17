@@ -959,3 +959,34 @@ a.kpi:hover{border-color:var(--lime-line)}
   .modal-box.is-lead .lead-desc-field{flex:1 1 auto;min-height:160px;display:flex;flex-direction:column}
   .modal-box.is-lead .lead-desc-field textarea{flex:1;min-height:0;resize:none;line-height:1.6}
 }
+
+/* Колокольчик уведомлений */
+.sb-logo{flex:1;min-width:0}
+.bell{position:relative;flex-shrink:0;width:36px;height:36px;display:grid;place-items:center;padding:0;border-radius:10px;border:1px solid var(--border);background:var(--bg3);color:var(--text2);cursor:pointer;transition:background .15s,color .15s,border-color .15s}
+.bell:hover{background:var(--bg4);color:var(--text);border-color:var(--border-strong)}
+.bell[hidden]{display:none}
+.top-bar .bell{margin-left:auto}
+.bell-dot{position:absolute;top:-6px;right:-6px;min-width:18px;height:18px;padding:0 5px;border-radius:var(--r-pill);background:var(--lime);color:var(--on-accent);font-size:10.5px;font-weight:800;line-height:18px;text-align:center;font-variant-numeric:tabular-nums;box-shadow:0 0 0 2px var(--bg2);animation:pop .2s ease}
+.bell-dot[hidden]{display:none}
+.bell-menu{position:fixed;z-index:400;width:300px;max-width:calc(100vw - 16px);padding:8px;background:var(--bg2);border:1px solid var(--border-strong);border-radius:var(--r-lg);box-shadow:var(--shadow-md);animation:pop .15s ease}
+.bell-menu-head{padding:6px 8px 10px;font-size:11.5px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.05em}
+.bell-list{max-height:min(420px,70vh);overflow-y:auto;display:flex;flex-direction:column;gap:2px}
+.bell-item{display:flex;align-items:flex-start;gap:10px;width:100%;padding:10px;border:none;border-radius:var(--r-md);background:transparent;color:var(--text);text-align:left;font-family:inherit;cursor:pointer;transition:background .15s}
+.bell-item:hover{background:var(--bg3)}
+.bell-item.is-new{background:var(--lime-dim)}
+.bell-item.is-new:hover{background:rgba(255,214,10,.16)}
+.bell-item-icon{flex-shrink:0;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;background:var(--bg4);color:var(--text2)}
+.bell-item.is-new .bell-item-icon{background:var(--lime);color:var(--on-accent)}
+.bell-item-body{display:flex;flex-direction:column;gap:2px;min-width:0}
+.bell-item-text{font-size:13.5px;font-weight:600}
+.bell-item-time{font-size:12px;color:var(--text3)}
+.bell-empty{display:flex;flex-direction:column;align-items:center;gap:8px;padding:22px 8px 18px;color:var(--text3);font-size:13px}
+
+/* Передать лидов: выбор, кому */
+.transfer-to{display:flex;gap:8px;flex-wrap:wrap}
+.transfer-opt{position:relative;display:inline-flex;align-items:center;gap:8px;padding:9px 14px;border-radius:var(--r-pill);border:1px solid var(--border);background:var(--bg3);cursor:pointer;font-size:14px;font-weight:600;color:var(--text2);transition:background .15s,border-color .15s,color .15s}
+.transfer-opt input{position:absolute;opacity:0;pointer-events:none}
+.transfer-opt i{width:10px;height:10px;border-radius:50%;background:var(--sp)}
+.transfer-opt:hover{border-color:var(--border-strong);color:var(--text)}
+.transfer-opt:has(input:checked){border-color:var(--sp);color:var(--text);background:color-mix(in srgb,var(--sp) 14%,var(--bg3))}
+.transfer-opt:has(input:focus-visible){outline:2px solid var(--lime);outline-offset:2px}
