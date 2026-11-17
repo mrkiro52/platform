@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { api } from '../api'
 import DashCalendar from '../components/dashboard/DashCalendar'
+import WinterPromo from '../components/dashboard/WinterPromo'
 import FocusTimer from '../components/dashboard/FocusTimer'
 import NotesTasks from '../components/dashboard/NotesTasks'
 import SqlProgress from '../components/dashboard/SqlProgress'
@@ -87,6 +88,7 @@ export default function Dashboard({ user }) {
 
       <div className="dsh-grid">
         <div className="dsh-col dsh-col-main">
+          <WinterPromo />
           <DashCalendar events={events} isCamp={isCamp || isWinter} />
           {isWinter && <WinterPanel user={user} />}
           {isCamp && <CampPanel user={user} />}

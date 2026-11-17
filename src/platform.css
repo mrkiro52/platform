@@ -5865,3 +5865,25 @@ a.cs-lesson:hover { border-color: color-mix(in srgb, var(--c) 60%, transparent);
 .dsh-winter-bar .is-approved { background: #3FB950; }
 .dsh-winter-bar .is-submitted { background: #FFD60A; }
 .dsh-winter-bar .is-rework { background: #FF9F50; }
+
+/* Дашборд: анонс зимнего потока над календарём */
+.dsh-promo { padding: 0; overflow: hidden; }
+.dsh-promo-poster { display: block; aspect-ratio: 1672 / 941; background: #050A14; overflow: hidden; }
+.dsh-promo-poster img { display: block; width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease; }
+.dsh-promo-poster:hover img { transform: scale(1.02); }
+.dsh-promo-body { padding: 18px 20px 20px; }
+.dsh-promo-title { font-family: var(--font-syne); font-size: 17px; font-weight: 700; line-height: 1.4; color: var(--text-primary); }
+.dsh-promo-actions { display: flex; gap: 10px; margin-top: 16px; flex-wrap: wrap; }
+.dsh-promo-btn {
+  flex: 1 1 160px; display: inline-flex; align-items: center; justify-content: center; height: 42px; padding: 0 18px;
+  border-radius: 999px; font-weight: 700; font-size: 14px; text-decoration: none; white-space: nowrap;
+  color: var(--text-primary); background: var(--bg-tertiary, #17171D); border: 1px solid var(--border-color);
+  transition: background 0.15s, border-color 0.15s, filter 0.15s;
+}
+.dsh-promo-btn:hover { border-color: var(--text-tertiary); }
+.dsh-promo-btn.is-main { background: var(--accent-lime); color: #08080A; border-color: var(--accent-lime); }
+.dsh-promo-btn.is-main:hover { filter: brightness(1.08); }
+@media (max-width: 560px) {
+  .dsh-promo-body { padding: 14px 16px 16px; }
+  .dsh-promo-title { font-size: 15px; }
+}
