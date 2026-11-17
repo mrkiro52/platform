@@ -931,3 +931,4 @@ a.kpi:hover{border-color:var(--lime-line)}
   .st-tl .st-list{grid-template-columns:minmax(0,1fr)}
   .page-actions .search{width:100%}
 }
+.st-sec-head + .st-pitch{margin-top:0;margin-bottom:10px}
