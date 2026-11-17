@@ -255,6 +255,86 @@ const SalesCrmPage = {
     }
   },
 
+  // ── Импорт JSON: { "@ник": "описание", ... } — у каждого лида своё описание ──
+  parseJsonLeads(text) {
+    const src = String(text || '').trim()
+    if (!src) return { items: [] }
+    let data
+    try { data = JSON.parse(src) } catch (e) { return { error: 'Это не похоже на JSON — проверь кавычки и запятые' } }
+    if (!data || typeof data !== 'object' || Array.isArray(data)) return { error: 'Нужен объект вида { "@ник": "описание" }' }
+    const items = []
+    for (const [key, value] of Object.entries(data)) {
+      const contact = key.trim()
+      if (!contact) continue
+      if (value !== null && typeof value === 'object') return { error: `У ${contact} описание должно быть строкой` }
+      items.push({ contact, description: value == null ? '' : String(value).trim() })
+    }
+    return { items }
+  },
+
+  openJsonImport() {
+    const options = (list, selected) => list.map(([value, label]) => `<option value="${value}"${value === selected ? ' selected' : ''}>${esc(label)}</option>`).join('')
+    Modal.open(`
+      ${modalHead('Импорт JSON', 'Каждый лид со своим описанием: ключ — ник, значение — описание')}
+      <div class="field">
+        <label for="j-json">JSON</label>
+        <textarea id="j-json" class="json-input" rows="12" spellcheck="false" placeholder='{&#10;  "@nickname": "описание лида",&#10;  "@nickname2": "описание лида"&#10;}' oninput="SalesCrmPage.onJsonInput()"></textarea>
+        <div class="field-hint" id="j-count">Вставь JSON или <label class="link-btn" for="j-file">загрузи файл .json</label></div>
+        <input id="j-file" type="file" accept=".json,application/json,text/plain" hidden onchange="SalesCrmPage.loadJsonFile(this)"/>
+      </div>
+      <div class="form-row">
+        <div class="field"><label for="j-status">Статус</label><select id="j-status">${options(Object.entries(SALES_STATUS).filter(([k]) => k !== 'closed').map(([k, [label]]) => [k, label]), 'new')}</select></div>
+        <div class="field"><label for="j-created">Ответственный</label><select id="j-created">${options(Sales.people.map(p => [p.key, p.name]), Sales.me)}</select></div>
+      </div>
+      <div class="form-error" id="j-err" hidden></div>
+      <div class="modal-actions">
+        <button class="btn btn-secondary" onclick="Modal.close()">Отмена</button>
+        <button class="btn btn-primary" id="j-save" onclick="SalesCrmPage.saveJsonImport()">${icon('plus')}Внести</button>
+      </div>`, { size: 'lg' })
+  },
+
+  async loadJsonFile(input) {
+    const file = input.files && input.files[0]
+    if (!file) return
+    $('#j-json').value = await file.text()
+    input.value = ''
+    SalesCrmPage.onJsonInput()
+  },
+
+  onJsonInput() {
+    const { items, error } = SalesCrmPage.parseJsonLeads($('#j-json').value)
+    const hint = $('#j-count')
+    $('#j-err').hidden = true
+    hint.classList.toggle('is-error', !!error)
+    if (error) { hint.textContent = error; return }
+    if (!items.length) { hint.innerHTML = 'Вставь JSON или <label class="link-btn" for="j-file">загрузи файл .json</label>'; return }
+    const key = c => c.toLowerCase().replace(/^@/, '')
+    const existing = new Set(SalesCrmPage.data.leads.map(l => key(l.contact.trim())))
+    const unique = [...new Set(items.map(i => key(i.contact)))]
+    const dupes = unique.filter(c => existing.has(c)).length
+    hint.textContent = `Лидов: ${fmt(unique.length)}${dupes ? ` · уже в CRM: ${fmt(dupes)} — их пропустим` : ''}`
+  },
+
+  async saveJsonImport() {
+    const { items, error } = SalesCrmPage.parseJsonLeads($('#j-json').value)
+    if (error) return Sales.showError('#j-err', error)
+    if (!items.length) return Sales.showError('#j-err', 'Вставь хотя бы одного лида')
+    $('#j-save').disabled = true
+    try {
+      const res = await api('/api/sales/leads/import', { method: 'POST', body: {
+        items,
+        status: $('#j-status').value,
+        createdBy: $('#j-created').value,
+      } })
+      Modal.close()
+      toast(`Внесено ${fmt(res.added)} ${plural(res.added, 'лид', 'лида', 'лидов')}${res.skipped.length ? `, пропущено ${fmt(res.skipped.length)} — уже есть в CRM` : ''}`)
+      Router.reload()
+    } catch (e) {
+      Sales.showError('#j-err', e.message)
+      $('#j-save').disabled = false
+    }
+  },
+
   head() {
     return pageHead({
       title: 'CRM',
@@ -262,6 +342,7 @@ const SalesCrmPage = {
       actions: `
         <button class="btn btn-secondary" onclick="SalesCrmPage.exportMd()" title="Скачать .md с массивом никнеймов всех лидов">${icon('download')}Выгрузить</button>
         <button class="btn btn-secondary" onclick="SalesCrmPage.openImport()">${icon('list-todo')}Импорт списком</button>
+        <button class="btn btn-secondary" onclick="SalesCrmPage.openJsonImport()" title="Внести лидов из JSON: { &quot;@ник&quot;: &quot;описание&quot; }">${icon('braces')}Импорт JSON</button>
         <button class="btn btn-primary" onclick="SalesCrmPage.open(null)">${icon('plus')}Новый лид</button>`,
     })
   },

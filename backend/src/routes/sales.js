@@ -196,11 +196,15 @@ router.post('/leads', requireSales, (req, res) => {
 
 // POST /api/sales/leads/import — внести сразу список лидов с общими статусом, ответственным
 // и заметкой. Контакты, которые уже есть в CRM или повторяются в списке, пропускаются.
+// Вместо contacts можно прислать items: [{ contact, description }] — у каждого лида своё описание.
 const IMPORT_LIMIT = 500
 router.post('/leads/import', requireSales, (req, res) => {
   try {
-    const raw = Array.isArray(req.body?.contacts) ? req.body.contacts : []
-    const contacts = raw.map(c => String(c || '').trim()).filter(Boolean)
+    const items = Array.isArray(req.body?.items)
+      ? req.body.items.map(i => ({ contact: String(i?.contact || '').trim(), description: String(i?.description || '').trim() }))
+      : (Array.isArray(req.body?.contacts) ? req.body.contacts : []).map(c => ({ contact: String(c || '').trim(), description: null }))
+    const ownDesc = new Map(items.filter(i => i.contact && i.description !== null).map(i => [i.contact, i.description]))
+    const contacts = items.map(i => i.contact).filter(Boolean)
     if (!contacts.length) return res.status(400).json({ message: 'Вставь хотя бы один контакт' })
     if (contacts.length > IMPORT_LIMIT) return res.status(400).json({ message: `За раз можно внести не больше ${IMPORT_LIMIT} контактов` })
     if (req.body?.status === 'closed') return res.status(400).json({ message: 'Списком нельзя внести лидов сразу закрытыми в продажу' })
@@ -208,6 +212,8 @@ router.post('/leads/import', requireSales, (req, res) => {
     if (error) return res.status(400).json({ message: error })
     const tooLong = contacts.find(c => c.length > LIMITS.contact)
     if (tooLong) return res.status(400).json({ message: `Слишком длинный контакт: ${tooLong.slice(0, 40)}…` })
+    const longDesc = [...ownDesc].find(([, d]) => d.length > LIMITS.description)
+    if (longDesc) return res.status(400).json({ message: `Слишком длинное описание у ${longDesc[0].slice(0, 40)}` })
 
     const seen = new Set(db.prepare('SELECT contact FROM sales_leads').all().map(r => referralKey(r.contact)))
     const added = [], skipped = []
@@ -221,7 +227,8 @@ router.post('/leads/import', requireSales, (req, res) => {
         const key = referralKey(contact)
         if (seen.has(key)) { skipped.push(contact); continue }
         seen.add(key)
-        const info = insert.run(contact, base.description, base.status, base.createdBy, base.referral, stamp, stamp)
+        const description = ownDesc.has(contact) ? ownDesc.get(contact) : base.description
+        const info = insert.run(contact, description, base.status, base.createdBy, base.referral, stamp, stamp)
         logStatus(info.lastInsertRowid, base.status, req.person, stamp)
         added.push(contact)
       }
