@@ -70,11 +70,14 @@ const Sales = {
 }
 
 // ═══ CRM ═══════════════════════════════════════════════════════════════
+const CRM_PAGE_SIZE = 15
+
 const SalesCrmPage = {
   data: null,
   statuses: null, // какие статусы показывать; null — все
   people: null,   // чьих лидов показывать (ответственный); null — всех
   q: '',
+  page: 1,          // страница списка лидов, по CRM_PAGE_SIZE на странице
   saleDraft: null,  // открытое окно «Закрываем в продажу»
   tab: 'leads',    // leads | referrals (выплаты рефералам видит только главный админ)
 
@@ -286,8 +289,33 @@ const SalesCrmPage = {
     document.querySelectorAll('#crm-rewards [data-to]').forEach(el => Sales.countUp(el, Number(el.dataset.from), Number(el.dataset.to)))
   },
 
-  search: debounce((value) => { SalesCrmPage.q = value.trim().toLowerCase(); SalesCrmPage.paint() }, 150),
-  setFilter(value) { SalesCrmPage.statuses = value === 'all' ? null : [value]; SalesCrmPage.paint() },
+  search: debounce((value) => { SalesCrmPage.q = value.trim().toLowerCase(); SalesCrmPage.page = 1; SalesCrmPage.paint() }, 150),
+  setFilter(value) { SalesCrmPage.statuses = value === 'all' ? null : [value]; SalesCrmPage.page = 1; SalesCrmPage.paint() },
+  setPage(n) {
+    SalesCrmPage.page = n
+    SalesCrmPage.paint()
+    const top = $('#crm-list')
+    if (top && top.getBoundingClientRect().top < 0) top.scrollIntoView({ block: 'start', behavior: 'smooth' })
+  },
+  // Номера страниц: до 7 страниц — все; иначе первая, последняя и соседи текущей, между ними — «…»
+  pager(page, pages, total, from, to) {
+    if (pages <= 1) return ''
+    const nums = []
+    for (let n = 1; n <= pages; n++) {
+      if (pages <= 7 || n === 1 || n === pages || Math.abs(n - page) <= 1) nums.push(n)
+      else if (nums[nums.length - 1] !== '…') nums.push('…')
+    }
+    const btn = (n, label, disabled, title) => `<button class="pager-btn${n === page && typeof label === 'number' ? ' is-on' : ''}" ${disabled ? 'disabled' : `onclick="SalesCrmPage.setPage(${n})"`}${title ? ` title="${title}" aria-label="${title}"` : ''}>${label}</button>`
+    return `
+      <nav class="pager" aria-label="Страницы лидов">
+        <span class="pager-info">${from}–${to} из ${total}</span>
+        <div class="pager-btns">
+          ${btn(page - 1, icon('chevron-left', 15), page === 1, 'Предыдущая страница')}
+          ${nums.map(n => n === '…' ? '<span class="pager-gap">…</span>' : btn(n, n, false)).join('')}
+          ${btn(page + 1, icon('chevron-right', 15), page === pages, 'Следующая страница')}
+        </div>
+      </nav>`
+  },
 
   // Выпадашки в заголовках таблицы: «Статус» и «Ответственный» — галочками выбираешь, что показывать
   menuOptions(kind) {
@@ -342,7 +370,7 @@ const SalesCrmPage = {
     window.removeEventListener('scroll', SalesCrmPage.closeMenu, true)
     document.removeEventListener('keydown', SalesCrmPage.onMenuKey)
   },
-  resetFilters() { SalesCrmPage.statuses = null; SalesCrmPage.people = null; SalesCrmPage.closeMenu(); SalesCrmPage.paint() },
+  resetFilters() { SalesCrmPage.statuses = null; SalesCrmPage.people = null; SalesCrmPage.page = 1; SalesCrmPage.closeMenu(); SalesCrmPage.paint() },
   onMenuKey(e) { if (e.key === 'Escape') SalesCrmPage.closeMenu() },
   setMenu(all) {
     document.querySelectorAll('#crm-filter-menu input').forEach(el => { el.checked = all })
@@ -354,6 +382,7 @@ const SalesCrmPage = {
     const kind = menu.dataset.kind
     const checked = [...menu.querySelectorAll('input:checked')].map(el => el.value)
     SalesCrmPage[kind] = checked.length === menu.querySelectorAll('input').length ? null : checked
+    SalesCrmPage.page = 1
     SalesCrmPage.paint()
   },
 
@@ -390,11 +419,15 @@ const SalesCrmPage = {
     // Менеджеру показываем его вознаграждение по каждому лиду, который он закрыл
     const seller = SalesCrmPage.data.rewards.view === 'seller'
     const share = SalesCrmPage.data.sellerShare || 0.1
+    const pages = Math.ceil(list.length / CRM_PAGE_SIZE)
+    const page = SalesCrmPage.page = Math.min(Math.max(1, SalesCrmPage.page), pages)
+    const start = (page - 1) * CRM_PAGE_SIZE
+    const shown = list.slice(start, start + CRM_PAGE_SIZE)
     el.innerHTML = `
       <div class="table-wrap">
         <table class="tbl sales-tbl">
           <thead><tr><th>Лид</th>${filterTh('statuses', 'Статус', 'Выбрать, какие статусы показывать', chosen)}${filterTh('people', 'Ответственный', 'Выбрать, чьих лидов показывать', owners)}<th>Продажа</th><th class="num">Сумма</th><th></th></tr></thead>
-          <tbody>${list.map(l => {
+          <tbody>${shown.map(l => {
             const [label, badge] = SALES_STATUS[l.status] || [l.status, 'badge-gray']
             // Плашка «Оставил заявку» — только пока лид в статусе заявки
             const age = l.status === 'new' ? Sales.age(l.createdAt) : null
@@ -416,7 +449,8 @@ const SalesCrmPage = {
             </tr>`
           }).join('')}</tbody>
         </table>
-      </div>`
+      </div>
+      ${SalesCrmPage.pager(page, pages, list.length, start + 1, start + shown.length)}`
   },
 
   open(id) {
