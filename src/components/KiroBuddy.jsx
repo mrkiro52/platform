@@ -38,6 +38,28 @@ function useDesktop() {
   return ok
 }
 
+// Ночью (с 20:00 до 08:00 по времени устройства, то есть там, где сейчас человек) Пингви спит,
+// а когда его будят — открывают инструменты — зевает. Днём — обычная картинка.
+const FACE_DAY = '/kiro-buddy.webp'
+const FACE_SLEEP = '/kiro-buddy-sleep.webp'
+const FACE_YAWN = '/kiro-buddy-yawn.webp'
+const isNightNow = () => { const h = new Date().getHours(); return h >= 20 || h < 8 }
+
+function useNight() {
+  const [night, setNight] = useState(isNightNow)
+  useEffect(() => {
+    const tick = () => setNight(isNightNow())
+    const id = setInterval(tick, 30000)
+    document.addEventListener('visibilitychange', tick)
+    return () => { clearInterval(id); document.removeEventListener('visibilitychange', tick) }
+  }, [])
+  // Заранее грузим ночные картинки, чтобы при смене не было пустого кадра
+  useEffect(() => {
+    if (night) [FACE_SLEEP, FACE_YAWN].forEach(src => { new Image().src = src })
+  }, [night])
+  return night
+}
+
 const clamp = (v, min, max) => Math.min(Math.max(v, min), Math.max(min, max))
 const clampPos = ({ x, y }) => ({
   x: clamp(x, 4, window.innerWidth - SIZE - 4),
@@ -290,6 +312,8 @@ export default function KiroBuddy() {
   const menuRef = useRef(false)
   menuRef.current = menuOpen
   const timer = useIntervalTimer()
+  const night = useNight()
+  const face = !night ? FACE_DAY : (menuOpen || panelOpen ? FACE_YAWN : FACE_SLEEP)
 
   const [menuMounted, menuShown] = usePresence(menuOpen, 320)
   const [panelMounted, panelShown] = usePresence(panelOpen, 240)
@@ -456,7 +480,7 @@ export default function KiroBuddy() {
           aria-label="KIRO: зажми, чтобы открыть инструменты; перетащи, чтобы переместить"
           title="Зажми — инструменты, тяни — переместить"
         >
-          <img src="/kiro-buddy.webp" alt="" draggable="false" />
+          <img src={face} alt="" draggable="false" />
         </button>
 
         {showBadge && (
