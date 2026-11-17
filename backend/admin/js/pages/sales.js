@@ -173,6 +173,22 @@ const SalesCrmPage = {
     } catch (e) { toast(e.message, 'err') }
   },
 
+  // ── Выгрузка: .md с массивом никнеймов всех лидов (без фильтров, без дублей) ──
+  exportMd() {
+    const leads = SalesCrmPage.data ? SalesCrmPage.data.leads : []
+    if (!leads.length) return toast('Лидов пока нет', 'error')
+    const nicks = [...new Set(leads.map(l => l.contact.trim()).filter(Boolean))]
+    const day = new Date().toISOString().slice(0, 10)
+    const md = `# Лиды KIRO — ${day}\n\nВсего: ${nicks.length}\n\n\`\`\`json\n${JSON.stringify(nicks, null, 2)}\n\`\`\`\n`
+    const url = URL.createObjectURL(new Blob([md], { type: 'text/markdown;charset=utf-8' }))
+    const a = Object.assign(document.createElement('a'), { href: url, download: `leads-${day}.md` })
+    document.body.appendChild(a)
+    a.click()
+    a.remove()
+    setTimeout(() => URL.revokeObjectURL(url), 1000)
+    toast(`Выгружено лидов: ${nicks.length}`)
+  },
+
   // ── Импорт списком ──
   // Контакты — по одному в строке (можно через запятую или пробел, если это ники @...)
   parseContacts(text) {
@@ -244,6 +260,7 @@ const SalesCrmPage = {
       title: 'CRM',
       sub: 'Лиды отдела продаж: от заявки до оплаты',
       actions: `
+        <button class="btn btn-secondary" onclick="SalesCrmPage.exportMd()" title="Скачать .md с массивом никнеймов всех лидов">${icon('download')}Выгрузить</button>
         <button class="btn btn-secondary" onclick="SalesCrmPage.openImport()">${icon('list-todo')}Импорт списком</button>
         <button class="btn btn-primary" onclick="SalesCrmPage.open(null)">${icon('plus')}Новый лид</button>`,
     })
