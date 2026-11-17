@@ -948,3 +948,14 @@ a.kpi:hover{border-color:var(--lime-line)}
 .field-hint.is-error{color:var(--red)}
 .link-btn{color:var(--lime);cursor:pointer;text-decoration:underline;text-decoration-color:var(--lime-line);text-underline-offset:3px}
 .link-btn:hover{text-decoration-color:var(--lime)}
+
+/* CRM: клик по ряду открывает карточку лида */
+.sales-tbl tr.is-clickable{cursor:pointer}
+
+/* Карточка лида на ПК: 90% высоты экрана, описание тянется на всё свободное место */
+@media (min-width:769px){
+  .modal-box.is-lead{height:90vh;max-height:90vh;display:flex;flex-direction:column}
+  .modal-box.is-lead>*{flex-shrink:0}
+  .modal-box.is-lead .lead-desc-field{flex:1 1 auto;min-height:160px;display:flex;flex-direction:column}
+  .modal-box.is-lead .lead-desc-field textarea{flex:1;min-height:0;resize:none;line-height:1.6}
+}

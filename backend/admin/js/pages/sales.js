@@ -532,7 +532,7 @@ const SalesCrmPage = {
             const mine = seller && l.status === 'closed' && l.closedBy === Sales.me
             const sale = [l.closedBy ? esc(Sales.name(l.closedBy)) : '', l.paymentFormat ? SALES_FORMAT[l.paymentFormat].toLowerCase() : ''].filter(Boolean).join(' · ')
             return `
-            <tr>
+            <tr class="is-clickable" onclick="SalesCrmPage.rowClick(event, ${l.id})">
               <td><div class="cell-main sales-contact">${Sales.contact(l.contact)}</div>${l.description ? `<div class="cell-sub sales-note" title="${esc(l.description)}">${esc(l.description)}</div>` : ''}${l.referral ? `<div class="cell-sub sales-note" title="Реферал: ${esc(l.referral)}">от реферала ${esc(l.referral)}</div>` : ''}</td>
               <td><span class="badge ${badge}">${label}</span>${age ? `<div class="lead-age ${age.tone}" title="Лид внесён ${esc(stampLabel(l.createdAt))} и всё ещё в статусе заявки">Оставил заявку: ${age.label}</div>` : ''}</td>
               <td class="nowrap"><div>${esc(Sales.name(l.createdBy))}${l.createdBy === Sales.me ? ' <span class="badge badge-lime">ты</span>' : ''}</div><div class="cell-sub">внесён ${esc(stampLabel(l.createdAt))}</div></td>
@@ -551,30 +551,40 @@ const SalesCrmPage = {
       ${SalesCrmPage.pager(page, pages, list.length, start + 1, start + shown.length)}`
   },
 
+  // Клик по ряду открывает карточку; ссылки (ник → Telegram) и кнопки работают сами по себе
+  rowClick(event, id) {
+    if (event.target.closest('a, button, input, select, textarea, label')) return
+    if (String(window.getSelection() || '').trim()) return // выделяли текст — не открываем
+    SalesCrmPage.open(id)
+  },
+
   open(id) {
     const l = id ? SalesCrmPage.data.leads.find(x => x.id === id) : null
     const options = (list, selected) => list.map(([value, label]) => `<option value="${value}"${value === selected ? ' selected' : ''}>${esc(label)}</option>`).join('')
     const people = Sales.people.map(p => [p.key, p.name])
     Modal.open(`
       ${modalHead(l ? 'Карточка лида' : 'Новый лид', l ? `Внесён ${esc(stampLabel(l.createdAt))}` : 'Дата внесения проставится автоматически')}
-      <div class="field">
-        <label for="l-contact">Контакт</label>
-        <input id="l-contact" value="${esc(l ? l.contact : '')}" maxlength="200" placeholder="@telegram или номер телефона" autofocus/>
+      <div class="form-row">
+        <div class="field">
+          <label for="l-contact">Контакт</label>
+          <input id="l-contact" value="${esc(l ? l.contact : '')}" maxlength="200" placeholder="@telegram или номер телефона" autofocus/>
+        </div>
+        <div class="field">
+          <label for="l-referral">Реферал</label>
+          <input id="l-referral" value="${esc(l ? l.referral : '')}" maxlength="200" placeholder="Кто порекомендовал — если есть"/>
+        </div>
       </div>
       <div class="form-row">
         <div class="field"><label for="l-status">Статус</label><select id="l-status">${options(Object.entries(SALES_STATUS).map(([k, [label]]) => [k, label]), l ? l.status : 'new')}</select></div>
         <div class="field"><label for="l-created">Ответственный</label><select id="l-created">${options(people, l ? l.createdBy : Sales.me)}</select></div>
       </div>
-      <div class="field">
-        <label for="l-referral">Реферал</label>
-        <input id="l-referral" value="${esc(l ? l.referral : '')}" maxlength="200" placeholder="Контакт того, кто порекомендовал лиду проект — если такой есть"/>
-      </div>
-      <div class="field"><label for="l-desc">Описание</label><textarea id="l-desc" rows="4" placeholder="Заметка про лида: откуда пришёл, что хочет, о чём договорились">${esc(l ? l.description : '')}</textarea></div>
+      <div class="field lead-desc-field"><label for="l-desc">Описание</label><textarea id="l-desc" rows="4" placeholder="Заметка про лида: откуда пришёл, что хочет, о чём договорились">${esc(l ? l.description : '')}</textarea></div>
       <div class="form-error" id="l-err" hidden></div>
       <div class="modal-actions">
         <button class="btn btn-secondary" onclick="Modal.close()">Отмена</button>
         <button class="btn btn-primary" id="l-save" onclick="SalesCrmPage.save(${l ? l.id : 'null'})">${icon(l ? 'check' : 'plus')}${l ? 'Сохранить' : 'Внести лида'}</button>
       </div>`, { size: 'lg' })
+    $('#modal-box').classList.add('is-lead')
   },
 
   // Данные продажи в карточке не правятся — они задаются кнопкой «$», здесь просто сохраняем как были
