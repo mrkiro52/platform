@@ -46,7 +46,7 @@
   stroke: #FFD60A; stroke-linecap: round; filter: drop-shadow(0 0 4px rgba(255, 214, 10, 0.8));
   transition: stroke-dashoffset 0.25s ease;
 }
-.kb-buddy.is-charging .kb-ring-fill { transition: stroke-dashoffset 1.5s linear; }
+.kb-buddy.is-charging .kb-ring-fill { transition: stroke-dashoffset 0.75s linear; }
 
 /* Вспышка, когда кольцо замкнулось */
 .kb-burst {
