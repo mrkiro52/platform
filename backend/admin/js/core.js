@@ -466,7 +466,8 @@ document.addEventListener('click', e => {
 const Badges = { homework: 0, tasks: 0, programHomework: 0, winterHomework: 0, salesNotify: 0 }
 
 // ═══ Колокольчик: уведомления отдела продаж («вам назначен новый лид») ═══
-// Виден всем, у кого есть раздел продаж; уведомления приходят только Денису, Саше и Эмилю.
+// Виден всем, у кого есть раздел продаж. Денис, Саша и Эмиль получают «вам назначен новый лид»,
+// Ханиль — «пришла заявка с Яндекс Формы».
 const Bell = {
   list: [],
   paint() {
@@ -485,6 +486,7 @@ const Bell = {
     } catch { /* бэкенд без уведомлений — колокольчик просто пустой */ }
   },
   text(n) {
+    if (n.kind === 'form_lead') return 'Пришла заявка с Яндекс Формы'
     return n.count > 1
       ? `Вам ${plural(n.count, 'назначен', 'назначено', 'назначено')} ${fmt(n.count)} ${plural(n.count, 'новый лид', 'новых лида', 'новых лидов')}`
       : 'Вам назначен новый лид'
@@ -509,7 +511,7 @@ const Bell = {
       <div class="bell-menu-head">Уведомления</div>
       ${Bell.list.length ? `<div class="bell-list">${Bell.list.map(n => `
         <button class="bell-item${n.read ? '' : ' is-new'}" onclick="Bell.close(); Router.go('/sales/crm')">
-          <span class="bell-item-icon">${icon('target', 15)}</span>
+          <span class="bell-item-icon">${icon(n.kind === 'form_lead' ? 'list-todo' : 'target', 15)}</span>
           <span class="bell-item-body"><span class="bell-item-text">${esc(Bell.text(n))}</span><span class="bell-item-time">${esc(stampLabel(n.createdAt))}</span></span>
         </button>`).join('')}</div>`
         : `<div class="bell-empty">${icon('bell', 22)}<div>Пока уведомлений нет</div></div>`}`

@@ -50,6 +50,12 @@ function notifyAssigned(person, by, count = 1) {
     .run(person, 'lead_assigned', count, now())
 }
 
+// Ханилю — «пришла заявка с Яндекс Формы» на каждый новый лид с формы
+function notifyFormLead() {
+  db.prepare('INSERT INTO sales_notifications (person, kind, count, created_at) VALUES (?, ?, 1, ?)')
+    .run('khanil', 'form_lead', now())
+}
+
 // ── Лиды ─────────────────────────────────────────────────────────────────────
 
 function mapLead(row) {
@@ -277,7 +283,8 @@ router.put('/leads/:id', requireSales, (req, res) => {
 // или «X-Kiro-Token: <секрет>». Каждая заявка — лид со статусом «Заявка», ответственный Ханиль,
 // без реферала; в описание складываются все поля формы «Вопрос: ответ». Контакт — поле,
 // в названии которого есть telegram / телеграм / ник / контакт (или первый ответ вида @ник).
-// Если такой контакт уже есть в CRM, новый лид не создаётся — новая анкета дописывается
+// Ханилю о каждом новом лиде с формы приходит уведомление. Если такой контакт уже есть в CRM,
+// новый лид не создаётся (и уведомления нет) — новая анкета дописывается
 // в описание существующего.
 const FORM_OWNER = 'khanil'
 const FORM_CONTACT_KEY = /^(contact|контакт)$|telegram|телеграм|tg\b|ник/i
@@ -347,6 +354,7 @@ router.post('/form', express.text({ type: () => true, limit: '200kb' }), (req, r
       VALUES (?, ?, 'new', ?, '', ?, ?)
     `).run(contact, text.slice(0, LIMITS.description), FORM_OWNER, stamp, stamp)
     logStatus(info.lastInsertRowid, 'new', FORM_OWNER, stamp)
+    notifyFormLead()
     reply(201, { ok: true, leadId: info.lastInsertRowid })
   } catch (e) {
     reply(500, null, e.message)
