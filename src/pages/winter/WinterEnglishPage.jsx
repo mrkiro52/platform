@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
 import WinterBlocks from '../../components/winter/WinterBlocks'
 import { plural } from '../../components/winter/winterLocal'
+import WinterTracks from '../../components/winter/WinterTracks'
+import { winterDirectionOf } from '../../data/winter'
 import '../../winter.css'
 
 // Английский: один большой конспект-лонгрид (src/data/winter/content/english.js).
@@ -23,7 +24,7 @@ export default function WinterEnglishPage({ user }) {
 
   return (
     <section className="page active prg-page is-winter">
-      <Link className="prg-back" to="/winter-camp">← Winter Camp</Link>
+      <WinterTracks active="english" direction={winterDirectionOf(user)} />
       <div className="prg-hero">
         <span className="prg-tag">Английский · единый конспект</span>
         <h1 className="prg-title">{lesson.title}</h1>

@@ -29,7 +29,7 @@ export default function WinterPanel({ user }) {
         <button type="button" className="dsh-camp-card is-week" onClick={() => navigate('/winter-camp')}>
           <span className="dsh-camp-label">{progress.phase === 'before' ? 'До старта' : progress.phase === 'after' ? 'Лагерь завершён' : `День ${progress.day} из ${progress.total}`}</span>
           <span className="dsh-camp-value">
-            {progress.phase === 'before' ? `${progress.daysTo} дн. · старт ${humanDate(WINTER.start)}` : week ? `Неделя ${week.n}` : 'Материалы открыты'}
+            {progress.phase === 'before' ? `${progress.daysTo} дн. · старт ${humanDate(WINTER.start)}` : week ? (week.isBreak ? 'Каникулы' : `Неделя ${week.n}`) : 'Материалы открыты'}
           </span>
           <span className="dsh-camp-sub">
             {progress.phase === 'before' ? 'материалы уже открыты →' : week ? `${rangeLabel(week.start, week.end)} · ${week.focus}` : 'программа и конспекты →'}

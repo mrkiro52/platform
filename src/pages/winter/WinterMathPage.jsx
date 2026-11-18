@@ -1,6 +1,8 @@
 import { Link } from 'react-router-dom'
 import { WINTER_MATH, WINTER_MATH_TIME, WINTER_MATH_RECORDINGS, humanDate, isoOf } from '../../data/winter/schedule'
 import { materialsOf } from '../../data/math'
+import WinterTracks from '../../components/winter/WinterTracks'
+import { winterDirectionOf } from '../../data/winter'
 import '../../winter.css'
 
 // Мини-курс по математике зимнего лагеря: восемь занятий, у каждого — конспект,
@@ -42,7 +44,7 @@ export default function WinterMathPage({ user }) {
 
   return (
     <section className="page active prg-page is-winter">
-      <Link className="prg-back" to="/winter-camp">← Winter Camp</Link>
+      <WinterTracks active="math" direction={winterDirectionOf(user)} />
       <div className="prg-hero">
         <span className="prg-tag">Мини-курс · 8 занятий</span>
         <h1 className="prg-title">Математика</h1>

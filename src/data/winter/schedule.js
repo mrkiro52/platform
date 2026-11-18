@@ -10,30 +10,32 @@ export const WINTER = {
   end: '2027-02-28',
 }
 
-// Три месяца — три этапа. theme — короткое имя этапа, goal — что студент получает к концу месяца.
+// Три месяца по четыре недели. theme — короткое имя этапа, goal — что студент получает к концу месяца.
 export const WINTER_MONTHS = [
-  { n: 1, key: 'dec', label: 'Декабрь', genitive: 'декабря', start: '2026-12-01', end: '2026-12-31', theme: 'Фундамент', goal: 'Python, алгоритмы, структуры данных и основы своего направления' },
+  { n: 1, key: 'dec', label: 'Декабрь', genitive: 'декабря', start: '2026-12-01', end: '2026-12-31', theme: 'Фундамент', goal: 'Python, алгоритмы и структуры данных — для всех, затем введение в своё направление' },
   { n: 2, key: 'jan', label: 'Январь', genitive: 'января', start: '2027-01-01', end: '2027-01-31', theme: 'Направление', goal: 'Главный блок профессии: то, что спрашивают на собеседованиях по направлению' },
-  { n: 3, key: 'feb', label: 'Февраль', genitive: 'февраля', start: '2027-02-01', end: '2027-02-28', theme: 'Оффер', goal: 'Вопросы с собеседований, алгособес, резюме, самопрезентация и поиск вакансий' },
+  { n: 3, key: 'feb', label: 'Февраль', genitive: 'февраля', start: '2027-02-01', end: '2027-02-28', theme: 'Карьера', goal: 'Две недели направления, затем резюме, самопрезентация, алгособес и поиск вакансий' },
 ]
 
-// Недели лагеря. focus — что изучаем; у недель с материалами по направлению focus общий,
-// а конкретные блоки подставляет программа (src/data/winter/index.js) по stage.
+// Двенадцать учебных недель: 1–4 декабрь, 5–8 январь, 9–12 февраль.
+// stage — этап программы (src/data/winter/index.js), focus — что изучаем.
 export const WINTER_WEEKS = [
   { n: 1, month: 1, start: '2026-12-01', end: '2026-12-06', focus: 'Основы программирования на Python', stage: 'python' },
   { n: 2, month: 1, start: '2026-12-07', end: '2026-12-13', focus: 'Алгоритмы и структуры данных', stage: 'algo' },
-  { n: 3, month: 1, start: '2026-12-14', end: '2026-12-20', focus: 'Основы направления', stage: 'base' },
-  { n: 4, month: 1, start: '2026-12-21', end: '2026-12-27', focus: 'Основы направления', stage: 'base' },
-  { n: 5, month: 1, start: '2026-12-28', end: '2027-01-03', focus: 'Каникулы: повторение и долги по домашкам', stage: 'break' },
-  { n: 6, month: 2, start: '2027-01-04', end: '2027-01-10', focus: 'Главный блок направления', stage: 'core' },
-  { n: 7, month: 2, start: '2027-01-11', end: '2027-01-17', focus: 'Главный блок направления', stage: 'core' },
-  { n: 8, month: 2, start: '2027-01-18', end: '2027-01-24', focus: 'Главный блок направления', stage: 'core' },
-  { n: 9, month: 2, start: '2027-01-25', end: '2027-01-31', focus: 'Главный блок направления', stage: 'core' },
-  { n: 10, month: 3, start: '2027-02-01', end: '2027-02-07', focus: 'Вопросы с собеседований и резюме', stage: 'offer' },
-  { n: 11, month: 3, start: '2027-02-08', end: '2027-02-14', focus: 'Алгособес и самопрезентация', stage: 'offer' },
-  { n: 12, month: 3, start: '2027-02-15', end: '2027-02-21', focus: 'Углубление и оформление профилей', stage: 'offer' },
-  { n: 13, month: 3, start: '2027-02-22', end: '2027-02-28', focus: 'Пет-проекты и поиск вакансий', stage: 'offer' },
+  { n: 3, month: 1, start: '2026-12-14', end: '2026-12-20', focus: 'Введение в направление', stage: 'base' },
+  { n: 4, month: 1, start: '2026-12-21', end: '2026-12-27', focus: 'Введение в направление', stage: 'base' },
+  { n: 5, month: 2, start: '2027-01-04', end: '2027-01-10', focus: 'Главный блок направления', stage: 'core' },
+  { n: 6, month: 2, start: '2027-01-11', end: '2027-01-17', focus: 'Главный блок направления', stage: 'core' },
+  { n: 7, month: 2, start: '2027-01-18', end: '2027-01-24', focus: 'Главный блок направления', stage: 'core' },
+  { n: 8, month: 2, start: '2027-01-25', end: '2027-01-31', focus: 'Главный блок направления', stage: 'core' },
+  { n: 9, month: 3, start: '2027-02-01', end: '2027-02-07', focus: 'Направление: углубление и вопросы с собеседований', stage: 'final' },
+  { n: 10, month: 3, start: '2027-02-08', end: '2027-02-14', focus: 'Направление: углубление и вопросы с собеседований', stage: 'final' },
+  { n: 11, month: 3, start: '2027-02-15', end: '2027-02-21', focus: 'Карьера: резюме, самопрезентация, алгособес', stage: 'career' },
+  { n: 12, month: 3, start: '2027-02-22', end: '2027-02-28', focus: 'Карьера: профили, пет-проекты, вакансии', stage: 'career' },
 ]
+
+// Новогодние каникулы между 4-й и 5-й неделями: повторение и долги по домашкам
+export const WINTER_BREAK = { start: '2026-12-28', end: '2027-01-03', focus: 'Каникулы: повторение и долги по домашкам' }
 
 // ── События ──────────────────────────────────────────────────────────────────
 // time — начало по Москве ('20:00') или null, если время ещё не объявлено.
@@ -104,13 +106,14 @@ function videosOf(video) {
 }
 
 // Все события лагеря одним отсортированным списком. directionName — для подписи созвонов с ментором.
-export function winterEvents(directionName = null) {
+// math: false — без занятий по математике (у математики своя страница и своё расписание).
+export function winterEvents(directionName = null, { math = true } = {}) {
   const list = [
     ...GROUP_CALLS.map(c => ({
       id: `w-group-${c.date}`, type: 'group', date: c.date, time: c.time || null,
       title: 'Групповой созвон', note: c.topic, videos: videosOf(c.video), link: '/winter-camp#calendar',
     })),
-    ...WINTER_MATH.map(s => ({
+    ...(math ? WINTER_MATH : []).map(s => ({
       id: `w-math-${s.date}`, type: 'math', date: s.date, time: WINTER_MATH_TIME,
       title: `Математика · занятие ${s.day}`, note: s.topic, videos: videosOf(WINTER_MATH_RECORDINGS[s.day]), link: '/winter-camp/math',
     })),
@@ -172,8 +175,10 @@ export function monthProgress(month, now = new Date()) {
   return { done, total, pct: Math.round((done / total) * 100), state: 'current' }
 }
 
+// Текущая учебная неделя; в каникулы — { n: null, isBreak: true, ... }
 export function currentWinterWeek(now = new Date()) {
   const today = isoOf(now)
+  if (today >= WINTER_BREAK.start && today <= WINTER_BREAK.end) return { n: null, isBreak: true, ...WINTER_BREAK }
   return WINTER_WEEKS.find(w => today >= w.start && today <= w.end) || null
 }
 

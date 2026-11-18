@@ -1,7 +1,7 @@
-import { useEffect, useMemo, useState } from 'react'
+import { Fragment, useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
-  WINTER, WINTER_MONTHS, WINTER_WEEKS, WINTER_MATH, EVENT_TYPES,
+  WINTER, WINTER_MONTHS, WINTER_WEEKS, WINTER_BREAK, EVENT_TYPES,
   campProgress, monthProgress, currentWinterWeek, winterEvents, upcomingEvents,
   isoOf, dateOf, humanDate, shortDate, rangeLabel,
 } from '../../data/winter/schedule'
@@ -10,16 +10,21 @@ import {
 } from '../../data/winter'
 import { summarize, useWinterHomework } from '../../components/winter/useWinterHomework'
 import { loadVisited, plural } from '../../components/winter/winterLocal'
+import WinterTracks from '../../components/winter/WinterTracks'
 import '../../winter.css'
 
-// Главная страница зимнего лагеря. Порядок блоков — по важности для студента:
-// 1) шапка: где мы сейчас и прогресс лагеря;
-// 2) программа текущего месяца — основная работа, к ней ведёт всё остальное;
-// 3) домашние задания и быстрые ссылки: математика, английский, вакансии;
-// 4) календарь событий.
+// Главная страница зимнего лагеря (основная программа). Место на странице — по важности:
+// 1) узкая шапка с прогрессом и плашки треков (математика и английский — отдельные страницы);
+// 2) «Сегодня»: неделя, что учить сейчас, ближайшие события — самый большой блок;
+// 3) программа: три месяца по четыре недели, главы выбранного этапа сеткой;
+// 4) итоги домашек и календарь — внизу и компактнее.
+// Занятия по математике сюда не попадают: у математики своя страница и своё расписание.
 
 const MONTH_NAMES = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь']
 const WD = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс']
+const MAIN_TYPES = Object.fromEntries(Object.entries(EVENT_TYPES).filter(([k]) => k !== 'math'))
+const BY_DIRECTION = new Set(['base', 'core', 'final'])
+const COLLAPSED = 8
 
 function Snowflake({ size = 22 }) {
   return (
@@ -30,175 +35,422 @@ function Snowflake({ size = 22 }) {
   )
 }
 
-// ── Шапка с прогрессом лагеря ────────────────────────────────────────────────
-
-function Hero({ direction, progress, week, now }) {
-  let status
-  if (progress.phase === 'before') {
-    status = <>До старта <b>{progress.daysTo} {plural(progress.daysTo, 'день', 'дня', 'дней')}</b>. Материалы уже открыты — можно начать раньше.</>
-  } else if (progress.phase === 'after') {
-    status = <>Лагерь завершён. Все материалы остаются открытыми — возвращайся к ним в любое время.</>
-  } else {
-    status = <>Неделя {week?.n ?? '—'}{week ? <> · {week.focus.toLowerCase()}</> : null}</>
-  }
-
-  return (
-    <header className="wc-hero">
-      <div className="wc-hero-snow" aria-hidden="true">
-        {Array.from({ length: 14 }, (_, i) => <i key={i} style={{ '--i': i }} />)}
-      </div>
-
-      <div className="wc-hero-main">
-        <div className="wc-brand">
-          <span className="wc-brand-flake"><Snowflake size={28} /></span>
-          <h1 className="wc-brand-title">Winter Camp <span className="wc-brand-season">{WINTER.season}</span></h1>
-        </div>
-        <p className="wc-hero-status">{status}</p>
-        <div className="wc-hero-chips">
-          {direction
-            ? <span className="wc-chip is-accent">{direction.name}</span>
-            : <span className="wc-chip is-warn">Направление ещё не выбрано</span>}
-          <span className="wc-chip">{humanDate(WINTER.start)} — {humanDate(WINTER.end)}</span>
-        </div>
-        {!direction && (
-          <p className="wc-hero-note">
-            Общие блоки уже открыты. Чтобы появилась программа по направлению, напиши в Telegram{' '}
-            <a href={WINTER_CONTACT.url} target="_blank" rel="noopener noreferrer">{WINTER_CONTACT.text}</a>
-          </p>
-        )}
-      </div>
-
-      <section className="wc-hero-progress" aria-labelledby="wc-progress-title">
-        <div className="wc-hero-progress-head">
-          <h2 id="wc-progress-title" className="wc-label">Прогресс лагеря</h2>
-          <span className="wc-hero-progress-value">{progress.pct}%</span>
-        </div>
-        <p className="wc-hero-progress-sub">
-          {progress.phase === 'running' ? `День ${progress.day} из ${progress.total}` : progress.phase === 'before' ? `Старт ${humanDate(WINTER.start)}` : 'Все 90 дней пройдены'}
-        </p>
-        <div className="wc-months">
-          {WINTER_MONTHS.map(m => {
-            const p = monthProgress(m, now)
-            return (
-              <div key={m.key} className={`wc-month is-${p.state}`}>
-                <div className="wc-month-top">
-                  <span className="wc-month-name">{m.label}</span>
-                  <span className="wc-month-theme">{m.theme}</span>
-                </div>
-                <div className="wc-bar" role="progressbar" aria-label={`${m.label}: прошло ${p.done} из ${p.total} дней`} aria-valuemin={0} aria-valuemax={p.total} aria-valuenow={p.done}>
-                  <span style={{ width: `${p.pct}%` }} />
-                </div>
-              </div>
-            )
-          })}
-        </div>
-      </section>
-    </header>
-  )
-}
-
-// ── Программа ────────────────────────────────────────────────────────────────
+// ── Даты этапов ──────────────────────────────────────────────────────────────
 
 function stageDates(stage) {
   const weeks = stage.weeks.map(n => WINTER_WEEKS.find(w => w.n === n))
   return { start: weeks[0].start, end: weeks[weeks.length - 1].end }
 }
 
-function stageLabel(stage) {
-  const { start, end } = stageDates(stage)
-  const w = stage.weeks
-  return `${w.length > 1 ? `Недели ${w[0]}–${w[w.length - 1]}` : `Неделя ${w[0]}`} · ${rangeLabel(start, end)}`
+function weeksLabel(weeks) {
+  return weeks.length > 1 ? `Недели ${weeks[0]}–${weeks[weeks.length - 1]}` : `Неделя ${weeks[0]}`
 }
 
-function ModuleCard({ mod, homework, visited, state }) {
-  const navigate = useNavigate()
+function stageState(stage, todayIso) {
+  const { start, end } = stageDates(stage)
+  return todayIso > end ? 'past' : todayIso < start ? 'future' : 'current'
+}
+
+// Этап «на сейчас»: идущий; в каникулы и до старта — ближайший следующий; после лагеря — последний
+function focusStage(stages, todayIso) {
+  return stages.find(s => stageState(s, todayIso) === 'current')
+    || stages.find(s => stageState(s, todayIso) === 'future')
+    || stages[stages.length - 1]
+}
+
+function stageTitle(stage, direction) {
+  return `${stage.title}${direction && BY_DIRECTION.has(stage.key) ? ` · ${direction.short}` : ''}`
+}
+
+// ── Прогресс по блоку и главам ───────────────────────────────────────────────
+
+function moduleStats(mod, homework, visited) {
   const lessons = mod.chapters.filter(c => !c.taskOnly)
-  const required = mod.chapters.filter(c => isCountable(c) && !c.optional).map(c => ({ key: taskKey(mod, c) }))
-  const sum = summarize(required, homework.byKey)
+  const required = mod.chapters.filter(c => isCountable(c) && !c.optional)
+  const sum = summarize(required.map(c => ({ key: taskKey(mod, c) })), homework.byKey)
   const read = lessons.filter(c => visited.has(taskKey(mod, c))).length
-  const done = sum.total > 0 && sum.approved === sum.total
+  const status = c => homework.byKey[taskKey(mod, c)]?.status
+  const unread = lessons.filter(c => !visited.has(taskKey(mod, c)))
+  const nextLesson = unread[0] || null
+  const nextTask = required.find(c => ['rework', 'failed'].includes(status(c)))
+    || required.find(c => !status(c)) || null
+  return { lessons, sum, read, nextLesson, nextTask, after: unread.slice(1, 4) }
+}
+
+function chapterState(mod, ch, homework, visited) {
+  const st = homework.byKey[taskKey(mod, ch)]?.status
+  if (st === 'approved') return { cls: 'is-approved', text: 'принято' }
+  if (st === 'submitted') return { cls: 'is-submitted', text: 'на проверке' }
+  if (st === 'rework' || st === 'failed') return { cls: 'is-rework', text: st === 'failed' ? 'тест не пройден' : 'нужны правки' }
+  if (visited.has(taskKey(mod, ch))) return { cls: 'is-read', text: 'прочитано' }
+  return { cls: '', text: ch.optional ? 'по желанию' : '' }
+}
+
+function StackedBar({ sum, thin = false }) {
   return (
-    <button type="button" className={`wc-mod is-${state}${done ? ' is-done' : ''}`} onClick={() => navigate(`/winter-camp/m/${mod.key}`)}>
-      <span className="wc-mod-top">
-        <span className="wc-mod-name">{mod.name}</span>
-        {done ? <span className="wc-mod-badge is-done">сдано</span> : state === 'current' ? <span className="wc-mod-badge">сейчас</span> : null}
-      </span>
-      <span className="wc-mod-lead">{mod.lead}</span>
-      <span className="wc-mod-stats">
-        <span className="wc-mod-stat"><b>{read}</b> из {lessons.length} {plural(lessons.length, 'главы', 'глав', 'глав')} прочитано</span>
-        {sum.total > 0
-          ? <span className="wc-mod-stat"><b>{sum.approved}</b> из {sum.total} заданий принято{sum.rework ? <em> · правки: {sum.rework}</em> : ''}</span>
-          : <span className="wc-mod-stat">без сдачи на платформе</span>}
-      </span>
-      {sum.total > 0 && (
-        <span className="wc-bar is-stacked is-thin" aria-hidden="true">
-          <span className="is-approved" style={{ width: `${(sum.approved / sum.total) * 100}%` }} />
-          <span className="is-submitted" style={{ width: `${(sum.submitted / sum.total) * 100}%` }} />
-          <span className="is-rework" style={{ width: `${(sum.rework / sum.total) * 100}%` }} />
-        </span>
-      )}
-      <span className="wc-mod-go">Открыть блок →</span>
-    </button>
+    <span className={`wc-bar is-stacked${thin ? ' is-thin' : ''}`} aria-hidden="true">
+      {sum.total > 0 && <>
+        <span className="is-approved" style={{ width: `${(sum.approved / sum.total) * 100}%` }} />
+        <span className="is-submitted" style={{ width: `${(sum.submitted / sum.total) * 100}%` }} />
+        <span className="is-rework" style={{ width: `${(sum.rework / sum.total) * 100}%` }} />
+      </>}
+    </span>
   )
 }
 
-function Program({ program, homework, visited, now, direction }) {
+// ── Шапка: лагерь, направление, прогресс по месяцам ──────────────────────────
+
+function TopBar({ direction, progress, week, now }) {
+  let status
+  if (progress.phase === 'before') status = <>До старта <b>{progress.daysTo} {plural(progress.daysTo, 'день', 'дня', 'дней')}</b> · материалы уже открыты</>
+  else if (progress.phase === 'after') status = <>Лагерь завершён · материалы остаются открытыми</>
+  else if (week?.isBreak) status = <>Каникулы · <b>{rangeLabel(WINTER_BREAK.start, WINTER_BREAK.end)}</b></>
+  else status = <>Идёт <b>неделя {week?.n ?? '—'}</b> из 12 · день {progress.day} из {progress.total}</>
+
+  return (
+    <header className="wc-top">
+      <div className="wc-top-main">
+        <span className="wc-top-flake"><Snowflake size={20} /></span>
+        <div className="wc-top-text">
+          <h1 className="wc-top-title">Winter Camp <span>{WINTER.season}</span></h1>
+          <p className="wc-top-status">{status}</p>
+          <div className="wc-top-chips">
+            {direction
+              ? <span className="wc-chip is-accent">{direction.name}</span>
+              : <a className="wc-chip is-warn" href={WINTER_CONTACT.url} target="_blank" rel="noopener noreferrer">Направление не выбрано → {WINTER_CONTACT.handle}</a>}
+            <span className="wc-chip">{humanDate(WINTER.start)} — {humanDate(WINTER.end)}</span>
+          </div>
+        </div>
+      </div>
+
+      <div className="wc-top-progress" aria-label={`Прогресс лагеря: ${progress.pct}%`}>
+        <div className="wc-top-progress-head">
+          <span className="wc-top-pct">{progress.pct}%</span>
+          <span className="wc-top-sub">{progress.phase === 'before' ? `старт ${humanDate(WINTER.start)}` : progress.phase === 'after' ? 'все 90 дней' : `день ${progress.day} из ${progress.total}`}</span>
+        </div>
+        <div className="wc-top-months">
+          {WINTER_MONTHS.map(m => {
+            const p = monthProgress(m, now)
+            return (
+              <div key={m.key} className={`wc-top-month is-${p.state}`}>
+                <span className="wc-bar is-thin" role="progressbar" aria-label={`${m.label}: прошло ${p.done} из ${p.total} дней`} aria-valuemin={0} aria-valuemax={p.total} aria-valuenow={p.done}>
+                  <span style={{ width: `${p.pct}%` }} />
+                </span>
+                <span className="wc-top-month-name">{m.label} <em>{m.theme}</em></span>
+              </div>
+            )
+          })}
+        </div>
+      </div>
+    </header>
+  )
+}
+
+// ── Сегодня ──────────────────────────────────────────────────────────────────
+
+// Семь дней, которые показываем в полосе недели
+function stripDays(now) {
   const todayIso = isoOf(now)
-  const currentMonth = WINTER_MONTHS.find(m => todayIso >= m.start && todayIso <= m.end)
-  const [tab, setTab] = useState(() => (currentMonth ? currentMonth.n : todayIso > WINTER.end ? 3 : 1))
-  const month = WINTER_MONTHS.find(m => m.n === tab)
-  const plan = program.find(p => p.month === tab)
-  const byDirection = new Set(['base', 'core', 'deep', 'interview'])
+  let ref = now
+  if (todayIso < WINTER.start) ref = dateOf(WINTER.start)
+  else if (todayIso > WINTER.end) ref = dateOf(WINTER.end)
+  const monday = new Date(ref.getFullYear(), ref.getMonth(), ref.getDate() - ((ref.getDay() + 6) % 7))
+  return Array.from({ length: 7 }, (_, i) => new Date(monday.getFullYear(), monday.getMonth(), monday.getDate() + i))
+}
+
+function Today({ stage, direction, homework, visited, events, tasks, now }) {
+  const navigate = useNavigate()
+  const todayIso = isoOf(now)
+  const state = stageState(stage, todayIso)
+  const { start, end } = stageDates(stage)
+  const days = stripDays(now)
+  const byDay = {}
+  for (const e of events) (byDay[e.date] ||= []).push(e)
+  const upcoming = upcomingEvents(events, now).slice(0, 4)
+  const rework = tasks.filter(t => ['rework', 'failed'].includes(homework.byKey[t.key]?.status))
+
+  let kicker
+  if (state === 'current') kicker = `${weeksLabel(stage.weeks)} · ${rangeLabel(start, end)} · идёт сейчас`
+  else if (todayIso < WINTER.start) kicker = `Старт ${humanDate(WINTER.start)} · можно начать заранее`
+  else if (todayIso > WINTER.end) kicker = 'Лагерь завершён · можно повторить'
+  else kicker = `Каникулы · дальше ${weeksLabel(stage.weeks).toLowerCase()} с ${humanDate(start)}`
+
+  return (
+    <section className="wc-today" aria-labelledby="wc-today-title">
+      <div className="wc-today-main">
+        <div className="wc-today-head">
+          <span className="wc-kicker">Сегодня · {humanDate(todayIso, { weekday: true })}</span>
+          <h2 id="wc-today-title" className="wc-today-title">{stageTitle(stage, direction)}</h2>
+          <span className="wc-today-when">{kicker}</span>
+        </div>
+
+        {rework.length > 0 && (
+          <button type="button" className="wc-alert" onClick={() => navigate(`/winter-camp/m/${rework[0].module.key}/${rework[0].chapter.ref}/task`)}>
+            <b>{rework.length === 1 ? 'Одна работа ждёт правок' : `${rework.length} ${plural(rework.length, 'работа ждёт', 'работы ждут', 'работ ждут')} правок`}</b>
+            <span>Открыть «{rework[0].chapter.title}» →</span>
+          </button>
+        )}
+
+        {stage.needsDirection ? (
+          <div className="wc-stage-empty">
+            Этот этап зависит от направления. Оно ещё не выбрано — напиши в Telegram{' '}
+            <a href={WINTER_CONTACT.url} target="_blank" rel="noopener noreferrer">{WINTER_CONTACT.text}</a>, и программа появится здесь.
+          </div>
+        ) : (
+          <div className="wc-now">
+            {stage.modules.map(mod => {
+              const st = moduleStats(mod, homework, visited)
+              return (
+                <div key={mod.key} className="wc-now-mod">
+                  <div className="wc-now-info">
+                    <button type="button" className="wc-now-name" onClick={() => navigate(`/winter-camp/m/${mod.key}`)}>{mod.name}</button>
+                    <span className="wc-now-stats">
+                      прочитано {st.read} из {st.lessons.length}
+                      {st.sum.total > 0 ? ` · принято ${st.sum.approved} из ${st.sum.total}` : ' · без сдачи на платформе'}
+                    </span>
+                    {st.sum.total > 0 && <StackedBar sum={st.sum} thin />}
+                  </div>
+                  <div className="wc-now-actions">
+                    <button
+                      type="button"
+                      className="wc-btn is-primary"
+                      onClick={() => navigate(st.nextLesson ? `/winter-camp/m/${mod.key}/${st.nextLesson.ref}` : `/winter-camp/m/${mod.key}`)}
+                    >
+                      <span className="wc-btn-label">{st.nextLesson ? (st.read ? 'Продолжить' : 'Начать') : 'Повторить'}</span>
+                      <span className="wc-btn-text">{st.nextLesson ? st.nextLesson.title : 'все главы прочитаны'}</span>
+                    </button>
+                    {st.nextTask && (
+                      <button type="button" className="wc-btn" onClick={() => navigate(`/winter-camp/m/${mod.key}/${st.nextTask.ref}/task`)}>
+                        <span className="wc-btn-label">Домашка</span>
+                        <span className="wc-btn-text">{st.nextTask.title}</span>
+                      </button>
+                    )}
+                  </div>
+                  {st.after.length > 0 && (
+                    <div className="wc-now-after">
+                      <span className="wc-now-after-label">Дальше по плану</span>
+                      {st.after.map(c => (
+                        <button key={c.ref} type="button" className="wc-now-after-item" onClick={() => navigate(`/winter-camp/m/${mod.key}/${c.ref}`)}>
+                          {c.title}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )
+            })}
+          </div>
+        )}
+      </div>
+
+      <aside className="wc-today-side" aria-label="Неделя и ближайшие события">
+        <div className="wc-strip">
+          {days.map(d => {
+            const iso = isoOf(d)
+            const dayEvents = byDay[iso] || []
+            const cls = ['wc-strip-day']
+            if (iso === todayIso) cls.push('is-today')
+            else if (iso < todayIso) cls.push('is-past')
+            return (
+              <div key={iso} className={cls.join(' ')} title={dayEvents.map(e => e.title).join(', ') || undefined}>
+                <span className="wc-strip-wd">{WD[(d.getDay() + 6) % 7]}</span>
+                <span className="wc-strip-num">{d.getDate()}</span>
+                <span className="wc-strip-marks">{dayEvents.map(e => <i key={e.id} className={`is-${e.type}`} />)}</span>
+              </div>
+            )
+          })}
+        </div>
+        <div className="wc-next">
+          <span className="wc-kicker">Ближайшие события</span>
+          {upcoming.length === 0 && <p className="wc-muted">Событий больше нет — записи остаются в календаре ниже.</p>}
+          {upcoming.map(e => (
+            <a key={e.id} className="wc-next-ev" href="#calendar">
+              <span className={`wc-ev-type is-${e.type}`}><i />{e.date === todayIso ? 'сегодня' : shortDate(e.date)}{e.time ? ` · ${e.time}` : ''}</span>
+              <span className="wc-next-title">{e.title}</span>
+              <span className="wc-next-note">{e.note}</span>
+            </a>
+          ))}
+        </div>
+      </aside>
+    </section>
+  )
+}
+
+// ── Программа: три месяца по четыре недели ───────────────────────────────────
+
+function ChapterCard({ mod, ch, index, homework, visited }) {
+  const navigate = useNavigate()
+  const url = `/winter-camp/m/${mod.key}/${ch.ref}`
+  const st = chapterState(mod, ch, homework, visited)
+  const hasTask = !!ch.task || ch.taskOnly
+  return (
+    <div className={`wc-ch ${st.cls}${ch.optional ? ' is-optional' : ''}`}>
+      <button type="button" className="wc-ch-main" onClick={() => navigate(ch.taskOnly ? `${url}/task` : url)}>
+        <span className="wc-ch-top">
+          <span className="wc-ch-num">{ch.label || String(index).padStart(2, '0')}</span>
+          {st.text && <span className="wc-ch-state">{st.text}</span>}
+        </span>
+        <span className="wc-ch-title">{ch.title}</span>
+      </button>
+      {hasTask && !ch.taskOnly && (
+        <button type="button" className="wc-ch-task" onClick={() => navigate(`${url}/task`)}>
+          {ch.task?.kind === 'auto' ? 'Тест' : 'Задание'} →
+        </button>
+      )}
+    </div>
+  )
+}
+
+function ModuleChapters({ mod, homework, visited }) {
+  const navigate = useNavigate()
+  const [all, setAll] = useState(false)
+  const st = moduleStats(mod, homework, visited)
+  const number = new Map(mod.chapters.map((c, i) => [c.ref, i + 1]))
+  const long = mod.chapters.length > COLLAPSED + 4
+  const card = ch => <ChapterCard key={ch.ref} mod={mod} ch={ch} index={number.get(ch.ref)} homework={homework} visited={visited} />
+
+  // В свёрнутом виде — восемь глав, начиная с первой незакрытой (по рядам из четырёх)
+  let shown = mod.chapters
+  if (long && !all) {
+    const first = mod.chapters.findIndex(c => !chapterState(mod, c, homework, visited).cls)
+    const from = Math.max(0, Math.min(first < 0 ? 0 : first - (first % 4), mod.chapters.length - COLLAPSED))
+    shown = mod.chapters.slice(from, from + COLLAPSED)
+  }
+
+  return (
+    <div className="wc-dm">
+      <div className="wc-dm-head">
+        <div className="wc-dm-info">
+          <h4 className="wc-dm-name">{mod.name}</h4>
+          <p className="wc-dm-lead">{mod.lead}</p>
+        </div>
+        <div className="wc-dm-side">
+          <span className="wc-dm-stat">
+            {st.lessons.length} {plural(st.lessons.length, 'глава', 'главы', 'глав')}
+            {st.sum.total > 0 ? ` · принято ${st.sum.approved} из ${st.sum.total}` : ''}
+          </span>
+          {st.sum.total > 0 && <StackedBar sum={st.sum} thin />}
+          <button type="button" className="wc-link" onClick={() => navigate(`/winter-camp/m/${mod.key}`)}>Обзор блока →</button>
+        </div>
+      </div>
+
+      {all && mod.groups ? mod.groups.map(g => {
+        const list = mod.chapters.filter(c => c.level === g.level)
+        if (!list.length) return null
+        return (
+          <Fragment key={g.level}>
+            <div className="wc-dm-group">{g.title}</div>
+            <div className="wc-chs">{list.map(card)}</div>
+          </Fragment>
+        )
+      }) : <div className="wc-chs">{shown.map(card)}</div>}
+
+      {long && (
+        <button type="button" className="wc-more" onClick={() => setAll(v => !v)} aria-expanded={all}>
+          {all ? 'Свернуть' : `Показать все ${mod.chapters.length} ${plural(mod.chapters.length, 'главу', 'главы', 'глав')}`}
+        </button>
+      )}
+    </div>
+  )
+}
+
+function Program({ program, stages, selected, onSelect, homework, visited, now, direction }) {
+  const todayIso = isoOf(now)
+  const stage = stages.find(s => s.key === selected) || stages[0]
+  const { start, end } = stageDates(stage)
+  const stageOfWeek = n => stages.find(s => s.weeks.includes(n))
+  const pick = key => {
+    onSelect(key)
+    requestAnimationFrame(() => document.getElementById('wc-stage-detail')?.scrollIntoView({ behavior: 'smooth', block: 'nearest' }))
+  }
 
   return (
     <section className="wc-section" aria-labelledby="wc-program-title">
       <div className="wc-section-head">
-        <div>
-          <h2 id="wc-program-title" className="wc-section-title">Программа</h2>
-          <p className="wc-section-sub">{month.label} · {rangeLabel(month.start, month.end)} — {month.goal.toLowerCase()}</p>
-        </div>
-        <div className="wc-tabs is-big" role="tablist" aria-label="Месяц программы">
-          {WINTER_MONTHS.map(m => (
-            <button key={m.key} type="button" role="tab" aria-selected={m.n === tab} className={m.n === tab ? 'is-active' : ''} onClick={() => setTab(m.n)}>
-              <span className="wc-tab-kicker">Месяц {m.n}</span>
-              <span className="wc-tab-name">{m.theme}</span>
-            </button>
-          ))}
-        </div>
+        <h2 id="wc-program-title" className="wc-section-title">Программа</h2>
+        <p className="wc-section-sub">12 недель · недели 1–2 общие для всех, 3–10 — твоё направление, 11–12 — карьера</p>
       </div>
 
-      <div className="wc-stages">
-        {plan.stages.map(stage => {
-          const { start, end } = stageDates(stage)
-          const state = todayIso > end ? 'past' : todayIso < start ? 'future' : 'current'
+      <div className="wc-plan">
+        {program.map(m => {
+          const month = WINTER_MONTHS.find(x => x.n === m.month)
+          const weeks = WINTER_WEEKS.filter(w => w.month === m.month)
+          const mp = monthProgress(month, now)
           return (
-            <div key={stage.key} className={`wc-stage is-${state}`}>
-              <div className="wc-stage-head">
-                <span className="wc-stage-dot" aria-hidden="true" />
-                <div>
-                  <div className="wc-stage-when">{stageLabel(stage)}{state === 'current' ? ' · идёт сейчас' : ''}</div>
-                  <h3 className="wc-stage-title">{stage.title}{direction && byDirection.has(stage.key) ? ` · ${direction.short}` : ''}</h3>
-                </div>
+            <div key={month.key} className={`wc-plan-month is-${mp.state}`}>
+              <div className="wc-plan-head">
+                <span className="wc-kicker">Месяц {month.n} · {rangeLabel(month.start, month.end)}</span>
+                <h3 className="wc-plan-title">{month.label} <em>{month.theme}</em></h3>
               </div>
-              {stage.needsDirection ? (
-                <div className="wc-stage-empty">
-                  Этот этап зависит от направления. Оно ещё не выбрано — напиши в Telegram{' '}
-                  <a href={WINTER_CONTACT.url} target="_blank" rel="noopener noreferrer">{WINTER_CONTACT.text}</a>, и программа появится здесь.
-                </div>
-              ) : (
-                <div className="wc-mods">
-                  {stage.modules.map(mod => <ModuleCard key={mod.key} mod={mod} homework={homework} visited={visited} state={state} />)}
-                </div>
-              )}
+              <div className="wc-plan-weeks">
+                {weeks.map(w => {
+                  const ws = todayIso > w.end ? 'past' : todayIso < w.start ? 'future' : 'current'
+                  const s = stageOfWeek(w.n)
+                  return (
+                    <button
+                      key={w.n}
+                      type="button"
+                      className={`wc-wk is-${ws}${s?.key === stage.key ? ' is-selected' : ''}`}
+                      onClick={() => s && pick(s.key)}
+                      title={`${rangeLabel(w.start, w.end)} · ${w.focus}`}
+                    >
+                      <span className="wc-wk-n">{w.n}</span>
+                      <span className="wc-wk-d">{rangeLabel(w.start, w.end)}</span>
+                    </button>
+                  )
+                })}
+              </div>
+              <div className="wc-plan-stages">
+                {m.stages.map(s => {
+                  const ss = stageState(s, todayIso)
+                  const sum = summarize(s.modules.flatMap(mod => mod.chapters.filter(c => isCountable(c) && !c.optional).map(c => ({ key: taskKey(mod, c) }))), homework.byKey)
+                  return (
+                    <button
+                      key={s.key}
+                      type="button"
+                      style={{ flexGrow: s.weeks.length }}
+                      className={`wc-plan-stage is-${ss}${s.key === stage.key ? ' is-selected' : ''}`}
+                      onClick={() => pick(s.key)}
+                      aria-pressed={s.key === stage.key}
+                    >
+                      <span className="wc-plan-when">{weeksLabel(s.weeks)}{ss === 'current' ? ' · сейчас' : ''}</span>
+                      <span className="wc-plan-name">{stageTitle(s, direction)}</span>
+                      <span className="wc-plan-mods">
+                        {s.needsDirection ? 'после выбора направления' : s.modules.map(mod => mod.name).join(' · ')}
+                      </span>
+                      {sum.total > 0 && (
+                        <span className="wc-plan-progress">
+                          <StackedBar sum={sum} thin />
+                          <span>{sum.approved}/{sum.total}</span>
+                        </span>
+                      )}
+                    </button>
+                  )
+                })}
+              </div>
+              {month.n === 1 && <div className="wc-plan-break">Каникулы · {rangeLabel(WINTER_BREAK.start, WINTER_BREAK.end)}</div>}
             </div>
           )
         })}
+      </div>
+
+      <div id="wc-stage-detail" className="wc-detail">
+        <div className="wc-detail-head">
+          <span className="wc-kicker">{weeksLabel(stage.weeks)} · {rangeLabel(start, end)}</span>
+          <h3 className="wc-detail-title">{stageTitle(stage, direction)}</h3>
+        </div>
+        {stage.needsDirection ? (
+          <div className="wc-stage-empty">
+            Этот этап зависит от направления. Оно ещё не выбрано — напиши в Telegram{' '}
+            <a href={WINTER_CONTACT.url} target="_blank" rel="noopener noreferrer">{WINTER_CONTACT.text}</a>, и программа появится здесь.
+          </div>
+        ) : stage.modules.map(mod => <ModuleChapters key={mod.key} mod={mod} homework={homework} visited={visited} />)}
       </div>
     </section>
   )
 }
 
-// ── Домашние задания и быстрые ссылки ────────────────────────────────────────
+// ── Итоги домашних заданий ───────────────────────────────────────────────────
 
 function Donut({ sum }) {
   const r = 34, c = 2 * Math.PI * r
@@ -217,22 +469,14 @@ function Donut({ sum }) {
 }
 
 function HomeworkProgress({ tasks, homework }) {
-  const navigate = useNavigate()
   const required = tasks.filter(t => t.required)
   const sum = summarize(required, homework.byKey)
-  const rework = tasks.filter(t => ['rework', 'failed'].includes(homework.byKey[t.key]?.status))
   return (
     <section className="wc-card wc-hw" aria-labelledby="wc-hw-title">
       <div className="wc-card-head">
-        <h2 id="wc-hw-title" className="wc-card-title">Домашние задания</h2>
+        <h2 id="wc-hw-title" className="wc-card-title">Итоги домашних заданий</h2>
         <span className="wc-card-value">{homework.loading ? '…' : `${sum.pct}%`}</span>
       </div>
-      {rework.length > 0 && (
-        <button type="button" className="wc-alert" onClick={() => navigate(`/winter-camp/m/${rework[0].module.key}/${rework[0].chapter.ref}/task`)}>
-          <b>{rework.length === 1 ? 'Одна работа ждёт правок' : `${rework.length} ${plural(rework.length, 'работа ждёт', 'работы ждут', 'работ ждут')} правок`}</b>
-          <span>Открыть «{rework[0].chapter.title}» →</span>
-        </button>
-      )}
       <div className="wc-hw-body">
         <Donut sum={sum} />
         <ul className="wc-legend">
@@ -248,13 +492,7 @@ function HomeworkProgress({ tasks, homework }) {
           return (
             <div key={m.key} className="wc-hw-month">
               <span className="wc-hw-month-name">{m.label}</span>
-              <div className="wc-bar is-stacked" aria-hidden="true">
-                {ms.total > 0 && <>
-                  <span className="is-approved" style={{ width: `${(ms.approved / ms.total) * 100}%` }} />
-                  <span className="is-submitted" style={{ width: `${(ms.submitted / ms.total) * 100}%` }} />
-                  <span className="is-rework" style={{ width: `${(ms.rework / ms.total) * 100}%` }} />
-                </>}
-              </div>
+              <StackedBar sum={ms} />
               <span className="wc-hw-month-num">{ms.total ? `${ms.approved}/${ms.total}` : '—'}</span>
             </div>
           )
@@ -265,29 +503,14 @@ function HomeworkProgress({ tasks, homework }) {
   )
 }
 
-function QuickLinks({ now }) {
+function VacanciesLink() {
   const navigate = useNavigate()
-  const todayIso = isoOf(now)
-  const nextMath = WINTER_MATH.find(s => s.date >= todayIso)
-  const items = [
-    {
-      key: 'math', url: '/winter-camp/math', title: 'Математика', kicker: 'Мини-курс · 8 занятий',
-      text: nextMath ? `Ближайшее: занятие ${nextMath.day}, ${shortDate(nextMath.date)}` : 'Курс завершён — конспекты открыты',
-    },
-    { key: 'english', url: '/winter-camp/english', title: 'Английский', kicker: 'Конспект-лонгрид', text: 'Документация, переписка, собеседование' },
-    { key: 'vac', url: '/winter-camp/vacancies', title: 'Вакансии и контакты', kicker: 'Для участников', text: 'Стажировки и junior-позиции' },
-  ]
   return (
-    <nav className="wc-quick" aria-label="Разделы лагеря">
-      {items.map(it => (
-        <button key={it.key} type="button" className={`wc-quick-item is-${it.key}`} onClick={() => navigate(it.url)}>
-          <span className="wc-quick-kicker">{it.kicker}</span>
-          <span className="wc-quick-title">{it.title}</span>
-          <span className="wc-quick-text">{it.text}</span>
-          <span className="wc-quick-go" aria-hidden="true">→</span>
-        </button>
-      ))}
-    </nav>
+    <button type="button" className="wc-vac" onClick={() => navigate('/winter-camp/vacancies')}>
+      <span className="wc-vac-title">Вакансии и контакты</span>
+      <span className="wc-vac-text">стажировки и junior-позиции для участников</span>
+      <span className="wc-vac-go" aria-hidden="true">→</span>
+    </button>
   )
 }
 
@@ -339,17 +562,13 @@ function Calendar({ events, now }) {
   const cells = monthGrid(view.y, view.m)
   const monthPrefix = `${view.y}-${String(view.m + 1).padStart(2, '0')}`
   const monthEvents = shown.filter(e => e.date.startsWith(monthPrefix))
-  // По умолчанию справа — ближайшие события месяца, прошедшие уходят вниз списка
   const list = selected ? (byDay[selected] || []) : [...upcomingEvents(monthEvents, now), ...monthEvents.filter(e => !upcomingEvents([e], now).length)]
   const week = iso => WINTER_WEEKS.find(w => iso >= w.start && iso <= w.end)
 
   return (
-    <section id="calendar" className="wc-section wc-cal" aria-labelledby="wc-cal-title">
-      <div className="wc-section-head">
-        <div>
-          <h2 id="wc-cal-title" className="wc-section-title">Календарь событий</h2>
-          <p className="wc-section-sub">Групповые созвоны, математика, встречи с ментором и разбор задач LeetCode</p>
-        </div>
+    <section id="calendar" className="wc-card wc-cal" aria-labelledby="wc-cal-title">
+      <div className="wc-card-head">
+        <h2 id="wc-cal-title" className="wc-card-title">Календарь событий</h2>
         <div className="wc-tabs" role="tablist" aria-label="Месяц">
           {campMonths.map((c, i) => (
             <button key={c.label} type="button" role="tab" aria-selected={i === idx} className={i === idx ? 'is-active' : ''} onClick={() => { setView({ y: c.y, m: c.m }); setSelected(null) }}>
@@ -359,62 +578,59 @@ function Calendar({ events, now }) {
         </div>
       </div>
 
-      <div className="wc-card">
-        <div className="wc-filters" role="group" aria-label="Тип события">
-          <button type="button" className={filter === 'all' ? 'is-active' : ''} onClick={() => setFilter('all')}>Все</button>
-          {Object.entries(EVENT_TYPES).map(([key, t]) => (
-            <button key={key} type="button" className={`is-${key}${filter === key ? ' is-active' : ''}`} onClick={() => setFilter(filter === key ? 'all' : key)}>
-              <i />{t.label}
-            </button>
-          ))}
+      <div className="wc-filters" role="group" aria-label="Тип события">
+        <button type="button" className={filter === 'all' ? 'is-active' : ''} onClick={() => setFilter('all')}>Все</button>
+        {Object.entries(MAIN_TYPES).map(([key, t]) => (
+          <button key={key} type="button" className={`is-${key}${filter === key ? ' is-active' : ''}`} onClick={() => setFilter(filter === key ? 'all' : key)}>
+            <i />{t.label}
+          </button>
+        ))}
+      </div>
+
+      <div className="wc-cal-body">
+        <div className="wc-cal-gridwrap">
+          <div className="wc-cal-month">{MONTH_NAMES[view.m]} {view.y}</div>
+          <div className="wc-cal-grid">
+            {WD.map(w => <div key={w} className="wc-cal-wd">{w}</div>)}
+            {cells.map(d => {
+              const iso = isoOf(d)
+              const dayEvents = byDay[iso] || []
+              const cls = ['wc-cal-day']
+              if (d.getMonth() !== view.m) cls.push('is-out')
+              if (iso === todayIso) cls.push('is-today')
+              if (iso === selected) cls.push('is-selected')
+              if (dayEvents.length) cls.push('has-events')
+              if (iso < WINTER.start || iso > WINTER.end) cls.push('is-off')
+              return (
+                <button
+                  key={iso}
+                  type="button"
+                  className={cls.join(' ')}
+                  onClick={() => setSelected(iso === selected ? null : iso)}
+                  aria-pressed={iso === selected}
+                  aria-label={`${humanDate(iso)}${dayEvents.length ? `: ${dayEvents.map(e => e.title).join(', ')}` : ''}`}
+                >
+                  <span className="wc-cal-num">{d.getDate()}</span>
+                  <span className="wc-cal-marks">
+                    {dayEvents.slice(0, 3).map(e => <i key={e.id} className={`is-${e.type}`} title={e.title} />)}
+                  </span>
+                </button>
+              )
+            })}
+          </div>
         </div>
 
-        <div className="wc-cal-body">
-          <div className="wc-cal-gridwrap">
-            <div className="wc-cal-month">{MONTH_NAMES[view.m]} {view.y}</div>
-            <div className="wc-cal-grid">
-              {WD.map(w => <div key={w} className="wc-cal-wd">{w}</div>)}
-              {cells.map(d => {
-                const iso = isoOf(d)
-                const dayEvents = byDay[iso] || []
-                const cls = ['wc-cal-day']
-                if (d.getMonth() !== view.m) cls.push('is-out')
-                if (iso === todayIso) cls.push('is-today')
-                if (iso === selected) cls.push('is-selected')
-                if (dayEvents.length) cls.push('has-events')
-                if (iso < WINTER.start || iso > WINTER.end) cls.push('is-off')
-                return (
-                  <button
-                    key={iso}
-                    type="button"
-                    className={cls.join(' ')}
-                    onClick={() => setSelected(iso === selected ? null : iso)}
-                    aria-pressed={iso === selected}
-                    aria-label={`${humanDate(iso)}${dayEvents.length ? `: ${dayEvents.map(e => e.title).join(', ')}` : ''}`}
-                  >
-                    <span className="wc-cal-num">{d.getDate()}</span>
-                    <span className="wc-cal-marks">
-                      {dayEvents.slice(0, 3).map(e => <i key={e.id} className={`is-${e.type}`} title={e.title} />)}
-                    </span>
-                    {dayEvents[0] && <span className={`wc-cal-label is-${dayEvents[0].type}`}>{EVENT_TYPES[dayEvents[0].type].tag}</span>}
-                  </button>
-                )
-              })}
-            </div>
+        <div className="wc-cal-side">
+          <div className="wc-cal-side-head">
+            <span className="wc-cal-side-title">
+              {selected ? humanDate(selected, { weekday: true }) : `${MONTH_NAMES[view.m]}: ${monthEvents.length} ${plural(monthEvents.length, 'событие', 'события', 'событий')}`}
+            </span>
+            {selected && <button type="button" className="wc-cal-reset" onClick={() => setSelected(null)}>весь месяц</button>}
           </div>
-
-          <div className="wc-cal-side">
-            <div className="wc-cal-side-head">
-              <span className="wc-cal-side-title">
-                {selected ? humanDate(selected, { weekday: true }) : `${MONTH_NAMES[view.m]}: ${monthEvents.length} ${plural(monthEvents.length, 'событие', 'события', 'событий')}`}
-              </span>
-              {selected && <button type="button" className="wc-cal-reset" onClick={() => setSelected(null)}>весь месяц</button>}
-            </div>
-            {selected && week(selected) && <p className="wc-cal-weeknote">Неделя {week(selected).n} · {week(selected).focus}</p>}
-            <div className="wc-cal-list">
-              {list.length === 0 && <p className="wc-muted">{selected ? 'В этот день событий нет — время для материалов и домашек.' : 'В этом месяце событий такого типа нет.'}</p>}
-              {list.map(e => <EventCard key={e.id} event={e} now={now} showDate={!selected} />)}
-            </div>
+          {selected && week(selected) && <p className="wc-cal-weeknote">Неделя {week(selected).n} · {week(selected).focus}</p>}
+          <div className="wc-cal-list">
+            {list.length === 0 && <p className="wc-muted">{selected ? 'В этот день событий нет — время для материалов и домашек.' : 'В этом месяце событий такого типа нет.'}</p>}
+            {list.map(e => <EventCard key={e.id} event={e} now={now} showDate={!selected} />)}
           </div>
         </div>
       </div>
@@ -454,21 +670,32 @@ export default function WinterCampPage({ user }) {
   }, [])
 
   const program = useMemo(() => winterProgram(direction?.key), [direction?.key])
+  const stages = useMemo(() => program.flatMap(m => m.stages), [program])
   const tasks = useMemo(() => winterTasks(direction?.key), [direction?.key])
-  const events = useMemo(() => winterEvents(direction?.name), [direction?.name])
+  const events = useMemo(() => winterEvents(direction?.name, { math: false }), [direction?.name])
   const visited = useMemo(() => loadVisited(user), [user?.id])
+  const todayIso = isoOf(now)
+  const current = focusStage(stages, todayIso)
+  const [selected, setSelected] = useState(null)
 
   if (!isWinter) return <Closed />
 
   return (
     <section className="page active wc-page">
-      <Hero direction={direction} progress={campProgress(now)} week={currentWinterWeek(now)} now={now} />
-      <Program program={program} homework={homework} visited={visited} now={now} direction={direction} />
+      <TopBar direction={direction} progress={campProgress(now)} week={currentWinterWeek(now)} now={now} />
+      <WinterTracks active="main" direction={direction} />
+      <Today stage={current} direction={direction} homework={homework} visited={visited} events={events} tasks={tasks} now={now} />
+      <Program
+        program={program} stages={stages} selected={selected || current.key} onSelect={setSelected}
+        homework={homework} visited={visited} now={now} direction={direction}
+      />
       <div className="wc-row">
-        <HomeworkProgress tasks={tasks} homework={homework} />
-        <QuickLinks now={now} />
+        <div className="wc-col">
+          <HomeworkProgress tasks={tasks} homework={homework} />
+          <VacanciesLink />
+        </div>
+        <Calendar events={events} now={now} />
       </div>
-      <Calendar events={events} now={now} />
     </section>
   )
 }

@@ -435,36 +435,31 @@ const PLAN = [
   { month: 1, stages: [
     { key: 'python', weeks: [1], title: 'Основы программирования на Python', modules: ['py'] },
     { key: 'algo', weeks: [2], title: 'Алгоритмы и структуры данных', modules: ['algo', 'ds'] },
-    { key: 'base', weeks: [3, 4], title: 'Основы направления', byDir: {
+    { key: 'base', weeks: [3, 4], title: 'Введение в направление', byDir: {
       ml: ['git', 'ml-base', 'sql'],
       backend: ['git', 'docker', 'db', 'sql', 'sysdesign'],
       security: ['sec-linux'],
     } },
   ] },
   { month: 2, stages: [
-    { key: 'core', weeks: [6, 7, 8, 9], title: 'Главный блок направления', byDir: {
+    { key: 'core', weeks: [5, 6, 7, 8], title: 'Главный блок направления', byDir: {
       ml: ['ml-classic', 'ml-dl'],
       backend: ['be-core'],
       security: ['sec-net', 'sec-win'],
     } },
   ] },
   { month: 3, stages: [
-    { key: 'interview', weeks: [10], title: 'Вопросы с собеседований', byDir: {
-      ml: ['interview-ml'], backend: ['interview-backend'], security: ['interview-security'],
+    { key: 'final', weeks: [9, 10], title: 'Направление: финальный блок', byDir: {
+      ml: ['ml-deep', 'interview-ml'],
+      backend: ['be-deep', 'interview-backend'],
+      security: ['sec-webapp', 'interview-security'],
     } },
-    { key: 'web', weeks: [10, 11], title: 'Безопасность веб-приложений', byDir: {
-      security: ['sec-webapp'],
-    } },
-    { key: 'deep', weeks: [10, 11, 12, 13], title: 'Углубление в направление', byDir: {
-      ml: ['ml-deep'], backend: ['be-deep'],
-    } },
-    { key: 'career', weeks: [10, 11, 12, 13], title: 'Карьера', modules: ['career'] },
-    { key: 'algosobes', weeks: [10, 11, 12, 13], title: 'Алгособес', modules: ['algosobes'] },
+    { key: 'career', weeks: [11, 12], title: 'Карьера', modules: ['career', 'algosobes'] },
   ] },
 ]
 
 // Программа студента: месяцы → этапы → блоки. Без направления этапы по направлению пустые (needsDirection).
-// Этап, которого нет у направления (например, «Безопасность веб-приложений» у ML), не показываем;
+// Этап, которого нет у направления, не показываем;
 // без выбранного направления не показываем этапы, которые есть не у всех направлений.
 const DIRECTION_KEYS = Object.keys(WINTER_DIRECTIONS)
 const stageFor = (s, direction) => s.modules || (direction ? !!s.byDir[direction] : DIRECTION_KEYS.every(d => s.byDir[d]))
