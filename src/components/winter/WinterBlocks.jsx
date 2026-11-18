@@ -3,7 +3,8 @@ import ProgramBlocks, { Rich } from '../program/ProgramBlocks'
 import AlgoViz from '../AlgoViz'
 
 // Блоки урока зимнего лагеря: всё, что умеет ProgramBlocks, плюс блоки недельных материалов
-// (карточки, пошаговые схемы, ссылки), которые приходят из lessonFromWeek.
+// (карточки, пошаговые схемы, ссылки), которые приходят из lessonFromWeek, и блоки курса
+// по кибербезопасности: картинка (img) и раскрывающийся разбор ответа (reveal).
 
 function Special({ b }) {
   switch (b.t) {
@@ -20,6 +21,21 @@ function Special({ b }) {
       )
     case 'viz':
       return <div className="wl-viz"><AlgoViz block={b.block} /></div>
+    case 'img':
+      return (
+        <figure className="wl-img">
+          <a href={b.src} target="_blank" rel="noopener noreferrer" title="Открыть в полном размере">
+            <img src={b.src} alt={b.alt || ''} loading="lazy" decoding="async" />
+          </a>
+        </figure>
+      )
+    case 'reveal':
+      return (
+        <details className="wl-reveal">
+          <summary>{b.title || 'Разбор и ответ'}</summary>
+          <div className="wl-reveal-body"><WinterBlocks blocks={b.blocks} /></div>
+        </details>
+      )
     case 'linkcard':
       return (
         <a className="wl-linkcard" href={b.href} target="_blank" rel="noopener noreferrer">
@@ -32,7 +48,7 @@ function Special({ b }) {
   }
 }
 
-const SPECIAL = new Set(['cards', 'viz', 'linkcard'])
+const SPECIAL = new Set(['cards', 'viz', 'linkcard', 'img', 'reveal'])
 
 export default function WinterBlocks({ blocks }) {
   // Подряд идущие обычные блоки отдаём ProgramBlocks пачкой

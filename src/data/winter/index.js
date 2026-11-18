@@ -22,6 +22,7 @@ import { WEEK3_CHAPTERS } from '../week3Materials'
 import { WEEK4_TOPICS, SQL_TASKS } from '../week4'
 import { DIRECTIONS as PROGRAMS, NOVEMBER_BLOCKS, combineTrack } from '../programs'
 import { lessonFromWeek, quizFromWeekHomework, quizFromProgram, autoFromQuiz } from './adapters'
+import { SEC_COURSE } from './sec'
 
 export const WINTER_CONTACT = { handle: '@x_tap', url: 'https://t.me/x_tap', text: 't.me/x_tap' }
 
@@ -106,6 +107,41 @@ function topicTest(id, title) {
 }
 
 const deepMl = n => NOVEMBER_BLOCKS.deep.byDirection.ml.find(c => c.num === n)
+
+// Глава курса по кибербезопасности (src/data/winter/sec — генерируется scripts/import-sec-course.py).
+// Guided Case и кейсы — практика на стенде: вопросы уходят на проверку, тесты с одним верным
+// вариантом проверяются сразу. Практика без вопросов — самостоятельная, сдавать не нужно.
+function secChapter(c) {
+  const task = c.kind === 'quiz' ? { kind: 'quiz', count: c.count, load: () => c.load().then(m => quizFromProgram(m.task)) }
+    : c.kind === 'auto' ? { kind: 'auto', count: c.count, load: () => c.load().then(m => autoFromQuiz(m.task)) }
+    : c.practice ? { kind: 'self' } : null
+  return {
+    ref: c.ref,
+    title: c.title,
+    level: c.level,
+    sections: c.sections || null,
+    ...(c.taskOnly ? { taskOnly: true } : { load: () => c.load().then(m => m.default) }),
+    task,
+  }
+}
+
+function secModule(key, meta) {
+  const src = SEC_COURSE[key]
+  const chapters = src.chapters.map(secChapter)
+  const groups = src.groups.map(g => {
+    const list = chapters.filter(c => c.level === g.level)
+    const practice = src.chapters.filter(c => c.level === g.level && c.practice).length
+    return { ...g, note: `${list.length} ${plural(list.length, 'тема', 'темы', 'тем')}${practice ? ` · практик на стенде: ${practice}` : ''}` }
+  })
+  return { key, dirs: ['security'], ...meta, groups, chapters }
+}
+
+function plural(n, one, few, many) {
+  const a = n % 10, b = n % 100
+  if (a === 1 && b !== 11) return one
+  if (a >= 2 && a <= 4 && (b < 12 || b > 14)) return few
+  return many
+}
 
 // ── Блоки программы ──────────────────────────────────────────────────────────
 // dirs — каким направлениям блок входит в программу (null — всем)
@@ -220,15 +256,32 @@ export const WINTER_MODULES = {
       programChapter('ml', 1, { task: quizTask(() => import('./content/ml-base-quiz')), practice: true }),
     ],
   },
-  'sec-base': {
-    key: 'sec-base',
-    name: 'Основы информационной безопасности',
-    short: 'Основы ИБ',
-    dirs: ['security'],
+
+  // ── Курс по кибербезопасности: Linux, сети, Windows и веб ──
+  'sec-linux': secModule('sec-linux', {
+    name: 'UNIX-системы и их безопасность',
+    short: 'Linux',
     tag: 'Недели 3–4 · основы направления',
-    lead: 'Язык, на котором говорят безопасники: триада CIA, угрозы, уязвимости и риски, принципы защиты, модель нарушителя, CVE, CWE, CVSS, OWASP Top 10, NIST, MITRE ATT&CK и российская регуляторика — ФСТЭК, БДУ, 152-ФЗ.',
-    chapters: [programChapter('security', 1)],
-  },
+    lead: 'Начинаем с подготовки стенда — VirtualBox, учебные виртуальные машины и сертификаты. Дальше Linux от устройства Debian и загрузки системы до пользователей, прав, процессов, служб, журналирования, PAM, SELinux и харденинга. В Guided Case — практика на виртуальной машине с вопросами: ответы уходят на проверку, разбор открывается после своей попытки.',
+  }),
+  'sec-net': secModule('sec-net', {
+    name: 'Сети и сетевая безопасность',
+    short: 'Сети',
+    tag: 'Январь · главный блок направления',
+    lead: 'Основы сетей — модели OSI и TCP/IP, протоколы и Wireshark, — затем настройка сети на MikroTik: адресация, маршрутизация, DNS, VLAN, NAT, VPN и прокси. В третьей части — межсетевой экран OPNsense и защитные практики: как обнаруживать и предотвращать типовые атаки на сеть.',
+  }),
+  'sec-win': secModule('sec-win', {
+    name: 'Windows-системы и их безопасность',
+    short: 'Windows',
+    tag: 'Январь · главный блок направления',
+    lead: 'Как устроена Windows: службы, драйверы, пользователи и права, реестр, сетевой стек и удалённое управление, локальные политики и журналирование с Sysmon. Во второй части — доменная инфраструктура: Active Directory, Kerberos и NTLM, AD CS и групповые политики. Практика — Guided Case на стенде.',
+  }),
+  'sec-webapp': secModule('sec-webapp', {
+    name: 'Безопасность веб-приложений',
+    short: 'Веб',
+    tag: 'Февраль · недели 10–11',
+    lead: 'Как устроены веб-приложения: HTTP и HTTPS, сессии, cookies и JWT, механизмы защиты браузера. Затем классификация уязвимостей, OWASP Top 10 и методология тестирования, разбор XSS, SQL-инъекций, IDOR, XXE, SSTI и других — с кейсами по защите от каждой. В конце — безопасная разработка, SAST, DefectDojo и WAF.',
+  }),
 
   // ── Второй месяц: главный блок направления ──
   'ml-classic': {
@@ -284,22 +337,6 @@ export const WINTER_MODULES = {
       programChapter('backend', 4),
       programChapter('backend', 5),
       programChapter('backend', 6),
-    ],
-  },
-  'sec-core': {
-    key: 'sec-core',
-    name: 'База специалиста по ИБ',
-    short: 'База ИБ',
-    dirs: ['security'],
-    tag: 'Январь · главный блок направления',
-    lead: 'База, которая нужна в любой профессии ИБ — от реверса до пентеста: криптография, Linux, Windows, сети и веб. К каждой главе — вопросы в формате собеседования: ответы уходят на проверку.',
-    chapters: [
-      newChapter('crypto', 'Криптография: основы без матана', 9, () => import('./content/sec-crypto'), () => import('./content/sec-crypto-quiz')),
-      newChapter('linux', 'Linux: база администрирования', 11, () => import('./content/sec-linux'), () => import('./content/sec-linux-quiz')),
-      newChapter('windows', 'Windows: та же база, другие инструменты', 8, () => import('./content/sec-windows'), () => import('./content/sec-windows-quiz')),
-      programChapter('security', 4),
-      newChapter('web', 'Веб: архитектура, сессии, токены и уязвимости', 11, () => import('./content/sec-web'), () => import('./content/sec-web-quiz')),
-      programChapter('security', 3, { hint: 'Углублённый разбор трёх тем из главы про веб' }),
     ],
   },
 
@@ -364,18 +401,6 @@ export const WINTER_MODULES = {
       })),
     ],
   },
-  'sec-deep': {
-    key: 'sec-deep',
-    name: 'Углубление: практика на полигонах',
-    short: 'Углубление',
-    dirs: ['security'],
-    tag: 'Февраль · углубление в направление',
-    lead: 'От теории к рукам: учебные полигоны, своя лаборатория в виртуалках, первые лабы PortSwigger и отчёт об уязвимости. И карта профессии — куда расти: SOC и blue team или пентест и red team.',
-    chapters: [
-      newChapter('practice', 'Практика: полигоны, лаборатория и отчёт об уязвимости', 7, () => import('./content/sec-practice'), () => import('./content/sec-practice-quiz')),
-      programChapter('security', 2, { hint: 'С чего начать на PortSwigger Web Security Academy', task: { kind: 'self' } }),
-    ],
-  },
   career: {
     key: 'career',
     name: 'Карьера',
@@ -413,22 +438,25 @@ const PLAN = [
     { key: 'base', weeks: [3, 4], title: 'Основы направления', byDir: {
       ml: ['git', 'ml-base', 'sql'],
       backend: ['git', 'docker', 'db', 'sql', 'sysdesign'],
-      security: ['git', 'sec-base'],
+      security: ['sec-linux'],
     } },
   ] },
   { month: 2, stages: [
     { key: 'core', weeks: [6, 7, 8, 9], title: 'Главный блок направления', byDir: {
       ml: ['ml-classic', 'ml-dl'],
       backend: ['be-core'],
-      security: ['sec-core'],
+      security: ['sec-net', 'sec-win'],
     } },
   ] },
   { month: 3, stages: [
     { key: 'interview', weeks: [10], title: 'Вопросы с собеседований', byDir: {
       ml: ['interview-ml'], backend: ['interview-backend'], security: ['interview-security'],
     } },
+    { key: 'web', weeks: [10, 11], title: 'Безопасность веб-приложений', byDir: {
+      security: ['sec-webapp'],
+    } },
     { key: 'deep', weeks: [10, 11, 12, 13], title: 'Углубление в направление', byDir: {
-      ml: ['ml-deep'], backend: ['be-deep'], security: ['sec-deep'],
+      ml: ['ml-deep'], backend: ['be-deep'],
     } },
     { key: 'career', weeks: [10, 11, 12, 13], title: 'Карьера', modules: ['career'] },
     { key: 'algosobes', weeks: [10, 11, 12, 13], title: 'Алгособес', modules: ['algosobes'] },
@@ -436,10 +464,15 @@ const PLAN = [
 ]
 
 // Программа студента: месяцы → этапы → блоки. Без направления этапы по направлению пустые (needsDirection).
+// Этап, которого нет у направления (например, «Безопасность веб-приложений» у ML), не показываем;
+// без выбранного направления не показываем этапы, которые есть не у всех направлений.
+const DIRECTION_KEYS = Object.keys(WINTER_DIRECTIONS)
+const stageFor = (s, direction) => s.modules || (direction ? !!s.byDir[direction] : DIRECTION_KEYS.every(d => s.byDir[d]))
+
 export function winterProgram(direction) {
   return PLAN.map(m => ({
     month: m.month,
-    stages: m.stages.map(s => {
+    stages: m.stages.filter(s => stageFor(s, direction)).map(s => {
       const keys = s.modules || (direction && s.byDir[direction]) || []
       return { key: s.key, weeks: s.weeks, title: s.title, needsDirection: !s.modules && !direction, modules: keys.map(k => WINTER_MODULES[k]) }
     }),
