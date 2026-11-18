@@ -43,28 +43,63 @@ export default {
      "text": "@echo off\nif %1==1 set LOGIN=user1&set PASSWORD=pass123\nif %1==2 set LOGIN=ivan&set PASSWORD=qwerty\necho %LOGIN% %PASSWORD%"
     },
     {
+     "t": "img",
+     "src": "/winter/sec/e93facf40940.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "Зайдем в **System Properties**. Нажмём **Win+R** и введём: `sysdm.cpl`"
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/f33a1d0daf49.webp",
+     "alt": "Иллюстрация к материалу"
     },
     {
      "t": "p",
      "text": "переходим в **Advanced** и нажимаем **Environment Variables...**"
     },
     {
+     "t": "img",
+     "src": "/winter/sec/89fb399638ed.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "В **User variables for admin** нажимаем **New...**"
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/c7cef8ad6e37.webp",
+     "alt": "Иллюстрация к материалу"
     },
     {
      "t": "p",
      "text": "Копируем полный путь **auth.bat** (правой кнопкой по файлу - **copy as path**)"
     },
     {
+     "t": "img",
+     "src": "/winter/sec/8c004ee84eba.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "Пишем в **name** - `auth`, **value** - скопированный путь до файла"
     },
     {
+     "t": "img",
+     "src": "/winter/sec/18efe72c94f7.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "после добавления не забываем нажать **OK**"
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/867af6eacd62.webp",
+     "alt": "Иллюстрация к материалу"
     },
     {
      "t": "p",
@@ -75,20 +110,45 @@ export default {
      "text": "Переменная окружения позволяет вызывать скрипты по короткому имени из любого места не задавая полного пути."
     },
     {
+     "t": "img",
+     "src": "/winter/sec/0f86dd0f1366.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "нажимаем **Win+R** и для открытия папки с автозапуском вводим: `shell:startup`"
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/f32f544d7541.webp",
+     "alt": "Иллюстрация к материалу"
     },
     {
      "t": "p",
      "text": "Загрузим файл по ссылке в папку [auth_manager.bat](https://storage.ptsecurity.com/seafhttp/f/f47c732f52ff4b308ebb/?op=view)"
     },
     {
+     "t": "img",
+     "src": "/winter/sec/ebed1e6242eb.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "Далее проверим что скрипт запускается при каждом включении системы. Для этого перезайдём в аккаунт или перезапустим систему"
     },
     {
+     "t": "img",
+     "src": "/winter/sec/4a695c3b00bb.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "При старте нас будет ожидать окно для работы с **auth.bat**"
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/d6f6d83f09e0.webp",
+     "alt": "Иллюстрация к материалу"
     }
    ]
   },

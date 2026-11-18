@@ -74,12 +74,27 @@ export default {
      "text": "В выключенной VM переходим в **настройки**"
     },
     {
+     "t": "img",
+     "src": "/winter/sec/e8c26b1dc0fd.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "В **системе** выключаем **Secure boot**"
     },
     {
+     "t": "img",
+     "src": "/winter/sec/385003258925.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "Запускаем VM и открываем **Powershell** от имени администратора:"
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/2cd059c661e1.webp",
+     "alt": "Иллюстрация к материалу"
     },
     {
      "t": "p",
@@ -88,6 +103,11 @@ export default {
     {
      "t": "code",
      "text": "bcdedit /set testsigning yes\nRestart-Computer"
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/e0f7ef900245.webp",
+     "alt": "Иллюстрация к материалу"
     },
     {
      "t": "p",
@@ -110,8 +130,18 @@ export default {
      ]
     },
     {
+     "t": "img",
+     "src": "/winter/sec/90ee4bfa4079.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "Посмотрим результат: Import-Csv C:\\Labs\\hvci_status.csv"
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/c9e7c5be552b.webp",
+     "alt": "Иллюстрация к материалу"
     },
     {
      "t": "note",
@@ -139,8 +169,18 @@ export default {
      ]
     },
     {
+     "t": "img",
+     "src": "/winter/sec/47a2e86977c9.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "Посмотрим результат: `Import-Csv C:\\Labs\\drivers_list.csv | Format-Table -AutoSize`"
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/9ae17bd118f8.webp",
+     "alt": "Иллюстрация к материалу"
     },
     {
      "t": "note",
@@ -168,8 +208,18 @@ export default {
      ]
     },
     {
+     "t": "img",
+     "src": "/winter/sec/071b270c9df5.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "Посмотрим результат: `Import-Csv C:\\Labs\\nonstandard_drivers.csv`"
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/f6f334fca052.webp",
+     "alt": "Иллюстрация к материалу"
     },
     {
      "t": "note",
@@ -198,6 +248,11 @@ export default {
      ]
     },
     {
+     "t": "img",
+     "src": "/winter/sec/3183ccdaa3b6.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "Теперь снова поищем драйвера вне системных папок:"
     },
@@ -206,12 +261,22 @@ export default {
      "text": "driverquery /v /fo csv | ConvertFrom-Csv |\nWhere-Object {\n$_.\"Path\" -notlike \"*\\Windows\\System32\\*\" -and\n$_.\"Path\" -notlike \"*\\Windows\\SysWOW64\\*\" -and\n$_.\"Path\" -ne \"\"\n} |\nSelect-Object \"Module Name\", \"Start Mode\", \"State\", \"Path\" |\nExport-Csv C:\\Labs\\nonstandard_drivers.csv -NoTypeInformation\nImport-Csv C:\\Labs\\nonstandard_drivers.csv"
     },
     {
+     "t": "img",
+     "src": "/winter/sec/8864903030a4.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "Проверим подпись драйвера:"
     },
     {
      "t": "code",
      "text": "Get-AuthenticodeSignature C:\\Temp\\labtest.sys |\nSelect-Object Path, Status, SignerCertificate |\nExport-Csv C:\\Labs\\driver_signature.csv -NoTypeInformation\nImport-Csv C:\\Labs\\driver_signature.csv"
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/e591ab25735e.webp",
+     "alt": "Иллюстрация к материалу"
     },
     {
      "t": "note",
@@ -227,6 +292,11 @@ export default {
       "Остановим работающий драйвер: `sc.exe stop LabTestDrv`",
       "Удалим регистрацию сервиса из системы: `sc.exe delete LabTestDrv`"
      ]
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/449e0ac5eae6.webp",
+     "alt": "Иллюстрация к материалу"
     }
    ]
   },

@@ -54,12 +54,27 @@ export default {
      "text": "Откроем на **Windows 11** диалог **Run** сочетанием **Win + R**, введём **sysdm.cpl** и нажмём **Enter**"
     },
     {
+     "t": "img",
+     "src": "/winter/sec/795c68e39ebe.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "Откроется окно **System Properties** - перейдём на вкладку **Remote**. В блоке **Remote Desktop** переключим радиокнопку в положение **Allow remote connections to this computer**. Сразу под ней установите флажок **Allow connections only from computers running Remote Desktop with Network Level Authentication (recommended)** - это включает **NLA**, без которой подключение к серверу будет инициировать тяжёлый графический стек до подтверждения учётных данных. Подтвердите изменения кнопкой **Apply**"
     },
     {
+     "t": "img",
+     "src": "/winter/sec/558b9e615724.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "В этом же окне нажмём кнопку **Select Users** - откроется отдельное окно **Remote Desktop Users**. По умолчанию через **RDP** могут заходить только члены локальной группы **Administrators**; для делегирования удалённого входа обычным учётным записям нужно либо добавить их сюда индивидуально, либо добавить специально созданную группу. Группу мы создадим чуть ниже через **PowerShell**, поэтому пока окно закроем кнопкой **OK**"
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/cacc7f771b7a.webp",
+     "alt": "Иллюстрация к материалу"
     },
     {
      "t": "p",
@@ -86,12 +101,22 @@ export default {
      "text": "Set-ItemProperty -Path \"HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Terminal Server\" `\n-Name \"fDenyTSConnections\" -Value 0\nSet-ItemProperty -Path \"HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Terminal Server\\WinStations\\RDP-Tcp\" `\n-Name \"UserAuthentication\" -Value 1"
     },
     {
+     "t": "img",
+     "src": "/winter/sec/97d11a83fb74.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "Сразу проверим, что значения записаны:"
     },
     {
      "t": "code",
      "text": "(Get-ItemProperty -Path \"HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Terminal Server\").fDenyTSConnections\n(Get-ItemProperty -Path \"HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Terminal Server\\WinStations\\RDP-Tcp\").UserAuthentication"
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/65375215a169.webp",
+     "alt": "Иллюстрация к материалу"
     },
     {
      "t": "p",
@@ -106,12 +131,22 @@ export default {
      "text": "Откроем терминал проверьте порт **TCP 3389**: `Get-NetTCPConnection -LocalPort 3389 -State Listen`"
     },
     {
+     "t": "img",
+     "src": "/winter/sec/eaf340591fa2.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "В выводе должна появиться строка с **LocalAddress 0.0.0.0** или **::** и **State Listen** - это значит, что система ждёт входящих подключений со всех сетевых интерфейсов. Дополнительно убедимся, что правила брандмауэра для **RDP** включены:"
     },
     {
      "t": "code",
      "text": "Enable-NetFirewallRule -DisplayGroup \"Remote Desktop\"\nGet-NetFirewallRule -DisplayGroup \"Remote Desktop\" | Select-Object DisplayName, Enabled, Direction, Action"
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/77fd5bd8a3c4.webp",
+     "alt": "Иллюстрация к материалу"
     },
     {
      "t": "p",
@@ -130,12 +165,22 @@ export default {
      "text": "$Password = ConvertTo-SecureString \"rdpuser\" -AsPlainText -Force\nNew-LocalUser -Name \"rdpuser\" `\n    -FullName \"RDP Test User\" `\n    -Password $Password `\n    -PasswordNeverExpires `\n    -AccountNeverExpires"
     },
     {
+     "t": "img",
+     "src": "/winter/sec/dd511d2c411c.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "Затем создадим локальную группу **LabRemoteUsers** для делегирования удалённого доступа и добавьте в неё **rdpuser**:"
     },
     {
      "t": "code",
      "text": "New-LocalGroup -Name \"LabRemoteUsers\" -Description \"Users allowed to connect via RDP\"\nAdd-LocalGroupMember -Group \"LabRemoteUsers\" -Member \"rdpuser\""
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/b8c8871cabc1.webp",
+     "alt": "Иллюстрация к материалу"
     },
     {
      "t": "p",
@@ -148,6 +193,11 @@ export default {
     {
      "t": "code",
      "text": "Get-LocalGroupMember -Group \"Remote Desktop Users\"\nGet-LocalGroupMember -Group \"LabRemoteUsers\""
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/473217db1cb7.webp",
+     "alt": "Иллюстрация к материалу"
     },
     {
      "t": "p",
@@ -166,8 +216,18 @@ export default {
      "text": "Set-NetConnectionProfile -NetworkCategory Private\nEnable-PSRemoting -Force"
     },
     {
+     "t": "img",
+     "src": "/winter/sec/8b25bda953a1.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "Флаг **-Force** подавляет интерактивные подтверждения. Сразу после выполнения убедимся, что слушатель действительно поднялся: `Get-ChildItem -Path WSMan:\\localhost\\Listener\\ `"
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/6f66340851a1.webp",
+     "alt": "Иллюстрация к материалу"
     },
     {
      "t": "p",
@@ -178,8 +238,18 @@ export default {
      "text": "Финальная проверка - попробовать подключиться к **WinRM** локально через **Test-WSMan**: `Test-WSMan -ComputerName localhost`"
     },
     {
+     "t": "img",
+     "src": "/winter/sec/66ab876bd49b.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "В выводе появится **wsmid** и **ProductVersion** - это значит, что служба отвечает по протоколу **WS-Management**. Дополнительно можно выполнить локальную команду через **WinRM**: `Invoke-Command -ComputerName localhost -ScriptBlock { hostname; whoami }  `"
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/4fa8467bc9e2.webp",
+     "alt": "Иллюстрация к материалу"
     },
     {
      "t": "p",
@@ -192,6 +262,11 @@ export default {
     {
      "t": "p",
      "text": "Узнаем **IP**-адрес **Windows**-машины во внутренней сети для подключения с **Debian**: `Get-NetIPAddress -AddressFamily IPv4 | Where-Object { $_.InterfaceAlias -notlike 'Loopback' -and $_.IPAddress -notlike '169.*' } | Select-Object InterfaceAlias, IPAddress  `"
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/50300af2f650.webp",
+     "alt": "Иллюстрация к материалу"
     },
     {
      "t": "p",
@@ -218,8 +293,18 @@ export default {
      "text": "Узнаем **IP**-адрес самой **Debian**-машины во внутренней сети - он нам не нужен для подключения, но пригодится, чтобы понимать топологию: `ip -4 addr show | grep inet`"
     },
     {
+     "t": "img",
+     "src": "/winter/sec/23a242c9f626.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "Проверим связь до **Windows**-машины обычным **ping**: `ping -c 4 192.168.0.101`"
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/f72e4700fe02.webp",
+     "alt": "Иллюстрация к материалу"
     },
     {
      "t": "p",
@@ -232,6 +317,11 @@ export default {
     {
      "t": "p",
      "text": "Прежде чем запускать брутфорс по словарю, убедимся, что **xfreerdp** под **NLA** успешно проходит аутентификацию с правильным паролем. Это маленькая, но критически важная проверка: без неё мы не сможем отличить ситуацию \"брутфорс работает, lockout сработал на 10-й попытке\" от ситуации \"стенд не настроен, xfreerdp падает на **CredSSP**\". Выполним на **Debian**: `xfreerdp /v:192.168.0.101 /u:rdpuser /p:'rdpuser' /cert:ignore /sec:nla +auth-only`"
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/41b8801b1f66.webp",
+     "alt": "Иллюстрация к материалу"
     },
     {
      "t": "p",
@@ -273,6 +363,11 @@ export default {
      "text": "Подтвердим то же самое в **PowerShell**: `net accounts`"
     },
     {
+     "t": "img",
+     "src": "/winter/sec/f2749274249c.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "В выводе будет блок, в котором значимые для нас строки - **Lockout threshold**, **Lockout duration (minutes)** и **Lockout observation window (minutes)**. Соответствующие значения - **10**, **10** и **10**. На современной **Windows 11** это и есть штатная защита от брутфорса."
     },
@@ -283,6 +378,11 @@ export default {
     {
      "t": "p",
      "text": "Переключимся на **Debian**. Поместим рядом с домашним каталогом два файла: словарь **rdp_dict.txt** и скрипт **brute.sh** (оба скачаны со страницы практики). Сделайте скрипт исполняемым: `chmod +x brute.sh`"
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/db1d2f536259.webp",
+     "alt": "Иллюстрация к материалу"
     },
     {
      "t": "p",
@@ -297,12 +397,22 @@ export default {
      "text": "Скрипт читает словарь построчно, на каждой строке пробует подключиться через **xfreerdp** в режиме **+auth-only**, проверяет exit code. Код **0** означает успешную аутентификацию - скрипт пишет файл-маркер на стороне **Debian** и выходит. Любой ненулевой код означает либо неверный пароль, либо блокировку - скрипт продолжает перебор. Запустим: `./brute.sh`"
     },
     {
+     "t": "img",
+     "src": "/winter/sec/0952f8959b81.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "На экране мы увидим последовательные попытки: **Attempt #1**, **Attempt #2** и так далее. Каждая попытка занимает несколько секунд - **CredSSP**-handshake небыстрый. После **10**-й неудачной попытки **Windows** регистрирует превышение **Account lockout threshold** и блокирует **rdpuser**. С **11**-й попытки мы не сможем сбрутить RDP уже не из-за неверного пароля, а из-за блокировки учётной записи - даже если в словаре дальше встретится правильный пароль, аутентификация не пройдёт. Через какое-то время **brute.sh** дойдёт до конца словаря и сообщит **Dictionary exhausted without success**."
     },
     {
      "t": "p",
      "text": "Переключимся на **Windows** и зафиксируем состояние блокировки: `net user rdpuser`"
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/7ce8f41820c1.webp",
+     "alt": "Иллюстрация к материалу"
     },
     {
      "t": "p",
@@ -329,6 +439,11 @@ export default {
      "text": "Значение **0** означает \"учётные записи не блокируются никогда\". Разблокируем **rdpuser**, чтобы она снова смогла принимать попытки аутентификации: `net user rdpuser /active:yes`"
     },
     {
+     "t": "img",
+     "src": "/winter/sec/9ce33f9a9325.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "**Повторный брутфорс без защиты**"
     },
@@ -341,8 +456,18 @@ export default {
      "text": "На этот раз ничто не останавливает перебор. На каждой неудачной попытке **xfreerdp** возвращает ошибку, скрипт пробует следующий пароль. На **25**-й попытке в словаре окажется правильный пароль **rdpuser**, туннель установится, **xfreerdp** вернёт **0**, и скрипт напечатает **[+] SUCCESS on attempt #25: password is 'rdpuser'**. Файл-маркер на стороне **Debian** появится в **/tmp/rdp_success.txt**"
     },
     {
+     "t": "img",
+     "src": "/winter/sec/8ade91abecc9.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "Теперь, имея найденный пароль, подключитесь к **rdpuser** полноценно, чтобы получить рабочий стол: `xfreerdp /v:192.168.0.109 /u:rdpuser /p:'rdpuser' /cert:ignore /sec:nla /size:800x600`"
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/7a55f8b274ed.webp",
+     "alt": "Иллюстрация к материалу"
     },
     {
      "t": "p",
@@ -359,6 +484,11 @@ export default {
     {
      "t": "p",
      "text": "Проверим результат: `net accounts`"
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/a0a9a32f45fa.webp",
+     "alt": "Иллюстрация к материалу"
     },
     {
      "t": "p",

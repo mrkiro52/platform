@@ -28,6 +28,11 @@ export default {
      "text": "В **HTML5** появились два новых механизма хранения - **localStorage** и **sessionStorage**. Они специально спроектированы для хранения данных на клиенте без участия сервера."
     },
     {
+     "t": "img",
+     "src": "/winter/sec/d2d54252aa7b.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "h3",
      "text": "Что такое localStorage и sessionStorage"
     },

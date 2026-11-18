@@ -43,6 +43,11 @@ export default {
      "text": "Запускаем powershell от имени администратора"
     },
     {
+     "t": "img",
+     "src": "/winter/sec/77d298e32ae2.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "Для установки требуются 2 компонента:"
     },
@@ -62,8 +67,18 @@ export default {
      "text": "После выполним перезагрузку компьютера"
     },
     {
+     "t": "img",
+     "src": "/winter/sec/b5098c15ef2b.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "Скачиваем на linux **nfs**. Команда: `sudo apt install nfs-kernel-server nfs-common -y`"
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/089a704e0bde.webp",
+     "alt": "Иллюстрация к материалу"
     },
     {
      "t": "p",
@@ -79,8 +94,18 @@ export default {
      ]
     },
     {
+     "t": "img",
+     "src": "/winter/sec/4ec5dc4236b7.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "Настраиваем сам nfs. Откроим файл **/etc/exports**. Команда: `sudo nano /etc/exports` и добавим в него одну строку: `/srv/ShareWin *(rw,sync,subtree_check,fsid=0)` после сохраним файл"
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/2c7fc192dcea.webp",
+     "alt": "Иллюстрация к материалу"
     },
     {
      "t": "note",
@@ -95,12 +120,27 @@ export default {
      "text": "sudo exportfs -a\nsudo systemctl restart nfs-server"
     },
     {
+     "t": "img",
+     "src": "/winter/sec/e89b2ccfd964.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "На Windows машине переходим в мой компьютер, нажимаем **...** и выбираем **Map network drive**"
     },
     {
+     "t": "img",
+     "src": "/winter/sec/509ceec615c3.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "Вписываем адрес сетевой папки linux машины"
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/b3a68a94c47f.webp",
+     "alt": "Иллюстрация к материалу"
     },
     {
      "t": "p",
@@ -111,8 +151,18 @@ export default {
      "text": "На скриншоте в проводнике включено расширение файлов. Для включения данной функции вы можете нажать в проводнике \"View\" - \"Show\" - \"File name extensions\""
     },
     {
+     "t": "img",
+     "src": "/winter/sec/2dbc5b724221.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "На linux мы увидим созданный файл **ls**"
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/d22ef022551d.webp",
+     "alt": "Иллюстрация к материалу"
     }
    ]
   },

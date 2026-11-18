@@ -54,12 +54,27 @@ export default {
      "text": "Откройте оснастку: нажмём **Win + R**, введём **services.msc** и нажмём **OK**"
     },
     {
+     "t": "img",
+     "src": "/winter/sec/d503cae9c973.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "Либо нажмите **Win**, введите **Services** и откройте приложение **Services**"
     },
     {
+     "t": "img",
+     "src": "/winter/sec/c10f261edb8d.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "Откроется консоль **Services** со списком всех служб системы. Колонки списка:"
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/dd3bc74525ad.webp",
+     "alt": "Иллюстрация к материалу"
     },
     {
      "t": "ul",
@@ -76,24 +91,54 @@ export default {
      "text": "Базовые операции над службой выполняются правым кликом по ней или через взаимодействие с GUI кнопками: **Start**, **Stop**, **Pause**, **Resume**, **Restart**."
     },
     {
+     "t": "img",
+     "src": "/winter/sec/7e5ed0352184.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "Чтобы посмотреть и изменить параметры, выберем **Properties** - откроется окно с четырьмя вкладками:"
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/ee56377c2879.webp",
+     "alt": "Иллюстрация к материалу"
     },
     {
      "t": "p",
      "text": "Вкладка **General** - внутреннее имя (**Service name**), отображаемое имя (**Display name**), описание, путь к исполняемому файлу (**Path to executable**), список **Startup type** и кнопки управления состоянием"
     },
     {
+     "t": "img",
+     "src": "/winter/sec/a8ff486d450c.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "Вкладка **Log On** - учётная запись службы: **Local System account** либо **This account** с указанием конкретной учётной записи (например, **NT AUTHORITY\\LocalService**). Именно здесь в GUI выполняется понижение привилегий"
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/3342ce5e74a5.webp",
+     "alt": "Иллюстрация к материалу"
     },
     {
      "t": "p",
      "text": "Вкладка **Recovery** - реакция на сбой (**Restart the Service**, **Run a Program**, **Restart the Computer**)"
     },
     {
+     "t": "img",
+     "src": "/winter/sec/6dd003235bd8.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "Вкладка **Dependencies** - службы, от которых зависит данная, и зависящие от неё"
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/7331e0624ce0.webp",
+     "alt": "Иллюстрация к материалу"
     },
     {
      "t": "p",
@@ -108,8 +153,18 @@ export default {
      "text": "Нажмём **Win**, введём в поиск **Windows PowerShell**, выберем запуск от имени Администратора"
     },
     {
+     "t": "img",
+     "src": "/winter/sec/dcf52215ffdc.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "В открывшемся терминале создадим рабочий каталог и вложенный каталог с пробелом в имени, чтобы воспроизвести типичную ошибку установщика - не процитированный путь: `New-Item -ItemType Directory -Path 'C:\\Lab\\Lab Audit Agent' -Force`"
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/46d6fb146993.webp",
+     "alt": "Иллюстрация к материалу"
     },
     {
      "t": "p",
@@ -122,6 +177,11 @@ export default {
     {
      "t": "p",
      "text": "Должно появиться [SC] CreateService SUCCESS."
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/bfc6a9cdc500.webp",
+     "alt": "Иллюстрация к материалу"
     },
     {
      "t": "p",
@@ -148,6 +208,11 @@ export default {
      "text": "После каждой команды появится [SC] ChangeServiceConfig SUCCESS ."
     },
     {
+     "t": "img",
+     "src": "/winter/sec/4ec7d53e2eff.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "Каждая служба имеет дескриптор безопасности (**Security Descriptor**) - набор правил, кто и что может делать со службой (запускать, останавливать, менять конфигурацию). Просмотрим его в формате **SDDL**:"
     },
@@ -161,6 +226,11 @@ export default {
     {
      "t": "p",
      "text": "В выводе мы увидим строку вида **D:(A;;CCLCSWRPWPDTLOCRRC;;;SY (A;;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;BA)...**"
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/e46a0a3430ce.webp",
+     "alt": "Иллюстрация к материалу"
     },
     {
      "t": "p",
@@ -185,6 +255,11 @@ export default {
      "text": "New-Service -Name LabTempAgent `\n    -BinaryPathName '\"C:\\Program Files\\Lab Temp Agent\\temp.exe\"' `\n    -DisplayName \"Lab Temp Agent\" `\n    -Description \"Temporary service for least-privilege practice\" `\n    -StartupType Manual"
     },
     {
+     "t": "img",
+     "src": "/winter/sec/70e5acf977ea.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "Внешние одинарные кавычки - синтаксис **PowerShell**, внутренние двойные попадут в **ImagePath** реестра буквально, поэтому путь сразу окажется закавыченным. **New-Service** по умолчанию создаёт службу под **LocalSystem**."
     },
@@ -201,12 +276,22 @@ export default {
      "text": "После первой пары команд **StartType** будет **Automatic**, после третьей команды - снова **Manual**"
     },
     {
+     "t": "img",
+     "src": "/winter/sec/c55aa66e7fe2.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "Удалим тренировочную службу - в дальнейшем сценарии она не нужна: `sc.exe delete LabTempAgent`"
     },
     {
      "t": "p",
      "text": "Убедимся, что службы больше нет (команда должна вернуть ничего): `Get-Service -Name LabTempAgent -ErrorAction SilentlyContinue`"
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/71d511943014.webp",
+     "alt": "Иллюстрация к материалу"
     },
     {
      "t": "p",
@@ -217,8 +302,18 @@ export default {
      "text": "Для начала посмотрим какие права сейчас имеет служба **LabAuditAgent :**`Get-CimInstance -ClassName Win32_Service -Filter \"Name='LabAuditAgent'\" | Select-Object Name, PathName, StartName, StartMode`"
     },
     {
+     "t": "img",
+     "src": "/winter/sec/0e4f9f6227d5.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "Теперь понизим права **LabAuditAgent** , для встроенных виртуальных учётных записей пароль - пустая строка: `sc.exe --% config LabAuditAgent obj= \"NT AUTHORITY\\LocalService\" password= \"\"`"
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/f970d0c4a6ce.webp",
+     "alt": "Иллюстрация к материалу"
     },
     {
      "t": "p",
@@ -235,6 +330,11 @@ export default {
     {
      "t": "p",
      "text": "В выводе **StartName** должно быть **NT AUTHORITY\\LocalService**, **PathName** - путь с пробелом, **StartMode** - **Manual**"
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/7d78fe383a82.webp",
+     "alt": "Иллюстрация к материалу"
     },
     {
      "t": "p",
@@ -259,10 +359,20 @@ export default {
      ]
     },
     {
+     "t": "img",
+     "src": "/winter/sec/5873cf698c14.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "ul",
      "items": [
       "**Adapter 2** : включим ( **Enable Network Adapter** ) и выберем **Bridged Adapter**"
      ]
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/f6245dee18b1.webp",
+     "alt": "Иллюстрация к материалу"
     },
     {
      "t": "p",
@@ -275,10 +385,20 @@ export default {
      ]
     },
     {
+     "t": "img",
+     "src": "/winter/sec/16a46a508add.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "ul",
      "items": [
       "На **Debian** откройте терминал и выполним **ip a** . Найдём второй интерфейс и запишем его адрес (в примере стенда - **192.168.0.108** )"
      ]
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/807440bdc31f.webp",
+     "alt": "Иллюстрация к материалу"
     },
     {
      "t": "p",
@@ -287,6 +407,11 @@ export default {
     {
      "t": "p",
      "text": "Если приходят ответы, связь установлена"
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/d3555b6c1e32.webp",
+     "alt": "Иллюстрация к материалу"
     },
     {
      "t": "p",
@@ -329,6 +454,11 @@ export default {
      "text": "Найдём уязвимые службы средствами **PowerShell** - фильтр выбирает службы, чей путь не начинается с кавычки и содержит пробел: `Get-CimInstance -ClassName Win32_Service | Where-Object { $_.PathName -notmatch '^\"' -and $_.PathName -match ' ' } | Select-Object Name, PathName, StartName`"
     },
     {
+     "t": "img",
+     "src": "/winter/sec/025b98000c44.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "Такой поиск действительно находит все подозрительные службы, но среди результатов оказывается очень много системных служб (например, **svchost.exe** с ключами **-k**, **-p** и **/**). Они не представляют интереса для нас, так как их пути ведут к легитимным исполняемым файлам Windows, а не к потенциально перехватываемым точкам в пользовательских каталогах."
     },
@@ -345,6 +475,11 @@ export default {
      "text": "В выводе мы должны увидеть только **LabAuditAgent** с путём **C:\\Lab\\Lab Audit Agent\\agent.exe**. Именно так, после правильной фильтрации, мы находим целевую уязвимую службу без ложных срабатываний на системные компоненты"
     },
     {
+     "t": "img",
+     "src": "/winter/sec/3bf61c17b3a1.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "Второе условие уязвимости - право записи в промежуточный каталог. В реальной атаке оно возникает из-за ошибки прав установщика; здесь мы воспроизводим его явно. выдадим группе **BUILTIN\\Users** право записи в **C:\\Lab**: `icacls 'C:\\Lab' /grant 'BUILTIN\\Users:(OI)(CI)W'`"
     },
@@ -355,6 +490,11 @@ export default {
     {
      "t": "p",
      "text": "В выводе должна присутствовать строка **BUILTIN\\Users:(OI)(CI)(W)**"
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/31ffa768ce02.webp",
+     "alt": "Иллюстрация к материалу"
     },
     {
      "t": "p",
@@ -369,6 +509,21 @@ export default {
      "text": "Сначала на **Debian** запустим слушателя, который примет соединение. Откройте терминал:"
     },
     {
+     "t": "img",
+     "src": "/winter/sec/e635fea6c924.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/4455f78b8854.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/12c7ce6a75d2.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "В терминале Debian выполним: `nc -lvnp 4444`"
     },
@@ -377,8 +532,18 @@ export default {
      "text": "Команда **nc -lvnp 4444** слушает входящие TCP-соединения на порту **4444** и печатает всё, что пришло. Оставьте это окно открытым"
     },
     {
+     "t": "img",
+     "src": "/winter/sec/c97ce9012b0c.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "Теперь на свою виртуальную машину **Windows** скачайте **revshow.exe** и переместим в Downloads"
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/91db488dfd49.webp",
+     "alt": "Иллюстрация к материалу"
     },
     {
      "t": "p",
@@ -393,12 +558,27 @@ export default {
      "text": "Если мы все сделали правильно, то команда **Test-Path** должна вернуть **True**"
     },
     {
+     "t": "img",
+     "src": "/winter/sec/ce3d07bc3754.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "Так мы можем проверить это вручную, перейдя в каталог *_C:\\Lab*_"
     },
     {
+     "t": "img",
+     "src": "/winter/sec/aec88757c377.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "Запустим службу - **SCM** при разборе пути первым найдёт **C:\\Lab\\Lab.exe** и запустит его вместо ожидаемого **agent.exe**: `sc.exe start LabAuditAgent`"
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/bea84453b679.webp",
+     "alt": "Иллюстрация к материалу"
     },
     {
      "t": "p",
@@ -407,6 +587,11 @@ export default {
     {
      "t": "p",
      "text": "Переключитесь на **Debian**: в окне **nc** появилась строка с информацией о перехваченном процессе - имя учётной записи и её привилегии:"
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/70feb2bb66c6.webp",
+     "alt": "Иллюстрация к материалу"
     },
     {
      "t": "p",
@@ -419,6 +604,11 @@ export default {
     {
      "t": "p",
      "text": "**Test-Path** должна вернуть **True**, а содержимое маркера будет содержать **user=NT AUTHORITY\\LOCAL SERVICE**"
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/4929d93acf61.webp",
+     "alt": "Иллюстрация к материалу"
     },
     {
      "t": "p",
@@ -437,6 +627,11 @@ export default {
      "text": "Исправьте путь службы. Внутренние **\"** экранируют кавычки, чтобы в **ImagePath** реестра путь попал уже закавыченным; символ **--%** обязателен по той же причине, что и при создании: `sc.exe --% config LabAuditAgent binPath= \"\\\"C:\\Lab\\Lab Audit Agent\\agent.exe\"\\\"`"
     },
     {
+     "t": "img",
+     "src": "/winter/sec/6b7275722562.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "Проверьте, что фильтр обнаружения больше не находит **LabAuditAgent**:"
     },
@@ -447,6 +642,11 @@ export default {
     {
      "t": "p",
      "text": "Скрипт должен вывести зелёным сообщение о безопасности: путь службы теперь заключён в кавычки, и **CreateProcess** больше не пытается запускать промежуточные кандидаты"
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/b34ef4076434.webp",
+     "alt": "Иллюстрация к материалу"
     },
     {
      "t": "p",
@@ -465,8 +665,18 @@ export default {
      "text": "Команда вернёт **False** - файл успешно удалён"
     },
     {
+     "t": "img",
+     "src": "/winter/sec/3247837bd583.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "Теперь запустим службу снова: `sc.exe start LabAuditAgent`"
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/c48988616381.webp",
+     "alt": "Иллюстрация к материалу"
     },
     {
      "t": "p",
@@ -475,6 +685,11 @@ export default {
     {
      "t": "p",
      "text": "Команда вернёт **False** - перехвата не произошло"
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/14b5cbf88ead.webp",
+     "alt": "Иллюстрация к материалу"
     },
     {
      "t": "p",
@@ -487,6 +702,11 @@ export default {
     {
      "t": "p",
      "text": "В выводе появится запись вида **Servise LabAuditAgent successfully launched the agent.exe 17:26:37**. Это и есть подтверждение, что уязвимость устранена: маркер перехвата больше не создаётся, а вместо подменённого **Lab.exe** служба запускает настоящий **agent.exe**."
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/a88a23030516.webp",
+     "alt": "Иллюстрация к материалу"
     }
    ]
   },

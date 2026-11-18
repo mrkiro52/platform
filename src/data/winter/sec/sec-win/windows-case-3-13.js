@@ -59,8 +59,18 @@ export default {
      "text": "Работаем на **dc01**. Войдём под **LAB\\Administrator**, откроем **Server Manager**"
     },
     {
+     "t": "img",
+     "src": "/winter/sec/820593947b5e.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "В верхнем меню выберем **Tools** -> **Group Policy Management**"
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/a62a951ca579.webp",
+     "alt": "Иллюстрация к материалу"
     },
     {
      "t": "p",
@@ -72,6 +82,11 @@ export default {
       "**Default Domain Policy** - политика, привязанная к корню домена. Именно здесь живёт доменная парольная политика и политика блокировки учётных записей. Правило: параметры паролей задаются только на этом уровне, привязка парольной политики к **OU** не работает",
       "**Default Domain Controllers Policy** - политика для контейнера **Domain Controllers** , определяющая безопасность самих контроллеров"
      ]
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/c7add0569de6.webp",
+     "alt": "Иллюстрация к материалу"
     },
     {
      "t": "p",
@@ -94,6 +109,11 @@ export default {
      "text": "New-ADOrganizationalUnit -Name \"LabWorkstations\" -Path \"DC=lab,DC=local\" -ProtectedFromAccidentalDeletion $false\nNew-ADOrganizationalUnit -Name \"LabUsers\" -Path \"DC=lab,DC=local\" -ProtectedFromAccidentalDeletion $false"
     },
     {
+     "t": "img",
+     "src": "/winter/sec/e37cd1913e41.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "Теперь перенесём клиентскую машину **WIN-LAB** в **OU LabWorkstations**, а трёх пользователей - в **OU LabUsers**:"
     },
@@ -102,12 +122,22 @@ export default {
      "text": "Get-ADComputer \"WIN-LAB\" | Move-ADObject -TargetPath \"OU=LabWorkstations,DC=lab,DC=local\"\nGet-ADUser \"ivanov\" | Move-ADObject -TargetPath \"OU=LabUsers,DC=lab,DC=local\"\nGet-ADUser \"petrov\" | Move-ADObject -TargetPath \"OU=LabUsers,DC=lab,DC=local\"\nGet-ADUser \"sidorov\" | Move-ADObject -TargetPath \"OU=LabUsers,DC=lab,DC=local\""
     },
     {
+     "t": "img",
+     "src": "/winter/sec/75064e0064a2.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "Проверим, что объекты действительно легли в новые контейнеры:"
     },
     {
      "t": "code",
      "text": "Get-ADComputer \"WIN-LAB\" | Select-Object Name, DistinguishedName\nGet-ADUser -Filter * -SearchBase \"OU=LabUsers,DC=lab,DC=local\" | Select-Object Name, DistinguishedName"
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/9f514fa74228.webp",
+     "alt": "Иллюстрация к материалу"
     },
     {
      "t": "p",
@@ -122,20 +152,45 @@ export default {
      "text": "Начнём с самого базового - требований к паролям для всего домена. Откроем в **Group Policy Management**"
     },
     {
+     "t": "img",
+     "src": "/winter/sec/712af3abf23a.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "Узел **lab.local**, правой кнопкой по **Default Domain Policy** -> **Edit**"
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/6e0f78b761ee.webp",
+     "alt": "Иллюстрация к материалу"
     },
     {
      "t": "p",
      "text": "Откроется **Group Policy Management Editor**"
     },
     {
+     "t": "img",
+     "src": "/winter/sec/5f06d21509ef.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "Пройдём в **Computer Configuration** -> **Policies** -> **Windows Settings** -> **Security Settings** -> **Account Policies** -> **Password Policy**"
     },
     {
+     "t": "img",
+     "src": "/winter/sec/bb1a452351e5.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "Зададим значения двойным кликом по каждому параметру:"
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/dd820d05172a.webp",
+     "alt": "Иллюстрация к материалу"
     },
     {
      "t": "ul",
@@ -145,6 +200,11 @@ export default {
       "**Maximum password age** - **60**",
       "**Enforce password history** - **5**"
      ]
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/3c4d1d268ee6.webp",
+     "alt": "Иллюстрация к материалу"
     },
     {
      "t": "p",
@@ -159,8 +219,18 @@ export default {
      ]
     },
     {
+     "t": "img",
+     "src": "/winter/sec/7640ac25f212.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "Закроем редактор. Изменения доменной политики применяются к контроллеру домена почти сразу, но убедимся в этом явно через модуль **AD**: `Get-ADDefaultDomainPasswordPolicy`"
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/c32fad16601c.webp",
+     "alt": "Иллюстрация к материалу"
     },
     {
      "t": "p",
@@ -175,12 +245,27 @@ export default {
      "text": "Дальше настроим локальную безопасность машин через одну общую политику. Вернёмся в **Group Policy Management**, правой кнопкой по **OU LabWorkstations** -> **Create a GPO in this domain, and Link it here**"
     },
     {
+     "t": "img",
+     "src": "/winter/sec/17cbce300f2c.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "Назовём новый объект **Lab Baseline Security** и нажмём **OK**"
     },
     {
+     "t": "img",
+     "src": "/winter/sec/43b2912bdbea.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "Затем правой кнопкой по нему -> **Edit**"
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/6e64c88f32fc.webp",
+     "alt": "Иллюстрация к материалу"
     },
     {
      "t": "p",
@@ -199,8 +284,18 @@ export default {
      ]
     },
     {
+     "t": "img",
+     "src": "/winter/sec/b0ea9d8bc5ed.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "Начнём с **Security Options** - это набор из десятков предопределённых параметров безопасности, каждый из которых под капотом меняет конкретный ключ реестра или флаг **SAM**"
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/960d311d2ddf.webp",
+     "alt": "Иллюстрация к материалу"
     },
     {
      "t": "p",
@@ -213,10 +308,20 @@ export default {
      ]
     },
     {
+     "t": "img",
+     "src": "/winter/sec/556a2a0b33cc.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "ul",
      "items": [
       "Второе и третье - отключим встроенные локальные учётные записи **Administrator** и **Guest**. Встроенный локальный администратор с предсказуемым именем и гость без пароля - классические точки входа для атакующего, поэтому на доменных машинах их отключают. Настроим два параметра:\n— **Accounts: Administrator account status** - **Disabled**\n— **Accounts: Guest account status** - **Disabled**"
      ]
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/7dd0af13653c.webp",
+     "alt": "Иллюстрация к материалу"
     },
     {
      "t": "ul",
@@ -225,8 +330,18 @@ export default {
      ]
     },
     {
+     "t": "img",
+     "src": "/winter/sec/2fd227c85c65.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "Теперь перейдём в узел **User Rights Assignment**. Здесь назначаются права входа и системные привилегии - кому разрешено или запрещено входить локально, по сети, через службы удалённого рабочего стола, кто может выключать машину и так далее. Настроим одно право для наглядности: запретим локальный вход гостям. Найдём **Deny log on locally**, откроем, нажмём **Add User or Group**, добавим **Guests** и подтвердим"
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/5ca58d1052e8.webp",
+     "alt": "Иллюстрация к материалу"
     },
     {
      "t": "h3",
@@ -235,6 +350,11 @@ export default {
     {
      "t": "p",
      "text": "Раздел **Preferences** отличается от **Policies** тем, что через него настраивается то, что политиками напрямую не покрывается - в том числе членство в локальных группах. Покажем, как через **GPO** добавить доменного пользователя в локальную группу на всех машинах **OU**. В том же редакторе **Lab Baseline Security** пройдём в **Computer Configuration** -> **Preferences** -> **Control Panel Settings** -> **Local Users and Groups**. Правой кнопкой по пустому месту -> **New** -> **Local Group**"
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/afe4baa816ed.webp",
+     "alt": "Иллюстрация к материалу"
     },
     {
      "t": "p",
@@ -249,8 +369,18 @@ export default {
      ]
     },
     {
+     "t": "img",
+     "src": "/winter/sec/089d840ccfa9.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "Нажмём **OK**. Теперь на каждой машине из **OU LabWorkstations** доменный пользователь **ivanov** будет автоматически добавлен в локальную группу **Remote Desktop Users**, что даст ему право удалённого входа - и всё это без ручной настройки на самих машинах"
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/0a07a830e18d.webp",
+     "alt": "Иллюстрация к материалу"
     },
     {
      "t": "h3",
@@ -261,8 +391,18 @@ export default {
      "text": "Обои - параметр пользователя, а не машины, поэтому он лежит в ветке **User Configuration**. Но привязана наша политика к **OU** с машинами, а пользователи живут в другой **OU**. Чтобы пользовательская настройка сработала на этих машинах для любого входящего, включим режим замыкания. В **Computer Configuration** -> **Policies** -> **Administrative Templates** -> **System** -> **Group Policy** найдём **Configure user Group Policy loopback processing mode**"
     },
     {
+     "t": "img",
+     "src": "/winter/sec/6a9f96fbc958.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "Выставим **Enabled** и режим **Merge**. Теперь пользовательская часть нашего **GPO** применяется ко всем, кто входит на машины **OU LabWorkstations**"
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/0575e05a6b55.webp",
+     "alt": "Иллюстрация к материалу"
     },
     {
      "t": "p",
@@ -273,8 +413,18 @@ export default {
      "text": "New-Item -ItemType Directory -Path \"C:\\Windows\\SYSVOL\\sysvol\\lab.local\\corp\" -Force\nCopy-Item \"C:\\Users\\Administrator\\Downloads\\corp_wallpaper.jpg\" \"C:\\Windows\\SYSVOL\\sysvol\\lab.local\\corp\\corp_wallpaper.jpg\""
     },
     {
+     "t": "img",
+     "src": "/winter/sec/853ee248de9a.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "Теперь пропишем путь в политике. В редакторе **Lab Baseline Security** пройдём в **User Configuration** -> **Policies** -> **Administrative Templates** -> **Desktop** -> **Desktop** -> **Desktop Wallpaper**"
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/c7421c249d5c.webp",
+     "alt": "Иллюстрация к материалу"
     },
     {
      "t": "p",
@@ -286,6 +436,11 @@ export default {
       "**Wallpaper Name** - **\\lab.local\\SYSVOL\\lab.local\\corp\\corp_wallpaper.jpg**",
       "**Wallpaper Style** - **Fill**"
      ]
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/d2269ca413a0.webp",
+     "alt": "Иллюстрация к материалу"
     },
     {
      "t": "p",
@@ -304,28 +459,63 @@ export default {
      "text": "Сначала включим удалённое управление через **Windows Remote Management** (**WinRM**) сразу на всём домене - это то, что в host-based практике мы делали руками на одной машине, а теперь раздаём централизованно. В **LabWorkstations ->Lab Baseline Security -> Computer Configuration** -> **Policies** -> **Administrative Templates** -> **Windows Components** -> **Windows Remote Management (WinRM)** -> **WinRM Service** откроем **Allow remote server management through WinRM**"
     },
     {
+     "t": "img",
+     "src": "/winter/sec/91d0f9a49a3f.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "Выставим **Enabled**, а в полях **IPv4 filter** и **IPv6 filter** укажем * (принимать со всех адресов лабораторной сети)"
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/27a3bc72fc4c.webp",
+     "alt": "Иллюстрация к материалу"
     },
     {
      "t": "p",
      "text": "Одной этой настройки мало: служба **WinRM** должна быть запущена, а брандмауэр - пропускать входящие на **порт 5985**. Службу переведём в автозапуск через **Computer Configuration** -> **Policies** -> **Windows Settings** -> **Security Settings** -> **System Services**: найдём **Windows Remote Management (WS-Management)**"
     },
     {
+     "t": "img",
+     "src": "/winter/sec/4c40cd3f776e.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "Выставим **Automatic**"
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/a5f3e1749c2e.webp",
+     "alt": "Иллюстрация к материалу"
     },
     {
      "t": "p",
      "text": "Правило брандмауэра добавим в **Computer Configuration** -> **Policies** -> **Windows Settings** -> **Security Settings** -> **Windows Defender Firewall with Advanced Security** -> **Inbound Rules** -> **New Rule** -> **Predefined** -> **Windows Remote Management**"
     },
     {
+     "t": "img",
+     "src": "/winter/sec/673f5f2401f1.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "Ставим обе галочки и нажимаем **Next**"
     },
     {
+     "t": "img",
+     "src": "/winter/sec/67d1a200838f.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "**Allow the connection**, а после **Finish**"
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/0aa94f47c161.webp",
+     "alt": "Иллюстрация к материалу"
     },
     {
      "t": "p",
@@ -336,16 +526,36 @@ export default {
      "text": "Важный момент: на **Windows 11** политика отключения **Defender** игнорируется, пока включена **Tamper Protection** (защита от подделки настроек антивируса). Её нельзя снять через **GPO** - только вручную на самой машине. Поэтому сначала на **WIN-LAB** откроем **Windows Security** -> **Virus & threat protection** -> **Manage settings**"
     },
     {
+     "t": "img",
+     "src": "/winter/sec/663c5fc89efb.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "Выключим переключатель **Tamper Protection**"
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/58736d2c2e71.webp",
+     "alt": "Иллюстрация к материалу"
     },
     {
      "t": "p",
      "text": "После этого вернёмся в редактор **Lab Baseline Security** на **dc01** и в **Computer Configuration** -> **Policies** -> **Administrative Templates** -> **Windows Components** -> **Microsoft Defender Antivirus** откроем **Turn off Microsoft Defender Antivirus**"
     },
     {
+     "t": "img",
+     "src": "/winter/sec/8a009dadceb8.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "Выставим **Enabled** и нажимаем **ОК**"
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/144c33e26463.webp",
+     "alt": "Иллюстрация к материалу"
     },
     {
      "t": "h3",
@@ -360,6 +570,11 @@ export default {
      "text": "Команда перечитает все применимые политики и применит их. Если политика требует перезагрузки или повторного входа (как обои или членство в группах), система об этом сообщит - согласимся"
     },
     {
+     "t": "img",
+     "src": "/winter/sec/98d62a1250fd.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "Теперь проверим, что именно применилось и откуда пришло. Инструмент диагностики - **gpresult**:"
     },
@@ -372,12 +587,27 @@ export default {
      "text": "Первая команда покажет в консоли список применённых **GPO** в разделах **Computer Settings** и **User Settings** - там должны быть **Default Domain Policy** и **Lab Baseline Security**"
     },
     {
+     "t": "img",
+     "src": "/winter/sec/30130564de83.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "Вторая соберёт подробный **HTML**-отчёт со всеми применёнными параметрами и их источниками"
     },
     {
+     "t": "img",
+     "src": "/winter/sec/042e4a2c9f6e.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "Откроем **report.html** в браузере и убедимся, что наши настройки на месте"
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/582bfb3ca795.webp",
+     "alt": "Иллюстрация к материалу"
     },
     {
      "t": "p",
@@ -388,16 +618,36 @@ export default {
      "text": "**DisableCAD** должно быть **0** (нажатие обязательно), а поля баннера - заполнены нашим текстом"
     },
     {
+     "t": "img",
+     "src": "/winter/sec/8e8a58be4a0a.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "При перезагрузке VM мы могли наблюдать как применились наши групповые политики: **Ctrl+Alt+Del**"
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/2002efd84462.webp",
+     "alt": "Иллюстрация к материалу"
     },
     {
      "t": "p",
      "text": "**Баннер**"
     },
     {
+     "t": "img",
+     "src": "/winter/sec/91dc4adbc066.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "**Рабочий стол**"
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/ad474187847a.webp",
+     "alt": "Иллюстрация к материалу"
     },
     {
      "t": "p",
@@ -410,6 +660,11 @@ export default {
     {
      "t": "p",
      "text": "Служба **WinRM** должна быть **Running** и **Automatic**, а **RealTimeProtectionEnabled **- **False**"
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/ca014f47024a.webp",
+     "alt": "Иллюстрация к материалу"
     }
    ]
   },

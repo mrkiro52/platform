@@ -70,6 +70,11 @@ export default {
      "text": "Продемонстрируем это на практике и посмотрим, как ядро отдает информацию о памяти с помощью `cat /proc/meminfo | head -n 10`"
     },
     {
+     "t": "img",
+     "src": "/winter/sec/0a23ee731fc6.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "Команда показывает первые 10 строк файла **/proc/meminfo**. На скриншоте выделены две ключевые строки: **MemFree** и **MemAvailable**. Обратите внимание, что доступной памяти значительно больше, чем полностью свободной. Это происходит потому, что Linux использует часть памяти для кэширования, которую можно мгновенно освободить при необходимости."
     },
@@ -137,6 +142,11 @@ export default {
      "text": "Проверим, как эти категории распределяются в реальном времени: `mpstat -P ALL 1 1`"
     },
     {
+     "t": "img",
+     "src": "/winter/sec/cef361a0a949.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "Вывод показывает статистику использования процессора. Красным выделены два важных значения:"
     },
@@ -196,6 +206,11 @@ export default {
     {
      "t": "p",
      "text": "Посмотрим сводку по использованию памяти с помощью `free -h`"
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/c8bb60ecd268.webp",
+     "alt": "Иллюстрация к материалу"
     },
     {
      "t": "p",
@@ -272,6 +287,11 @@ export default {
     {
      "t": "p",
      "text": "Статистику ввода-вывода можно посмотреть через `iostat -xz 1 1`"
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/94743ca2483d.webp",
+     "alt": "Иллюстрация к материалу"
     },
     {
      "t": "p",
@@ -385,6 +405,11 @@ export default {
      "text": "**Grafana** - инструмент визуализации. Она строит интерактивные дашборды и работает с множеством источников данных. Это глаза системы. Сама по себе Grafana не умеет собирать и долго хранить данные - она только запрашивает их у Prometheus и красиво отображает."
     },
     {
+     "t": "img",
+     "src": "/winter/sec/dc28963effbf.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "Prometheus самостоятельно опрашивает источники метрик, что дает ему контроль над частотой опроса. Grafana запрашивает данные у Prometheus по мере необходимости для отображения на дашбордах."
     },
@@ -401,8 +426,18 @@ export default {
      "text": "Перед практикой необходимо настроить проброс портов, а также статические IP-адреса. Настроим проброс портов в VirtualBox. Для этого откроем настройки сети в главном меню гипервизора: **File **-> **Tools** -> **Network**."
     },
     {
+     "t": "img",
+     "src": "/winter/sec/cf38c9711459.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "В открытом меню находим секцию \"NAT Networks\", выбираем подсеть, которую конфигрурировали ранее. В нижнем меню находится секция \"Port Forwarding\""
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/d4430bd2dc16.webp",
+     "alt": "Иллюстрация к материалу"
     },
     {
      "t": "p",
@@ -566,12 +601,22 @@ export default {
      "text": "Скачиваем архив с node_exporter с помощью команды **wget**. Она загружает файл по указанному URL: `wget https://github.com/prometheus/node_exporter/releases/download/v1.7.0/node_exporter-1.7.0.linux-amd64.tar.gz`"
     },
     {
+     "t": "img",
+     "src": "/winter/sec/ee3c7bf03280.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "На изображении виден прогресс загрузки: отображается процент выполнения, скорость скачивания и размер файла. В конце появляется сообщение \"saved\", подтверждающее, что файл успешно сохранен."
     },
     {
      "t": "p",
      "text": "Распаковываем скачанный архив. Команда **tar** с флагами **xvfz** извлекает файлы из gzip-архива и показывает список распакованных файлов: `tar xvfz node_exporter-1.7.0.linux-amd64.tar.gz`"
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/133569259d5b.webp",
+     "alt": "Иллюстрация к материалу"
     },
     {
      "t": "p",
@@ -590,12 +635,22 @@ export default {
      "text": "Проверяем, что процесс node_exporter действительно запущен. Команда **ps aux** показывает все запущенные процессы, а **grep node_exporter** фильтрует только нужные: `ps aux | grep node_exporter`"
     },
     {
+     "t": "img",
+     "src": "/winter/sec/1bb54845104c.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "На скриншоте видно две строки: первая - это сам процесс node_exporter с его PID, использованием памяти и CPU; вторая - это процесс grep, который мы только что запустили для поиска. Наличие первой строки подтверждает, что node_exporter работает."
     },
     {
      "t": "p",
      "text": "Проверяем, что node_exporter отдает метрики. Команда **wget -qO-** скачивает содержимое URL и выводит его в терминал, а **head** показывает только первые строки: `wget -qO- http://localhost:9100/metrics | head`"
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/9e9c3504eefc.webp",
+     "alt": "Иллюстрация к материалу"
     },
     {
      "t": "p",
@@ -634,8 +689,18 @@ export default {
      "text": "cd /tmp\nwget https://github.com/prometheus/prometheus/releases/download/v2.48.0/prometheus-2.48.0.linux-amd64.tar.gz"
     },
     {
+     "t": "img",
+     "src": "/winter/sec/bc69619ece20.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "Архив успешно скачан. Распаковываем его: `tar xvfz prometheus-2.48.0.linux-amd64.tar.gz`"
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/8055f6363fa3.webp",
+     "alt": "Иллюстрация к материалу"
     },
     {
      "t": "p",
@@ -710,12 +775,22 @@ export default {
      "text": "Открываем конфигурационный файл в текстовом редакторе **nano**: `sudo nano /etc/prometheus/prometheus.yml`"
     },
     {
+     "t": "img",
+     "src": "/winter/sec/0a9ceb14ee69.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "В файле найдем секцию **scrape_configs** и добавим туда блок для наших серверов. Добавим следующие строки после существующего блока **prometheus**:"
     },
     {
      "t": "code",
      "text": "- job_name: \"app-servers\"\n    static_configs:\n      - targets:\n        - \"192.168.250.4:9100\"\n        - \"192.168.250.5:9100\""
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/5551a97e4d78.webp",
+     "alt": "Иллюстрация к материалу"
     },
     {
      "t": "p",
@@ -734,6 +809,11 @@ export default {
      "text": "[Unit]\nDescription=Prometheus\nWants=network-online.target\nAfter=network-online.target\n\n[Service]\nUser=prometheus\nGroup=prometheus\nType=simple\nExecStart=/usr/local/bin/prometheus \\\n    --config.file /etc/prometheus/prometheus.yml \\\n    --storage.tsdb.path /var/lib/prometheus/ \\\n    --web.console.templates=/etc/prometheus/consoles \\\n    --web.console.libraries=/etc/prometheus/console_libraries\n\n[Install]\nWantedBy=multi-user.target"
     },
     {
+     "t": "img",
+     "src": "/winter/sec/e28cd9409b46.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "Указываем пользователя **prometheus**, путь к конфигурационному файлу, путь к хранилищу данных и пути к шаблонам консолей. Сохраним файл и выйдем."
     },
@@ -746,6 +826,11 @@ export default {
      "text": "Systemd перезагрузил конфигурацию и теперь знает о сервисе **prometheus**. Включаем автозапуск Prometheus при загрузке системы: `sudo systemctl enable prometheus`"
     },
     {
+     "t": "img",
+     "src": "/winter/sec/136b635aee4c.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "На изображении видно, что создана символическая ссылка, и Prometheus будет автоматически запускаться при загрузке системы."
     },
@@ -756,6 +841,11 @@ export default {
     {
      "t": "p",
      "text": "Сервис запущен. Проверяем статус сервиса: `sudo systemctl status prometheus`"
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/60ce3fae1f81.webp",
+     "alt": "Иллюстрация к материалу"
     },
     {
      "t": "p",
@@ -774,6 +864,11 @@ export default {
      "text": "Откроем браузер и перейдем по адресу: [http://127.0.0.1:9090](http://127.0.0.1:9090)"
     },
     {
+     "t": "img",
+     "src": "/winter/sec/6a6eb99a8f3d.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "На скриншоте видно главную страницу Prometheus: в верхней части отображается меню с пунктами Alerts, Graph, Status и Help. В центре - поле для ввода запросов. Интерфейс загружен и готов к работе."
     },
@@ -782,12 +877,22 @@ export default {
      "text": "В верхнем меню нажмем **Status**, затем выберем **Targets**:"
     },
     {
+     "t": "img",
+     "src": "/winter/sec/5fd3c68f274f.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "На скриншоте видно страницу Targets: отображается таблица с тремя записями. Первая - **prometheus** (localhost:9090), вторая и третья - **app-servers** (192.168.250.4:9100 и 192.168.250.5:9100). Все три target'а имеют статус **UP** (зеленый цвет). Это означает, что Prometheus успешно подключается ко всем серверам и собирает метрики."
     },
     {
      "t": "p",
      "text": "Перейдем в раздел **Graph** (верхнее меню):"
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/c691a1facbbf.webp",
+     "alt": "Иллюстрация к материалу"
     },
     {
      "t": "p",
@@ -800,6 +905,11 @@ export default {
     {
      "t": "p",
      "text": "Нажмем **Execute**, переключимся на вкладку **Graph**:"
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/1aa690dec145.webp",
+     "alt": "Иллюстрация к материалу"
     },
     {
      "t": "p",

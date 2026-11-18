@@ -51,6 +51,11 @@ export default {
      "text": "В выводе мы увидим девять категорий - **System**, **Logon/Logoff**, **Object Access**, **Privilege Use**, **Detailed Tracking**, **Policy Change**, **Account Management**, **DS Access**, **Account Logon** - каждая раскрыта на подкатегории с текущим состоянием (**No Auditing**, **Success**, **Failure** или **Success and Failure**)"
     },
     {
+     "t": "img",
+     "src": "/winter/sec/64be2d9553cf.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "Прокрутим вывод и обратим внимание на три ключевые строки. **Detailed Tracking -> Process Creation** = **No Auditing** - именно из-за этого **Event ID 4688** сейчас не пишется вообще. **Policy Change -> Audit Policy Change** = **No Auditing** - без этого мы не увидим **Event ID 4719** в финале практики, когда будете отключать аудит. **Logon/Logoff -> Logon** обычно уже стоит в **Success** - **Event ID 4624** пишется, но неудачные попытки (**Event ID 4625**) - нет. Эти пробелы мы будем закрывать следующим действием."
     },
@@ -71,6 +76,11 @@ export default {
      "text": "Каждая команда должна вернуть **The command was successfully executed**. Если вместо этого мы видим ошибку **Error: 0x00000522** - **PowerShell** запущен не от администратора, перезапустим его"
     },
     {
+     "t": "img",
+     "src": "/winter/sec/2b48be3ba5cb.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "Кратко о том, что даёт каждая подкатегория. **Process Creation** генерирует **Event ID 4688** при каждом запуске процесса - основа для расследования атак. **Logon** и **Special Logon** покрывают **Event ID 4624**, **4625** и **4672** - входы, неудачные попытки входа, вход с административными правами. **Security Group Management** и **User Account Management** дают **Event ID 4720**, **4726**, **4732** - создание учёток и добавления в группы (типичная техника закрепления атакующего). **Audit Policy Change** - **Event ID 4719**, самое критическое для этой практики, потому что именно этим событием фиксируется отключение самого аудита. **Other Object Access Events** - **Event ID 4698** - создание задач планировщика. **Security System Extension** - **Event ID 7045** - установка новой службы; именно так работают **PsExec** и большинство инструментов удалённого выполнения."
     },
@@ -81,6 +91,11 @@ export default {
     {
      "t": "p",
      "text": "Теперь напротив каждой из восьми включённых подкатегорий должно стоять **Success and Failure**"
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/bd6423469fa3.webp",
+     "alt": "Иллюстрация к материалу"
     },
     {
      "t": "p",
@@ -95,12 +110,22 @@ export default {
      "text": "Включение выполняется одной командой правки реестра: `reg add \"HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\Audit\" /v ProcessCreationIncludeCmdLine_Enabled /t REG_DWORD /d 1 /f`"
     },
     {
+     "t": "img",
+     "src": "/winter/sec/4db253e4743e.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "Команда должна вернуть **The operation completed successfully**. Проверьте, что значение действительно установлено: `Get-ItemProperty \"HKLM:\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\Audit\" -Name ProcessCreationIncludeCmdLine_Enabled`"
     },
     {
      "t": "p",
      "text": "В выводе мы должны увидеть строку **ProcessCreationIncludeCmdLine_Enabled : 1**. Если её нет - предыдущая команда не сработала, повторим"
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/0b661d61c704.webp",
+     "alt": "Иллюстрация к материалу"
     },
     {
      "t": "p",
@@ -113,6 +138,11 @@ export default {
     {
      "t": "p",
      "text": "В том же окне **PowerShell** выполним: `Start-Process notepad.exe -ArgumentList \"C:\\Windows\\System32\\drivers\\etc\\hosts\"`"
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/36ca14c1ce02.webp",
+     "alt": "Иллюстрация к материалу"
     },
     {
      "t": "p",
@@ -135,8 +165,18 @@ export default {
      ]
     },
     {
+     "t": "img",
+     "src": "/winter/sec/4aa1231ccb93.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "Если поле **Process Command Line** пустое или отсутствует - значит правка реестра не применилась, вернёмся на предыдущий подраздел и повторим. Дополнительно можно посмотреть это же событие через **GUI**: откроем **Event Viewer** через **Win + R** -> **eventvwr.msc**, перейдём в **Windows Logs -> Security**, отсортируем по времени и найдём свежее **Event ID 4688**."
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/ac7165e40107.webp",
+     "alt": "Иллюстрация к материалу"
     },
     {
      "t": "h3",
@@ -159,12 +199,22 @@ export default {
      "text": "Первая команда - успешный вход по **RDP** с правильным паролем: `xfreerdp /v:192.168.0.101 /u:rdpuser /p:'rdpuser' /cert:ignore`"
     },
     {
+     "t": "img",
+     "src": "/winter/sec/0e35534864bc.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "Подставьте реальный **IP win-target**, если он у Вас отличается от **192.168.1.151**. Команда должна отработать без интерактивного окна и вернуть в приглашение терминала с **Exit code: 0**."
     },
     {
      "t": "p",
      "text": "Вторая команда - тот же вход, но с намеренно неверным паролем: `xfreerdp /v:192.168.0.101 /u:rdpuser /p:'WrongPassword123' /cert:ignore`"
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/113b72826f33.webp",
+     "alt": "Иллюстрация к материалу"
     },
     {
      "t": "p",
@@ -189,10 +239,20 @@ export default {
      ]
     },
     {
+     "t": "img",
+     "src": "/winter/sec/7d91fe706ba2.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "ul",
      "items": [
       "одну с **Id = 4625** (неудачный от второго)"
      ]
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/f628b5254e54.webp",
+     "alt": "Иллюстрация к материалу"
     },
     {
      "t": "p",
@@ -223,6 +283,11 @@ export default {
      "text": "Все действия в этом этапе практики выполняются в том же окне **PowerShell от администратора** на **win-target**. Создадим рабочий каталог: `New-Item -Path \"C:\\Tools\\Sysmon\" -ItemType Directory -Force`"
     },
     {
+     "t": "img",
+     "src": "/winter/sec/e9541fe05bbf.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "Скачиваем напрямую из сети - выполним две команды:"
     },
@@ -239,12 +304,27 @@ export default {
      "text": "Expand-Archive -Path \"C:\\Tools\\Sysmon\\Sysmon.zip\" -DestinationPath \"C:\\Tools\\Sysmon\" -Force\nGet-ChildItem \"C:\\Tools\\Sysmon\" -Filter \"Sysmon*.exe\""
     },
     {
+     "t": "img",
+     "src": "/winter/sec/9526ca792b90.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "В каталоге должны появиться три исполняемых файла: **Sysmon.exe** (32-битная сборка), **Sysmon64.exe** (**x64**) и **Sysmon64a.exe** (**ARM64**). Для **Windows 11 x64** используется **Sysmon64.exe**"
     },
     {
+     "t": "img",
+     "src": "/winter/sec/cc71bacb0d1b.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "Убедимся, что файл конфигурации на месте и не пустой: `Get-Item \"C:\\Tools\\Sysmon\\sysmonconfig-export.xml\" | Select-Object Name, Length`"
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/a865c2fcc998.webp",
+     "alt": "Иллюстрация к материалу"
     },
     {
      "t": "p",
@@ -267,12 +347,22 @@ export default {
      "text": "Утилита выведет несколько строк - принятие лицензии, версию **Sysmon**, версию схемы конфига, сообщение об успешной установке. В конце должны быть строки **Sysmon64 installed** и **SysmonDrv installed**. Если вместо этого выпадает ошибка про уже существующую службу - удалим предыдущую установку через **.\\Sysmon64.exe -u** и повторим"
     },
     {
+     "t": "img",
+     "src": "/winter/sec/117ea59986b1.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "Убедимся, что оба компонента запущены: `Get-Service Sysmon64, SysmonDrv | Format-Table Name, Status, StartType`"
     },
     {
      "t": "p",
      "text": "В выводе должны быть две строки: **Sysmon64** и **SysmonDrv**, у обеих **Status = Running** и **StartType = Automatic(или Boot)**"
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/438d20c807c8.webp",
+     "alt": "Иллюстрация к материалу"
     },
     {
      "t": "p",
@@ -287,12 +377,22 @@ export default {
      "text": "Мы должны увидеть несколько свежих событий"
     },
     {
+     "t": "img",
+     "src": "/winter/sec/e5ae5291ecb8.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "**Генерация Sysmon Event ID 1**"
     },
     {
      "t": "p",
      "text": "Запустим **notepad.exe** ещё раз с тем же аргументом, что и в первом этапе практики: `Start-Process notepad.exe -ArgumentList \"C:\\Windows\\System32\\drivers\\etc\\hosts\"`"
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/3a3a193b4991.webp",
+     "alt": "Иллюстрация к материалу"
     },
     {
      "t": "p",
@@ -316,6 +416,11 @@ export default {
       "**ParentCommandLine** - полная командная строка родителя",
       "**User** - имя учётной записи в формате **DOMAIN\\user**"
      ]
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/57be48e0d6a0.webp",
+     "alt": "Иллюстрация к материалу"
     },
     {
      "t": "p",
@@ -346,12 +451,27 @@ export default {
      "text": "Команда должна вернуть **The command was successfully executed**"
     },
     {
+     "t": "img",
+     "src": "/winter/sec/7632b192ee38.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "Проверьте, что подкатегория действительно выключена: `auditpol /get /subcategory:\"Process Creation\"`"
     },
     {
+     "t": "img",
+     "src": "/winter/sec/e895ebfbb26f.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "Запустим ещё один тестовый процесс с новым, отличным от предыдущих, аргументом - чтобы точно отличать до и после: `Start-Process notepad.exe -ArgumentList \"C:\\Windows\\System32\\drivers\\etc\\services\"`"
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/aa593e97c84f.webp",
+     "alt": "Иллюстрация к материалу"
     },
     {
      "t": "p",
@@ -374,12 +494,22 @@ export default {
      "text": "Вывод должен быть **пустым**"
     },
     {
+     "t": "img",
+     "src": "/winter/sec/c8f169f66083.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "Теперь та же проверка, но в журнале **Sysmon**: `Get-WinEvent -LogName \"Microsoft-Windows-Sysmon/Operational\" -FilterXPath \"*[System[EventID=1]]\" -MaxEvents 20 | Where-Object { $_.Message -match 'services' } | Format-List TimeCreated, Message`"
     },
     {
      "t": "p",
      "text": "Здесь мы увидим свежее **Event ID 1** для того же **notepad.exe** с аргументом **services**. Это ключевой вывод второй половины практики: **Sysmon работает через ETW-провайдер уровня ядра и не зависит от штатной политики аудита**. Отключение **auditpol** ослепляет только штатный **Security**-журнал; **Sysmon** продолжает писать. Именно поэтому в статье 11 **Sysmon** идёт как **второй независимый источник телеметрии**, а не как замена штатному аудиту"
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/00fdf13310f6.webp",
+     "alt": "Иллюстрация к материалу"
     },
     {
      "t": "p",
@@ -400,6 +530,11 @@ export default {
      ]
     },
     {
+     "t": "img",
+     "src": "/winter/sec/9119495561b8.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "Это финальное доказательство и ключевой урок практики: **любое изменение политики аудита оставляет свой собственный аудитный след**, если подкатегория **Audit Policy Change** включена заранее. В инфраструктуре с **SIEM** на **Event ID 4719** обязательно настраивается отдельный алерт - без него это событие теряется в общем потоке, и атака остаётся незамеченной."
     },
@@ -414,6 +549,11 @@ export default {
     {
      "t": "p",
      "text": "Напротив строки **Process Creation** снова должно быть **Success and Failure**"
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/a08dc6569f40.webp",
+     "alt": "Иллюстрация к материалу"
     },
     {
      "t": "h3",

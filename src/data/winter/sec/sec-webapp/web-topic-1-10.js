@@ -100,6 +100,11 @@ export default {
      ]
     },
     {
+     "t": "img",
+     "src": "/winter/sec/09a088cfdefc.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "**Ключевые свойства JWT:**"
     },
@@ -141,6 +146,11 @@ export default {
     {
      "t": "p",
      "text": "**Структура JWT:** Токен состоит из трёх частей, разделённых символом точки (**.**):"
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/9e82c99be1a2.webp",
+     "alt": "Иллюстрация к материалу"
     },
     {
      "t": "table",
@@ -233,6 +243,11 @@ export default {
      ]
     },
     {
+     "t": "img",
+     "src": "/winter/sec/24e666872608.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "**Способы передачи JWT:**"
     },
@@ -275,12 +290,22 @@ export default {
      "text": "Для того чтобы получить JWT в браузере откроем DevTools, вкладка Application (Chrome/Edge) или Storage (Firefox), раздел Cookies."
     },
     {
+     "t": "img",
+     "src": "/winter/sec/66c6666e7fef.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "Рассмотрим JWT на примере: **eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjNkZTZlNDI4Yi03ZDQ1LTRiZmMtYjBiOC1hMzM0MzE2YjAwODMiLCJhZG1pbl9hY2Nlc3MiOmZhbHNlLCJpYXQiOjE3NzkwNTY2NjQsIm5hbWUiOiJwdHNlY3VyaXR5In0.1dv6aos6hfcvjWGhZoUdQQQ3xWhPDJYTt_J8xaYJ5Rs**"
     },
     {
      "t": "p",
      "text": "Для удобного просмотра содержимого JWT воспользуемся [веб-инструментом](https://www.jwt.io/)"
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/08ba41e452ed.webp",
+     "alt": "Иллюстрация к материалу"
     },
     {
      "t": "p",

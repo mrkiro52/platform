@@ -39,28 +39,63 @@ export default {
      "text": "Откроем **PowerShell** от имени администратора - все команды первой части выполняются в этой консоли, если явно не указано иное"
     },
     {
+     "t": "img",
+     "src": "/winter/sec/c6e748cba191.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "Параллельно держите открытой графическую оснастку **Computer Management**: нажмём **Win + R**, введём **compmgmt.msc** и нажмём **OK**"
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/87807d564773.webp",
+     "alt": "Иллюстрация к материалу"
     },
     {
      "t": "p",
      "text": "Либо через GUI: откроем поиск Windows и введём **Computer Management**"
     },
     {
+     "t": "img",
+     "src": "/winter/sec/6949963e49b7.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "В левой панели развернём **System Tools** -> **Local Users and Groups** - здесь находятся узлы **Users** и **Groups**, через которые удобно сверять состояние системы с тем, что делает **PowerShell**"
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/99807bc72bc9.webp",
+     "alt": "Иллюстрация к материалу"
     },
     {
      "t": "p",
      "text": "Сначала создадим локального пользователя **petya** через графический интерфейс, чтобы увидеть стандартный административный путь. В **Local Users and Groups **нажмём правой кнопкой по узлу **Users** и выберите **New User**"
     },
     {
+     "t": "img",
+     "src": "/winter/sec/80112c221c35.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "В открывшемся окне в поле **Username** введите **petya**, в **Full name** - **Petya Ivanov**, в **Password** и **Confirm password** - **P@ssword123**. Снимем флажок **User must change password at next logon** (иначе при первом входе система потребует сменить пароль и сломает сценарий), установим **Password never expires**. Нажмём **Create** и затем **Close**"
     },
     {
+     "t": "img",
+     "src": "/winter/sec/f2fc3bff8d3a.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "В списке **Users** появится новая запись **petya**"
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/9bb5238b2d92.webp",
+     "alt": "Иллюстрация к материалу"
     },
     {
      "t": "p",
@@ -69,6 +104,11 @@ export default {
     {
      "t": "code",
      "text": "$Password = ConvertTo-SecureString \"P@ssword123\" -AsPlainText -Force\nNew-LocalUser -Name \"vasya\" `\n    -FullName \"Vasya Petrov\" `\n    -Password $Password `\n    -PasswordNeverExpires `\n    -AccountNeverExpires"
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/f92e633bbd3f.webp",
+     "alt": "Иллюстрация к материалу"
     },
     {
      "t": "p",
@@ -87,6 +127,11 @@ export default {
      "text": "New-LocalGroup -Name \"LabAuditors\" -Description \"Auditors group for practice\"\nAdd-LocalGroupMember -Group \"LabAuditors\" -Member \"petya\""
     },
     {
+     "t": "img",
+     "src": "/winter/sec/38038e33e5bd.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "Проверьте результат:"
     },
@@ -95,8 +140,18 @@ export default {
      "text": "Get-LocalGroup -Name \"LabAuditors\"\nGet-LocalGroupMember -Group \"LabAuditors\""
     },
     {
+     "t": "img",
+     "src": "/winter/sec/287640de9e0e.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "Так же мы можем проверить в **Computer Management** -> **Groups** -> **LabAuditors** -> **Properties** -> **Members**"
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/2ba0879a6ff4.webp",
+     "alt": "Иллюстрация к материалу"
     },
     {
      "t": "p",
@@ -105,6 +160,11 @@ export default {
     {
      "t": "p",
      "text": "**Security Identifier** (**SID**) - это уникальный идентификатор, который Windows присваивает каждой учётной записи и группе при создании. Имя пользователя - это лишь \"вывеска\"; на уровне ядра все права привязаны именно к **SID**. Для того чтобы вывести **SID** всех пользователей: `Get-LocalUser | Select-Object Name, Enabled, SID`"
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/bf0469411833.webp",
+     "alt": "Иллюстрация к материалу"
     },
     {
      "t": "p",
@@ -117,6 +177,11 @@ export default {
     {
      "t": "code",
      "text": "Rename-LocalUser -Name \"vasya\" -NewName \"vasiliy\"\nGet-LocalUser -Name \"vasiliy\" | Select-Object Name, SID\nRename-LocalUser -Name \"vasiliy\" -NewName \"vasya\"\nGet-LocalUser -Name \"vasya\" | Select-Object Name, SID"
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/c3e585824530.webp",
+     "alt": "Иллюстрация к материалу"
     },
     {
      "t": "p",
@@ -135,6 +200,11 @@ export default {
      "text": "New-Item -ItemType Directory -Path \"C:\\LabShare\" -Force\nNew-Item -ItemType Directory -Path \"C:\\LabShare\\Restricted\" -Force\n\"Public document\" | Out-File \"C:\\LabShare\\readme.txt\"\n\"Restricted document\" | Out-File \"C:\\LabShare\\Restricted\\secret.txt\""
     },
     {
+     "t": "img",
+     "src": "/winter/sec/d06de352b906.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "**Выдача базовых разрешений через GUI**"
     },
@@ -143,28 +213,63 @@ export default {
      "text": "Откройте **File Explorer**, перейдите в **C:\\LabShare**, нажмём правой по папке **LabShare**, выберите **Properties**"
     },
     {
+     "t": "img",
+     "src": "/winter/sec/525ef64ffead.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "В открывшемся окне перейдите на вкладку **Security**. Здесь мы видим текущий список разрешений: **SYSTEM**, **Administrators**, **Users** и владелец. Нажмите **Edit**"
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/d60f25bcb636.webp",
+     "alt": "Иллюстрация к материалу"
     },
     {
      "t": "p",
      "text": "В открывшемся окне нажмём **Add**"
     },
     {
+     "t": "img",
+     "src": "/winter/sec/c350b1eb1c91.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "В поле **Enter the object names to select** введите **vasya**, нажмём **Check Names** (имя подчеркнётся, что подтверждает успешный поиск в локальной базе) и нажмём **OK**"
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/5e0f146a1a80.webp",
+     "alt": "Иллюстрация к материалу"
     },
     {
      "t": "p",
      "text": "В нижнем блоке **Permissions for vasya** установите флажок **Modify** в колонке **Allow** - вместе с ним автоматически отметятся **Read & Execute**, **List folder contents**, **Read** и **Write **(при добавлении vasya будут автоматически проставлены Read & Execute, List folder contents, Read, однако для наглядности работы Modify они были убраны). Нажмём **Apply**"
     },
     {
+     "t": "img",
+     "src": "/winter/sec/eb881aecb506.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "В появившемся окне выберете **Yes** и нажмём **OK**"
     },
     {
+     "t": "img",
+     "src": "/winter/sec/ebfbdb12debe.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "p",
      "text": "То же самое из **PowerShell** одной командой: `icacls \"C:\\LabShare\" /grant \"vasya:(OI)(CI)M\"`"
+    },
+    {
+     "t": "img",
+     "src": "/winter/sec/c1440b17ea58.webp",
+     "alt": "Иллюстрация к материалу"
     },
     {
      "t": "reveal",
@@ -183,6 +288,11 @@ export default {
        "text": "Проверьте результат: `(Get-Acl \"C:\\LabShare\").Access | Where-Object { $_.IdentityReference -like \"*vasya*\" }`"
       },
       {
+       "t": "img",
+       "src": "/winter/sec/cda7942df7fa.webp",
+       "alt": "Иллюстрация к материалу"
+      },
+      {
        "t": "p",
        "text": "В выводе появится запись **AccessControlType = Allow**, **FileSystemRights = Modify, Synchronize**, **InheritanceFlags = ContainerInherit, ObjectInherit**."
       },
@@ -195,20 +305,45 @@ export default {
        "text": "По умолчанию все права из корня **LabShare** наследуются подпапкой **Restricted** - именно поэтому мы можем не настраивать каждую подпапку отдельно. Займемся отключением наследования папок. Для этого откройте свойства **C:\\LabShare\\Restricted** -> **Security** -> **Advanced**"
       },
       {
+       "t": "img",
+       "src": "/winter/sec/bac1f8348bd0.webp",
+       "alt": "Иллюстрация к материалу"
+      },
+      {
        "t": "p",
        "text": "Нажмите **Change permissions**"
+      },
+      {
+       "t": "img",
+       "src": "/winter/sec/7db6bbd2c620.webp",
+       "alt": "Иллюстрация к материалу"
       },
       {
        "t": "p",
        "text": "После нажатия **Change permissions**, станет доступна кнопка **Disable inheritance**, нажмём на нее"
       },
       {
+       "t": "img",
+       "src": "/winter/sec/ef48e4496599.webp",
+       "alt": "Иллюстрация к материалу"
+      },
+      {
        "t": "p",
        "text": "Windows предложит выбор: **Convert inherited permissions into explicit permissions on this object** (превратить наследуемые правила в явные, копируя их на сам объект) или **Remove all inherited permissions from this object** (удалить все наследуемые правила вообще, оставив только явные). Выберите **Convert** - так мы сохраняем доступ для **SYSTEM**, **Administrators** и владельца, но получим возможность точечно править эти правила на самом объекте"
       },
       {
+       "t": "img",
+       "src": "/winter/sec/99dc2f1e5394.webp",
+       "alt": "Иллюстрация к материалу"
+      },
+      {
        "t": "p",
        "text": "Проверьте через **PowerShell**, что наследование действительно отключено: `(Get-Acl \"C:\\LabShare\\Restricted\").AreAccessRulesProtected`"
+      },
+      {
+       "t": "img",
+       "src": "/winter/sec/c439d160a03d.webp",
+       "alt": "Иллюстрация к материалу"
       },
       {
        "t": "p",
@@ -227,6 +362,11 @@ export default {
        "text": "icacls \"C:\\LabShare\\Restricted\" /grant \"LabAuditors:(OI)(CI)F\"\nicacls \"C:\\LabShare\\Restricted\" /deny \"petya:(OI)(CI)R\""
       },
       {
+       "t": "img",
+       "src": "/winter/sec/e4885dc49542.webp",
+       "alt": "Иллюстрация к материалу"
+      },
+      {
        "t": "p",
        "text": "Проверьте получившийся ACL:"
       },
@@ -235,8 +375,18 @@ export default {
        "text": "(Get-Acl \"C:\\LabShare\\Restricted\").Access |\n    Select-Object IdentityReference, AccessControlType, FileSystemRights"
       },
       {
+       "t": "img",
+       "src": "/winter/sec/2be81901a636.webp",
+       "alt": "Иллюстрация к материалу"
+      },
+      {
        "t": "p",
        "text": "В выводе должны быть две дополнительных колонки: **AccessControlType = Allow** для **LabAuditors** с **FullControl** и **AccessControlType = Deny** для **petya** с **Read, Synchronize**. Чтобы практически почувствовать механику, запустите **File Explorer** под **petya** и попробуйте открыть папку **Restricted**"
+      },
+      {
+       "t": "img",
+       "src": "/winter/sec/ae46c516d72e.webp",
+       "alt": "Иллюстрация к материалу"
       },
       {
        "t": "p",
@@ -247,12 +397,27 @@ export default {
        "text": "Каждый объект в **NTFS** имеет владельца (**Owner**) - и владелец всегда может вернуть себе любые права, даже если они отозваны через **ACL**. Это страховка от блокировки администратора собственной ошибочной настройкой. Посмотрите текущего владельца: `(Get-Acl \"C:\\LabShare\\Restricted\").Owner`"
       },
       {
+       "t": "img",
+       "src": "/winter/sec/b20bedea84eb.webp",
+       "alt": "Иллюстрация к материалу"
+      },
+      {
        "t": "p",
        "text": "По умолчанию это **BUILTIN\\Administrators** или **<имя_компьютера>\\Administrator**. Поменяйте владельца на **petya** через **GUI**: в свойствах **Restricted** -> **Security** -> **Advanced**, рядом со строкой **Owner **нажмём **Change**"
       },
       {
+       "t": "img",
+       "src": "/winter/sec/bc9848d42b95.webp",
+       "alt": "Иллюстрация к материалу"
+      },
+      {
        "t": "p",
        "text": "В появившемся окне введите **petya**, нажмём **Check Names** и **OK**"
+      },
+      {
+       "t": "img",
+       "src": "/winter/sec/70fb9d85cc90.webp",
+       "alt": "Иллюстрация к материалу"
       },
       {
        "t": "p",
@@ -261,6 +426,11 @@ export default {
       {
        "t": "code",
        "text": "icacls \"C:\\LabShare\\Restricted\" /setowner \"petya\"\n(Get-Acl \"C:\\LabShare\\Restricted\").Owner"
+      },
+      {
+       "t": "img",
+       "src": "/winter/sec/28ea54fab1db.webp",
+       "alt": "Иллюстрация к материалу"
       },
       {
        "t": "p",
@@ -283,12 +453,27 @@ export default {
        "text": "Создайте на каталоге **C:\\LabShare** общий сетевой ресурс. Сначала через **GUI**: нажмём правой кнопкой по папке **LabShare** -> **Properties** -> **Sharing** -> **Advanced Sharing**"
       },
       {
+       "t": "img",
+       "src": "/winter/sec/e150447dc9ee.webp",
+       "alt": "Иллюстрация к материалу"
+      },
+      {
        "t": "p",
        "text": "В открывшемся окне установите флажок **Share this folder**, в поле **Share name** введите **LabShare**, нажмём **Permissions**"
       },
       {
+       "t": "img",
+       "src": "/winter/sec/18a86dadd822.webp",
+       "alt": "Иллюстрация к материалу"
+      },
+      {
        "t": "p",
        "text": "По умолчанию **Everyone** получает **Read** - оставьте это значение. Нажмём **OK** дважды и **Close**"
+      },
+      {
+       "t": "img",
+       "src": "/winter/sec/0f23c59daa0e.webp",
+       "alt": "Иллюстрация к материалу"
       },
       {
        "t": "p",
@@ -297,6 +482,11 @@ export default {
       {
        "t": "code",
        "text": "Get-SmbShare -Name \"LabShare\" -ErrorAction SilentlyContinue | Remove-SmbShare -Force\nNew-SmbShare -Name \"LabShare\" -Path \"C:\\LabShare\" -FullAccess \"Administrators\" -ReadAccess \"Everyone\""
+      },
+      {
+       "t": "img",
+       "src": "/winter/sec/1f51dad6a6b8.webp",
+       "alt": "Иллюстрация к материалу"
       },
       {
        "t": "p",
@@ -311,20 +501,45 @@ export default {
        "text": "Подключитесь к сетевой папке с этой же машины через адрес обратной петли. Откройте **File Explorer**, перейдите в **This PC**, нажмём на три точки и выберете **Map network drive**"
       },
       {
+       "t": "img",
+       "src": "/winter/sec/e75aa29dada6.webp",
+       "alt": "Иллюстрация к материалу"
+      },
+      {
        "t": "p",
        "text": "В открывшемся окне введите **\\127.0.0.1\\LabShare**, выберете обе галочки и нажмём **Enter**"
+      },
+      {
+       "t": "img",
+       "src": "/winter/sec/f9f2ab485e8e.webp",
+       "alt": "Иллюстрация к материалу"
       },
       {
        "t": "p",
        "text": "Windows запросит учётные данные - введите **vasya** и **P@ssword123**"
       },
       {
+       "t": "img",
+       "src": "/winter/sec/b4db55b694b8.webp",
+       "alt": "Иллюстрация к материалу"
+      },
+      {
        "t": "p",
        "text": "Папка откроется. Попробуйте создать в ней новый файл - **File Explorer** покажет ошибку доступа: на сетевом уровне у **Everyone** только **Read**, и **NTFS-Modify** для **vasya** этот лимит не повышает"
       },
       {
+       "t": "img",
+       "src": "/winter/sec/d57ceca23f6b.webp",
+       "alt": "Иллюстрация к материалу"
+      },
+      {
        "t": "p",
        "text": "Ошибка:"
+      },
+      {
+       "t": "img",
+       "src": "/winter/sec/fd194ad3956b.webp",
+       "alt": "Иллюстрация к материалу"
       },
       {
        "t": "p",
@@ -333,6 +548,11 @@ export default {
       {
        "t": "code",
        "text": "Get-SmbShare -Name \"LabShare\"\nGet-SmbShareAccess -Name \"LabShare\""
+      },
+      {
+       "t": "img",
+       "src": "/winter/sec/ed8795d42cfe.webp",
+       "alt": "Иллюстрация к материалу"
       },
       {
        "t": "p",
@@ -351,6 +571,11 @@ export default {
        "text": "Get-LocalUser -Name petya, vasya | Select-Object Name, Enabled, SID\nGet-LocalGroupMember -Group \"LabAuditors\"\n(Get-Acl \"C:\\LabShare\").Access | Where-Object { $_.IdentityReference -like \"*vasya*\" }\n(Get-Acl \"C:\\LabShare\\Restricted\").AreAccessRulesProtected\n(Get-Acl \"C:\\LabShare\\Restricted\").Access | Where-Object AccessControlType -eq \"Deny\"\nGet-SmbShare -Name \"LabShare\"\nGet-SmbShareAccess -Name \"LabShare\""
       },
       {
+       "t": "img",
+       "src": "/winter/sec/0300592b5bf5.webp",
+       "alt": "Иллюстрация к материалу"
+      },
+      {
        "t": "p",
        "text": "Все семь команд должны вернуть непустые объекты, соответствующие тому, что мы только что настроили. Если хоть что-то выглядит иначе - вернитесь к соответствующему блоку и проверьте, не пропустили ли шаг."
       },
@@ -365,6 +590,11 @@ export default {
       {
        "t": "p",
        "text": "Принцип атаки следующий. Windows хранит данные локальных учёток в кусте реестра **HKLM\\SAM**. У каждой учётной записи есть подключ вида **HKLM\\SAM\\SAM\\Domains\\Account\\Users<RID_hex>**, внутри которого лежит бинарное значение **F** - дескриптор учётной записи"
+      },
+      {
+       "t": "img",
+       "src": "/winter/sec/2fed666cda93.webp",
+       "alt": "Иллюстрация к материалу"
       },
       {
        "t": "p",
@@ -391,6 +621,11 @@ export default {
        "text": "cd C:\\PSTools\n.\\PsExec.exe -accepteula -s -i regedit.exe"
       },
       {
+       "t": "img",
+       "src": "/winter/sec/a12c93cff903.webp",
+       "alt": "Иллюстрация к материалу"
+      },
+      {
        "t": "p",
        "text": "Разбор флагов:"
       },
@@ -411,6 +646,11 @@ export default {
        "text": "В появившемся окне **Command Prompt** выполним **whoami** - в выводе появится **nt authority\\system**. Это и есть контекст, в котором сейчас работает **regedit**."
       },
       {
+       "t": "img",
+       "src": "/winter/sec/04f86df1eeed.webp",
+       "alt": "Иллюстрация к материалу"
+      },
+      {
        "t": "p",
        "text": "**Поиск RID жертвы**"
       },
@@ -423,8 +663,18 @@ export default {
        "text": "Чтобы определить **RID** именно **vasya**, перейдите в подключ **Names** внутри **Users**: **HKLM\\SAM\\SAM\\Domains\\Account\\Users\\Names**. Внутри Вы увидим список имён всех локальных учёток"
       },
       {
+       "t": "img",
+       "src": "/winter/sec/16d3cf8cdeda.webp",
+       "alt": "Иллюстрация к материалу"
+      },
+      {
        "t": "p",
        "text": "Нажмите по подключу **vasya** - в правой панели **regedit** в строке **(Default)** в колонке **Type** будет указано значение вида **REG_<RID_в_hex>**, например **0x3ec (1004)**. Это и есть **RID** пользователя **vasya** в hex - именно по этому имени называется его подключ в **Users**"
+      },
+      {
+       "t": "img",
+       "src": "/winter/sec/a26c6625e80c.webp",
+       "alt": "Иллюстрация к материалу"
       },
       {
        "t": "p",
@@ -443,8 +693,18 @@ export default {
        "text": "В **regedit** развернём **HKLM\\SAM\\SAM\\Domains\\Account\\Users<RID_hex>** (для примера выше - **000003EC**). Нажмём правой кнопкой по этому подключу, выберите **Export**"
       },
       {
+       "t": "img",
+       "src": "/winter/sec/345eb68795c1.webp",
+       "alt": "Иллюстрация к материалу"
+      },
+      {
        "t": "p",
        "text": "В открывшемся окне укажите путь сохранения, например **C:\\Lab\\vasya_backup.reg**, и нажмём **Save**. Файл с расширением **.reg** будет содержать полное дерево значений жертвы и при необходимости импортируется обратно через **regedit** -> **Import**"
+      },
+      {
+       "t": "img",
+       "src": "/winter/sec/efca99c40862.webp",
+       "alt": "Иллюстрация к материалу"
       },
       {
        "t": "p",
@@ -453,6 +713,11 @@ export default {
       {
        "t": "p",
        "text": "Войдите в подключ жертвы (например, **HKLM\\SAM\\SAM\\Domains\\Account\\Users\\000003EС**). В правой панели **regedit** найдите значение **F** типа **REG_BINARY**. Нажмём по нему дважды - откроется окно **Edit Binary Value**, где видна сырая бинарная структура значения."
+      },
+      {
+       "t": "img",
+       "src": "/winter/sec/be0d539f04bd.webp",
+       "alt": "Иллюстрация к материалу"
       },
       {
        "t": "note",
@@ -483,8 +748,18 @@ export default {
        "text": "Откройте **PowerShell от имени администратора** (та же сессия, в которой Вы работали) и выполним: `runas /user:vasya \"powershell.exe -NoExit -Command whoami /user; whoami /groups; New-Item -Path C:\\Windows\\System32\\rid_hijack_proof.txt -ItemType File -Force\"`"
       },
       {
+       "t": "img",
+       "src": "/winter/sec/a0388d9a3003.webp",
+       "alt": "Иллюстрация к материалу"
+      },
+      {
        "t": "p",
        "text": "В окне запроса пароля введите **P@ssword123**. Откроется новое окно **PowerShell**, в заголовке которого будет указано **running as <имя_компьютера>\\vasya**. В этом окне автоматически выполнятся три команды"
+      },
+      {
+       "t": "img",
+       "src": "/winter/sec/3783728cb6c1.webp",
+       "alt": "Иллюстрация к материалу"
       },
       {
        "t": "ul",
@@ -507,12 +782,22 @@ export default {
        "text": "Самое интересное в этой технике - её незаметность для стандартных средств аудита. В Вашей основной сессии **PowerShell от имени администратора** выполним: `Get-LocalGroupMember -Group \"Administrators\"`"
       },
       {
+       "t": "img",
+       "src": "/winter/sec/11b0fd347bc0.webp",
+       "alt": "Иллюстрация к материалу"
+      },
+      {
        "t": "p",
        "text": "В выводе Вы **не увидитеvasya**. Группа **Administrators** содержит только тех, кого туда добавили явно через **Add-LocalGroupMember** или **GUI**, - сам факт подмены **RID** не отражается в членстве групп, потому что атака меняет не списки членов, а внутреннюю структуру учётной записи в **SAM**. На уровне обычного аудита это абсолютно скрытная техника: учётка по всем спискам - обычный пользователь, а по реальным правам - администратор."
       },
       {
        "t": "p",
        "text": "Сверить это можно и через **Computer Management**: откройте **compmgmt.msc**, развернём **Local Users and Groups** -> **Groups**, дважды нажмём по **Administrators** - в окне **Membersvasya** также не будет. Графическая оснастка опирается на те же данные о членстве групп, что и **Get-LocalGroupMember**, и тоже не показывает атаку"
+      },
+      {
+       "t": "img",
+       "src": "/winter/sec/a6cf02158cd0.webp",
+       "alt": "Иллюстрация к материалу"
       },
       {
        "t": "p",

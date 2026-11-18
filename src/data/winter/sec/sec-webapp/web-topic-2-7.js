@@ -81,6 +81,11 @@ export default {
      ]
     },
     {
+     "t": "img",
+     "src": "/winter/sec/9a73d51563b9.webp",
+     "alt": "Иллюстрация к материалу"
+    },
+    {
      "t": "h3",
      "text": "1. Information Gathering"
     },
