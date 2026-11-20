@@ -109,3 +109,10 @@ platform/
   → Один (hw: string, link на Google Drive папку)
 - Нужны ли draft/publish для дней в расписании или все сразу видны админам?
   → Все видны админам, для юзеров — дата-лок
+
+## 10. Деплой
+- **Фронтенд:** автоматически через GitHub Actions при пуше в ветку `main` (`.github/workflows/deploy.yml` собирает фронтенд `npm run build` и копирует `dist/*` в `/var/www/kiro-frontend/`).
+- **Бэкенд:**
+  ```bash
+  ssh kiro@92.242.61.214 "cd ~/platform/backend && git pull && pm2 reload kiro-backend"
+  ```
