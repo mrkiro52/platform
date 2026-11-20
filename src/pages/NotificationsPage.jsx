@@ -10,11 +10,13 @@ const TEXT = {
   message:  'написал(а) тебе сообщение',
   hw_approved: 'проверили твоё домашнее задание',
   hw_rework:   'вернули домашнее задание с правками',
+  mentor_call: 'назначил(а) личный созвон с ментором',
+  mentor_call_cancel: 'отменил(а) созвон с ментором',
 }
 
 // Проверку домашки делает команда лагеря, а не другой участник, — у таких
 // уведомлений нет автора, поэтому подписываем их платформой.
-const SYSTEM_TYPES = ['hw_approved', 'hw_rework']
+const SYSTEM_TYPES = ['hw_approved', 'hw_rework', 'mentor_call', 'mentor_call_cancel']
 
 export default function NotificationsPage({ onRead }) {
   const navigate = useNavigate()
@@ -63,11 +65,11 @@ export default function NotificationsPage({ onRead }) {
                 <span style={{
                   width: 38, height: 38, borderRadius: '50%', flexShrink: 0,
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  background: n.type === 'hw_approved' ? 'rgba(63,185,80,0.15)' : 'rgba(255,214,10,0.14)',
-                  border: `1px solid ${n.type === 'hw_approved' ? 'rgba(63,185,80,0.45)' : 'rgba(255,214,10,0.4)'}`,
+                  background: n.type === 'hw_approved' ? 'rgba(63,185,80,0.15)' : n.type === 'mentor_call' ? 'rgba(91,200,245,0.15)' : n.type === 'mentor_call_cancel' ? 'rgba(255,80,80,0.15)' : 'rgba(255,214,10,0.14)',
+                  border: `1px solid ${n.type === 'hw_approved' ? 'rgba(63,185,80,0.45)' : n.type === 'mentor_call' ? 'rgba(91,200,245,0.45)' : n.type === 'mentor_call_cancel' ? 'rgba(255,80,80,0.45)' : 'rgba(255,214,10,0.4)'}`,
                   fontSize: 16,
                 }}>
-                  {n.type === 'hw_approved' ? '✓' : '✎'}
+                  {n.type === 'hw_approved' ? '✓' : n.type === 'mentor_call' ? '📅' : n.type === 'mentor_call_cancel' ? '✕' : '✎'}
                 </span>
               ) : (
                 <Avatar name={n.actor?.name} avatarUrl={n.actor?.avatarUrl} size={38}

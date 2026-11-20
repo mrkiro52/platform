@@ -129,7 +129,10 @@ router.post('/admin-login', (req, res) => {
   }
   // person — роль в отделе продаж (или null): по ней админка решает, показывать ли раздел
   const person = salesPersonOf({ role: 'admin', username, scope: account.scope })
-  const token = makeToken({ role: 'admin', username, scope: account.scope, person }, ADMIN_SESSION_TTL)
+  const claims = { role: 'admin', username, scope: account.scope, person }
+  // Ментору — его направление: админка подписывает им раздел
+  if (account.scope === 'mentor') claims.direction = account.direction
+  const token = makeToken(claims, ADMIN_SESSION_TTL)
   res.json({ token, scope: account.scope })
 })
 

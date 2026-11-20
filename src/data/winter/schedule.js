@@ -96,6 +96,8 @@ export const EVENT_TYPES = {
   math: { label: 'Математика', short: 'Математика', tag: 'Матем.' },
   mentor: { label: 'Созвон с ментором', short: 'Ментор', tag: 'Ментор' },
   leetcode: { label: 'Нарешиваем LeetCode', short: 'LeetCode', tag: 'LeetCode' },
+  // Личные созвоны ментор назначает в админке — приходят с бэкенда (personalCallEvents)
+  personal: { label: 'Личный созвон с ментором', short: 'Личный созвон', tag: 'Ментор 1:1' },
 }
 
 function videosOf(video) {
@@ -127,6 +129,16 @@ export function winterEvents(directionName = null, { math = true } = {}) {
     })),
   ]
   return list.sort((a, b) => a.date.localeCompare(b.date) || (a.time || '').localeCompare(b.time || ''))
+}
+
+// Личные созвоны с ментором из /api/winter/calls/mine → события календаря
+export function personalCallEvents(calls) {
+  return (calls || []).map(c => ({
+    id: `w-personal-${c.id}`, type: 'personal', date: c.date, time: c.time || null,
+    title: `Созвон с ментором${c.mentor ? ` · ${c.mentor}` : ''}`,
+    note: [c.topic, c.link].filter(Boolean).join(' · ') || 'Личный созвон один на один',
+    videos: [], link: '/winter-camp#calendar',
+  }))
 }
 
 // ── Даты ─────────────────────────────────────────────────────────────────────

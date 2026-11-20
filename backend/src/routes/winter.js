@@ -1,5 +1,6 @@
 const express = require('express')
-const { verifyToken, requireHomeworkReview } = require('../middleware/auth')
+const { verifyToken, requireWinterReview } = require('../middleware/auth')
+const { mentorDirection } = require('../admins')
 const db = require('../db')
 const { notify } = require('../notify')
 
@@ -173,7 +174,37 @@ router.put('/homework/:key', requireWinterStudent, (req, res) => {
   }
 })
 
+// GET /api/winter/calls/mine — личные созвоны с ментором (для календаря лагеря)
+router.get('/calls/mine', requireWinterStudent, (req, res) => {
+  try {
+    const rows = db.prepare('SELECT * FROM winter_mentor_calls WHERE user_id = ? ORDER BY date, time').all(req.student.id)
+    res.json(rows.map(mapCall))
+  } catch (e) {
+    res.status(500).json({ message: e.message })
+  }
+})
+
+function mapCall(row) {
+  return {
+    id: row.id, mentor: row.mentor, direction: row.direction, date: row.date, time: row.time,
+    duration: row.duration, topic: row.topic || '', link: row.link || '',
+  }
+}
+
 // ── Админ ───────────────────────────────────────────────────────────────────
+// Ментор видит только студентов своего направления. scopeDir(req): null — без ограничений
+// (главный админ и проверяющий), иначе направление ментора. Ментор без направления в
+// настройках не видит никого.
+
+function scopeDir(req) {
+  if (req.user.scope !== 'mentor') return null
+  return mentorDirection(req.user) || '__none__'
+}
+
+function canSeeStudent(req, direction) {
+  const dir = scopeDir(req)
+  return !dir || dir === direction
+}
 
 const ADMIN_SELECT = `
   SELECT h.*, u.nickname, u.name, u.winter_direction
@@ -190,10 +221,13 @@ function mapAdminRow(row) {
 }
 
 // GET /api/winter/admin/homework — работы на проверку (тесты с автопроверкой сюда не попадают)
-router.get('/admin/homework', requireHomeworkReview, (req, res) => {
+router.get('/admin/homework', requireWinterReview, (req, res) => {
   try {
+    const dir = scopeDir(req)
+    const userId = Number(req.query.user) || null
     const rows = db.prepare(`${ADMIN_SELECT} WHERE h.kind = 'quiz'
-      ORDER BY CASE h.status WHEN 'submitted' THEN 0 WHEN 'rework' THEN 1 ELSE 2 END, h.submitted_at DESC`).all()
+      AND (? IS NULL OR u.winter_direction = ?) AND (? IS NULL OR h.user_id = ?)
+      ORDER BY CASE h.status WHEN 'submitted' THEN 0 WHEN 'rework' THEN 1 ELSE 2 END, h.submitted_at DESC`).all(dir, dir, userId, userId)
     // В списке ответы не нужны — только их число
     res.json(rows.map(r => {
       const item = mapAdminRow(r)
@@ -208,10 +242,10 @@ router.get('/admin/homework', requireHomeworkReview, (req, res) => {
 })
 
 // GET /api/winter/admin/homework/:id — работа целиком
-router.get('/admin/homework/:id', requireHomeworkReview, (req, res) => {
+router.get('/admin/homework/:id', requireWinterReview, (req, res) => {
   try {
     const row = db.prepare(`${ADMIN_SELECT} WHERE h.id = ?`).get(req.params.id)
-    if (!row) return res.status(404).json({ message: 'Работа не найдена' })
+    if (!row || !canSeeStudent(req, row.winter_direction)) return res.status(404).json({ message: 'Работа не найдена' })
     res.json(mapAdminRow(row))
   } catch (e) {
     res.status(500).json({ message: e.message })
@@ -219,15 +253,15 @@ router.get('/admin/homework/:id', requireHomeworkReview, (req, res) => {
 })
 
 // PATCH /api/winter/admin/homework/:id — принять или вернуть с правками
-router.patch('/admin/homework/:id', requireHomeworkReview, (req, res) => {
+router.patch('/admin/homework/:id', requireWinterReview, (req, res) => {
   try {
     const { status, comment } = req.body
     if (!['approved', 'rework'].includes(status)) return res.status(400).json({ message: 'Неизвестный статус' })
     if (status === 'rework' && !String(comment || '').trim()) {
       return res.status(400).json({ message: 'К правкам нужен комментарий — иначе непонятно, что исправлять' })
     }
-    const row = db.prepare('SELECT * FROM winter_homework WHERE id = ?').get(req.params.id)
-    if (!row) return res.status(404).json({ message: 'Работа не найдена' })
+    const row = db.prepare(`${ADMIN_SELECT} WHERE h.id = ?`).get(req.params.id)
+    if (!row || !canSeeStudent(req, row.winter_direction)) return res.status(404).json({ message: 'Работа не найдена' })
     if (row.kind !== 'quiz') return res.status(400).json({ message: 'Тесты с автопроверкой не проверяются вручную' })
 
     db.prepare('UPDATE winter_homework SET status = ?, comment = ?, reviewer = ?, reviewed_at = ? WHERE id = ?')
@@ -252,22 +286,25 @@ router.patch('/admin/homework/:id', requireHomeworkReview, (req, res) => {
 
 // GET /api/winter/admin/students — студенты зимнего лагеря и их прогресс по домашним заданиям.
 // total — сколько заданий в программе направления (по снимку заданий из фронтенда).
-router.get('/admin/students', requireHomeworkReview, (req, res) => {
+router.get('/admin/students', requireWinterReview, (req, res) => {
   try {
     // Обязательные задания программы направления — посчитаны при сборке снимка
     const totals = manifest.totals || {}
+    const dir = scopeDir(req)
     const users = db.prepare(`
       SELECT id, nickname, name, winter_direction FROM users
-       WHERE is_winter_camp_2027 = 1 ORDER BY nickname COLLATE NOCASE
-    `).all()
+       WHERE is_winter_camp_2027 = 1 AND (? IS NULL OR winter_direction = ?) ORDER BY nickname COLLATE NOCASE
+    `).all(dir, dir)
     const works = db.prepare(`
       SELECT h.user_id, h.task_key, h.status, h.submitted_at
         FROM winter_homework h JOIN users u ON u.id = h.user_id
        WHERE u.is_winter_camp_2027 = 1
     `).all()
-    const byUser = new Map(users.map(u => [u.id, { approved: 0, bonus: 0, pending: 0, rework: 0, lastAt: null }]))
+    const byUser = new Map(users.map(u => [u.id, { sent: 0, approved: 0, bonus: 0, pending: 0, rework: 0, lastAt: null }]))
     for (const w of works) {
       const s = byUser.get(w.user_id)
+      if (!s) continue
+      s.sent += 1
       // В счёт программы идут обязательные задания; принятые главы «по желанию» — отдельно
       const required = manifest.tasks[w.task_key]?.required !== false
       if (w.status === 'approved') s[required ? 'approved' : 'bonus'] += 1
@@ -287,6 +324,115 @@ router.get('/admin/students', requireHomeworkReview, (req, res) => {
     // Сначала те, чьи работы ждут проверки
     list.sort((a, b) => b.pending - a.pending)
     res.json(list)
+  } catch (e) {
+    res.status(500).json({ message: e.message })
+  }
+})
+
+// GET /api/winter/admin/students/:id — студент: его работы и личные созвоны
+router.get('/admin/students/:id', requireWinterReview, (req, res) => {
+  try {
+    const u = db.prepare('SELECT id, nickname, name, winter_direction FROM users WHERE id = ? AND is_winter_camp_2027 = 1').get(req.params.id)
+    if (!u || !canSeeStudent(req, u.winter_direction)) return res.status(404).json({ message: 'Студент не найден' })
+    const works = db.prepare(`${ADMIN_SELECT} WHERE h.user_id = ?
+      ORDER BY CASE h.status WHEN 'submitted' THEN 0 WHEN 'rework' THEN 1 WHEN 'failed' THEN 2 ELSE 3 END, h.submitted_at DESC`).all(u.id)
+      .map(r => {
+        const item = mapAdminRow(r)
+        item.answersCount = item.answers.length
+        item.answeredCount = item.answers.filter(a => a.answer).length
+        delete item.answers
+        return item
+      })
+    const calls = db.prepare('SELECT * FROM winter_mentor_calls WHERE user_id = ? ORDER BY date, time').all(u.id).map(mapCall)
+    res.json({
+      id: u.id, nickname: u.nickname, name: u.name,
+      direction: u.winter_direction || null, directionName: DIRECTION_NAMES[u.winter_direction] || null,
+      total: (manifest.totals || {})[u.winter_direction] || 0,
+      works, calls,
+    })
+  } catch (e) {
+    res.status(500).json({ message: e.message })
+  }
+})
+
+// ── Личные созвоны ментора со студентами ────────────────────────────────────
+
+const DATE_RE = /^\d{4}-\d{2}-\d{2}$/
+const TIME_RE = /^([01]\d|2[0-3]):[0-5]\d$/
+
+const CALL_SELECT = `
+  SELECT c.*, u.nickname, u.name, u.winter_direction
+    FROM winter_mentor_calls c
+    JOIN users u ON u.id = c.user_id`
+
+function mapAdminCall(row) {
+  return { ...mapCall(row), user: { id: row.user_id, nickname: row.nickname, name: row.name }, studentDirection: row.winter_direction || null }
+}
+
+function callWhen(row) {
+  const [y, m, d] = row.date.split('-')
+  return `${d}.${m} в ${row.time} МСК`
+}
+
+// GET /api/winter/admin/calls — ментор видит свои созвоны, главный админ и проверяющий — все
+router.get('/admin/calls', requireWinterReview, (req, res) => {
+  try {
+    const mine = req.user.scope === 'mentor'
+    const rows = db.prepare(`${CALL_SELECT} WHERE (? IS NULL OR c.mentor = ?) ORDER BY c.date, c.time`)
+      .all(mine ? req.user.username : null, mine ? req.user.username : null)
+    res.json(rows.map(mapAdminCall))
+  } catch (e) {
+    res.status(500).json({ message: e.message })
+  }
+})
+
+// POST /api/winter/admin/calls — назначить созвон студенту. Студент получает уведомление,
+// созвон появляется в календаре лагеря у него и в календаре ментора.
+router.post('/admin/calls', requireWinterReview, (req, res) => {
+  try {
+    const { userId, date, time } = req.body || {}
+    const duration = Number(req.body?.duration) || 30
+    const topic = String(req.body?.topic || '').trim().slice(0, 300)
+    const link = String(req.body?.link || '').trim().slice(0, 500)
+    if (!DATE_RE.test(String(date)) || Number.isNaN(Date.parse(date))) return res.status(400).json({ message: 'Укажи дату' })
+    if (!TIME_RE.test(String(time))) return res.status(400).json({ message: 'Укажи время в формате ЧЧ:ММ' })
+    if (!Number.isInteger(duration) || duration < 10 || duration > 240) return res.status(400).json({ message: 'Длительность — от 10 до 240 минут' })
+    if (link && !/^https?:\/\//i.test(link)) return res.status(400).json({ message: 'Ссылка должна начинаться с http:// или https://' })
+    const u = db.prepare('SELECT id, winter_direction FROM users WHERE id = ? AND is_winter_camp_2027 = 1').get(Number(userId))
+    if (!u || !canSeeStudent(req, u.winter_direction)) return res.status(404).json({ message: 'Студент не найден' })
+
+    const info = db.prepare(`
+      INSERT INTO winter_mentor_calls (mentor, direction, user_id, date, time, duration, topic, link, created_at)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `).run(req.user.username, mentorDirection(req.user) || u.winter_direction || null, u.id, date, time, duration, topic, link, new Date().toISOString())
+    const row = db.prepare(`${CALL_SELECT} WHERE c.id = ?`).get(info.lastInsertRowid)
+    notify({
+      userId: u.id,
+      type: 'mentor_call',
+      preview: `Зимний лагерь · личный созвон с ментором ${callWhen(row)}${topic ? ` — ${topic}` : ''}`,
+      link: '/winter-camp#calendar',
+    })
+    res.status(201).json(mapAdminCall(row))
+  } catch (e) {
+    res.status(500).json({ message: e.message })
+  }
+})
+
+// DELETE /api/winter/admin/calls/:id — отменить созвон. Ментор отменяет только свои.
+router.delete('/admin/calls/:id', requireWinterReview, (req, res) => {
+  try {
+    const row = db.prepare(`${CALL_SELECT} WHERE c.id = ?`).get(req.params.id)
+    if (!row || (req.user.scope === 'mentor' && row.mentor !== req.user.username)) {
+      return res.status(404).json({ message: 'Созвон не найден' })
+    }
+    db.prepare('DELETE FROM winter_mentor_calls WHERE id = ?').run(row.id)
+    notify({
+      userId: row.user_id,
+      type: 'mentor_call_cancel',
+      preview: `Зимний лагерь · созвон с ментором ${callWhen(row)} отменён`,
+      link: '/winter-camp#calendar',
+    })
+    res.json({ ok: true })
   } catch (e) {
     res.status(500).json({ message: e.message })
   }

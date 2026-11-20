@@ -19,7 +19,7 @@ function decodeToken(token) {
 }
 
 const Session = {
-  token: '', username: '', scope: 'full', exp: 0,
+  token: '', username: '', scope: 'full', exp: 0, direction: null,
   // Роль в отделе продаж: khanil, denis, sasha, emil или null. personKnown = false —
   // токен выдан до появления отдела, роль надо спросить у сервера (resolvePerson)
   person: null, personKnown: false,
@@ -30,6 +30,7 @@ const Session = {
     this.token = token
     this.username = payload.username || 'admin'
     this.scope = payload.scope || 'full'
+    this.direction = payload.direction || null
     this.exp = (payload.exp || 0) * 1000
     this.personKnown = 'person' in payload || this.scope === 'full'
     this.person = 'person' in payload ? payload.person : (this.scope === 'full' ? 'khanil' : null)
@@ -46,7 +47,10 @@ const Session = {
   },
   get expired() { return this.exp && Date.now() > this.exp },
   get isMain() { return this.scope === 'full' },
-  get roleLabel() { return { full: 'Главный админ', homework: 'Проверка ДЗ', tasks: 'Помощник', producer: 'Продюсер', sales: 'Отдел продаж' }[this.scope] || 'Админ' },
+  get roleLabel() {
+    if (this.scope === 'mentor') return `Ментор · ${{ ml: 'ML', backend: 'Backend', security: 'ИБ' }[this.direction] || 'без направления'}`
+    return { full: 'Главный админ', homework: 'Проверка ДЗ', tasks: 'Помощник', producer: 'Продюсер', sales: 'Отдел продаж', mentor: 'Ментор' }[this.scope] || 'Админ'
+  },
   async resolvePerson() {
     if (this.personKnown) return
     try { this.person = (await api('/api/sales/me')).person || null } catch { this.person = null }
@@ -281,6 +285,9 @@ async function copyText(text) {
 // ═══ Маршруты и меню ═══════════════════════════════════════════════════
 const BOTH = ['full', 'homework']
 const MAIN = ['full']
+// Ментор зимнего лагеря видит только «Студентов» своего направления
+const MENTOR = ['mentor']
+const WINTER = ['full', 'homework', 'mentor']
 // Задачи видят все админы, включая помощников с доступом только к ним
 const ALL = ['full', 'homework', 'tasks', 'producer']
 
@@ -312,6 +319,7 @@ const NAV = [
   { label: 'Зимний лагерь', items: [
     { id: 'winter-homework', path: '/winter/homework', label: 'Проверка ДЗ', icon: 'snowflake', scopes: BOTH, badge: 'winterHomework' },
     { id: 'winter-students', path: '/winter/students', label: 'Студенты и прогресс', icon: 'graduation-cap', scopes: BOTH },
+    { id: 'winter-students', path: '/winter/students', label: 'Студенты', icon: 'graduation-cap', scopes: MENTOR, badge: 'winterHomework' },
   ] },
   { label: 'Домашние задания', items: [
     { id: 'homework', path: '/homework', label: 'Проверка ДЗ', icon: 'clipboard-check', scopes: BOTH, badge: 'homework' },
@@ -336,8 +344,9 @@ const ROUTES = [
   { re: /^\/calls$/, page: 'calls', nav: 'calls', title: 'Слоты созвонов', scopes: MAIN },
   { re: /^\/calls\/calendar$/, page: 'callsCalendar', nav: 'calls-calendar', title: 'Календарь записей', scopes: MAIN },
   { re: /^\/winter\/homework$/, page: 'winterHomework', nav: 'winter-homework', title: 'Проверка ДЗ · зимний лагерь', scopes: BOTH },
-  { re: /^\/winter\/homework\/(\d+)$/, page: 'winterHomeworkItem', nav: 'winter-homework', title: 'Проверка ДЗ · зимний лагерь', scopes: BOTH, keys: ['id'] },
-  { re: /^\/winter\/students$/, page: 'winterStudents', nav: 'winter-students', title: 'Студенты · зимний лагерь', scopes: BOTH },
+  { re: /^\/winter\/homework\/(\d+)$/, page: 'winterHomeworkItem', nav: 'winter-homework', title: 'Проверка ДЗ · зимний лагерь', scopes: WINTER, keys: ['id'] },
+  { re: /^\/winter\/students$/, page: 'winterStudents', nav: 'winter-students', title: 'Студенты · зимний лагерь', scopes: WINTER },
+  { re: /^\/winter\/students\/(\d+)$/, page: 'winterStudent', nav: 'winter-students', title: 'Студенты · зимний лагерь', scopes: WINTER, keys: ['id'] },
   { re: /^\/homework$/, page: 'homework', nav: 'homework', title: 'Проверка ДЗ', scopes: BOTH },
   { re: /^\/homework\/stats$/, page: 'homeworkStats', nav: 'homework-stats', title: 'Аналитика проверки', scopes: BOTH },
   { re: /^\/homework\/october$/, page: 'programHomework', nav: 'homework-october', title: 'ДЗ второго месяца', scopes: BOTH },
@@ -359,7 +368,7 @@ const Router = {
   },
 
   // Отдел продаж открывается первым у всех, кто в нём состоит
-  defaultPath() { return Session.person ? '/sales/crm' : ({ full: '/dashboard', homework: '/homework' }[Session.scope] || '/tasks') },
+  defaultPath() { return Session.person ? '/sales/crm' : ({ full: '/dashboard', homework: '/homework', mentor: '/winter/students' }[Session.scope] || '/tasks') },
 
   async canLeave() {
     const msg = Router.guard && Router.guard()
@@ -541,7 +550,7 @@ const Shell = {
       if (!items.length) return ''
       return `
         <div class="sb-group">
-          <div class="sb-group-label">${group.label}</div>
+          ${Session.scope === 'mentor' ? '' : `<div class="sb-group-label">${group.label}</div>`}
           ${items.map(i => `
             <a href="${BASE}${i.path}" class="nav-item" data-nav="${i.id}">
               ${icon(i.icon, 17)}<span>${i.label}</span>
@@ -564,8 +573,9 @@ const Shell = {
   },
 
   highlight(navId) {
+    const target = Session.scope === 'mentor' ? 'winter-students' : navId
     document.querySelectorAll('.nav-item[data-nav]').forEach(a => {
-      const on = a.dataset.nav === navId
+      const on = a.dataset.nav === target
       a.classList.toggle('active', on)
       if (on) a.setAttribute('aria-current', 'page')
       else a.removeAttribute('aria-current')
@@ -590,7 +600,7 @@ const Shell = {
       const list = await api('/api/programs/admin/homework')
       Badges.programHomework = list.filter(h => h.status === 'submitted').length
     } catch { /* до миграции таблицы ещё нет — бейдж просто не появится */ }
-    if (BOTH.includes(Session.scope)) try {
+    if (WINTER.includes(Session.scope)) try {
       const list = await api('/api/winter/admin/homework')
       Badges.winterHomework = list.filter(h => h.status === 'submitted').length
     } catch { /* бэкенд без зимнего лагеря — бейдж просто не появится */ }

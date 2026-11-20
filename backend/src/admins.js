@@ -1,6 +1,12 @@
 // Аккаунты админки. Полный доступ и проверяющий домашних заданий, которому
 // открыт только соответствующий раздел. Пароли живут в .env — в репозитории
 // их нет. Проверяющий не настроен, пока переменные не заданы.
+const DEFAULT_MENTORS = [
+  { username: 'mentorml', password: 'mntrml67', scope: 'mentor', direction: 'ml' },
+  { username: 'mentorib', password: 'mntrib52', scope: 'mentor', direction: 'security' },
+  { username: 'mentorbc', password: 'mntrbacknd93', scope: 'mentor', direction: 'backend' },
+]
+
 function adminAccounts() {
   const list = []
   if (process.env.ADMIN_USERNAME && process.env.ADMIN_PASSWORD) {
@@ -33,10 +39,34 @@ function adminAccounts() {
     const password = pair.slice(i + 1).trim()
     if (i > 0 && username && password) list.push({ username, password, scope: 'sales' })
   }
+  // Менторы зимнего лагеря: видят только студентов своего направления — их домашки и личные созвоны.
+  // По умолчанию три аккаунта (mentorml, mentorib, mentorbc), можно дополнить или переопределить через MENTOR_ADMINS:
+  // MENTOR_ADMINS=логин1:пароль1:ml,логин2:пароль2:security (направление — ml, backend или security)
+  const mentors = new Map(DEFAULT_MENTORS.map(m => [m.username, m]))
+  for (const item of String(process.env.MENTOR_ADMINS || '').split(',')) {
+    const i = item.indexOf(':')
+    const j = item.lastIndexOf(':')
+    const username = item.slice(0, i).trim()
+    const password = item.slice(i + 1, j).trim()
+    const direction = item.slice(j + 1).trim()
+    if (i > 0 && j > i && username && password && MENTOR_DIRECTIONS.includes(direction)) {
+      mentors.set(username, { username, password, scope: 'mentor', direction })
+    }
+  }
+  list.push(...mentors.values())
   return list
 }
 
-const ROLE_LABELS = { full: 'Главный админ', homework: 'Проверка ДЗ', tasks: 'Помощник', producer: 'Продюсер', sales: 'Отдел продаж' }
+const MENTOR_DIRECTIONS = ['ml', 'backend', 'security']
+
+// Направление ментора по его логину — берём из настроек при каждом запросе,
+// чтобы смена направления в .env действовала без перевыпуска токена
+function mentorDirection(user) {
+  if (!user || (user.role && user.role !== 'admin') || user.scope !== 'mentor') return null
+  return adminAccounts().find(a => a.scope === 'mentor' && a.username === user.username)?.direction || null
+}
+
+const ROLE_LABELS = { full: 'Главный админ', homework: 'Проверка ДЗ', tasks: 'Помощник', producer: 'Продюсер', sales: 'Отдел продаж', mentor: 'Ментор' }
 
 // ── Отдел продаж: кто есть кто ───────────────────────────────────────────────
 // Четыре участника с фиксированными ролями в расчёте вознаграждений. Ханиль — главный админ.
@@ -63,9 +93,9 @@ function salesPersonOf(user) {
   return null
 }
 
-// Список без паролей — его можно отдавать в админку
+// Список без паролей — его можно отдавать в админку. Менторов в команде задач нет.
 function publicAdmins() {
-  return adminAccounts().map(a => ({ username: a.username, scope: a.scope, role: ROLE_LABELS[a.scope] || a.scope }))
+  return adminAccounts().filter(a => a.scope !== 'mentor').map(a => ({ username: a.username, scope: a.scope, role: ROLE_LABELS[a.scope] || a.scope }))
 }
 
-module.exports = { adminAccounts, publicAdmins, SALES_PEOPLE, salesPersonOf }
+module.exports = { adminAccounts, publicAdmins, mentorDirection, SALES_PEOPLE, salesPersonOf }

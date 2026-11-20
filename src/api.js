@@ -128,6 +128,7 @@ export const api = {
   downloadProgramFile:   (direction, chapter, name)      => download(`/api/programs/files/${direction}/${chapter}/${encodeURIComponent(name)}`, name),
   // Зимний лагерь: свои работы и сдача задания главы (key — «<блок>:<глава>»)
   winterHomework:       ()             => req('/api/winter/homework/mine'),
+  winterCalls:          ()             => req('/api/winter/calls/mine'),
   submitWinterHomework: (key, payload) => req(`/api/winter/homework/${encodeURIComponent(key)}`, { method: 'PUT', body: JSON.stringify(payload) }),
   bookSlot:     (slotId) => req(`/api/calls/slots/${slotId}/book`, { method: 'POST' }),
   cancelSlot:   (slotId) => req(`/api/calls/slots/${slotId}/book`, { method: 'DELETE' }),

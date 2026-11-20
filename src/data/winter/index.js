@@ -433,12 +433,38 @@ export const WINTER_MODULES = {
 
 const PLAN = [
   { month: 1, stages: [
-    { key: 'python', weeks: [1], title: 'Основы программирования на Python', modules: ['py'] },
-    { key: 'algo', weeks: [2], title: 'Алгоритмы и структуры данных', modules: ['algo', 'ds'] },
+    { key: 'python', weeks: [1], title: 'Основы программирования на Python', modules: ['py'], about: [
+      'Переменные, типы, условия и циклы',
+      'Строки, списки, словари, множества и функции',
+      'ООП, декораторы, генераторы и асинхронность — на уровне «понимаю и пишу сам»',
+      'Задачи запускаются прямо на платформе и уходят на проверку',
+    ] },
+    { key: 'algo', weeks: [2], title: 'Алгоритмы и структуры данных', modules: ['algo', 'ds'], about: [
+      'Сложность алгоритмов и Big O, поиск, сортировки, рекурсия, два указателя',
+      'Массивы, связные списки, стек, очередь, хеш-таблица, деревья и графы',
+      'Средний и продвинутый уровни — по желанию: ДП, бэктрекинг, битовые операции',
+    ] },
     { key: 'base', weeks: [3, 4], title: 'Введение в направление', byDir: {
       ml: ['git', 'ml-base', 'sql'],
       backend: ['git', 'docker', 'db', 'sql', 'sysdesign'],
       security: ['sec-linux'],
+    }, about: {
+      ml: [
+        'Git: репозитории, коммиты, ветки и pull request',
+        'NumPy, pandas и Matplotlib — загрузка, чистка, группировки и графики на реальном датасете',
+        'SQL от SELECT до оконных функций и десять задач на запросы',
+      ],
+      backend: [
+        'Git и Docker: контейнеры, Dockerfile, docker compose',
+        'Базы данных и SQL: проектирование таблиц, транзакции, индексы, запросы до оконных функций',
+        'Обзор System Design: балансировщик, кеш, Redis, очереди, Kafka, репликация и шардирование',
+      ],
+      security: [
+        'Стенд: VirtualBox, учебные виртуальные машины и сертификаты',
+        'Linux: файловая система, Bash, пакеты, пользователи и права, процессы и службы, сеть',
+        'Защита Linux: журналирование и Wazuh, sudo, парольная политика, ACL, SELinux и AppArmor, харденинг',
+        '23 практических кейса на виртуальной машине',
+      ],
     } },
   ] },
   { month: 2, stages: [
@@ -446,6 +472,37 @@ const PLAN = [
       ml: ['ml-classic', 'ml-dl'],
       backend: ['be-core'],
       security: ['sec-net', 'sec-win'],
+    }, about: {
+      ml: [
+        'Базовые понятия ML: обучение с учителем и без, выборки, переобучение, кросс-валидация',
+        'Линейная и логистическая регрессия, градиентный спуск и регуляризация',
+        'kNN, SVM, наивный Байес и решающие деревья',
+        'Ансамбли: бэггинг, случайный лес, градиентный бустинг и стекинг',
+        'Обучение без учителя: кластеризация, понижение размерности, поиск аномалий',
+        'Метрики регрессии, классификации и ранжирования; EDA, признаки, дисбаланс классов и утечки',
+        'Последняя неделя — основы Deep Learning и NLP: как устроена и обучается нейросеть, как нейросети работают с текстом',
+        'Практика — ноутбуки к каждой главе',
+      ],
+      backend: [
+        'Python глубоко: объектная модель, ООП, итераторы, память и GIL',
+        'Конкурентность: threading, multiprocessing, asyncio',
+        'Сети и веб: TCP, DNS, HTTP и TLS, прокси и Nginx',
+        'Проектирование API: REST, ошибки и пагинация, OpenAPI, gRPC, GraphQL, webhooks',
+        'FastAPI и Django, WSGI и ASGI',
+        'PostgreSQL: индексы, EXPLAIN, транзакции и MVCC, SQLAlchemy и Alembic, Redis, MongoDB и ClickHouse',
+        'Очереди: Kafka и RabbitMQ, Celery, гарантии доставки, retry, DLQ и outbox',
+        'Архитектура (SOLID, чистая архитектура, микросервисы), безопасность и тестирование с pytest',
+        'К каждой главе — вопросы в формате собеседования на проверку',
+      ],
+      security: [
+        'Сети: модели OSI и TCP/IP, адресация и маски, ARP, DHCP, ICMP, TCP и UDP, разбор трафика в Wireshark',
+        'MikroTik: статическая и динамическая маршрутизация, DNS, VLAN, NAT, OpenVPN и прокси',
+        'OPNsense и защита сети: обнаружение атак, контроль исходящих соединений, поиск C2',
+        'Windows: службы, драйверы, пользователи и группы, автозапуск, реестр, сетевой стек',
+        'Локальные политики и расширенное журналирование с Sysmon',
+        'Домен: Active Directory, Kerberos и NTLM, AD CS, групповые политики, аудит IIS',
+        '36 практических кейсов на стенде',
+      ],
     } },
   ] },
   { month: 3, stages: [
@@ -453,8 +510,29 @@ const PLAN = [
       ml: ['ml-deep', 'interview-ml'],
       backend: ['be-deep', 'interview-backend'],
       security: ['sec-webapp', 'interview-security'],
+    }, about: {
+      ml: [
+        'Свёрточные сети для изображений',
+        'Трансформеры — архитектура BERT, GPT и современных LLM',
+        'Вопросы с собеседований на ML-инженера и пробное собеседование',
+      ],
+      backend: [
+        'Git в команде: rebase, код-ревью, git flow',
+        'По желанию — второй язык: Go или Java под капотом',
+        'Вопросы с собеседований на backend-разработчика и пробное собеседование',
+      ],
+      security: [
+        'Веб: HTTP и HTTPS, сессии, cookies и JWT, Burp Suite',
+        'OWASP Top 10 и методология тестирования; XSS, SQL-инъекции, IDOR, LFI, XXE, SSTI и защита от каждой',
+        'Безопасная разработка: SAST, DefectDojo и WAF',
+        'Вопросы с собеседований в ИБ и пробное собеседование',
+      ],
     } },
-    { key: 'career', weeks: [11, 12], title: 'Карьера', modules: ['career', 'algosobes'] },
+    { key: 'career', weeks: [11, 12], title: 'Карьера', modules: ['career', 'algosobes'], about: [
+      'Резюме, рассказ о себе, соцсети и пет-проекты',
+      'Поиск компаний и вакансий',
+      'Алгособес по LeetCode Top Interview 150 и совместное нарешивание',
+    ] },
   ] },
 ]
 
@@ -469,7 +547,14 @@ export function winterProgram(direction) {
     month: m.month,
     stages: m.stages.filter(s => stageFor(s, direction)).map(s => {
       const keys = s.modules || (direction && s.byDir[direction]) || []
-      return { key: s.key, weeks: s.weeks, title: s.title, needsDirection: !s.modules && !direction, modules: keys.map(k => WINTER_MODULES[k]) }
+      const about = Array.isArray(s.about)
+        ? s.about
+        : (direction && s.about?.[direction]) || (!direction && s.about ? [
+            'ML: базовые понятия, линейные модели, деревья, ансамбли, кластеризация, основы DL и NLP',
+            'Backend: Python вглубь, конкурентность, сети, API, FastAPI, БД, очереди и архитектура',
+            'ИБ: компьютерные сети, MikroTik, OPNsense, Windows, Sysmon, Active Directory',
+          ] : [])
+      return { key: s.key, weeks: s.weeks, title: s.title, about, needsDirection: !s.modules && !direction, modules: keys.map(k => WINTER_MODULES[k]) }
     }),
   }))
 }

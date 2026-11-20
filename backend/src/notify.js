@@ -1,10 +1,10 @@
 const db = require('./db')
 
-const TYPES = ['follow', 'reaction', 'comment', 'message', 'hw_approved', 'hw_rework']
+const TYPES = ['follow', 'reaction', 'comment', 'message', 'hw_approved', 'hw_rework', 'mentor_call', 'mentor_call_cancel']
 
 // Уведомления от платформы, а не от другого пользователя: проверку домашки
 // делает админ, у которого нет строки в users, поэтому actor остаётся пустым.
-const SYSTEM_TYPES = ['hw_approved', 'hw_rework']
+const SYSTEM_TYPES = ['hw_approved', 'hw_rework', 'mentor_call', 'mentor_call_cancel']
 
 // Создаёт уведомление. Себе уведомления не шлём.
 // Ошибка здесь никогда не должна ронять основное действие (лайк, коммент, проверку ДЗ).

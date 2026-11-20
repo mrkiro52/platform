@@ -39,14 +39,25 @@ function requireHomeworkReview(req, res, next) {
   })
 }
 
-// Любой вход в админку, кроме менеджеров отдела продаж: задачи видят все остальные админы
-function requireAnyAdmin(req, res, next) {
+// Зимний лагерь: полный админ, проверяющий или ментор (ментору маршруты сами
+// сужают выборку до студентов его направления)
+function requireWinterReview(req, res, next) {
   verifyToken(req, res, () => {
-    if (req.user.role !== 'admin' || !req.user.username || scopeOf(req.user) === 'sales') {
+    if (req.user.role !== 'admin' || !['full', 'homework', 'mentor'].includes(scopeOf(req.user))) {
       return res.status(403).json({ message: 'Недостаточно прав' })
     }
     next()
   })
 }
 
-module.exports = { verifyToken, requireAdmin, requireHomeworkReview, requireAnyAdmin, scopeOf }
+// Любой вход в админку, кроме менеджеров отдела продаж и менторов: задачи видят все остальные админы
+function requireAnyAdmin(req, res, next) {
+  verifyToken(req, res, () => {
+    if (req.user.role !== 'admin' || !req.user.username || ['sales', 'mentor'].includes(scopeOf(req.user))) {
+      return res.status(403).json({ message: 'Недостаточно прав' })
+    }
+    next()
+  })
+}
+
+module.exports = { verifyToken, requireAdmin, requireHomeworkReview, requireWinterReview, requireAnyAdmin, scopeOf }

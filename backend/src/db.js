@@ -1449,6 +1449,34 @@ function migrate() {
       console.error('❌ Migration 49 failed:', err.message)
     }
   }
+
+  // Миграция 50: личные созвоны менторов зимнего лагеря со студентами.
+  // mentor — логин ментора в админке, direction — его направление на момент записи.
+  if (db.pragma('user_version', { simple: true }) < 50) {
+    try {
+      db.exec(`
+        CREATE TABLE IF NOT EXISTS winter_mentor_calls (
+          id         INTEGER PRIMARY KEY AUTOINCREMENT,
+          mentor     TEXT    NOT NULL,
+          direction  TEXT,
+          user_id    INTEGER NOT NULL,
+          date       TEXT    NOT NULL,
+          time       TEXT    NOT NULL,
+          duration   INTEGER NOT NULL DEFAULT 30,
+          topic      TEXT    NOT NULL DEFAULT '',
+          link       TEXT    NOT NULL DEFAULT '',
+          created_at TEXT    NOT NULL,
+          FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+        );
+        CREATE INDEX IF NOT EXISTS idx_winter_calls_user ON winter_mentor_calls(user_id, date);
+        CREATE INDEX IF NOT EXISTS idx_winter_calls_mentor ON winter_mentor_calls(mentor, date);
+      `)
+      db.pragma('user_version = 50')
+      console.log('✅ Migration 50 completed: added winter_mentor_calls')
+    } catch (err) {
+      console.error('❌ Migration 50 failed:', err.message)
+    }
+  }
 }
 
 migrate()
