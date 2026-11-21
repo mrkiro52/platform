@@ -34,7 +34,7 @@ export default function WinterTracks({ active, direction = null }) {
           <span className="wc-track-body">
             <span className="wc-track-title">
               {it.title}
-              {it.key !== 'main' && <span className="wc-track-kicker">параллельный курс</span>}
+              {it.key !== 'main' && <span className="wc-track-kicker">дополнительный курс</span>}
             </span>
             <span className="wc-track-text">{it.text}</span>
           </span>

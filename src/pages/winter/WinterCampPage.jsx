@@ -1,30 +1,23 @@
-import { Fragment, useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { api } from '../../api'
-import { useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import {
   WINTER, WINTER_MONTHS, WINTER_WEEKS, WINTER_BREAK, EVENT_TYPES,
   campProgress, monthProgress, currentWinterWeek, winterEvents, personalCallEvents, upcomingEvents,
   isoOf, dateOf, humanDate, shortDate, rangeLabel,
 } from '../../data/winter/schedule'
 import {
-  WINTER_CONTACT, isCountable, taskKey, winterDirectionOf, winterProgram, winterTasks,
+  WINTER_CONTACT, winterDirectionOf, winterProgram, winterTasks,
 } from '../../data/winter'
 import { summarize, useWinterHomework } from '../../components/winter/useWinterHomework'
 import { loadVisited, plural } from '../../components/winter/winterLocal'
-import WinterTracks from '../../components/winter/WinterTracks'
+import { chapterStep, chapterUrl, winterRoute } from '../../data/winter/route'
 import '../../winter.css'
-
-// Главная страница зимнего лагеря (основная программа). Место на странице — по важности:
-// 1) узкая шапка с прогрессом и плашки треков (математика и английский — отдельные страницы);
-// 2) календарь событий (вместе с личными созвонами с ментором), итоги домашек и вакансии;
-// 3) программа: три месяца по четыре недели, главы выбранного этапа сеткой.
-// Занятия по математике сюда не попадают: у математики своя страница и своё расписание.
 
 const MONTH_NAMES = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь']
 const WD = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс']
 const MAIN_TYPES = Object.fromEntries(Object.entries(EVENT_TYPES).filter(([k]) => k !== 'math'))
 const BY_DIRECTION = new Set(['base', 'core', 'final'])
-const COLLAPSED = 8
 
 function Snowflake({ size = 22 }) {
   return (
@@ -46,45 +39,11 @@ function weeksLabel(weeks) {
   return weeks.length > 1 ? `Недели ${weeks[0]}–${weeks[weeks.length - 1]}` : `Неделя ${weeks[0]}`
 }
 
-function stageState(stage, todayIso) {
-  const { start, end } = stageDates(stage)
-  return todayIso > end ? 'past' : todayIso < start ? 'future' : 'current'
-}
-
-// Этап «на сейчас»: идущий; в каникулы и до старта — ближайший следующий; после лагеря — последний
-function focusStage(stages, todayIso) {
-  return stages.find(s => stageState(s, todayIso) === 'current')
-    || stages.find(s => stageState(s, todayIso) === 'future')
-    || stages[stages.length - 1]
-}
-
 function stageTitle(stage, direction) {
   return `${stage.title}${direction && BY_DIRECTION.has(stage.key) ? ` · ${direction.short}` : ''}`
 }
 
 // ── Прогресс по блоку и главам ───────────────────────────────────────────────
-
-function moduleStats(mod, homework, visited) {
-  const lessons = mod.chapters.filter(c => !c.taskOnly)
-  const required = mod.chapters.filter(c => isCountable(c) && !c.optional)
-  const sum = summarize(required.map(c => ({ key: taskKey(mod, c) })), homework.byKey)
-  const read = lessons.filter(c => visited.has(taskKey(mod, c))).length
-  const status = c => homework.byKey[taskKey(mod, c)]?.status
-  const unread = lessons.filter(c => !visited.has(taskKey(mod, c)))
-  const nextLesson = unread[0] || null
-  const nextTask = required.find(c => ['rework', 'failed'].includes(status(c)))
-    || required.find(c => !status(c)) || null
-  return { lessons, sum, read, nextLesson, nextTask, after: unread.slice(1, 4) }
-}
-
-function chapterState(mod, ch, homework, visited) {
-  const st = homework.byKey[taskKey(mod, ch)]?.status
-  if (st === 'approved') return { cls: 'is-approved', text: 'принято' }
-  if (st === 'submitted') return { cls: 'is-submitted', text: 'на проверке' }
-  if (st === 'rework' || st === 'failed') return { cls: 'is-rework', text: st === 'failed' ? 'тест не пройден' : 'нужны правки' }
-  if (visited.has(taskKey(mod, ch))) return { cls: 'is-read', text: 'прочитано' }
-  return { cls: '', text: ch.optional ? 'по желанию' : '' }
-}
 
 function StackedBar({ sum, thin = false }) {
   return (
@@ -100,7 +59,7 @@ function StackedBar({ sum, thin = false }) {
 
 // ── Шапка: лагерь, направление, прогресс по месяцам ──────────────────────────
 
-function TopBar({ direction, progress, week, now }) {
+function TopBar({ direction, progress, week }) {
   let status
   if (progress.phase === 'before') status = <>До старта <b>{progress.daysTo} {plural(progress.daysTo, 'день', 'дня', 'дней')}</b> · материалы уже открыты</>
   else if (progress.phase === 'after') status = <>Лагерь завершён · материалы остаются открытыми</>
@@ -123,7 +82,15 @@ function TopBar({ direction, progress, week, now }) {
         </div>
       </div>
 
-      <div className="wc-top-progress" aria-label={`Прогресс лагеря: ${progress.pct}%`}>
+    </header>
+  )
+}
+
+// ── Программа: три месяца по четыре недели ───────────────────────────────────
+
+function TimingProgress({ progress, now }) {
+  return (
+    <div className="wc-top-progress" aria-label={`Прогресс лагеря: ${progress.pct}%`}>
         <div className="wc-top-progress-head">
           <span className="wc-top-pct">{progress.pct}%</span>
           <span className="wc-top-sub">{progress.phase === 'before' ? `старт ${humanDate(WINTER.start)}` : progress.phase === 'after' ? 'все 90 дней' : `день ${progress.day} из ${progress.total}`}</span>
@@ -142,193 +109,81 @@ function TopBar({ direction, progress, week, now }) {
           })}
         </div>
       </div>
-    </header>
   )
 }
 
-// ── Программа: три месяца по четыре недели ───────────────────────────────────
-
-function ChapterCard({ mod, ch, index, homework, visited }) {
-  const navigate = useNavigate()
-  const url = `/winter-camp/m/${mod.key}/${ch.ref}`
-  const st = chapterState(mod, ch, homework, visited)
-  const hasTask = !!ch.task || ch.taskOnly
-  return (
-    <div className={`wc-ch ${st.cls}${ch.optional ? ' is-optional' : ''}`}>
-      <button type="button" className="wc-ch-main" onClick={() => navigate(ch.taskOnly ? `${url}/task` : url)}>
-        <span className="wc-ch-top">
-          <span className="wc-ch-num">{ch.label || String(index).padStart(2, '0')}</span>
-          {st.text && <span className="wc-ch-state">{st.text}</span>}
-        </span>
-        <span className="wc-ch-title">{ch.title}</span>
-      </button>
-      <div className="wc-ch-actions">
-        {!ch.taskOnly ? (
-          <button type="button" className="wc-ch-btn" onClick={() => navigate(url)}>Теория</button>
-        ) : (
-          <button type="button" className="wc-ch-btn is-disabled" disabled>Теория</button>
-        )}
-        {hasTask ? (
-          <button type="button" className="wc-ch-btn is-task" onClick={() => navigate(`${url}/task`)}>
-            {ch.task?.kind === 'auto' ? 'Тест' : 'Задание'}
-          </button>
-        ) : (
-          <button type="button" className="wc-ch-btn is-disabled" disabled>Задание</button>
-        )}
-      </div>
-    </div>
-  )
+const STATUS = {
+  approved: 'Принято', submitted: 'На проверке', rework: 'Нужны правки', failed: 'Тест не пройден',
 }
 
-function ModuleChapters({ mod, homework, visited }) {
-  const navigate = useNavigate()
-  const [all, setAll] = useState(false)
-  const st = moduleStats(mod, homework, visited)
-  const number = new Map(mod.chapters.map((c, i) => [c.ref, i + 1]))
-  const long = mod.chapters.length > COLLAPSED + 4
-  const card = ch => <ChapterCard key={ch.ref} mod={mod} ch={ch} index={number.get(ch.ref)} homework={homework} visited={visited} />
-
-  // В свёрнутом виде — восемь глав, начиная с первой незакрытой (по рядам из четырёх)
-  let shown = mod.chapters
-  if (long && !all) {
-    const first = mod.chapters.findIndex(c => !chapterState(mod, c, homework, visited).cls)
-    const from = Math.max(0, Math.min(first < 0 ? 0 : first - (first % 4), mod.chapters.length - COLLAPSED))
-    shown = mod.chapters.slice(from, from + COLLAPSED)
-  }
-
-  return (
-    <div className="wc-dm">
-      <div className="wc-dm-head">
-        <div className="wc-dm-info">
-          <h4 className="wc-dm-name">{mod.name}</h4>
-          <p className="wc-dm-lead">{mod.lead}</p>
-        </div>
-        <div className="wc-dm-side">
-          <span className="wc-dm-stat">
-            {st.lessons.length} {plural(st.lessons.length, 'глава', 'главы', 'глав')}
-            {st.sum.total > 0 ? ` · принято ${st.sum.approved} из ${st.sum.total}` : ''}
-          </span>
-          {st.sum.total > 0 && <StackedBar sum={st.sum} thin />}
-          <button type="button" className="wc-link" onClick={() => navigate(`/winter-camp/m/${mod.key}`)}>Обзор блока →</button>
-        </div>
-      </div>
-
-      {all && mod.groups ? mod.groups.map(g => {
-        const list = mod.chapters.filter(c => c.level === g.level)
-        if (!list.length) return null
-        return (
-          <Fragment key={g.level}>
-            <div className="wc-dm-group">{g.title}</div>
-            <div className="wc-chs">{list.map(card)}</div>
-          </Fragment>
-        )
-      }) : <div className="wc-chs">{shown.map(card)}</div>}
-
-      {long && (
-        <button type="button" className="wc-more" onClick={() => setAll(v => !v)} aria-expanded={all}>
-          {all ? 'Свернуть' : `Показать все ${mod.chapters.length} ${plural(mod.chapters.length, 'главу', 'главы', 'глав')}`}
-        </button>
-      )}
-    </div>
-  )
-}
-
-function Program({ program, stages, selected, onSelect, homework, visited, now, direction }) {
-  const todayIso = isoOf(now)
-  const stage = stages.find(s => s.key === selected) || stages[0]
-  const { start, end } = stageDates(stage)
-  const stageOfWeek = n => stages.find(s => s.weeks.includes(n))
-  const pick = key => {
-    onSelect(key)
-    requestAnimationFrame(() => document.getElementById('wc-stage-detail')?.scrollIntoView({ behavior: 'smooth', block: 'nearest' }))
-  }
-
+function Program({ route, stages, active, onSelect, next, step, homework, visited, direction }) {
+  const { start, end } = stageDates(active)
   return (
     <section className="wc-section" aria-labelledby="wc-program-title">
       <div className="wc-section-head">
-        <h2 id="wc-program-title" className="wc-section-title">Программа</h2>
-        <p className="wc-section-sub">12 недель · недели 1–2 общие для всех, 3–10 — твоё направление, 11–12 — карьера</p>
+        <h2 id="wc-program-title" className="wc-section-title">Основная программа</h2>
+        <p className="wc-section-sub">Иди по порядку: изучи конспект и выполни задание, если оно сдаётся на платформе. После отправки работы можно продолжать, пока она на проверке.</p>
       </div>
 
-      <div className="wc-plan">
-        {program.map(m => {
-          const month = WINTER_MONTHS.find(x => x.n === m.month)
-          const weeks = WINTER_WEEKS.filter(w => w.month === m.month)
-          const mp = monthProgress(month, now)
+      <div className="wc-resume">
+        {homework.loading ? <p className="wc-muted" role="status">Загружаем учебный прогресс…</p> : homework.error ? (
+          <p className="wc-muted">Прогресс недоступен. <button type="button" className="wc-link" onClick={homework.reload}>Повторить загрузку</button></p>
+        ) : next?.needsDirection ? (
+          <><strong>Следующий этап — обучение по направлению</strong><a className="wc-link" href={WINTER_CONTACT.url}>Выбрать направление в Telegram →</a></>
+        ) : next ? (
+          <>
+            <div><span className="wc-kicker">Следующий шаг · Глава {next.number}</span><h3>{next.ch.title}</h3></div>
+            <Link className="prg-task-cta-btn" to={step.url}>{step.label} →</Link>
+          </>
+        ) : <strong>Все обязательные главы пройдены. Статусы работ — в учебном прогрессе.</strong>}
+      </div>
+
+      <nav aria-label="Этапы программы">
+        <ol className="wc-stage-nav">
+          {stages.map((stage, i) => (
+            <li key={stage.key}>
+              <button type="button" aria-pressed={stage === active} onClick={() => onSelect(stage.key)}>
+                <span className="wc-ch-num">{i + 1}.</span> {stage.title}
+              </button>
+            </li>
+          ))}
+        </ol>
+      </nav>
+
+      <div className="wc-detail">
+        <div className="wc-detail-head">
+          <span className="wc-kicker">{weeksLabel(active.weeks)} · {rangeLabel(start, end)}</span>
+          <h3 className="wc-detail-title">{stageTitle(active, direction)}</h3>
+        </div>
+        {active.needsDirection ? (
+          <p className="wc-stage-empty">Чтобы открыть главы этого этапа, выбери направление через <a href={WINTER_CONTACT.url}>{WINTER_CONTACT.handle}</a>.</p>
+        ) : active.modules.map(mod => {
+          const entries = route.filter(entry => entry.stage === active && entry.mod === mod)
           return (
-            <div key={month.key} className={`wc-plan-month is-${mp.state}`}>
-              <div className="wc-plan-head">
-                <span className="wc-kicker">Месяц {month.n} · {rangeLabel(month.start, month.end)}</span>
-                <h3 className="wc-plan-title">{month.label} <em>{month.theme}</em></h3>
+            <section className="wc-dm" key={mod.key}>
+              <div className="wc-module-heading">
+                <h4 className="wc-dm-name">{mod.name}</h4>
+                <Link className="wc-link" to={`/winter-camp/m/${mod.key}`}>Обзор блока →</Link>
               </div>
-              <div className="wc-plan-weeks">
-                {weeks.map(w => {
-                  const ws = todayIso > w.end ? 'past' : todayIso < w.start ? 'future' : 'current'
-                  const s = stageOfWeek(w.n)
+              <ol className="wc-route" start={entries[0]?.number}>
+                {entries.map(entry => {
+                  const { ch, key, number } = entry
+                  const action = chapterStep(entry, homework.byKey, visited)
+                  const status = STATUS[homework.byKey[key]?.status] || (visited.has(key) ? (action ? 'Конспект прочитан' : 'Пройдено') : '')
                   return (
-                    <button
-                      key={w.n}
-                      type="button"
-                      className={`wc-wk is-${ws}${s?.key === stage.key ? ' is-selected' : ''}`}
-                      onClick={() => s && pick(s.key)}
-                      title={`${rangeLabel(w.start, w.end)} · ${w.focus}`}
-                    >
-                      <span className="wc-wk-n">{w.n}</span>
-                      <span className="wc-wk-d">{rangeLabel(w.start, w.end)}</span>
-                    </button>
+                    <li key={key} className={next === entry ? 'is-current' : undefined}>
+                      <span className="wc-ch-num" aria-label={`Глава ${number}`}>{number}</span>
+                      <div><strong>{ch.title}</strong>{(ch.optional || status) && <small>{[ch.optional && 'По желанию', status].filter(Boolean).join(' · ')}</small>}</div>
+                      <Link className="wc-link" aria-label={`${action?.label || 'Открыть'}: ${ch.title}`} to={action?.url || chapterUrl(entry)}>
+                        {action?.label || 'Открыть'} →
+                      </Link>
+                    </li>
                   )
                 })}
-              </div>
-              <div className="wc-plan-stages">
-                {m.stages.map(s => {
-                  const ss = stageState(s, todayIso)
-                  const sum = summarize(s.modules.flatMap(mod => mod.chapters.filter(c => isCountable(c) && !c.optional).map(c => ({ key: taskKey(mod, c) }))), homework.byKey)
-                  return (
-                    <button
-                      key={s.key}
-                      type="button"
-                      style={{ flexGrow: s.weeks.length }}
-                      className={`wc-plan-stage is-${ss}${s.key === stage.key ? ' is-selected' : ''}`}
-                      onClick={() => pick(s.key)}
-                      aria-pressed={s.key === stage.key}
-                    >
-                      <span className="wc-plan-when">{weeksLabel(s.weeks)}{ss === 'current' ? ' · сейчас' : ''}</span>
-                      <span className="wc-plan-name">{stageTitle(s, direction)}</span>
-                      <span className="wc-plan-mods">
-                        {s.needsDirection ? 'после выбора направления' : s.modules.map(mod => mod.name).join(' · ')}
-                      </span>
-                      {s.about.length > 0 && (
-                        <ul className="wc-plan-about">
-                          {s.about.map(line => <li key={line}>{line}</li>)}
-                        </ul>
-                      )}
-                      {sum.total > 0 && (
-                        <span className="wc-plan-progress">
-                          <StackedBar sum={sum} thin />
-                          <span>{sum.approved}/{sum.total}</span>
-                        </span>
-                      )}
-                    </button>
-                  )
-                })}
-              </div>
-              {month.n === 1 && <div className="wc-plan-break">Каникулы · {rangeLabel(WINTER_BREAK.start, WINTER_BREAK.end)}</div>}
-            </div>
+              </ol>
+            </section>
           )
         })}
-      </div>
-
-      <div id="wc-stage-detail" className="wc-detail">
-        <div className="wc-detail-head">
-          <span className="wc-kicker">{weeksLabel(stage.weeks)} · {rangeLabel(start, end)}</span>
-          <h3 className="wc-detail-title">{stageTitle(stage, direction)}</h3>
-        </div>
-        {stage.needsDirection ? (
-          <div className="wc-stage-empty">
-            Этот этап зависит от направления. Оно ещё не выбрано — напиши в Telegram{' '}
-            <a href={WINTER_CONTACT.url} target="_blank" rel="noopener noreferrer">{WINTER_CONTACT.text}</a>, и программа появится здесь.
-          </div>
-        ) : stage.modules.map(mod => <ModuleChapters key={mod.key} mod={mod} homework={homework} visited={visited} />)}
       </div>
     </section>
   )
@@ -461,7 +316,7 @@ function Calendar({ events, now }) {
   const week = iso => WINTER_WEEKS.find(w => iso >= w.start && iso <= w.end)
 
   return (
-    <section id="calendar" className="wc-card wc-cal" aria-labelledby="wc-cal-title">
+    <section className="wc-card wc-cal" aria-labelledby="wc-cal-title">
       <div className="wc-card-head">
         <h2 id="wc-cal-title" className="wc-card-title">Календарь событий</h2>
         <div className="wc-tabs" role="tablist" aria-label="Месяц">
@@ -557,12 +412,14 @@ export default function WinterCampPage({ user }) {
     return () => clearInterval(t)
   }, [])
 
-  // Якорь #calendar из дэшборда
+  const { hash } = useLocation()
+  const [calendarOpen, setCalendarOpen] = useState(hash === '#calendar')
   useEffect(() => {
-    if (window.location.hash === '#calendar') {
-      requestAnimationFrame(() => document.getElementById('calendar')?.scrollIntoView({ block: 'start' }))
-    }
-  }, [])
+    if (!isWinter || hash !== '#calendar') return
+    setCalendarOpen(true)
+    const frame = requestAnimationFrame(() => document.getElementById('calendar')?.scrollIntoView({ block: 'start' }))
+    return () => cancelAnimationFrame(frame)
+  }, [hash, isWinter])
 
   const program = useMemo(() => winterProgram(direction?.key), [direction?.key])
   const stages = useMemo(() => program.flatMap(m => m.stages), [program])
@@ -575,27 +432,45 @@ export default function WinterCampPage({ user }) {
   const events = useMemo(() => [...winterEvents(direction?.name, { math: false }), ...personalCallEvents(calls)]
     .sort((a, b) => a.date.localeCompare(b.date) || (a.time || '').localeCompare(b.time || '')), [direction?.name, calls])
   const visited = useMemo(() => loadVisited(user), [user?.id])
-  const todayIso = isoOf(now)
-  const current = focusStage(stages, todayIso)
+  const route = useMemo(() => winterRoute(stages), [stages])
+  const next = homework.loading || homework.error ? null : route.find(entry =>
+    entry.needsDirection || (!entry.ch.optional && chapterStep(entry, homework.byKey, visited)))
+  const step = next && !next.needsDirection ? chapterStep(next, homework.byKey, visited) : null
   const [selected, setSelected] = useState(null)
+  const active = stages.find(stage => stage.key === selected) || next?.stage || stages[0]
 
   if (!isWinter) return <Closed />
 
   return (
     <section className="page active wc-page">
-      <TopBar direction={direction} progress={campProgress(now)} week={currentWinterWeek(now)} now={now} />
-      <WinterTracks active="main" direction={direction} />
-      <div className="wc-row">
-        <Calendar events={events} now={now} />
-        <div className="wc-col">
-          <HomeworkProgress tasks={tasks} homework={homework} />
+      <TopBar direction={direction} progress={campProgress(now)} week={currentWinterWeek(now)} />
+      <div className="wc-learning-layout">
+        <Program route={route} stages={stages} active={active} onSelect={setSelected} next={next}
+          step={step} homework={homework} visited={visited} direction={direction} />
+        <aside className="wc-learning-aside" aria-label="Дополнения к программе">
+          <section className="wc-card">
+            <h2 className="wc-card-title">Дополнительные курсы</h2>
+            <p className="wc-muted">Можно проходить параллельно.</p>
+            <nav className="wc-aside-links" aria-label="Дополнительные курсы">
+              <Link className="wc-link" to="/winter-camp/math">Математика →</Link>
+              <Link className="wc-link" to="/winter-camp/english">Английский →</Link>
+            </nav>
+          </section>
+          <details id="calendar" className="wc-aside-panel" open={calendarOpen} onToggle={e => setCalendarOpen(e.currentTarget.open)}>
+            <summary>Календарь событий</summary>
+            <Calendar events={events} now={now} />
+          </details>
+          <details className="wc-aside-panel">
+            <summary>Учебный прогресс</summary>
+            <HomeworkProgress tasks={tasks} homework={homework} />
+          </details>
+          <details className="wc-aside-panel">
+            <summary>Сроки лагеря</summary>
+            <TimingProgress progress={campProgress(now)} now={now} />
+          </details>
           <VacanciesLink />
-        </div>
+        </aside>
       </div>
-      <Program
-        program={program} stages={stages} selected={selected || current.key} onSelect={setSelected}
-        homework={homework} visited={visited} now={now} direction={direction}
-      />
     </section>
   )
 }

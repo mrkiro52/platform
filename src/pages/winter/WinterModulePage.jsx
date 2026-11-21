@@ -1,7 +1,7 @@
 import { Fragment, useEffect, useMemo, useState } from 'react'
 import { Link, Navigate, useNavigate, useParams } from 'react-router-dom'
 import {
-  WINTER_CONTACT, findWinterChapter, findWinterModule, isCountable, taskKey, winterDirectionOf,
+  WINTER_CONTACT, findWinterChapter, findWinterModule, isCountable, taskKey, winterDirectionOf, winterProgram,
 } from '../../data/winter'
 import ProgramBlocks, { ProgramContext, Rich } from '../../components/program/ProgramBlocks'
 import WinterBlocks, { MiniQuiz, SelfCheck } from '../../components/winter/WinterBlocks'
@@ -11,6 +11,7 @@ import SqlDataset from '../../components/SqlDataset'
 import { HW_LABEL, summarize, useWinterHomework } from '../../components/winter/useWinterHomework'
 import { loadVisited, markVisited, plural } from '../../components/winter/winterLocal'
 import { track } from '../../lib/analytics'
+import { chapterStep, chapterUrl, winterRoute } from '../../data/winter/route'
 import '../../winter.css'
 
 // Блок программы зимнего лагеря:
@@ -82,7 +83,7 @@ function ChapterRow({ mod, ch, index, hw, visited }) {
   const lessonUrl = `${base(mod)}/${ch.ref}`
   return (
     <div className={`wm-row${ch.optional ? ' is-optional' : ''}${hw?.status === 'approved' ? ' is-done' : ''}`}>
-      <span className="wm-row-num">{ch.label || String(index).padStart(2, '0')}</span>
+      <span className="wm-row-num">{index}</span>
       <div className="wm-row-main">
         <div className="wm-row-title">
           {ch.title}
@@ -120,15 +121,15 @@ function ChapterRow({ mod, ch, index, hw, visited }) {
   )
 }
 
-function Overview({ mod, user, homework }) {
+function Overview({ mod, user, homework, route }) {
   const navigate = useNavigate()
   const visited = useMemo(() => loadVisited(user), [user?.id])
   const tasks = mod.chapters.filter(c => isCountable(c) && !c.optional).map(c => ({ key: taskKey(mod, c) }))
   const sum = summarize(tasks, homework.byKey)
   const lessons = mod.chapters.filter(c => !c.taskOnly)
-  const number = new Map(mod.chapters.map((c, i) => [c.ref, i + 1]))
+  const number = new Map(route.filter(entry => entry.mod === mod).map(entry => [entry.ch.ref, entry.number]))
   const row = ch => (
-    <ChapterRow key={ch.ref} mod={mod} ch={ch} index={number.get(ch.ref)} hw={homework.byKey[taskKey(mod, ch)]} visited={visited.has(taskKey(mod, ch))} />
+    <ChapterRow key={ch.ref} mod={mod} ch={ch} index={number.get(ch.ref) ?? mod.chapters.indexOf(ch) + 1} hw={homework.byKey[taskKey(mod, ch)]} visited={visited.has(taskKey(mod, ch))} />
   )
 
   return (
@@ -268,14 +269,41 @@ function useLesson(meta) {
   return lesson
 }
 
-function Lesson({ mod, meta, user, homework }) {
+function ChapterNavigation({ entry, next, homework, onRead, taskPage = false }) {
+  if (!entry) return <Link className="prg-back" to="/winter-camp">К основной программе →</Link>
+  const needsResult = entry.ch.taskOnly || isCountable(entry.ch)
+  const step = needsResult ? chapterStep(entry, homework.byKey, new Set([entry.key])) : null
+  const status = homework.byKey[entry.key]?.status
+  const canContinue = !needsResult || (!homework.loading && !homework.error && !step)
+  let hint
+  if (needsResult && homework.loading) hint = 'Проверяем статус задания…'
+  else if (needsResult && homework.error) hint = 'Статус задания недоступен. Вернись к программе, чтобы обновить прогресс.'
+  else if (status === 'submitted') hint = 'Работа на проверке. Можно продолжать обучение.'
+  else if (step) hint = entry.ch.optional
+    ? 'Эта глава по желанию. Можешь выполнить задание или продолжить программу.'
+    : 'Выполни этот шаг, чтобы перейти к следующей главе.'
+  else if (!taskPage && !needsResult) hint = 'Когда закончишь изучать материал, отметь главу прочитанной и двигайся дальше.'
+
+  return (
+    <nav className="wc-chapter-nav" aria-label="Следующий шаг">
+      {hint && <p className="prg-p">{hint}</p>}
+      {step && !taskPage && !homework.loading && !homework.error && (
+        <Link className="prg-task-cta-btn" to={step.url} onClick={onRead}>{step.label} →</Link>
+      )}
+      {(canContinue || entry.ch.optional) && (
+        <Link className="prg-task-cta-btn" to={next && !next.needsDirection ? chapterUrl(next) : '/winter-camp'} onClick={onRead}>
+          {next?.needsDirection ? 'К выбору направления →' : next ? `Глава ${next.number}. ${next.ch.title} →` : 'К основной программе →'}
+        </Link>
+      )}
+      <Link className="prg-back" to={base(entry.mod)}>К списку глав</Link>
+    </nav>
+  )
+}
+
+function Lesson({ mod, meta, user, homework, entry, next }) {
   const navigate = useNavigate()
   const lesson = useLesson(meta)
   const id = taskKey(mod, meta)
-  const lessons = mod.chapters.filter(c => !c.taskOnly)
-  const pos = lessons.findIndex(c => c.ref === meta.ref)
-  const prev = pos > 0 ? lessons[pos - 1] : null
-  const next = pos >= 0 && pos < lessons.length - 1 ? lessons[pos + 1] : null
   const hw = homework.byKey[id]
   const [read, setRead] = useState(() => loadVisited(user).has(id))
 
@@ -285,21 +313,10 @@ function Lesson({ mod, meta, user, homework }) {
     track('material_open', { camp: 'winter', module: mod.key, chapter: meta.ref, title: String(meta.title || '').slice(0, 80) })
   }, [id])
 
-  // Конспект считается прочитанным, когда студент долистал до 80 % страницы
-  useEffect(() => {
-    if (!lesson || read) return
-    const check = () => {
-      const doc = document.documentElement
-      const scrollable = doc.scrollHeight - window.innerHeight
-      if (scrollable <= 0) return
-      if (window.scrollY / scrollable >= 0.8) {
-        markVisited(user, id)
-        setRead(true)
-      }
-    }
-    window.addEventListener('scroll', check, { passive: true })
-    return () => window.removeEventListener('scroll', check)
-  }, [lesson, read, id])
+  const finishReading = () => {
+    markVisited(user, id)
+    setRead(true)
+  }
 
   if (!lesson) return <section className="page active prg-page is-winter"><p className="prg-loading">Загружаем главу…</p></section>
 
@@ -311,7 +328,7 @@ function Lesson({ mod, meta, user, homework }) {
     <section className="page active prg-page is-winter">
       <BackLink to={base(mod)}>{mod.name}</BackLink>
       <div className="prg-hero">
-        <span className="prg-tag">{meta.label || (pos >= 0 ? `Глава ${pos + 1} из ${lessons.length}` : mod.short)}</span>
+        <span className="prg-tag">{entry ? `Глава ${entry.number} · ${mod.short}` : meta.label || mod.short}</span>
         <h1 className="prg-title">{meta.title || lesson.title}</h1>
         {(lesson.intro || lesson.summary) && <p className="prg-lead">{lesson.intro || lesson.summary}</p>}
         <div className="prg-hero-meta">
@@ -373,27 +390,20 @@ function Lesson({ mod, meta, user, homework }) {
           <SelfCheck items={lesson.selfCheck} />
           <MiniQuiz quiz={lesson.miniQuiz} />
 
-          {meta.task && (
+          {meta.task && !isCountable(meta) && (
             <section className="prg-section prg-task-cta">
               <div>
                 <div className="prg-task-cta-kicker">Конспект прочитан?</div>
                 <h2 className="prg-section-title">{meta.task.kind === 'auto' ? 'Тест к главе' : 'Задание к главе'}</h2>
                 <p className="prg-p">{CTA_TEXT[meta.task.kind]}</p>
               </div>
-              <button type="button" className="prg-task-cta-btn" onClick={() => navigate(taskUrl)}>
+              <button type="button" className="prg-task-cta-btn" onClick={() => { finishReading(); navigate(taskUrl) }}>
                 {hw ? 'Открыть работу →' : 'Перейти к заданию →'}
               </button>
             </section>
           )}
 
-          <div className="wl-nav">
-            {prev
-              ? <button type="button" className="wl-nav-btn" onClick={() => navigate(`${base(mod)}/${prev.ref}`)}><span>← Предыдущая глава</span><b>{prev.title}</b></button>
-              : <span />}
-            {next
-              ? <button type="button" className="wl-nav-btn is-next" onClick={() => navigate(`${base(mod)}/${next.ref}`)}><span>Следующая глава →</span><b>{next.title}</b></button>
-              : <button type="button" className="wl-nav-btn is-next" onClick={() => navigate(base(mod))}><span>Это последняя глава</span><b>К списку глав блока →</b></button>}
-          </div>
+          <ChapterNavigation entry={entry} next={next} homework={homework} onRead={finishReading} />
         </div>
       </div>
     </section>
@@ -424,7 +434,7 @@ function NotebookPanel({ task }) {
   )
 }
 
-function Task({ mod, meta, user, homework }) {
+function Task({ mod, meta, user, homework, entry, next }) {
   const lesson = useLesson(meta)
   const [data, setData] = useState(null)
   const key = taskKey(mod, meta)
@@ -448,7 +458,7 @@ function Task({ mod, meta, user, homework }) {
     <section className="page active prg-page is-winter">
       <BackLink to={meta.taskOnly ? base(mod) : `${base(mod)}/${meta.ref}`}>{meta.taskOnly ? mod.name : `Конспект: ${meta.title}`}</BackLink>
       <div className="prg-hero">
-        <span className="prg-tag">{mod.short} · {kind === 'auto' ? 'тест' : 'задание'}</span>
+        <span className="prg-tag">{entry ? `Глава ${entry.number} · ` : ''}{mod.short} · {kind === 'auto' ? 'тест' : 'задание'}</span>
         <h1 className="prg-title">{meta.taskOnly ? meta.title : kind === 'auto' ? 'Тест к главе' : 'Задание к главе'}</h1>
         <p className="prg-lead">{kind === 'quiz' && data?.intro ? data.intro : meta.taskOnly ? mod.lead : `${meta.title}. ${CTA_TEXT[kind] || 'У этой главы нет отдельного задания.'}`}</p>
         <div className="prg-hero-meta">
@@ -488,6 +498,8 @@ function Task({ mod, meta, user, homework }) {
           )}
         </div>
       </ProgramContext.Provider>
+      {!waiting && <ChapterNavigation entry={entry} next={next} homework={homework} taskPage
+        onRead={() => { if (!meta.taskOnly) markVisited(user, key) }} />}
     </section>
   )
 }
@@ -502,9 +514,13 @@ export default function WinterModulePage({ user, task = false }) {
   if (!mod) return <Closed title="Такого блока нет" text="Возможно, ссылка устарела — открой программу лагеря и выбери блок оттуда." />
   if (mod.foreign) return <Closed title="Этот блок — из программы другого направления" text={direction ? `Твоё направление — ${direction.name}. Блоки своей программы открываются со страницы лагеря.` : 'Твоё направление ещё не выбрано.'} />
 
+  const route = winterRoute(winterProgram(direction?.key).flatMap(month => month.stages))
   const meta = chapter ? findWinterChapter(mod, chapter) : null
   if (chapter && !meta) return <Navigate to={base(mod)} replace />
-  if (meta && (task || meta.taskOnly)) return <Task mod={mod} meta={meta} user={user} homework={homework} />
-  if (meta) return <Lesson mod={mod} meta={meta} user={user} homework={homework} />
-  return <Overview mod={mod} user={user} homework={homework} />
+  const position = meta ? route.findIndex(entry => entry.key === taskKey(mod, meta)) : -1
+  const entry = route[position]
+  const next = entry && route.slice(position + 1).find(item => item.needsDirection || !item.ch.optional)
+  if (meta && (task || meta.taskOnly)) return <Task key={meta.ref} mod={mod} meta={meta} user={user} homework={homework} entry={entry} next={next} />
+  if (meta) return <Lesson key={meta.ref} mod={mod} meta={meta} user={user} homework={homework} entry={entry} next={next} />
+  return <Overview mod={mod} user={user} homework={homework} route={route} />
 }
