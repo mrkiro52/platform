@@ -161,6 +161,7 @@ export const DIRECTIONS = {
       { num: 2, title: 'С чего начать: PortSwigger и первые лабы', sections: 1, load: () => import('./security-2') },
       { num: 3, title: 'CORS, XSS, CSRF', sections: 5, load: () => import('./security-3') },
       { num: 4, title: 'Сети', sections: 11, load: () => import('./security-4'), quiz: () => import('./security-4-quiz') },
+      { num: 5, title: 'Сети: подробнее и с кейсами', sections: 32, theoryOnly: true, load: () => import('./security-5').then(m => m.loadNetworkChapter()) },
     ],
   },
 }
@@ -204,7 +205,6 @@ export const NOVEMBER_BLOCKS = {
     tag: 'Блок 1 · ноябрь · по твоему направлению',
     lead: 'Продолжение индивидуальной программы: следующие большие темы твоего направления. У каждой главы есть конспект и задание к ней.',
     base: '/autumn-camp/block/deep',
-    empty: 'Главы по твоему направлению скоро появятся.',
     byDirection: {
       ml: [
         { num: 1, title: 'Deep Learning: введение', sections: 7, load: () => import('./deep-ml-1'), quiz: () => import('./deep-ml-1-quiz') },
@@ -224,6 +224,8 @@ export const NOVEMBER_BLOCKS = {
     submit: 'self',
     chapters: [
       { num: 1, title: 'Как составить резюме', sections: 9, load: () => import('./career-1') },
+      { num: 2, title: 'Как рассказать о себе и отвечать на вопросы HR', sections: 28, load: () => import('./career-2') },
+      { num: 3, title: 'Как оформить свои соцсети и аккаунты', sections: 20, load: () => import('./career-3') },
     ],
   },
   algo: {
@@ -268,7 +270,8 @@ export function blockFor(key, user) {
   const block = NOVEMBER_BLOCKS[key]
   if (!block?.byDirection) return block || null
   const direction = user?.autumnDirection
-  return { ...block, key: `${block.key}-${direction}`, chapters: block.byDirection[direction] || [] }
+  const chapters = block.byDirection[direction]
+  return chapters?.length ? { ...block, key: `${block.key}-${direction}`, chapters } : null
 }
 
 export function findChapter(dir, ref) {

@@ -134,6 +134,14 @@ const LETTERS = 'абвгдежзик'
 
 function Block({ b }) {
   switch (b.t) {
+    case 'img':
+      return (
+        <figure className="prg-img">
+          <a href={b.src} target="_blank" rel="noopener noreferrer" title="Открыть в полном размере">
+            <img src={b.src} alt={b.alt || ''} loading="lazy" decoding="async" />
+          </a>
+        </figure>
+      )
     case 'h3':
       return <h3 className="prg-h3"><Rich text={b.text} /></h3>
     case 'h4':

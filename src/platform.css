@@ -4914,6 +4914,9 @@ a.prg-chapter-link, a.prg-chip { text-decoration: none; }
 .prg-letters li { display: grid; grid-template-columns: 24px minmax(0, 1fr); gap: 4px; color: var(--text-secondary); font-size: 15px; line-height: 1.7; }
 .prg-letter { color: var(--prg-text); font-weight: 700; }
 
+.prg-img { margin: 12px 0 16px; }
+.prg-img a { display: block; width: fit-content; max-width: 100%; border-radius: var(--radius-md); overflow: hidden; border: 1px solid var(--border-color); background: var(--bg-tertiary); cursor: zoom-in; }
+.prg-img img { display: block; max-width: 100%; height: auto; }
 .prg-table { margin: 16px 0 18px; }
 .prg-table figcaption { font-size: 12.5px; color: var(--text-tertiary); margin-bottom: 8px; }
 .prg-table-scroll { overflow-x: auto; border: 1px solid var(--border-color); border-radius: var(--radius-md); }

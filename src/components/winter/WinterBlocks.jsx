@@ -4,7 +4,7 @@ import AlgoViz from '../AlgoViz'
 
 // Блоки урока зимнего лагеря: всё, что умеет ProgramBlocks, плюс блоки недельных материалов
 // (карточки, пошаговые схемы, ссылки), которые приходят из lessonFromWeek, и блоки курса
-// по кибербезопасности: картинка (img) и раскрывающийся разбор ответа (reveal).
+// по кибербезопасности: раскрывающийся разбор ответа (reveal).
 
 function Special({ b }) {
   switch (b.t) {
@@ -21,14 +21,6 @@ function Special({ b }) {
       )
     case 'viz':
       return <div className="wl-viz"><AlgoViz block={b.block} /></div>
-    case 'img':
-      return (
-        <figure className="wl-img">
-          <a href={b.src} target="_blank" rel="noopener noreferrer" title="Открыть в полном размере">
-            <img src={b.src} alt={b.alt || ''} loading="lazy" decoding="async" />
-          </a>
-        </figure>
-      )
     case 'reveal':
       return (
         <details className="wl-reveal">
@@ -48,7 +40,7 @@ function Special({ b }) {
   }
 }
 
-const SPECIAL = new Set(['cards', 'viz', 'linkcard', 'img', 'reveal'])
+const SPECIAL = new Set(['cards', 'viz', 'linkcard', 'reveal'])
 
 export default function WinterBlocks({ blocks }) {
   // Подряд идущие обычные блоки отдаём ProgramBlocks пачкой

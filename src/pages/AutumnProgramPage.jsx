@@ -1,5 +1,5 @@
 import { Fragment, useEffect, useState } from 'react'
-import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
+import { Link, Navigate, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { PROGRAM_CONTACT, PROGRAM_PERIOD, blockFor, chapterName, chapterRef, combineTrack, directionOf, findChapter, taskKind } from '../data/programs'
 import ProgramBlocks, { ProgramContext, Rich } from '../components/program/ProgramBlocks'
 import ProgramQuiz from '../components/program/ProgramQuiz'
@@ -136,7 +136,7 @@ function Overview({ dir }) {
         <div className="prg-hero">
           <span className="prg-tag">{heroTag(dir)}</span>
           <h1 className="prg-title">{dir.name}</h1>
-          <p className="prg-lead">{dir.lead || `${dir.goal}. Программа состоит из глав: у каждой есть конспект с теорией по разделам и задание к главе${dir.practice ? `, а ещё ${dir.practice}` : ''}.`}</p>
+          <p className="prg-lead">{dir.lead || `${dir.goal}. В главах есть конспекты по темам и практические задания${dir.practice ? `, а ещё ${dir.practice}` : ''}.`}</p>
           {!dir.base && <ContactNote />}
           {dir.express?.length > 0 && <ExpressButtons dir={dir} />}
         </div>
@@ -222,11 +222,11 @@ function ChapterCard({ dir, ch, homework }) {
           <span className="prg-chapter-link-meta">{ch.tracks ? `на выбор: ${ch.tracks.map(t => t.name).join(' или ')}` : `${ch.sections} ${plural(ch.sections, 'раздел', 'раздела', 'разделов')}`}</span>
           <span className="prg-chapter-link-go">→</span>
         </button>
-        <button type="button" className={`prg-chapter-link is-task${hw ? ` is-${hw.status}` : ''}`} onClick={() => navigate(`${basePath(dir)}/${ref}/task`)}>
+        {!ch.theoryOnly && <button type="button" className={`prg-chapter-link is-task${hw ? ` is-${hw.status}` : ''}`} onClick={() => navigate(`${basePath(dir)}/${ref}/task`)}>
           <span className="prg-chapter-link-name">Задание к главе</span>
           <span className="prg-chapter-link-meta">{taskLabel(dir, ch, hw)}</span>
           <span className="prg-chapter-link-go">→</span>
-        </button>
+        </button>}
         {ch.video && (
           <a className="prg-chapter-link is-video" href={ch.video} target="_blank" rel="noopener noreferrer">
             <span className="prg-chapter-link-name">{ch.videoLabel || 'Запись встречи'}</span>
@@ -402,7 +402,7 @@ function Chapter({ dir, chapterRef: ref }) {
         <p className="prg-lead">{chapter.intro || chapter.summary}</p>
         <div className="prg-hero-meta">
           <span className="prg-chip">{chapter.sections.length} {plural(chapter.sections.length, 'раздел', 'раздела', 'разделов')}</span>
-          <button type="button" className="prg-chip is-link" onClick={() => navigate(`${basePath(dir)}/${chapterRef(meta)}/task`)}>Задание к главе →</button>
+          {!meta.theoryOnly && <button type="button" className="prg-chip is-link" onClick={() => navigate(`${basePath(dir)}/${chapterRef(meta)}/task`)}>Задание к главе →</button>}
           {meta.video && <a className="prg-chip is-link" href={meta.video} target="_blank" rel="noopener noreferrer">▶ {meta.videoLabel || 'Запись встречи'}</a>}
         </div>
         {meta.tracks && (
@@ -433,10 +433,10 @@ function Chapter({ dir, chapterRef: ref }) {
               </button>
             </Fragment>
           ))}
-          <button type="button" className="prg-toc-item is-task" onClick={() => navigate(`${basePath(dir)}/${chapterRef(meta)}/task`)}>
+          {!meta.theoryOnly && <button type="button" className="prg-toc-item is-task" onClick={() => navigate(`${basePath(dir)}/${chapterRef(meta)}/task`)}>
             <span className="prg-toc-num">✓</span>
             <span>Задание к главе</span>
-          </button>
+          </button>}
         </nav>
 
         <div className="prg-content">
@@ -454,7 +454,7 @@ function Chapter({ dir, chapterRef: ref }) {
               </section>
             </Fragment>
           ))}
-          <TaskCta dir={dir} meta={meta} />
+          {!meta.theoryOnly && <TaskCta dir={dir} meta={meta} />}
         </div>
       </div>
     </section>
@@ -523,7 +523,10 @@ export default function AutumnProgramPage({ user, task = false }) {
 
   if (!user?.isAutumnCamp2026) return <Pending title={block ? 'Блок доступен участникам осеннего лагеря' : 'Программа доступна участникам осеннего лагеря'} />
   if (!dir) return <Pending title={block ? 'Такого блока нет' : 'Твоя индивидуальная программа ещё готовится'} />
-  if (chapter && task) return <Task dir={dir} chapterRef={chapter} user={user} />
+  if (chapter && task) {
+    if (findChapter(dir, chapter)?.theoryOnly) return <Navigate replace to={`${basePath(dir)}/${chapter}`} />
+    return <Task dir={dir} chapterRef={chapter} user={user} />
+  }
   if (chapter) return <Chapter dir={dir} chapterRef={chapter} />
   return <Overview dir={dir} />
 }
