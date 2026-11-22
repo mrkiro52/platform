@@ -25,7 +25,7 @@ const Sales = {
   people: [],
   use(data) { Sales.me = data.me; Sales.people = data.people || [] },
   name(key) { return (Sales.people.find(p => p.key === key) || {}).name || '—' },
-  rub(n) { return `${fmt(Math.round(n || 0))} ₽` },
+  rub(n) { return `${Number(n || 0).toLocaleString('ru-RU', { maximumFractionDigits: 2 })} ₽` },
   // Контакт ссылкой: ник в Telegram или номер телефона
   contact(value) {
     const v = String(value || '').trim()
@@ -432,8 +432,8 @@ const SalesCrmPage = {
   paintRewards(prev = null) {
     const r = SalesCrmPage.data.rewards
     const card = (label, value, foot, accent = false, iconName = 'zap', key = '') => {
-      const from = prev && key ? Math.round(prev[key] || 0) : null
-      const to = Math.round(r[key] || 0)
+      const from = prev && key ? (prev[key] || 0) : null
+      const to = r[key] || 0
       const grow = from !== null && from !== to
       return `
       <div class="kpi${grow ? ' is-growing' : ''}">
@@ -447,16 +447,18 @@ const SalesCrmPage = {
     if (r.view === 'all') {
       cards = [
         card('Сумма продаж', Sales.rub(r.total), deals(r.closedCount), false, 'trending-up', 'total'),
-        card('Тебе', Sales.rub(r.khanil), '70% от суммы минус выплаты Саше, Эмилю и рефералам', true, 'crown', 'khanil'),
-        card('Денису', Sales.rub(r.denis), '30% от всей суммы продаж', false, 'user', 'denis'),
+        card('Налог', Sales.rub(r.tax), '4% от суммы закрытых продаж', false, 'percent', 'tax'),
+        card('Тебе', Sales.rub(r.khanil), '70% остатка после налога и комиссий, за вычетом реферальных', true, 'crown', 'khanil'),
+        card('Денису', Sales.rub(r.denis), '30% остатка после налога и комиссий', false, 'user', 'denis'),
         card('Саше', Sales.rub(r.sasha), '10% с лидов, которые закрыл Саша', false, 'user', 'sasha'),
         card('Эмилю', Sales.rub(r.emil), '10% с лидов, которые закрыл Эмиль', false, 'user', 'emil'),
         card('Рефералам', Sales.rub(r.referrals || 0), '10% с лидов, которых привели рефералы, — из твоей доли', false, 'users', 'referrals'),
       ]
     } else if (r.view === 'denis') {
       cards = [
-        card('Твоё вознаграждение', Sales.rub(r.mine), '30% от всей суммы продаж', true, 'crown', 'mine'),
+        card('Твоё вознаграждение', Sales.rub(r.mine), '30% остатка после налога и комиссий', true, 'crown', 'mine'),
         card('Сумма продаж', Sales.rub(r.total), deals(r.closedCount), false, 'trending-up', 'total'),
+        card('Налог', Sales.rub(r.tax), '4% от суммы закрытых продаж', false, 'percent', 'tax'),
       ]
     } else {
       cards = [

@@ -150,26 +150,30 @@ function referralsFor(leads) {
   return { share: REFERRAL_SHARE, total: sum('earned'), paid: sum('paid'), pending: sum('pending'), list }
 }
 
-// Вознаграждения. Считаются только лиды, закрытые в продажу. Каждый видит своё;
-// полную раскладку — только Ханиль. Его доля — 70% минус выплаты Саше, Эмилю и рефералам.
+// Храним расчёт в копейках, чтобы налог и выплаты сходились до копейки.
 function rewardsFor(person, leads) {
   const closed = leads.filter(isClosed)
-  const total = closed.reduce((sum, l) => sum + l.amount, 0)
-  const sold = key => closed.filter(l => l.closed_by === key)
-  const sellerReward = key => Math.round(sold(key).reduce((sum, l) => sum + l.amount, 0) * SELLER_SHARE)
-  const denis = Math.round(total * DENIS_SHARE)
+  const total = closed.reduce((sum, lead) => sum + lead.amount, 0)
+  const tax = closed.reduce((sum, lead) => sum + lead.amount * 4, 0)
+  const sellerReward = key => closed.reduce((sum, lead) =>
+    sum + (lead.closed_by === key ? lead.amount * (SELLER_SHARE * 100) : 0), 0)
   const sellers = Object.fromEntries(SELLERS.map(key => [key, sellerReward(key)]))
-  // Реферальные (и выплаченные, и ещё не выплаченные) идут из доли Ханиля
-  const referrals = leads.reduce((sum, l) => sum + referralDue(l), 0)
-  const khanil = total - denis - SELLERS.reduce((sum, key) => sum + sellers[key], 0) - referrals
+  const remaining = total * 100 - tax - sellers.sasha - sellers.emil
+  const denis = Math.round(remaining * DENIS_SHARE)
+  // Реферальные по прежним правилам оплачиваются из доли Ханиля.
+  const referrals = leads.reduce((sum, lead) => sum + referralDue(lead), 0)
+  const khanil = (remaining - denis - referrals * 100) / 100
 
   if (person === 'khanil') {
-    return { view: 'all', total, closedCount: closed.length, denis, sasha: sellers.sasha, emil: sellers.emil, referrals, khanil }
+    return {
+      view: 'all', total, tax: tax / 100, closedCount: closed.length,
+      denis: denis / 100, sasha: sellers.sasha / 100, emil: sellers.emil / 100, referrals, khanil,
+    }
   }
   if (person === 'denis') {
-    return { view: 'denis', total, closedCount: closed.length, mine: denis }
+    return { view: 'denis', total, tax: tax / 100, closedCount: closed.length, mine: denis / 100 }
   }
-  return { view: 'seller', mine: sellers[person] }
+  return { view: 'seller', mine: sellers[person] / 100 }
 }
 
 // GET /api/sales/me — кто я в отделе продаж и состав отдела
