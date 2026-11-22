@@ -85,7 +85,7 @@ function Example({ ex }) {
   )
 }
 
-export default function TaskCard({ task, index, user, solved, savedAnswer, onSolved }) {
+export default function TaskCard({ task, index, user, solved, savedAnswer, onSolved, children }) {
   const [code, setCode] = useState(() => loadDraft(user, task.id) ?? task.starter ?? '')
   const [report, setReport] = useState(null)
   const [progress, setProgress] = useState(null)
@@ -143,6 +143,7 @@ export default function TaskCard({ task, index, user, solved, savedAnswer, onSol
         </div>
       )}
 
+      {children}
       <PythonRunner value={shown} onChange={change} readOnly={solved} minLines={Math.max(6, shown.split('\n').length + 1)} />
 
       <div className="tk-actions">

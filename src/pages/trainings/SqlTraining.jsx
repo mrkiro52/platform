@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { api } from '../../api'
 import CodeEditor from '../../components/CodeEditor'
 import InlineMarkup from '../../components/InlineMarkup'
+import TaskHint from './TaskHint'
 
 // SQL-тренажёр: настоящие запросы к настоящей базе маркетплейса на сервере.
 // Сначала выбор тем и порядка задач, потом решение. Решённые задачи
@@ -212,7 +213,6 @@ export default function SqlTraining({ onBack }) {
   const [solved, setSolved] = useState(() => new Set())
   const [outcome, setOutcome] = useState(null)
   const [running, setRunning] = useState(false)
-  const [hintOpen, setHintOpen] = useState(false)
   const resultRef = useRef(null)
 
   // Задания, схема, мой прогресс и таблица лидеров. Перезапрашиваем при
@@ -236,7 +236,6 @@ export default function SqlTraining({ onBack }) {
     setQueue(mode === 'shuffle' ? shuffle(tasks) : tasks)
     setIndex(0)
     setOutcome(null)
-    setHintOpen(false)
     setPhase('solve')
     window.scrollTo({ top: 0 })
   }
@@ -247,7 +246,6 @@ export default function SqlTraining({ onBack }) {
   const pickTask = (i) => {
     setIndex(i)
     setOutcome(null)
-    setHintOpen(false)
   }
 
   // check = true — сверить с правильным ответом, иначе просто выполнить
@@ -361,10 +359,7 @@ export default function SqlTraining({ onBack }) {
             <h2 className="sqlt-task-title">{task.title}</h2>
             <p className="sqlt-task-text"><InlineMarkup text={task.text} /></p>
             {task.ordered && <p className="sqlt-ordered">В этой задаче проверяется и порядок строк.</p>}
-            <button type="button" className="sqlt-hint-toggle" onClick={() => setHintOpen(o => !o)}>
-              {hintOpen ? 'Скрыть подсказку' : 'Подсказка'}
-            </button>
-            {hintOpen && <p className="sqlt-hint"><InlineMarkup text={task.hint} /></p>}
+            <TaskHint key={task.id} text={task.hint} />
           </div>
 
           <CodeEditor
