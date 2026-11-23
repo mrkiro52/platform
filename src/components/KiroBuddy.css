@@ -26,29 +26,7 @@
 .kb-buddy.is-dragging .kb-face { cursor: grabbing; transform: scale(1.1); box-shadow: 0 0 0 2px #FFD60A, 0 18px 40px rgba(0, 0, 0, 0.6); }
 .kb-buddy.is-open .kb-face { box-shadow: 0 0 0 2px #FFD60A, 0 8px 24px rgba(0, 0, 0, 0.5), 0 0 30px rgba(255, 214, 10, 0.4); }
 
-/* Пульсация, пока заполняется кольцо */
-.kb-buddy.is-charging .kb-face { animation: kb-pulse 0.5s ease-in-out infinite; }
-@keyframes kb-pulse {
-  0%, 100% { transform: scale(1); box-shadow: 0 0 0 2px #FFD60A, 0 0 16px rgba(255, 214, 10, 0.35); }
-  50% { transform: scale(1.09); box-shadow: 0 0 0 3px #FFD60A, 0 0 34px rgba(255, 214, 10, 0.7); }
-}
-
-/* Кольцо удержания: по часовой от 12 часов */
-.kb-ring {
-  position: absolute; left: -12.5px; top: -12.5px; width: 100px; height: 100px;
-  transform: rotate(-90deg); pointer-events: none; overflow: visible;
-  opacity: 0; transition: opacity 0.2s ease;
-}
-.kb-buddy.is-charging .kb-ring { opacity: 1; }
-.kb-ring circle { fill: none; stroke-width: 4; }
-.kb-ring-track { stroke: rgba(255, 214, 10, 0.16); }
-.kb-ring-fill {
-  stroke: #FFD60A; stroke-linecap: round; filter: drop-shadow(0 0 4px rgba(255, 214, 10, 0.8));
-  transition: stroke-dashoffset 0.25s ease;
-}
-.kb-buddy.is-charging .kb-ring-fill { transition: stroke-dashoffset 0.75s linear; }
-
-/* Вспышка, когда кольцо замкнулось */
+/* Вспышка при открытии инструментов */
 .kb-burst {
   position: absolute; inset: -6px; border-radius: 50%; border: 3px solid #FFD60A;
   pointer-events: none; animation: kb-burst 0.55s ease-out forwards;
@@ -150,7 +128,7 @@
 .kb-done-sub { margin-top: 4px; font-size: 13px; color: #C2C2BE; }
 
 @media (prefers-reduced-motion: reduce) {
-  .kb-buddy.is-charging .kb-face { animation: none; }
+  .kb-burst { display: none; }
   .kb-tool, .kb-panel { transition: opacity 0.15s ease; }
 }
 

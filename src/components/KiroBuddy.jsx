@@ -2,21 +2,13 @@ import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react
 import { createPortal } from 'react-dom'
 import './KiroBuddy.css'
 
-// Пингвин KIRO — круглая плашка с инструментами (пока один: таймер).
-// Только для компьютера. Стоит в сайдбаре над «Выйти», но её можно утащить
-// в любое место экрана; позиция сохраняется. Зажал на 0.25 с — по кругу
-// бежит жёлтое кольцо, через 0.75 с вокруг раскрывается меню инструментов.
-// Повторное зажатие прячет инструменты.
+// Клик открывает инструменты Пингви. Перетаскивание сохраняет его положение.
 
 const SIZE = 75
-const HOLD_DELAY = 250
-const CHARGE_TIME = 750
 const DRAG_START = 6
 const POS_KEY = 'kiro_buddy_pos'
 const TIMER_KEY = 'kiro_buddy_timer'
 const DESKTOP_QUERY = '(min-width: 1024px) and (hover: hover) and (pointer: fine)'
-const RING_R = 46
-const RING_C = 2 * Math.PI * RING_R
 
 const store = {
   get(key, fallback) {
@@ -289,7 +281,6 @@ export default function KiroBuddy() {
   const [pos, setPos] = useState(() => store.get(POS_KEY, null)) // null — стоит на своём месте в сайдбаре
   const [dock, setDock] = useState(null)
   const [dragging, setDragging] = useState(false)
-  const [charging, setCharging] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
   // Открытый инструмент: одновременно показываем только один
   const [tool, setTool] = useState(null)
@@ -297,7 +288,7 @@ export default function KiroBuddy() {
   const lastTool = useRef(null)
   if (tool) lastTool.current = tool
   const switchRef = useRef(null)
-  const setPanelOpen = (open) => { clearTimeout(switchRef.current); setTool(open ? 'timer' : null) }
+  const closePanel = () => { clearTimeout(switchRef.current); setTool(null) }
   // Клик по инструменту: тот же — свернуть; другой — сначала свернуть открытый, потом показать новый
   const pickTool = (key) => {
     clearTimeout(switchRef.current)
@@ -309,8 +300,7 @@ export default function KiroBuddy() {
   }
   const [burst, setBurst] = useState(0)
   const gesture = useRef(null)
-  const menuRef = useRef(false)
-  menuRef.current = menuOpen
+  const suppressClick = useRef(false)
   const timer = useIntervalTimer()
   const night = useNight()
   const face = !night ? FACE_DAY : (menuOpen || panelOpen ? FACE_YAWN : FACE_SLEEP)
@@ -353,69 +343,61 @@ export default function KiroBuddy() {
   }, [desktop, measureDock, pos])
 
   const place = pos || dock
-  const clearTimers = () => {
-    const g = gesture.current
-    if (!g) return
-    clearTimeout(g.hold)
-    clearTimeout(g.charge)
+  const onPointerDown = (e) => {
+    if (!e.isPrimary || e.button !== 0 || !place) return
+    e.preventDefault()
+    e.currentTarget.focus({ preventScroll: true })
+    e.currentTarget.setPointerCapture(e.pointerId)
+    suppressClick.current = false
+    gesture.current = { id: e.pointerId, x: e.clientX, y: e.clientY, origin: place, position: null }
   }
 
-  const onPointerDown = (e) => {
-    if (e.button !== 0 || !place) return
-    e.preventDefault()
-    e.currentTarget.setPointerCapture(e.pointerId)
-    const g = { sx: e.clientX, sy: e.clientY, ox: e.clientX - place.x, oy: e.clientY - place.y, mode: 'pending' }
-    g.hold = setTimeout(() => {
-      g.mode = 'charging'
-      setCharging(true)
-      g.charge = setTimeout(() => {
-        g.mode = 'done'
-        setCharging(false)
-        setBurst(b => b + 1)
-        // Повторное зажатие прячет инструменты вместе с открытой панелью
-        if (menuRef.current) setPanelOpen(false)
-        setMenuOpen(!menuRef.current)
-      }, CHARGE_TIME)
-    }, HOLD_DELAY)
-    gesture.current = g
+  const move = (e, g) => {
+    const dx = e.clientX - g.x
+    const dy = e.clientY - g.y
+    if (!g.position && Math.hypot(dx, dy) <= DRAG_START) return
+    g.position = clampPos({ x: g.origin.x + dx, y: g.origin.y + dy })
   }
 
   const onPointerMove = (e) => {
     const g = gesture.current
-    if (!g || g.mode === 'done') return
-    const moved = Math.hypot(e.clientX - g.sx, e.clientY - g.sy)
-    if (g.mode !== 'drag' && moved > DRAG_START) {
-      clearTimers()
-      setCharging(false)
-      g.mode = 'drag'
+    if (g?.id !== e.pointerId) return
+    move(e, g)
+    if (g.position) {
       setDragging(true)
+      setPos(g.position)
     }
-    if (g.mode === 'drag') setPos(clampPos({ x: e.clientX - g.ox, y: e.clientY - g.oy }))
   }
 
-  const onPointerUp = () => {
+  const finishGesture = (e, cancelled) => {
     const g = gesture.current
-    if (!g) return
-    clearTimers()
-    setCharging(false)
-    if (g.mode === 'drag') {
-      setDragging(false)
-      // Бросили рядом с местом в сайдбаре — встаёт обратно на место
-      setPos(p => {
-        const slot = document.getElementById('kiro-buddy-slot')?.getBoundingClientRect()
-        const near = p && slot && slot.width > 0 && Math.hypot(p.x + SIZE / 2 - (slot.left + slot.width / 2), p.y + SIZE / 2 - (slot.top + slot.height / 2)) < 48
-        const next = near ? null : p
-        store.set(POS_KEY, next)
-        return next
-      })
-    } else if (g.mode === 'pending' && timer.active && tool !== 'timer') {
-      // Короткий клик, пока идёт таймер, — показать его
-      setPanelOpen(true)
-    }
+    if (g?.id !== e.pointerId) return
     gesture.current = null
+    if (!cancelled) move(e, g)
+    suppressClick.current = cancelled || Boolean(g.position)
+    if (!g.position) return
+
+    setDragging(false)
+    const slot = document.getElementById('kiro-buddy-slot')?.getBoundingClientRect()
+    const nearDock = slot?.width > 0 && Math.hypot(
+      g.position.x + SIZE / 2 - (slot.left + slot.width / 2),
+      g.position.y + SIZE / 2 - (slot.top + slot.height / 2),
+    ) < 48
+    const next = nearDock ? null : g.position
+    setPos(next)
+    store.set(POS_KEY, next)
   }
 
-  useEffect(() => () => { clearTimers(); clearTimeout(switchRef.current) }, [])
+  const onClick = (e) => {
+    // Браузер может отправить click после завершения жеста с захватом указателя.
+    // У клавиатурной активации detail равен нулю.
+    if (e.detail > 0 && suppressClick.current) return
+    if (menuOpen) closePanel()
+    else setBurst(b => b + 1)
+    setMenuOpen(!menuOpen)
+  }
+
+  useEffect(() => () => clearTimeout(switchRef.current), [])
 
   if (!desktop || !place) return null
 
@@ -443,7 +425,7 @@ export default function KiroBuddy() {
   return createPortal(
     <div className="kb-root" aria-live="polite">
       <div
-        className={`kb-buddy${dragging ? ' is-dragging' : ''}${charging ? ' is-charging' : ''}${menuOpen ? ' is-open' : ''}`}
+        className={`kb-buddy${dragging ? ' is-dragging' : ''}${menuOpen ? ' is-open' : ''}`}
         style={{ transform: `translate3d(${place.x}px, ${place.y}px, 0)` }}
       >
         {menuMounted && TOOLS.map((t, i) => {
@@ -463,10 +445,6 @@ export default function KiroBuddy() {
           )
         })}
 
-        <svg className="kb-ring" viewBox="0 0 100 100" aria-hidden="true">
-          <circle className="kb-ring-track" cx="50" cy="50" r={RING_R} />
-          <circle className="kb-ring-fill" cx="50" cy="50" r={RING_R} style={{ strokeDasharray: RING_C, strokeDashoffset: charging ? 0 : RING_C }} />
-        </svg>
         {burst > 0 && <span key={burst} className="kb-burst" aria-hidden="true" />}
 
         <button
@@ -474,11 +452,14 @@ export default function KiroBuddy() {
           className="kb-face"
           onPointerDown={onPointerDown}
           onPointerMove={onPointerMove}
-          onPointerUp={onPointerUp}
-          onPointerCancel={onPointerUp}
+          onPointerUp={e => finishGesture(e, false)}
+          onPointerCancel={e => finishGesture(e, true)}
+          onLostPointerCapture={e => finishGesture(e, true)}
+          onClick={onClick}
           onContextMenu={e => e.preventDefault()}
-          aria-label="KIRO: зажми, чтобы открыть инструменты; перетащи, чтобы переместить"
-          title="Зажми — инструменты, тяни — переместить"
+          aria-expanded={menuOpen}
+          aria-label="Инструменты Пингви"
+          title="Нажми, чтобы открыть инструменты, или перетащи"
         >
           <img src={face} alt="" draggable="false" />
         </button>
@@ -494,8 +475,8 @@ export default function KiroBuddy() {
           style={{ left: clamp(panelLeft, 8, window.innerWidth - PANEL_W - 8), ...panelY, width: PANEL_W, maxHeight: window.innerHeight - 16, overflowY: 'auto' }}
         >
           {lastTool.current === 'info'
-            ? <InfoPanel onClose={() => setPanelOpen(false)} />
-            : <TimerPanel timer={timer} onClose={() => setPanelOpen(false)} />}
+            ? <InfoPanel onClose={closePanel} />
+            : <TimerPanel timer={timer} onClose={closePanel} />}
         </div>
       )}
     </div>,
