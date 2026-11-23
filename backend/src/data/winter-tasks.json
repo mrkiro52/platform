@@ -19,16 +19,11 @@
     },
     "sql": {
       "name": "SQL",
-      "directions": [
-        "ml",
-        "backend"
-      ]
+      "directions": null
     },
     "docker": {
       "name": "Docker",
-      "directions": [
-        "backend"
-      ]
+      "directions": null
     },
     "db": {
       "name": "Базы данных",
@@ -130,9 +125,9 @@
     }
   },
   "totals": {
-    "ml": 48,
-    "backend": 54,
-    "security": 128
+    "ml": 44,
+    "backend": 49,
+    "security": 126
   },
   "tasks": {
     "py:it-world": {
@@ -149,103 +144,103 @@
     },
     "py:variables": {
       "module": "py",
-      "title": "Переменные и правила именования",
+      "title": "python: Переменные и правила именования",
       "kind": "quiz",
       "required": true
     },
     "py:types": {
       "module": "py",
-      "title": "Базовые типы данных",
+      "title": "python: Базовые типы данных",
       "kind": "quiz",
       "required": true
     },
     "py:io": {
       "module": "py",
-      "title": "Ввод и вывод данных",
+      "title": "python: Ввод и вывод данных",
       "kind": "quiz",
       "required": true
     },
     "py:fstrings": {
       "module": "py",
-      "title": "Форматирование строк (f-строки)",
+      "title": "python: Форматирование строк (f-строки)",
       "kind": "quiz",
       "required": true
     },
     "py:conditions": {
       "module": "py",
-      "title": "Условные операторы и сравнения",
+      "title": "python: Условные операторы и сравнения",
       "kind": "quiz",
       "required": true
     },
     "py:logic": {
       "module": "py",
-      "title": "Логические операторы",
+      "title": "python: Логические операторы",
       "kind": "quiz",
       "required": true
     },
     "py:while": {
       "module": "py",
-      "title": "Цикл while",
+      "title": "python: Цикл while",
       "kind": "quiz",
       "required": true
     },
     "py:for": {
       "module": "py",
-      "title": "Цикл for",
+      "title": "python: Цикл for",
       "kind": "quiz",
       "required": true
     },
     "py:break-continue": {
       "module": "py",
-      "title": "Операторы управления: break и continue",
+      "title": "python: Операторы управления: break и continue",
       "kind": "quiz",
       "required": true
     },
     "py:range": {
       "module": "py",
-      "title": "Функция range()",
+      "title": "python: Функция range()",
       "kind": "quiz",
       "required": true
     },
     "py:containers": {
       "module": "py",
-      "title": "Базовые структуры данных: list, tuple, dict, set",
+      "title": "python: Базовые структуры данных: list, tuple, dict, set",
       "kind": "quiz",
       "required": true
     },
     "py:functions": {
       "module": "py",
-      "title": "Создание функций",
+      "title": "python: Создание функций",
       "kind": "quiz",
       "required": true
     },
     "py:string-methods": {
       "module": "py",
-      "title": "Методы строк",
+      "title": "python: Методы строк",
       "kind": "quiz",
       "required": true
     },
     "py:comprehensions": {
       "module": "py",
-      "title": "Генераторы списков и функции map, filter, zip",
+      "title": "python: Генераторы списков и функции map, filter, zip",
       "kind": "quiz",
       "required": true
     },
     "py:oop": {
       "module": "py",
-      "title": "Основы ООП",
+      "title": "python: Основы ООП",
       "kind": "quiz",
       "required": true
     },
     "py:decorators-generators": {
       "module": "py",
-      "title": "Декораторы и генераторы",
+      "title": "python: Декораторы и генераторы",
       "kind": "quiz",
       "required": true
     },
     "py:async": {
       "module": "py",
-      "title": "Асинхронность: async и await",
+      "title": "python: Асинхронность: async и await",
       "kind": "quiz",
       "required": true
     },
@@ -461,7 +456,7 @@
     },
     "ml-base:ml-1": {
       "module": "ml-base",
-      "title": "Основы NumPy, pandas и Matplotlib",
+      "title": "Практика по NumPy, pandas и Matplotlib",
       "kind": "quiz",
       "required": true
     },
@@ -1092,36 +1087,6 @@
     "be-deep:backend-7": {
       "module": "be-deep",
       "title": "Git",
-      "kind": "quiz",
-      "required": true
-    },
-    "career:career-1": {
-      "module": "career",
-      "title": "Как составить резюме",
-      "kind": "quiz",
-      "required": true
-    },
-    "career:career-2": {
-      "module": "career",
-      "title": "Как рассказать о себе и отвечать на вопросы",
-      "kind": "quiz",
-      "required": true
-    },
-    "career:career-3": {
-      "module": "career",
-      "title": "Как оформить соцсети и аккаунты",
-      "kind": "quiz",
-      "required": true
-    },
-    "career:career-4": {
-      "module": "career",
-      "title": "Как оформить пет-проекты",
-      "kind": "quiz",
-      "required": true
-    },
-    "career:career-5": {
-      "module": "career",
-      "title": "Как искать компании и вакансии",
       "kind": "quiz",
       "required": true
     }

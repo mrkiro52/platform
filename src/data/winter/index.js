@@ -108,6 +108,27 @@ function topicTest(id, title) {
 
 const deepMl = n => NOVEMBER_BLOCKS.deep.byDirection.ml.find(c => c.num === n)
 
+function mlLibraryChapter(ref, title, sectionIds, extra = {}) {
+  const source = PROGRAMS.ml.chapters.find(chapter => chapter.num === 1)
+  return {
+    ref,
+    title,
+    sections: sectionIds.length,
+    task: null,
+    load: async () => {
+      const { default: lesson } = await source.load()
+      return {
+        ...lesson,
+        title,
+        intro: null,
+        sections: lesson.sections.filter(section => sectionIds.includes(section.id)),
+        assignment: extra.practice ? lesson.assignment : null,
+      }
+    },
+    ...extra,
+  }
+}
+
 // Глава курса по кибербезопасности (src/data/winter/sec — генерируется scripts/import-sec-course.py).
 // Guided Case и кейсы — практика на стенде: вопросы уходят на проверку, тесты с одним верным
 // вариантом проверяются сразу. Практика без вопросов — самостоятельная, сдавать не нужно.
@@ -156,7 +177,9 @@ export const WINTER_MODULES = {
     dirs: null,
     tag: 'Неделя 1 · для всех',
     lead: 'С нуля до уверенной базы: переменные, условия, циклы, структуры данных, функции, ООП, декораторы и асинхронность. В каждой главе — конспект, вопросы для самопроверки и задачи: код пишется и запускается прямо на платформе, а решение уходит на проверку.',
-    chapters: WEEK1_CHAPTERS.map(ch => weekChapter(ch, {}, { code: true })),
+    chapters: WEEK1_CHAPTERS.map((ch, index) => weekChapter(ch, {
+      title: index >= 2 && index < 19 ? `python: ${ch.title}` : ch.title,
+    }, { code: true })),
   },
   algo: {
     key: 'algo',
@@ -186,7 +209,7 @@ export const WINTER_MODULES = {
     name: 'Git',
     short: 'Git',
     dirs: null,
-    tag: 'Недели 3–4 · основы направления',
+    tag: 'Декабрь · для всех',
     lead: 'Репозитории, коммиты, ветки и pull request — повседневный минимум, без которого не обходится ни одна команда. В конце блока — тест с автопроверкой.',
     chapters: [...topicChapters('git'), topicTest('git', 'Тест по Git')],
   },
@@ -194,10 +217,11 @@ export const WINTER_MODULES = {
     key: 'sql',
     name: 'SQL',
     short: 'SQL',
-    dirs: ['ml', 'backend'],
-    tag: 'Недели 3–4 · основы направления',
+    dirs: null,
+    tag: 'Декабрь · для всех',
     lead: 'От первого SELECT до оконных функций — уровень уверенного джуна. В конце блока — десять задач на запросы по одному датасету: запросы уходят на проверку. Для дополнительной практики есть SQL-тренажёр с автопроверкой.',
     chapters: [
+      newChapter('database-basics', 'Базы данных: что это и чем отличаются', 3, () => import('./content/sql-databases')),
       ...topicChapters('sql'),
       {
         ref: 'tasks', title: 'Задачи на запросы', taskOnly: true,
@@ -220,10 +244,14 @@ export const WINTER_MODULES = {
     key: 'docker',
     name: 'Docker',
     short: 'Docker',
-    dirs: ['backend'],
-    tag: 'Недели 3–4 · основы направления',
+    dirs: null,
+    tag: 'Декабрь · для всех',
     lead: 'Образы, контейнеры, Dockerfile и docker compose — только нужные основы: как упаковать сервис и поднять его вместе с базой одной командой. В конце блока — тест с автопроверкой.',
-    chapters: [...topicChapters('docker'), topicTest('docker', 'Тест по Docker')],
+    chapters: [
+      newChapter('first-run', 'Docker: первый запуск и Docker Compose', 3, () => import('./content/docker-first-run')),
+      ...topicChapters('docker'),
+      topicTest('docker', 'Тест по Docker'),
+    ],
   },
   db: {
     key: 'db',
@@ -248,12 +276,19 @@ export const WINTER_MODULES = {
   'ml-base': {
     key: 'ml-base',
     name: 'NumPy, pandas и Matplotlib',
-    short: 'NumPy и pandas',
+    short: 'Библиотеки Python',
     dirs: ['ml'],
-    tag: 'Недели 3–4 · основы направления',
+    tag: 'Январь · введение в ML',
     lead: 'Три библиотеки, с которых начинается любая работа с данными: массивы и векторные операции, таблицы и группировки, графики. Задание из вопросов сдаётся на проверку, а для практики есть ноутбук с датасетом.',
     chapters: [
-      programChapter('ml', 1, { task: quizTask(() => import('./content/ml-base-quiz')), practice: true }),
+      mlLibraryChapter('numpy', 'NumPy', ['numpy-basics', 'numpy-advanced']),
+      mlLibraryChapter('pandas', 'pandas', ['pandas-basics', 'pandas-transform']),
+      // Общая работа остаётся по прежнему адресу, чтобы сохранить сданные ответы.
+      mlLibraryChapter('ml-1', 'Matplotlib', ['matplotlib', 'clean-code'], {
+        task: { ...quizTask(() => import('./content/ml-base-quiz')), title: 'Практика по NumPy, pandas и Matplotlib' },
+        practice: true,
+        files: { direction: 'ml', chapter: 1 },
+      }),
     ],
   },
 
@@ -407,13 +442,13 @@ export const WINTER_MODULES = {
     short: 'Карьера',
     dirs: null,
     tag: 'Февраль · для всех',
-    lead: 'Как упаковать себя и найти работу: резюме, рассказ о себе и ответы на вопросы, соцсети и аккаунты, пет-проекты, поиск компаний и вакансий. К каждой главе — практическое задание: его проверяют и дают обратную связь.',
+    lead: 'Как упаковать себя и найти работу: резюме, рассказ о себе и ответы на вопросы, соцсети и аккаунты, пет-проекты, поиск компаний и вакансий.',
     chapters: [
-      blockChapter(NOVEMBER_BLOCKS.career.chapters[0], 'career-1', { task: quizTask(() => import('./content/career-1-quiz')) }),
-      newChapter('career-2', 'Как рассказать о себе и отвечать на вопросы', 8, () => import('./content/career-2'), () => import('./content/career-2-quiz')),
-      newChapter('career-3', 'Как оформить соцсети и аккаунты', 7, () => import('./content/career-3'), () => import('./content/career-3-quiz')),
-      newChapter('career-4', 'Как оформить пет-проекты', 7, () => import('./content/career-4'), () => import('./content/career-4-quiz')),
-      newChapter('career-5', 'Как искать компании и вакансии', 8, () => import('./content/career-5'), () => import('./content/career-5-quiz')),
+      blockChapter(NOVEMBER_BLOCKS.career.chapters[0], 'career-1'),
+      newChapter('career-2', 'Как рассказать о себе и отвечать на вопросы', 8, () => import('./content/career-2')),
+      newChapter('career-3', 'Как оформить соцсети и аккаунты', 7, () => import('./content/career-3')),
+      newChapter('career-4', 'Как оформить пет-проекты', 7, () => import('./content/career-4')),
+      newChapter('career-5', 'Как искать компании и вакансии', 8, () => import('./content/career-5')),
     ],
   },
   algosobes: {
@@ -444,19 +479,17 @@ const PLAN = [
       'Массивы, связные списки, стек, очередь, хеш-таблица, деревья и графы',
       'Средний и продвинутый уровни — по желанию: ДП, бэктрекинг, битовые операции',
     ] },
-    { key: 'base', weeks: [3, 4], title: 'Введение в направление', byDir: {
-      ml: ['git', 'ml-base', 'sql'],
-      backend: ['git', 'docker', 'db', 'sql', 'sysdesign'],
+    { key: 'tools', weeks: [3, 4], title: 'Инструменты разработки', modules: ['git', 'sql', 'docker'] },
+    { key: 'base', monthByDirection: { ml: 2 }, weeks: [3, 4], title: 'Введение в направление', byDir: {
+      ml: ['ml-base'],
+      backend: ['db', 'sysdesign'],
       security: ['sec-linux'],
     }, about: {
       ml: [
-        'Git: репозитории, коммиты, ветки и pull request',
         'NumPy, pandas и Matplotlib — загрузка, чистка, группировки и графики на реальном датасете',
-        'SQL от SELECT до оконных функций и десять задач на запросы',
       ],
       backend: [
-        'Git и Docker: контейнеры, Dockerfile, docker compose',
-        'Базы данных и SQL: проектирование таблиц, транзакции, индексы, запросы до оконных функций',
+        'Базы данных: проектирование таблиц, транзакции и индексы',
         'Обзор System Design: балансировщик, кеш, Redis, очереди, Kafka, репликация и шардирование',
       ],
       security: [
@@ -506,7 +539,7 @@ const PLAN = [
     } },
   ] },
   { month: 3, stages: [
-    { key: 'final', weeks: [9, 10], title: 'Направление: финальный блок', byDir: {
+    { key: 'final', monthByDirection: { ml: 2 }, weeks: [9, 10], title: 'Направление: финальный блок', byDir: {
       ml: ['ml-deep', 'interview-ml'],
       backend: ['be-deep', 'interview-backend'],
       security: ['sec-webapp', 'interview-security'],
@@ -543,9 +576,12 @@ const DIRECTION_KEYS = Object.keys(WINTER_DIRECTIONS)
 const stageFor = (s, direction) => s.modules || (direction ? !!s.byDir[direction] : DIRECTION_KEYS.every(d => s.byDir[d]))
 
 export function winterProgram(direction) {
+  const schedule = PLAN.flatMap(({ month, stages }) => stages.map(stage => ({
+    ...stage, month: stage.monthByDirection?.[direction] ?? month,
+  })))
   return PLAN.map(m => ({
     month: m.month,
-    stages: m.stages.filter(s => stageFor(s, direction)).map(s => {
+    stages: schedule.filter(s => s.month === m.month && stageFor(s, direction)).map(s => {
       const keys = s.modules || (direction && s.byDir[direction]) || []
       const about = Array.isArray(s.about)
         ? s.about

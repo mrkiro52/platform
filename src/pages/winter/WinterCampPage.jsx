@@ -2,16 +2,18 @@ import { useEffect, useMemo, useState } from 'react'
 import { api } from '../../api'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import {
-  WINTER, WINTER_MONTHS, WINTER_WEEKS, WINTER_BREAK, EVENT_TYPES,
-  campProgress, monthProgress, currentWinterWeek, winterEvents, personalCallEvents, upcomingEvents,
-  isoOf, dateOf, humanDate, shortDate, rangeLabel,
+  WINTER, WINTER_MONTHS, WINTER_WEEKS, EVENT_TYPES,
+  campProgress, monthProgress, winterEvents, personalCallEvents, upcomingEvents,
+  isoOf, dateOf, humanDate, shortDate,
 } from '../../data/winter/schedule'
 import {
   WINTER_CONTACT, winterDirectionOf, winterProgram, winterTasks,
 } from '../../data/winter'
 import { summarize, useWinterHomework } from '../../components/winter/useWinterHomework'
-import { loadVisited, plural } from '../../components/winter/winterLocal'
-import { chapterStep, chapterUrl, winterRoute } from '../../data/winter/route'
+import { plural } from '../../components/winter/winterLocal'
+import { chapterUrl, winterRoute } from '../../data/winter/route'
+import WinterChapterCard from '../../components/winter/WinterChapterCard'
+import { ChevronRightIcon } from '../../components/icons'
 import '../../winter.css'
 
 const MONTH_NAMES = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь']
@@ -26,17 +28,6 @@ function Snowflake({ size = 22 }) {
       <path d="m9.5 3.5 2.5 2.5 2.5-2.5M9.5 20.5 12 18l2.5 2.5M3.5 9.5 6 12l-2.5 2.5M20.5 9.5 18 12l2.5 2.5" />
     </svg>
   )
-}
-
-// ── Даты этапов ──────────────────────────────────────────────────────────────
-
-function stageDates(stage) {
-  const weeks = stage.weeks.map(n => WINTER_WEEKS.find(w => w.n === n))
-  return { start: weeks[0].start, end: weeks[weeks.length - 1].end }
-}
-
-function weeksLabel(weeks) {
-  return weeks.length > 1 ? `Недели ${weeks[0]}–${weeks[weeks.length - 1]}` : `Неделя ${weeks[0]}`
 }
 
 function stageTitle(stage, direction) {
@@ -59,25 +50,17 @@ function StackedBar({ sum, thin = false }) {
 
 // ── Шапка: лагерь, направление, прогресс по месяцам ──────────────────────────
 
-function TopBar({ direction, progress, week }) {
-  let status
-  if (progress.phase === 'before') status = <>До старта <b>{progress.daysTo} {plural(progress.daysTo, 'день', 'дня', 'дней')}</b> · материалы уже открыты</>
-  else if (progress.phase === 'after') status = <>Лагерь завершён · материалы остаются открытыми</>
-  else if (week?.isBreak) status = <>Каникулы · <b>{rangeLabel(WINTER_BREAK.start, WINTER_BREAK.end)}</b></>
-  else status = <>Идёт <b>неделя {week?.n ?? '—'}</b> из 12 · день {progress.day} из {progress.total}</>
-
+function TopBar({ direction }) {
   return (
     <header className="wc-top">
       <div className="wc-top-main">
         <span className="wc-top-flake"><Snowflake size={20} /></span>
         <div className="wc-top-text">
           <h1 className="wc-top-title">Winter Camp <span>{WINTER.season}</span></h1>
-          <p className="wc-top-status">{status}</p>
           <div className="wc-top-chips">
             {direction
-              ? <span className="wc-chip is-accent">{direction.name}</span>
+              ? <span className="wc-chip is-accent">Направление · {direction.name}</span>
               : <a className="wc-chip is-warn" href={WINTER_CONTACT.url} target="_blank" rel="noopener noreferrer">Направление не выбрано → {WINTER_CONTACT.handle}</a>}
-            <span className="wc-chip">{humanDate(WINTER.start)} — {humanDate(WINTER.end)}</span>
           </div>
         </div>
       </div>
@@ -112,81 +95,72 @@ function TimingProgress({ progress, now }) {
   )
 }
 
-const STATUS = {
-  approved: 'Принято', submitted: 'На проверке', rework: 'Нужны правки', failed: 'Тест не пройден',
+function ModuleCards({ mod, entries, homework }) {
+  const cards = list => <div className="wc-chs">{list.map(entry => (
+    <WinterChapterCard key={entry.key} entry={entry} homework={homework.byKey[entry.key]} />
+  ))}</div>
+
+  return (
+    <section className="wc-dm">
+      <div className="wc-dm-info">
+        <h4 className="wc-dm-name">{mod.name}</h4>
+        <p className="wc-dm-lead">{mod.lead}</p>
+      </div>
+      {mod.express?.length > 0 && <div className="prg-express-row">
+        {mod.express.map(ch => <Link key={ch.ref} className="wc-more" to={chapterUrl({ mod, ch })}>{ch.label || ch.title}</Link>)}
+      </div>}
+      {mod.groups ? mod.groups.map(group => (
+        <section key={group.level}>
+          <h5 className="wc-dm-group">{group.title}</h5>
+          {cards(entries.filter(entry => entry.ch.level === group.level))}
+        </section>
+      )) : cards(entries)}
+    </section>
+  )
 }
 
-function Program({ route, stages, active, onSelect, next, step, homework, visited, direction }) {
-  const { start, end } = stageDates(active)
+function Program({ program, route, active, onSelect, homework, direction }) {
   return (
     <section className="wc-section" aria-labelledby="wc-program-title">
-      <div className="wc-section-head">
-        <h2 id="wc-program-title" className="wc-section-title">Основная программа</h2>
-        <p className="wc-section-sub">Иди по порядку: изучи конспект и выполни задание, если оно сдаётся на платформе. После отправки работы можно продолжать, пока она на проверке.</p>
-      </div>
-
-      <div className="wc-resume">
-        {homework.loading ? <p className="wc-muted" role="status">Загружаем учебный прогресс…</p> : homework.error ? (
-          <p className="wc-muted">Прогресс недоступен. <button type="button" className="wc-link" onClick={homework.reload}>Повторить загрузку</button></p>
-        ) : next?.needsDirection ? (
-          <><strong>Следующий этап — обучение по направлению</strong><a className="wc-link" href={WINTER_CONTACT.url}>Выбрать направление в Telegram →</a></>
-        ) : next ? (
-          <>
-            <div><span className="wc-kicker">Следующий шаг · Глава {next.number}</span><h3>{next.ch.title}</h3></div>
-            <Link className="prg-task-cta-btn" to={step.url}>{step.label} →</Link>
-          </>
-        ) : <strong>Все обязательные главы пройдены. Статусы работ — в учебном прогрессе.</strong>}
-      </div>
-
-      <nav aria-label="Этапы программы">
-        <ol className="wc-stage-nav">
-          {stages.map((stage, i) => (
-            <li key={stage.key}>
-              <button type="button" aria-pressed={stage === active} onClick={() => onSelect(stage.key)}>
-                <span className="wc-ch-num">{i + 1}.</span> {stage.title}
-              </button>
-            </li>
-          ))}
-        </ol>
-      </nav>
-
-      <div className="wc-detail">
-        <div className="wc-detail-head">
-          <span className="wc-kicker">{weeksLabel(active.weeks)} · {rangeLabel(start, end)}</span>
-          <h3 className="wc-detail-title">{stageTitle(active, direction)}</h3>
-        </div>
-        {active.needsDirection ? (
-          <p className="wc-stage-empty">Чтобы открыть главы этого этапа, выбери направление через <a href={WINTER_CONTACT.url}>{WINTER_CONTACT.handle}</a>.</p>
-        ) : active.modules.map(mod => {
-          const entries = route.filter(entry => entry.stage === active && entry.mod === mod)
+      <h2 id="wc-program-title" className="wc-section-title">Основная программа</h2>
+      <nav className="wc-plan wc-month-picker" aria-label="Месяцы программы">
+        {program.map(({ month }) => {
+          const { key, label, theme } = WINTER_MONTHS.find(item => item.n === month)
           return (
-            <section className="wc-dm" key={mod.key}>
-              <div className="wc-module-heading">
-                <h4 className="wc-dm-name">{mod.name}</h4>
-                <Link className="wc-link" to={`/winter-camp/m/${mod.key}`}>Обзор блока →</Link>
-              </div>
-              <ol className="wc-route" start={entries[0]?.number}>
-                {entries.map(entry => {
-                  const { ch, key, number } = entry
-                  const action = chapterStep(entry, homework.byKey, visited)
-                  const status = STATUS[homework.byKey[key]?.status] || (visited.has(key) ? (action ? 'Конспект прочитан' : 'Пройдено') : '')
-                  return (
-                    <li key={key} className={next === entry ? 'is-current' : undefined}>
-                      <span className="wc-ch-num" aria-label={`Глава ${number}`}>{number}</span>
-                      <div><strong>{ch.title}</strong>{(ch.optional || status) && <small>{[ch.optional && 'По желанию', status].filter(Boolean).join(' · ')}</small>}</div>
-                      <Link className="wc-link" aria-label={`${action?.label || 'Открыть'}: ${ch.title}`} to={action?.url || chapterUrl(entry)}>
-                        {action?.label || 'Открыть'} →
-                      </Link>
-                    </li>
-                  )
-                })}
-              </ol>
-            </section>
+            <button key={key} type="button" className="wc-plan-month" aria-pressed={month === active.month}
+              aria-controls="wc-month-content" onClick={() => onSelect(month)}>
+              <span className="wc-plan-title">{label}</span>
+              <span className="wc-month-theme">{theme}</span>
+            </button>
           )
         })}
+      </nav>
+      <div className="wc-detail" id="wc-month-content">
+        {active.stages.map(stage => (
+          <section key={stage.key} className="wc-detail">
+            <h3 className="wc-detail-title">{stageTitle(stage, direction)}</h3>
+            {stage.needsDirection ? (
+              <p className="wc-stage-empty">Чтобы открыть главы этого этапа, выбери направление через <a href={WINTER_CONTACT.url}>{WINTER_CONTACT.handle}</a>.</p>
+            ) : stage.modules.map(mod => (
+              <ModuleCards key={mod.key} mod={mod} entries={route.filter(entry => entry.stage === stage && entry.mod === mod)} homework={homework} />
+            ))}
+          </section>
+        ))}
       </div>
     </section>
   )
+}
+
+const PANELS = { calendar: 'Календарь событий', homework: 'Учебный процесс', timing: 'Прогресс лагеря' }
+const PANEL_ORDER_KEY = 'kiro_winter_panel_order'
+
+function loadPanelOrder() {
+  const defaults = Object.keys(PANELS)
+  try {
+    const stored = JSON.parse(localStorage.getItem(PANEL_ORDER_KEY))
+    if (Array.isArray(stored)) return [...new Set([...stored.filter(id => Object.hasOwn(PANELS, id)), ...defaults])]
+  } catch { /* Хранилище недоступно или порядок повреждён */ }
+  return defaults
 }
 
 // ── Итоги домашних заданий ───────────────────────────────────────────────────
@@ -431,43 +405,58 @@ export default function WinterCampPage({ user }) {
   }, [isWinter])
   const events = useMemo(() => [...winterEvents(direction?.name, { math: false }), ...personalCallEvents(calls)]
     .sort((a, b) => a.date.localeCompare(b.date) || (a.time || '').localeCompare(b.time || '')), [direction?.name, calls])
-  const visited = useMemo(() => loadVisited(user), [user?.id])
   const route = useMemo(() => winterRoute(stages), [stages])
-  const next = homework.loading || homework.error ? null : route.find(entry =>
-    entry.needsDirection || (!entry.ch.optional && chapterStep(entry, homework.byKey, visited)))
-  const step = next && !next.needsDirection ? chapterStep(next, homework.byKey, visited) : null
   const [selected, setSelected] = useState(null)
-  const active = stages.find(stage => stage.key === selected) || next?.stage || stages[0]
+  const today = isoOf(now)
+  const currentMonth = WINTER_MONTHS.find(month => today <= month.end) || WINTER_MONTHS[WINTER_MONTHS.length - 1]
+  const active = program.find(month => month.month === (selected ?? currentMonth.n))
+  const [panelOrder, setPanelOrder] = useState(loadPanelOrder)
+
+  function movePanel(index, offset) {
+    const target = index + offset
+    if (target < 0 || target >= panelOrder.length) return
+    const next = [...panelOrder]
+    next[index] = panelOrder[target]
+    next[target] = panelOrder[index]
+    setPanelOrder(next)
+    try { localStorage.setItem(PANEL_ORDER_KEY, JSON.stringify(next)) } catch { /* Порядок сохранён на время сеанса */ }
+  }
 
   if (!isWinter) return <Closed />
 
   return (
     <section className="page active wc-page">
-      <TopBar direction={direction} progress={campProgress(now)} week={currentWinterWeek(now)} />
+      <TopBar direction={direction} />
       <div className="wc-learning-layout">
-        <Program route={route} stages={stages} active={active} onSelect={setSelected} next={next}
-          step={step} homework={homework} visited={visited} direction={direction} />
+        <Program program={program} route={route} active={active} onSelect={setSelected} homework={homework} direction={direction} />
         <aside className="wc-learning-aside" aria-label="Дополнения к программе">
           <section className="wc-card">
             <h2 className="wc-card-title">Дополнительные курсы</h2>
             <p className="wc-muted">Можно проходить параллельно.</p>
             <nav className="wc-aside-links" aria-label="Дополнительные курсы">
-              <Link className="wc-link" to="/winter-camp/math">Математика →</Link>
-              <Link className="wc-link" to="/winter-camp/english">Английский →</Link>
+              <Link className="wc-link" to="/winter-camp/math">Математика</Link>
+              <Link className="wc-link" to="/winter-camp/english">Английский</Link>
             </nav>
           </section>
-          <details id="calendar" className="wc-aside-panel" open={calendarOpen} onToggle={e => setCalendarOpen(e.currentTarget.open)}>
-            <summary>Календарь событий</summary>
-            <Calendar events={events} now={now} />
-          </details>
-          <details className="wc-aside-panel">
-            <summary>Учебный прогресс</summary>
-            <HomeworkProgress tasks={tasks} homework={homework} />
-          </details>
-          <details className="wc-aside-panel">
-            <summary>Сроки лагеря</summary>
-            <TimingProgress progress={campProgress(now)} now={now} />
-          </details>
+          {panelOrder.map((id, index) => (
+            <div key={id} className="wc-panel-item">
+              <details id={id} className="wc-aside-panel"
+                {...(id === 'calendar' ? { open: calendarOpen, onToggle: event => setCalendarOpen(event.currentTarget.open) } : {})}>
+                <summary>{PANELS[id]}</summary>
+                {id === 'calendar' && <Calendar events={events} now={now} />}
+                {id === 'homework' && <HomeworkProgress tasks={tasks} homework={homework} />}
+                {id === 'timing' && <TimingProgress progress={campProgress(now)} now={now} />}
+              </details>
+              <div className="wc-panel-move">
+                <button type="button" disabled={index === 0} aria-label={`Переместить выше: ${PANELS[id]}`} onClick={() => movePanel(index, -1)}>
+                  <ChevronRightIcon className="is-up" size={17} />
+                </button>
+                <button type="button" disabled={index === panelOrder.length - 1} aria-label={`Переместить ниже: ${PANELS[id]}`} onClick={() => movePanel(index, 1)}>
+                  <ChevronRightIcon className="is-down" size={17} />
+                </button>
+              </div>
+            </div>
+          ))}
           <VacanciesLink />
         </aside>
       </div>

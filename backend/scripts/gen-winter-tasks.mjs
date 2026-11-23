@@ -25,7 +25,7 @@ for (const mod of Object.values(WINTER_MODULES)) {
   modules[mod.key] = { name: mod.name, directions: mod.dirs || null }
   for (const ch of mod.chapters) {
     if (!isCountable(ch)) continue
-    tasks[taskKey(mod, ch)] = { module: mod.key, title: ch.title, kind: ch.task.kind, required: !ch.optional }
+    tasks[taskKey(mod, ch)] = { module: mod.key, title: ch.task.title || ch.title, kind: ch.task.kind, required: !ch.optional }
   }
 }
 

@@ -99,7 +99,7 @@ router.put('/homework/:key', requireWinterStudent, (req, res) => {
     const parts = splitKey(key)
     if (!parts) return res.status(400).json({ message: 'Некорректный адрес задания' })
     const known = manifest.modules[parts.module]
-    if (Object.keys(manifest.modules).length && !known) {
+    if (Object.keys(manifest.modules).length && (!known || !Object.hasOwn(manifest.tasks, key))) {
       return res.status(404).json({ message: 'Это задание не сдаётся на платформе' })
     }
     if (known?.directions && !known.directions.includes(req.student.winter_direction)) {
@@ -303,7 +303,7 @@ router.get('/admin/students', requireWinterReview, (req, res) => {
     const byUser = new Map(users.map(u => [u.id, { sent: 0, approved: 0, bonus: 0, pending: 0, rework: 0, lastAt: null }]))
     for (const w of works) {
       const s = byUser.get(w.user_id)
-      if (!s) continue
+      if (!s || (Object.keys(manifest.tasks).length && !Object.hasOwn(manifest.tasks, w.task_key))) continue
       s.sent += 1
       // В счёт программы идут обязательные задания; принятые главы «по желанию» — отдельно
       const required = manifest.tasks[w.task_key]?.required !== false

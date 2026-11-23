@@ -5,7 +5,7 @@
 
 export const WINTER = {
   title: 'Winter Camp',
-  season: '2026/27',
+  season: '2026/2027',
   start: '2026-12-01',
   end: '2027-02-28',
 }
