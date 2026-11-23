@@ -1477,6 +1477,14 @@ function migrate() {
       console.error('❌ Migration 50 failed:', err.message)
     }
   }
+
+  if (db.pragma('user_version', { simple: true }) < 51) {
+    db.transaction(() => {
+      if (db.pragma('user_version', { simple: true }) >= 51) return
+      db.exec("ALTER TABLE sales_events ADD COLUMN kind TEXT NOT NULL DEFAULT 'meeting' CHECK (kind IN ('meeting', 'busy'))")
+      db.pragma('user_version = 51')
+    }).immediate()
+  }
 }
 
 migrate()

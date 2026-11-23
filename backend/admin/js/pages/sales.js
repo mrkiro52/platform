@@ -845,7 +845,7 @@ const SalesCalendarPage = {
   head() {
     return pageHead({
       title: 'Календарь',
-      sub: `Встречи и созвоны отдела продаж · время московское`,
+      sub: 'Встречи и занятость отдела продаж · время московское',
       actions: `
         <div class="scal-nav">
           <button class="btn-icon is-bordered" onclick="SalesCalendarPage.shift(-1)" title="Предыдущая неделя" aria-label="Предыдущая неделя">${icon('chevron-left', 17)}</button>
@@ -853,7 +853,10 @@ const SalesCalendarPage = {
           <button class="btn-icon is-bordered" onclick="SalesCalendarPage.shift(1)" title="Следующая неделя" aria-label="Следующая неделя">${icon('chevron-right', 17)}</button>
           <span class="scal-range">${SalesCalendarPage.week ? SalesCalendarPage.rangeLabel() : ''}</span>
         </div>
-        <button class="btn btn-primary" onclick="SalesCalendarPage.open(null)">${icon('plus')}Новая встреча</button>`,
+        <div class="scal-nav">
+          <button type="button" class="btn btn-primary" onclick="SalesCalendarPage.open(null)">${icon('plus')}Новая встреча</button>
+          <button type="button" class="btn btn-secondary scal-busy-button" onclick="SalesCalendarPage.open(null, { busy: true })">${icon('plus')}Добавить занятость</button>
+        </div>`,
     })
   },
 
@@ -864,17 +867,17 @@ const SalesCalendarPage = {
 
   // Встречи одного дня раскладываются по колонкам, если пересекаются по времени
   layout(events) {
-    const list = events.map(e => {
-      const start = Sales.parts(e.startsAt).minutes
-      return { e, start, end: Math.min(start + Math.max(e.duration, 20), 1440) }
-    }).sort((a, b) => a.start - b.start || b.end - a.end)
+    const list = events.map(event => ({
+      ...event,
+      layoutEnd: Math.min(1440, Math.max(event.end, event.start + Math.ceil(22 / SCAL_HOUR * 60))),
+    })).sort((a, b) => a.start - b.start || b.end - a.end)
     const out = []
     let cluster = [], clusterEnd = -1
     const flush = () => {
       const cols = []
       for (const it of cluster) {
         let c = cols.findIndex(end => end <= it.start)
-        if (c < 0) { c = cols.length; cols.push(it.end) } else cols[c] = it.end
+        if (c < 0) { c = cols.length; cols.push(it.layoutEnd) } else cols[c] = it.layoutEnd
         it.col = c
       }
       for (const it of cluster) it.cols = cols.length
@@ -884,7 +887,7 @@ const SalesCalendarPage = {
     for (const it of list) {
       if (cluster.length && it.start >= clusterEnd) flush()
       cluster.push(it)
-      clusterEnd = Math.max(clusterEnd, it.end)
+      clusterEnd = Math.max(clusterEnd, it.layoutEnd)
     }
     if (cluster.length) flush()
     return out
@@ -897,25 +900,32 @@ const SalesCalendarPage = {
     const days = Array.from({ length: 7 }, (_, i) => addDays(week, i))
     const byDay = Object.fromEntries(days.map(d => [d, []]))
     const hidden = SalesCalendarPage.hidden
-    // Созвон виден, если в нём участвует хотя бы один из выбранных в легенде
+    // Событие видно, если выбран хотя бы один его участник.
     for (const e of SalesCalendarPage.events.filter(x => x.participants.some(p => !hidden.has(p)))) {
-      const { day } = Sales.parts(e.startsAt)
-      if (byDay[day]) byDay[day].push(e)
+      const begins = Math.floor(Date.parse(e.startsAt) / 60000) * 60000
+      const ends = begins + e.duration * 60000
+      for (const day of days) {
+        const midnight = Date.parse(Sales.toIso(day, '00:00'))
+        const start = Math.max(0, (begins - midnight) / 60000)
+        const end = Math.min(1440, (ends - midnight) / 60000)
+        if (start < end) byDay[day].push({ e, start, end })
+      }
     }
     const who = e => e.participants.map(Sales.name).join(', ')
     const col = (day) => `
       <div class="scal-col${day === today ? ' is-today' : ''}" data-day="${day}" onclick="SalesCalendarPage.clickCol(event, '${day}')">
         ${day === today ? `<div class="scal-now" style="top:${(nowMin / 60 * SCAL_HOUR).toFixed(1)}px"></div>` : ''}
-        ${SalesCalendarPage.layout(byDay[day]).map(({ e, start, col: c, cols }) => {
+        ${SalesCalendarPage.layout(byDay[day]).map(({ e, start, end, col: c, cols }) => {
           const top = start / 60 * SCAL_HOUR
-          const height = Math.max(Math.min(e.duration, 1440 - start) / 60 * SCAL_HOUR, 22)
-          const time = `${Sales.clock(start)}–${Sales.clock(start + e.duration)}`
+          const height = Math.max((end - start) / 60 * SCAL_HOUR, 22)
+          const short = end - start <= 30
+          const time = `${Sales.clock(start)}–${end === 1440 ? '24:00' : Sales.clock(end)}`
           return `
-          <button type="button" class="scal-ev${e.duration <= 30 ? ' is-short' : ''}"
+          <button type="button" class="scal-ev${short ? ' is-short' : ''}${e.kind === 'busy' ? ' is-busy' : ''}"
             style="top:${top.toFixed(1)}px;height:${(height - 2).toFixed(1)}px;left:calc(${(c / cols * 100).toFixed(2)}% + 2px);width:calc(${(100 / cols).toFixed(2)}% - 4px)"
             onclick="event.stopPropagation();SalesCalendarPage.open(${e.id})" title="${esc(`${time} · ${e.title} · ${who(e)}`)}">
             <span class="scal-ev-dots">${e.participants.map(p => `<i class="sp-${esc(p)}"></i>`).join('')}</span>
-            ${e.duration <= 30
+            ${short
               ? `<span class="scal-ev-time">${Sales.clock(start)}</span><span class="scal-ev-title">${esc(e.title)}</span>`
               : `<span class="scal-ev-title">${esc(e.title)}</span><span class="scal-ev-time">${time}</span><span class="scal-ev-who">${esc(who(e))}</span>`}
           </button>`
@@ -940,8 +950,8 @@ const SalesCalendarPage = {
         </div>
         <div class="scal-legend">${Sales.people.map(p => {
           const on = !SalesCalendarPage.hidden.has(p.key)
-          return `<button type="button" class="scal-legend-item sp-${p.key}${on ? ' is-on' : ''}" aria-pressed="${on}" onclick="SalesCalendarPage.togglePerson('${p.key}')" title="${on ? 'Скрыть' : 'Показать'} созвоны, где участвует ${esc(p.name)}"><i></i>${esc(p.name)}</button>`
-        }).join('')}<span class="scal-legend-hint">Нажми на имя, чтобы скрыть или показать его созвоны · на свободное время — чтобы завести встречу</span></div>
+          return `<button type="button" class="scal-legend-item sp-${p.key}${on ? ' is-on' : ''}" aria-pressed="${on}" onclick="SalesCalendarPage.togglePerson('${p.key}')" title="${on ? 'Скрыть' : 'Показать'} события, где участвует ${esc(p.name)}"><i></i>${esc(p.name)}</button>`
+        }).join('')}<span class="scal-legend-hint">Серые блоки — занятость · нажми на имя, чтобы скрыть или показать события участника</span></div>
       </div>`
   },
 
@@ -963,8 +973,9 @@ const SalesCalendarPage = {
   },
 
   // Форма встречи: новая (можно с днём и временем или по лиду) или существующая
-  open(id, { day = null, time = null, lead = null } = {}) {
+  open(id, { day = null, time = null, lead = null, busy = false } = {}) {
     const e = id ? SalesCalendarPage.events.find(x => x.id === id) : null
+    if (e) busy = e.kind === 'busy'
     let draft
     if (e) {
       const p = Sales.parts(e.startsAt)
@@ -980,17 +991,18 @@ const SalesCalendarPage = {
         participants: [Sales.me],
         day: day || nowP.day,
         time: time || Sales.clock(next),
-        duration: 30,
+        duration: busy ? 60 : 30,
         leadId: lead ? lead.id : null,
       }
     }
+    draft.busy = busy
     SalesCalendarPage.draft = draft
     Modal.open(`
-      ${modalHead(e ? 'Встреча' : lead ? 'Назначить созвон' : 'Новая встреча', lead ? `По лиду ${esc(lead.contact)} — осталось выбрать день, время и длительность` : draft.leadId ? 'Созвон по лиду из CRM' : '')}
-      <div class="field"><label for="e-title">Название</label><input id="e-title" value="${esc(draft.title)}" maxlength="200" placeholder="Созвон с клиентом"${lead ? '' : ' autofocus'}/></div>
-      <div class="field"><label for="e-desc">Описание</label><textarea id="e-desc" rows="4" placeholder="О чём встреча, ссылка на созвон, контакты">${esc(draft.description)}</textarea></div>
+      ${modalHead(busy ? 'Занятость' : e ? 'Встреча' : lead ? 'Назначить созвон' : 'Новая встреча', lead ? `По лиду ${esc(lead.contact)} — осталось выбрать день, время и длительность` : draft.leadId ? 'Созвон по лиду из CRM' : '')}
+      <div class="field"><label for="e-title">Название</label><input id="e-title" value="${esc(draft.title)}" maxlength="200" placeholder="${busy ? 'Занятость' : 'Созвон с клиентом'}"${lead ? '' : ' autofocus'}/></div>
+      <div class="field"><label for="e-desc">Описание</label><textarea id="e-desc" rows="4" placeholder="${busy ? 'Комментарий по желанию' : 'О чём встреча, ссылка на созвон, контакты'}">${esc(draft.description)}</textarea></div>
       <div class="field">
-        <label>Кто идёт на созвон</label>
+        <label>${busy ? 'Кто занят' : 'Кто идёт на созвон'}</label>
         <div class="vac-cat-checks" id="e-people">${Sales.people.map(p => `<label class="course-check">
           <input type="checkbox" value="${p.key}"${draft.participants.includes(p.key) ? ' checked' : ''}/>
           <span class="course-box">${icon('check', 12)}</span><span>${esc(p.name)}</span>
@@ -998,12 +1010,14 @@ const SalesCalendarPage = {
       </div>
       <div class="form-row">
         <div class="field"><label for="e-day">День</label><input id="e-day" type="date" value="${draft.day}"${lead ? ' autofocus' : ''}/></div>
-        <div class="field"><label for="e-time">Начало, МСК</label><input id="e-time" type="time" step="900" value="${draft.time}"/></div>
+        <div class="field"><label for="e-time">Начало, МСК</label><input id="e-time" type="time" step="${busy ? 60 : 900}" value="${draft.time}"/></div>
       </div>
-      <div class="field">
+      ${busy ? `<div class="field"><label for="e-hours">Длительность, ч</label>
+        <input id="e-hours" type="number" min="1" max="24" step="1" value="${draft.duration / 60}" required/>
+      </div>` : `<div class="field">
         <label>Длительность</label>
         <div class="seg" id="e-duration" role="radiogroup">${SALES_DURATIONS.map(d => `<button type="button" role="radio" aria-checked="${d === draft.duration}" class="${d === draft.duration ? 'active' : ''}" onclick="SalesCalendarPage.setDuration(${d})">${d} мин</button>`).join('')}</div>
-      </div>
+      </div>`}
       <div class="form-error" id="e-err" hidden></div>
       <div class="modal-actions">
         ${e ? `<button class="btn btn-danger sales-left" onclick="SalesCalendarPage.remove(${e.id})">${icon('trash-2')}Удалить</button>` : ''}
@@ -1028,11 +1042,13 @@ const SalesCalendarPage = {
       title: $('#e-title').value.trim(),
       description: $('#e-desc').value.trim(),
       participants: [...document.querySelectorAll('#e-people input:checked')].map(i => i.value),
-      duration: draft.duration,
+      duration: draft.busy ? Number($('#e-hours').value) * 60 : draft.duration,
+      kind: draft.busy ? 'busy' : 'meeting',
       leadId: draft.leadId,
     }
-    if (!body.title) return Sales.showError('#e-err', 'Укажи название встречи')
-    if (!body.participants.length) return Sales.showError('#e-err', 'Выбери, кто идёт на созвон')
+    if (!draft.busy && !body.title) return Sales.showError('#e-err', 'Укажи название встречи')
+    if (draft.busy && !$('#e-hours').checkValidity()) return Sales.showError('#e-err', 'Укажи длительность целым числом от 1 до 24 часов')
+    if (!body.participants.length) return Sales.showError('#e-err', draft.busy ? 'Выбери, кто занят' : 'Выбери, кто идёт на созвон')
     if (!day || !time) return Sales.showError('#e-err', 'Укажи день и время начала')
     body.startsAt = Sales.toIso(day, time)
     $('#e-save').disabled = true
@@ -1041,7 +1057,7 @@ const SalesCalendarPage = {
         ? await api(`/api/sales/events/${draft.id}`, { method: 'PUT', body })
         : await api('/api/sales/events', { method: 'POST', body })
       Modal.close()
-      toast(draft.id ? 'Встреча обновлена' : res.leadMoved ? 'Созвон назначен, лид переведён в «Назначен созвон»' : draft.leadId ? 'Созвон назначен' : 'Встреча добавлена')
+      toast(draft.busy ? (draft.id ? 'Занятость обновлена' : 'Занятость добавлена') : draft.id ? 'Встреча обновлена' : res.leadMoved ? 'Созвон назначен, лид переведён в «Назначен созвон»' : draft.leadId ? 'Созвон назначен' : 'Встреча добавлена')
       // Показываем неделю, на которую попала встреча
       Router.go(`/sales/calendar?week=${Sales.monday(day)}`, { replace: true })
     } catch (e) {
@@ -1054,14 +1070,14 @@ const SalesCalendarPage = {
     const e = SalesCalendarPage.events.find(x => x.id === id)
     if (!e) return
     const ok = await confirmDialog({
-      title: 'Точно удалить встречу?',
+      title: e.kind === 'busy' ? 'Удалить занятость?' : 'Точно удалить встречу?',
       text: `«<b>${esc(e.title)}</b>» пропадёт из календаря у всех участников.`,
       confirm: 'Да, удалить', danger: true,
     })
     if (!ok) return
     try {
       await api(`/api/sales/events/${id}`, { method: 'DELETE' })
-      toast('Встреча удалена')
+      toast(e.kind === 'busy' ? 'Занятость удалена' : 'Встреча удалена')
       Router.reload()
     } catch (err) { toast(err.message, 'err') }
   },

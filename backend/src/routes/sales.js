@@ -513,6 +513,7 @@ function mapEvent(row) {
   try { participants = JSON.parse(row.participants || '[]') } catch { /* пустой список */ }
   return {
     id: row.id,
+    kind: row.kind,
     title: row.title,
     description: row.description,
     participants: PEOPLE_KEYS.filter(k => participants.includes(k)),
@@ -524,32 +525,59 @@ function mapEvent(row) {
 }
 
 function cleanEvent(body) {
-  const title = String(body?.title || '').trim()
+  const kind = body?.kind ?? 'meeting'
+  if (!['meeting', 'busy'].includes(kind)) return { error: 'Неизвестный тип события' }
+  const title = String(body?.title || '').trim() || (kind === 'busy' ? 'Занятость' : '')
   const description = String(body?.description || '').trim()
   const raw = Array.isArray(body?.participants) ? body.participants : []
   const participants = PEOPLE_KEYS.filter(k => raw.includes(k))
   const start = new Date(body?.startsAt)
   const duration = Number(body?.duration)
-  const leadId = Number.isInteger(Number(body?.leadId)) && Number(body.leadId) > 0 ? Number(body.leadId) : null
+  const leadId = kind === 'meeting' && Number.isInteger(Number(body?.leadId)) && Number(body.leadId) > 0 ? Number(body.leadId) : null
 
   if (!title) return { error: 'Укажи название встречи' }
   if (title.length > LIMITS.title) return { error: 'Слишком длинное название' }
   if (description.length > LIMITS.description) return { error: 'Слишком длинное описание' }
   if (!participants.length) return { error: 'Выбери хотя бы одного участника' }
   if (Number.isNaN(start.getTime())) return { error: 'Укажи дату и время начала' }
-  if (!DURATIONS.includes(duration)) return { error: 'Длительность — 15, 30, 45 или 60 минут' }
-  return { value: { title, description, participants, startsAt: start.toISOString(), duration, leadId } }
+  if (kind === 'busy') {
+    if (!Number.isInteger(duration / 60) || duration < 60 || duration > 1440) {
+      return { error: 'Укажи длительность целым числом от 1 до 24 часов' }
+    }
+  } else if (!DURATIONS.includes(duration)) return { error: 'Длительность — 15, 30, 45 или 60 минут' }
+  return { value: { kind, title, description, participants, startsAt: start.toISOString(), duration, leadId } }
 }
 
-// GET /api/sales/events?from=ISO&to=ISO — встречи, которые начинаются в промежутке
+function eventConflict(event, id = null) {
+  const endsAt = new Date(Date.parse(event.startsAt) + event.duration * 60000).toISOString()
+  const candidates = db.prepare(`
+    SELECT * FROM sales_events
+    WHERE starts_at < ? AND datetime(starts_at, '+' || duration || ' minutes') > datetime(?)
+      AND id IS NOT ? AND (kind = 'busy' OR ? = 'busy')
+    ORDER BY starts_at
+  `).all(endsAt, event.startsAt, id, event.kind)
+  for (const row of candidates) {
+    const shared = mapEvent(row).participants.filter(person => event.participants.includes(person))
+    if (!shared.length) continue
+    const people = SALES_PEOPLE.filter(person => shared.includes(person.key)).map(person => person.name)
+    return `Пересечение с событием «${row.title}». Участники: ${people.join(', ')}.`
+  }
+  return null
+}
+
+// GET /api/sales/events?from=ISO&to=ISO — события, пересекающие промежуток
 router.get('/events', requireSales, (req, res) => {
   try {
     const from = new Date(req.query.from), to = new Date(req.query.to)
     if (Number.isNaN(from.getTime()) || Number.isNaN(to.getTime())) {
       return res.status(400).json({ message: 'Укажи границы периода' })
     }
-    const rows = db.prepare('SELECT * FROM sales_events WHERE starts_at >= ? AND starts_at < ? ORDER BY starts_at, id')
-      .all(from.toISOString(), to.toISOString())
+    if (from >= to) return res.status(400).json({ message: 'Конец периода должен быть позже начала' })
+    const rows = db.prepare(`
+      SELECT * FROM sales_events
+      WHERE starts_at < ? AND datetime(starts_at, '+' || duration || ' minutes') > datetime(?)
+      ORDER BY starts_at, id
+    `).all(to.toISOString(), from.toISOString())
     res.json({ me: req.person, people: SALES_PEOPLE, events: rows.map(mapEvent) })
   } catch (e) {
     res.status(500).json({ message: e.message })
@@ -562,18 +590,24 @@ router.post('/events', requireSales, (req, res) => {
   try {
     const { value: v, error } = cleanEvent(req.body)
     if (error) return res.status(400).json({ message: error })
-    const lead = v.leadId ? db.prepare('SELECT * FROM sales_leads WHERE id = ?').get(v.leadId) : null
-    const info = db.prepare(`
-      INSERT INTO sales_events (title, description, participants, starts_at, duration, lead_id, created_by, created_at)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-    `).run(v.title, v.description, JSON.stringify(v.participants), v.startsAt, v.duration, lead ? lead.id : null, req.person, now())
-    let leadMoved = false
-    if (lead && ['new', 'dialog'].includes(lead.status)) {
-      db.prepare("UPDATE sales_leads SET status = 'call_scheduled', updated_at = ? WHERE id = ?").run(now(), lead.id)
-      logStatus(lead.id, 'call_scheduled', req.person)
-      leadMoved = true
-    }
-    res.status(201).json({ event: mapEvent(db.prepare('SELECT * FROM sales_events WHERE id = ?').get(info.lastInsertRowid)), leadMoved })
+    const result = db.transaction(() => {
+      const conflict = eventConflict(v)
+      if (conflict) return { conflict }
+      const lead = v.leadId ? db.prepare('SELECT * FROM sales_leads WHERE id = ?').get(v.leadId) : null
+      const info = db.prepare(`
+        INSERT INTO sales_events (title, description, participants, starts_at, duration, lead_id, created_by, created_at, kind)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `).run(v.title, v.description, JSON.stringify(v.participants), v.startsAt, v.duration, lead ? lead.id : null, req.person, now(), v.kind)
+      let leadMoved = false
+      if (lead && ['new', 'dialog'].includes(lead.status)) {
+        db.prepare("UPDATE sales_leads SET status = 'call_scheduled', updated_at = ? WHERE id = ?").run(now(), lead.id)
+        logStatus(lead.id, 'call_scheduled', req.person)
+        leadMoved = true
+      }
+      return { event: mapEvent(db.prepare('SELECT * FROM sales_events WHERE id = ?').get(info.lastInsertRowid)), leadMoved }
+    }).immediate()
+    if (result.conflict) return res.status(409).json({ message: result.conflict })
+    res.status(201).json(result)
   } catch (e) {
     res.status(500).json({ message: e.message })
   }
@@ -582,13 +616,19 @@ router.post('/events', requireSales, (req, res) => {
 // PUT /api/sales/events/:id — изменить встречу
 router.put('/events/:id', requireSales, (req, res) => {
   try {
-    const row = db.prepare('SELECT * FROM sales_events WHERE id = ?').get(req.params.id)
-    if (!row) return res.status(404).json({ message: 'Встреча не найдена' })
-    const { value: v, error } = cleanEvent({ ...req.body, leadId: row.lead_id })
-    if (error) return res.status(400).json({ message: error })
-    db.prepare('UPDATE sales_events SET title = ?, description = ?, participants = ?, starts_at = ?, duration = ? WHERE id = ?')
-      .run(v.title, v.description, JSON.stringify(v.participants), v.startsAt, v.duration, row.id)
-    res.json({ event: mapEvent(db.prepare('SELECT * FROM sales_events WHERE id = ?').get(row.id)) })
+    const result = db.transaction(() => {
+      const row = db.prepare('SELECT * FROM sales_events WHERE id = ?').get(req.params.id)
+      if (!row) return { status: 404, message: 'Событие не найдено' }
+      const { value: v, error } = cleanEvent({ ...req.body, kind: row.kind, leadId: row.lead_id })
+      if (error) return { status: 400, message: error }
+      const conflict = eventConflict(v, row.id)
+      if (conflict) return { status: 409, message: conflict }
+      db.prepare('UPDATE sales_events SET title = ?, description = ?, participants = ?, starts_at = ?, duration = ? WHERE id = ?')
+        .run(v.title, v.description, JSON.stringify(v.participants), v.startsAt, v.duration, row.id)
+      return { event: mapEvent(db.prepare('SELECT * FROM sales_events WHERE id = ?').get(row.id)) }
+    }).immediate()
+    if (result.status) return res.status(result.status).json({ message: result.message })
+    res.json(result)
   } catch (e) {
     res.status(500).json({ message: e.message })
   }
@@ -598,7 +638,7 @@ router.put('/events/:id', requireSales, (req, res) => {
 router.delete('/events/:id', requireSales, (req, res) => {
   try {
     const info = db.prepare('DELETE FROM sales_events WHERE id = ?').run(req.params.id)
-    if (!info.changes) return res.status(404).json({ message: 'Встреча не найдена' })
+    if (!info.changes) return res.status(404).json({ message: 'Событие не найдено' })
     res.json({ ok: true })
   } catch (e) {
     res.status(500).json({ message: e.message })
