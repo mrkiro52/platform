@@ -1497,6 +1497,17 @@ function migrate() {
       db.pragma('user_version = 52')
     }).immediate()
   }
+  if (db.pragma('user_version', { simple: true }) < 53) {
+    db.transaction(() => {
+      if (db.pragma('user_version', { simple: true }) >= 53) return
+      db.exec(`CREATE TABLE sales_receipts (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        amount_cents INTEGER NOT NULL CHECK (amount_cents > 0),
+        received_at TEXT NOT NULL
+      )`)
+      db.pragma('user_version = 53')
+    }).immediate()
+  }
 }
 
 migrate()

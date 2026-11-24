@@ -431,13 +431,13 @@ const SalesCrmPage = {
   // prev — вознаграждения до закрытия сделки: изменившиеся числа плавно досчитываются до новых
   paintRewards(prev = null) {
     const r = SalesCrmPage.data.rewards
-    const card = (label, value, foot, accent = false, iconName = 'zap', key = '') => {
+    const card = (label, value, foot, accent = false, iconName = 'zap', key = '', actions = '') => {
       const from = prev && key ? (prev[key] || 0) : null
       const to = r[key] || 0
       const grow = from !== null && from !== to
       return `
       <div class="kpi${grow ? ' is-growing' : ''}">
-        <div class="kpi-top"><span class="kpi-label">${label}</span><span class="kpi-icon${accent ? ' is-lime' : ''}">${icon(iconName, 15)}</span></div>
+        <div class="kpi-top"><span class="kpi-label">${label}</span>${actions || `<span class="kpi-icon${accent ? ' is-lime' : ''}">${icon(iconName, 15)}</span>`}</div>
         <div class="kpi-value"${grow ? ` data-from="${from}" data-to="${to}"` : ''}>${grow ? Sales.rub(from) : value}</div>
         <div class="kpi-foot">${foot}</div>
       </div>`
@@ -449,6 +449,11 @@ const SalesCrmPage = {
         card('Сумма продаж', Sales.rub(r.total), deals(r.closedCount), false, 'trending-up', 'total'),
         card('Налог', Sales.rub(r.tax), '4% от суммы закрытых продаж', false, 'percent', 'tax'),
         card('Тебе', Sales.rub(r.khanil), '70% остатка после налога и комиссий, за вычетом реферальных', true, 'crown', 'khanil'),
+        card('Получено', Sales.rub(r.received), `Из ${Sales.rub(r.khanil)} начисленных тебе`, false, 'history', 'received', `
+          <div class="sales-receipt-actions">
+            <button type="button" class="btn-icon btn-sm" title="Добавить получение" aria-label="Добавить получение" onclick="SalesCrmPage.openReceipt()">${icon('plus', 15)}</button>
+            <button type="button" class="btn-icon btn-sm" title="История получений" aria-label="История получений" onclick="SalesCrmPage.openReceiptHistory()">${icon('history', 15)}</button>
+          </div>`),
         card('Денису', Sales.rub(r.denis), '30% остатка после налога и комиссий', false, 'user', 'denis'),
         card('Саше', Sales.rub(r.sasha), '10% с лидов, которые закрыл Саша', false, 'user', 'sasha'),
         card('Эмилю', Sales.rub(r.emil), '10% с лидов, которые закрыл Эмиль', false, 'user', 'emil'),
@@ -467,6 +472,101 @@ const SalesCrmPage = {
     }
     $('#crm-rewards').innerHTML = `<div class="sales-kpis${cards.length === 1 ? ' is-single' : ''}">${cards.join('')}</div>`
     document.querySelectorAll('#crm-rewards [data-to]').forEach(el => Sales.countUp(el, Number(el.dataset.from), Number(el.dataset.to)))
+  },
+
+  async openReceiptHistory() {
+    Modal.open(`
+      ${modalHead('История получений')}
+      <div id="receipt-history" aria-live="polite">Загрузка…</div>
+      <div class="modal-actions"><button class="btn btn-primary" onclick="SalesCrmPage.openReceipt(null, true)">${icon('plus')}Добавить получение</button></div>`)
+    const panel = $('#receipt-history')
+    try {
+      const rows = await api('/api/sales/receipts')
+      if (!panel.isConnected) return
+      SalesCrmPage.receipts = rows
+      panel.innerHTML = rows.length ? `
+        <div class="table-wrap"><table>
+          <thead><tr><th>Дата внесения</th><th>Сумма</th><th>Действия</th></tr></thead>
+          <tbody>${rows.map(row => `<tr>
+            <td>${esc(stampLabel(row.receivedAt))}</td>
+            <td class="nowrap">${Sales.rub(row.amountCents / 100)}</td>
+            <td><div class="sales-receipt-actions">
+              <button class="btn-icon btn-sm" aria-label="Изменить" title="Изменить" onclick="SalesCrmPage.openReceipt(${row.id}, true)">${icon('pencil', 15)}</button>
+              <button class="btn-icon btn-sm is-danger" aria-label="Удалить" title="Удалить" onclick="SalesCrmPage.removeReceipt(${row.id})">${icon('trash-2', 15)}</button>
+            </div></td>
+          </tr>`).join('')}</tbody>
+        </table></div>` : '<p class="muted">Получений пока нет.</p>'
+    } catch (e) {
+      panel.textContent = e.message
+    }
+  },
+
+  openReceipt(id = null, fromHistory = false) {
+    const row = id === null ? null : SalesCrmPage.receipts.find(item => item.id === id)
+    Modal.open(`
+      ${modalHead(row ? 'Изменить получение' : 'Добавить получение')}
+      <form id="receipt-form">
+        <div class="field">
+          <label for="receipt-amount">Сумма, ₽</label>
+          <input id="receipt-amount" inputmode="decimal" autocomplete="off" placeholder="10 000,50" value="${row ? row.amountCents / 100 : ''}" autofocus required />
+        </div>
+        <div class="form-error" id="receipt-error" role="alert" hidden></div>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-secondary" onclick="${fromHistory ? 'SalesCrmPage.openReceiptHistory()' : 'Modal.close()'}">Отмена</button>
+          <button class="btn btn-primary" type="submit">${icon('check')}Сохранить</button>
+        </div>
+      </form>`)
+    $('#receipt-form').onsubmit = event => {
+      event.preventDefault()
+      SalesCrmPage.saveReceipt(event.currentTarget, id, fromHistory)
+    }
+  },
+
+  async saveReceipt(form, id, fromHistory) {
+    const value = form.querySelector('#receipt-amount').value.replace(/\s/g, '').replace(',', '.')
+    if (!/^\d+(?:\.\d{1,2})?$/.test(value)) return Sales.showError('#receipt-error', 'Укажи сумму с точностью до копеек')
+    const [rubles, cents = ''] = value.split('.')
+    const amountCents = Number(rubles + cents.padEnd(2, '0'))
+    if (!Number.isSafeInteger(amountCents) || amountCents <= 0) return Sales.showError('#receipt-error', 'Укажи положительную сумму')
+    const save = form.querySelector('[type=submit]')
+    if (save.disabled) return
+    save.disabled = true
+    try {
+      const path = id === null ? '/api/sales/receipts' : `/api/sales/receipts/${id}`
+      const result = await api(path, { method: id === null ? 'POST' : 'PUT', body: { amountCents } })
+      SalesCrmPage.updateReceived(result.received)
+      if (form.isConnected) {
+        if (fromHistory) SalesCrmPage.openReceiptHistory()
+        else Modal.close()
+      }
+      toast('Получение сохранено')
+    } catch (e) {
+      if (form.isConnected) Sales.showError('#receipt-error', e.message)
+      else toast(e.message, 'err')
+    } finally { save.disabled = false }
+  },
+
+  async removeReceipt(id) {
+    const row = SalesCrmPage.receipts.find(item => item.id === id)
+    if (!row) return
+    const ok = await confirmDialog({
+      title: 'Удалить получение?',
+      text: `Из истории будет удалено получение на <b>${Sales.rub(row.amountCents / 100)}</b>.`,
+      confirm: 'Удалить', danger: true,
+    })
+    if (ok) {
+      try {
+        const result = await api(`/api/sales/receipts/${id}`, { method: 'DELETE' })
+        SalesCrmPage.updateReceived(result.received)
+        toast('Получение удалено')
+      } catch (e) { toast(e.message, 'err') }
+    }
+    SalesCrmPage.openReceiptHistory()
+  },
+
+  updateReceived(received) {
+    SalesCrmPage.data.rewards.received = received
+    if ($('#crm-rewards')) SalesCrmPage.paintRewards()
   },
 
   search: debounce((value) => { SalesCrmPage.q = value.trim().toLowerCase(); SalesCrmPage.page = 1; SalesCrmPage.paint() }, 150),

@@ -1,6 +1,6 @@
 const express = require('express')
 const crypto = require('crypto')
-const { verifyToken } = require('../middleware/auth')
+const { verifyToken, requireAdmin } = require('../middleware/auth')
 const db = require('../db')
 const { SALES_PEOPLE, salesPersonOf } = require('../admins')
 
@@ -167,7 +167,7 @@ function rewardsFor(person, leads) {
   if (person === 'khanil') {
     return {
       view: 'all', total, tax: tax / 100, closedCount: closed.length,
-      denis: denis / 100, sasha: sellers.sasha / 100, emil: sellers.emil / 100, referrals, khanil,
+      denis: denis / 100, sasha: sellers.sasha / 100, emil: sellers.emil / 100, referrals, khanil, received: receivedTotal(),
     }
   }
   if (person === 'denis') {
@@ -175,6 +175,40 @@ function rewardsFor(person, leads) {
   }
   return { view: 'seller', mine: sellers[person] / 100 }
 }
+
+function receivedTotal() {
+  return db.prepare('SELECT COALESCE(SUM(amount_cents), 0) AS cents FROM sales_receipts').get().cents / 100
+}
+
+function validateReceipt(req, res, next) {
+  const amount = req.body?.amountCents
+  if (!Number.isSafeInteger(amount) || amount <= 0) {
+    return res.status(400).json({ message: 'Укажи положительную сумму с точностью до копеек' })
+  }
+  next()
+}
+
+router.get('/receipts', requireAdmin, (req, res) => {
+  res.json(db.prepare(`SELECT id, amount_cents AS amountCents, received_at AS receivedAt
+    FROM sales_receipts ORDER BY received_at DESC, id DESC`).all())
+})
+
+router.post('/receipts', requireAdmin, validateReceipt, (req, res) => {
+  db.prepare('INSERT INTO sales_receipts (amount_cents, received_at) VALUES (?, ?)').run(req.body.amountCents, now())
+  res.status(201).json({ received: receivedTotal() })
+})
+
+router.put('/receipts/:id', requireAdmin, validateReceipt, (req, res) => {
+  const result = db.prepare('UPDATE sales_receipts SET amount_cents = ? WHERE id = ?').run(req.body.amountCents, req.params.id)
+  if (!result.changes) return res.status(404).json({ message: 'Получение не найдено' })
+  res.json({ received: receivedTotal() })
+})
+
+router.delete('/receipts/:id', requireAdmin, (req, res) => {
+  const result = db.prepare('DELETE FROM sales_receipts WHERE id = ?').run(req.params.id)
+  if (!result.changes) return res.status(404).json({ message: 'Получение не найдено' })
+  res.json({ received: receivedTotal() })
+})
 
 // GET /api/sales/me — кто я в отделе продаж и состав отдела
 router.get('/me', requireSales, (req, res) => {
