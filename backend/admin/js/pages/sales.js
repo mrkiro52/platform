@@ -445,6 +445,7 @@ const SalesCrmPage = {
     const deals = n => `${fmt(n)} ${plural(n, 'лид закрыт', 'лида закрыто', 'лидов закрыто')} в продажу`
     let cards = []
     if (r.view === 'all') {
+      const remaining = (Math.round(r.khanil * 100) - Math.round((r.received || 0) * 100)) / 100
       cards = [
         card('Сумма продаж', Sales.rub(r.total), deals(r.closedCount), false, 'trending-up', 'total'),
         card('Налог', Sales.rub(r.tax), '4% от суммы закрытых продаж', false, 'percent', 'tax'),
@@ -454,6 +455,7 @@ const SalesCrmPage = {
             <button type="button" class="btn-icon btn-sm" title="Добавить получение" aria-label="Добавить получение" onclick="SalesCrmPage.openReceipt()">${icon('plus', 15)}</button>
             <button type="button" class="btn-icon btn-sm" title="История получений" aria-label="История получений" onclick="SalesCrmPage.openReceiptHistory()">${icon('history', 15)}</button>
           </div>`),
+        card('Осталось получить', Sales.rub(remaining), 'Тебе за вычетом полученного', false, 'wallet'),
         card('Денису', Sales.rub(r.denis), '30% остатка после налога и комиссий', false, 'user', 'denis'),
         card('Саше', Sales.rub(r.sasha), '10% с лидов, которые закрыл Саша', false, 'user', 'sasha'),
         card('Эмилю', Sales.rub(r.emil), '10% с лидов, которые закрыл Эмиль', false, 'user', 'emil'),
