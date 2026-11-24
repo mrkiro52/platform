@@ -557,3 +557,35 @@ PAGES.winterHomework = WinterHomeworkPage
 PAGES.winterHomeworkItem = WinterHomeworkItemPage
 PAGES.winterStudents = WinterStudentsPage
 PAGES.winterStudent = WinterStudentPage
+
+PAGES.entrance = {
+  async render(view, ctx) {
+    const rows = await api('/api/entrance/results')
+    if (ctx.stale()) return
+    view.innerHTML = pageHead({ title: 'Входное тестирование' })
+    if (!rows.length) view.insertAdjacentHTML('beforeend', '<p>Пока никто не отправил ответы.</p>')
+    for (const row of rows) {
+      const track = WINTER_DIRS[row.track]
+      const markdown = [`# Входное тестирование · ${row.nickname}`, track,
+        ...row.responses.map((r, i) => `## ${i + 1}. ${r.topic}\n\n${r.question}\n\n${r.answer}`)].join('\n\n')
+      const card = document.createElement('section')
+      card.className = 'card'
+      card.innerHTML = `<h2>${esc(row.nickname)}</h2><p>${esc(track)} · ${esc(stampLabel(row.submitted_at))}</p>
+        <button class="btn btn-secondary" type="button">Скопировать</button>
+        <button class="btn btn-secondary" type="button">Скачать .md</button>
+        <details><summary>Вопросы и ответы</summary><pre style="white-space:pre-wrap"></pre></details>`
+      card.querySelector('pre').textContent = markdown
+      const [copy, download] = card.querySelectorAll('button')
+      copy.onclick = () => copyText(markdown)
+      download.onclick = () => {
+        const url = URL.createObjectURL(new Blob([markdown], { type: 'text/markdown;charset=utf-8' }))
+        const link = document.createElement('a')
+        link.href = url
+        link.download = `${row.nickname}_entrance.md`
+        link.click()
+        setTimeout(() => URL.revokeObjectURL(url), 1000)
+      }
+      view.append(card)
+    }
+  },
+}

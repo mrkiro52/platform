@@ -20,7 +20,7 @@ const upload = multer({
 
 // GET /api/users/me — current user's own profile
 router.get('/me', verifyToken, (req, res) => {
-  const user = db.prepare('SELECT id, name, nickname, email, bio, position, birthday, avatar_url, is_summer_camp_2026, is_autumn_camp_2026, autumn_direction, is_winter_camp_2027, winter_direction, courses FROM users WHERE id = ?').get(req.user.id)
+  const user = db.prepare('SELECT id, name, nickname, email, bio, position, birthday, avatar_url, entrance_access, is_summer_camp_2026, is_autumn_camp_2026, autumn_direction, is_winter_camp_2027, winter_direction, courses FROM users WHERE id = ?').get(req.user.id)
   if (!user) return res.status(404).json({ message: 'Пользователь не найден' })
   res.json({
     ...user,
@@ -28,6 +28,7 @@ router.get('/me', verifyToken, (req, res) => {
     isSummerCamp2026: !!user.is_summer_camp_2026,
     isAutumnCamp2026: !!user.is_autumn_camp_2026,
     autumnDirection: user.is_autumn_camp_2026 ? (user.autumn_direction || null) : null,
+    entranceAccess: !!user.entrance_access,
     isWinterCamp2027: !!user.is_winter_camp_2027,
     winterDirection: user.is_winter_camp_2027 ? (user.winter_direction || null) : null,
   })
@@ -88,7 +89,7 @@ router.put('/me', verifyToken, (req, res) => {
 router.get('/', requireAdmin, (req, res) => {
   const last = lastActiveDays()
   const users = db.prepare(`
-    SELECT id, name, nickname, created_at, is_autumn_camp_2026, autumn_direction, is_winter_camp_2027, winter_direction, courses
+    SELECT id, name, nickname, created_at, entrance_access, is_autumn_camp_2026, autumn_direction, is_winter_camp_2027, winter_direction, courses
       FROM users ORDER BY created_at DESC`).all()
   res.json(users.map(u => ({
     ...u,
@@ -99,6 +100,14 @@ router.get('/', requireAdmin, (req, res) => {
     winterDirection: u.winter_direction || null,
     lastActiveDay: last.get(u.id) || null,
   })))
+})
+
+router.patch('/:id/entrance', requireAdmin, (req, res) => {
+  const access = req.body?.access
+  if (typeof access !== 'boolean') return res.status(400).json({ message: 'Неверный статус доступа' })
+  const result = db.prepare('UPDATE users SET entrance_access = ? WHERE id = ?').run(Number(access), req.params.id)
+  if (!result.changes) return res.status(404).json({ message: 'Пользователь не найден' })
+  res.json({ access })
 })
 
 // PATCH /api/users/:id/camp — выдать или снять доступ к осеннему лагерю

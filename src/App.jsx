@@ -104,6 +104,7 @@ export default function App() {
           isSummerCamp2026: !!p.isSummerCamp2026,
           isAutumnCamp2026: !!p.isAutumnCamp2026,
           autumnDirection: p.autumnDirection || null,
+          entranceAccess: !!p.entranceAccess,
           isWinterCamp2027: !!p.isWinterCamp2027,
           winterDirection: p.winterDirection || null,
           courses: Array.isArray(p.courses) ? p.courses : [],

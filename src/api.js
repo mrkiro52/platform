@@ -65,6 +65,8 @@ async function download(path, filename) {
 }
 
 export const api = {
+  entrance: () => req('/api/entrance'),
+  submitEntrance: payload => req('/api/entrance', { method: 'POST', body: JSON.stringify(payload) }),
   login:         (email, pw) => req('/api/auth/login', { method: 'POST', body: JSON.stringify({ email, password: pw }) }),
   register:      (nickname, password, passwordConfirm) => req('/api/auth/register', { method: 'POST', body: JSON.stringify({ nickname, password, passwordConfirm }) }),
   schedule:      ()          => req('/api/schedule'),

@@ -1,0 +1,20 @@
+.entrance {max-width:880px;margin:0 auto;padding:clamp(16px,4vw,48px);width:100%;box-sizing:border-box}
+.entrance h1 {font-size:clamp(1.65rem,4vw,2.7rem);margin:.4em 0 .8em}
+.entrance strong,.entrance .current {color:#ffda57}
+.entrance-stages,.entrance-options,.entrance-actions,.entrance-review {display:flex;flex-wrap:wrap;gap:10px}
+.entrance-stages {justify-content:space-between;font-size:.85rem}
+.entrance progress {width:100%;height:6px;accent-color:#ffda57;margin:12px 0 20px}
+.entrance-card {background:var(--bg-card,#151519);border:1px solid #38383e;border-radius:16px;padding:clamp(18px,4vw,38px);margin-bottom:14px;animation:entrance-arrive .25s ease-out}
+.entrance-card h2 {font-size:clamp(1.1rem,2.5vw,1.5rem);line-height:1.45;margin:12px 0 20px}
+.entrance p {line-height:1.6;margin-bottom:20px}
+.entrance textarea {display:block;width:100%;box-sizing:border-box;min-height:180px;resize:vertical;background:#101013;color:inherit;font:inherit;padding:16px;border:1px solid #55555e;border-radius:10px}
+.entrance small {display:block;color:#aaaab4;margin-top:8px}
+.entrance button {font:inherit;color:inherit;border:1px solid #49494f;border-radius:10px;background:#222227;padding:10px 15px;cursor:pointer}
+.entrance button[aria-pressed=true],.entrance-actions button:last-child,.entrance-card>button {background:#ffda57;color:#191919}
+.entrance-actions {justify-content:space-between;margin-top:24px}
+.entrance button:disabled {opacity:.5;cursor:default}
+.entrance fieldset {border:0;margin:20px 0;padding:0}
+.entrance fieldset label {display:block;padding:7px 0}
+.entrance input {accent-color:#ffda57;margin-right:8px}
+@keyframes entrance-arrive {from {opacity:.35;transform:translateY(5px)}}
+@media(prefers-reduced-motion:reduce){.entrance-card{animation:none}}

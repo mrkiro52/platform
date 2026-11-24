@@ -172,7 +172,10 @@ export default function Sidebar({
             WINTER CAMP
           </button>
         )}
-        {(user?.isAutumnCamp2026 || user?.isWinterCamp2027) && <div className="nav-divider" />}
+        {user?.entranceAccess && <button className={`nav-item nav-item--entrance${isActive('/entrance') ? ' active' : ''}`} onClick={() => handleNav('/entrance')}>
+          <span className="nav-icon" aria-hidden="true">✦</span>Тестирование знаний
+        </button>}
+        {(user?.isAutumnCamp2026 || user?.isWinterCamp2027 || user?.entranceAccess) && <div className="nav-divider" />}
         {NAV_ITEMS.filter(item => !item.visible || item.visible(user)).map(item => (
           <button
             key={item.path}

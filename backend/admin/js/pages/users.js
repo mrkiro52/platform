@@ -170,6 +170,8 @@ const UsersPage = {
           </select>` : ''}
         </td>
         <td>
+          <label class="course-check"><input type="checkbox" ${u.entrance_access ? 'checked' : ''} onchange="UsersPage.toggleEntrance(${u.id}, this)"/>
+            <span class="course-box">${icon('check', 12)}</span>Доступно тестирование</label>
           <div class="course-checks">
             ${UsersPage.COURSES.map(([slug, title]) => `<label class="course-check" title="${esc(title)}">
               <input type="checkbox" ${(u.courses || []).includes(slug) ? 'checked' : ''} onchange="UsersPage.toggleCourse(${u.id}, '${slug}', this)"/>
@@ -249,6 +251,15 @@ const UsersPage = {
     } finally {
       select.disabled = false
     }
+  },
+
+  async toggleEntrance(id, input) {
+    input.disabled = true
+    try {
+      const { access } = await api(`/api/users/${id}/entrance`, { method: 'PATCH', body: { access: input.checked } })
+      UsersPage.list.find(u => u.id === id).entrance_access = access
+    } catch (e) { input.checked = !input.checked; toast(e.message) }
+    finally { input.disabled = false }
   },
 
   async toggleWinter(id, input) {

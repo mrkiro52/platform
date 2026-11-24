@@ -317,6 +317,7 @@ const NAV = [
     { id: 'calls-calendar', path: '/calls/calendar', label: 'Календарь записей', icon: 'calendar-days', scopes: MAIN },
   ] },
   { label: 'Зимний лагерь', items: [
+    { id: 'entrance', path: '/winter/entrance', label: 'Входное тестирование', icon: 'clipboard-check', scopes: MAIN },
     { id: 'winter-homework', path: '/winter/homework', label: 'Проверка ДЗ', icon: 'snowflake', scopes: BOTH, badge: 'winterHomework' },
     { id: 'winter-students', path: '/winter/students', label: 'Студенты и прогресс', icon: 'graduation-cap', scopes: BOTH },
     { id: 'winter-students', path: '/winter/students', label: 'Студенты', icon: 'graduation-cap', scopes: MENTOR, badge: 'winterHomework' },
@@ -333,6 +334,7 @@ const ROUTES = [
   { re: /^\/sales\/calendar$/, page: 'salesCalendar', nav: 'sales-calendar', title: 'Календарь', sales: true },
   { re: /^\/sales\/stats$/, page: 'salesStats', nav: 'sales-stats', title: 'Статистика', sales: true },
   { re: /^\/sales\/storage$/, page: 'salesStorage', nav: 'sales-storage', title: 'Хранилище', sales: true },
+  { re: /^\/winter\/entrance$/, page: 'entrance', nav: 'entrance', title: 'Входное тестирование', scopes: MAIN },
   { re: /^\/dashboard$/, page: 'dashboard', nav: 'dashboard', title: 'Дашборд', scopes: MAIN },
   { re: /^\/tasks$/, page: 'tasks', nav: 'tasks', title: 'Задачи', scopes: ALL },
   { re: /^\/users$/, page: 'users', nav: 'users', title: 'Пользователи', scopes: MAIN },

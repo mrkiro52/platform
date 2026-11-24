@@ -34,6 +34,7 @@ import AutumnWeekPage from './pages/AutumnWeekPage'
 import AutumnProgramPage from './pages/AutumnProgramPage'
 
 // Зимний лагерь нужен только его участникам — грузится отдельными чанками
+const Entrance = lazy(() => import('./pages/Entrance'))
 const WinterCampPage = lazy(() => import('./pages/winter/WinterCampPage'))
 const WinterModulePage = lazy(() => import('./pages/winter/WinterModulePage'))
 const WinterMathPage = lazy(() => import('./pages/winter/WinterMathPage'))
@@ -180,6 +181,7 @@ export default function AppShell({ user, onLogout }) {
             <Route path="/likebezy"   element={<LikebezyPage user={user} />} />
             <Route path="/likebezy/:id" element={<LikebezyPage user={user} />} />
             <Route path="/antireels" element={<AntiReels />} />
+            <Route path="/entrance" element={<Entrance key={user?.id} user={user} />} />
             <Route path="/autumn-camp" element={<AutumnCampPage user={user} />} />
             <Route path="/autumn-camp/program" element={<AutumnProgramPage user={user} />} />
             <Route path="/autumn-camp/program/:chapter" element={<AutumnProgramPage user={user} />} />

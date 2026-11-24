@@ -1485,6 +1485,18 @@ function migrate() {
       db.pragma('user_version = 51')
     }).immediate()
   }
+  if (db.pragma('user_version', { simple: true }) < 52) {
+    db.transaction(() => {
+      if (db.pragma('user_version', { simple: true }) >= 52) return
+      db.exec(`ALTER TABLE users ADD COLUMN entrance_access INTEGER NOT NULL DEFAULT 0;
+        UPDATE users SET entrance_access = 1 WHERE nickname = 'khani' COLLATE NOCASE;
+        CREATE TABLE entrance_results (
+          user_id INTEGER PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
+          track TEXT NOT NULL, responses TEXT NOT NULL, submitted_at TEXT DEFAULT CURRENT_TIMESTAMP
+        );`)
+      db.pragma('user_version = 52')
+    }).immediate()
+  }
 }
 
 migrate()
