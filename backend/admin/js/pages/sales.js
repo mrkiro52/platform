@@ -478,7 +478,7 @@ const SalesCrmPage = {
     Modal.open(`
       ${modalHead('История получений')}
       <div id="receipt-history" aria-live="polite">Загрузка…</div>
-      <div class="modal-actions"><button class="btn btn-primary" onclick="SalesCrmPage.openReceipt(null, true)">${icon('plus')}Добавить получение</button></div>`)
+      <div class="modal-actions"><button class="btn btn-primary" onclick="SalesCrmPage.openReceipt(null, true)">${icon('plus')}Добавить получение</button></div>`, { size: 'lg' })
     const panel = $('#receipt-history')
     try {
       const rows = await api('/api/sales/receipts')
@@ -486,10 +486,11 @@ const SalesCrmPage = {
       SalesCrmPage.receipts = rows
       panel.innerHTML = rows.length ? `
         <div class="table-wrap"><table>
-          <thead><tr><th>Дата внесения</th><th>Сумма</th><th>Действия</th></tr></thead>
+          <thead><tr><th>Дата внесения</th><th>Сумма</th><th>Комментарий</th><th>Действия</th></tr></thead>
           <tbody>${rows.map(row => `<tr>
             <td>${esc(stampLabel(row.receivedAt))}</td>
             <td class="nowrap">${Sales.rub(row.amountCents / 100)}</td>
+            <td class="sales-receipt-comment">${row.comment ? esc(row.comment) : '—'}</td>
             <td><div class="sales-receipt-actions">
               <button class="btn-icon btn-sm" aria-label="Изменить" title="Изменить" onclick="SalesCrmPage.openReceipt(${row.id}, true)">${icon('pencil', 15)}</button>
               <button class="btn-icon btn-sm is-danger" aria-label="Удалить" title="Удалить" onclick="SalesCrmPage.removeReceipt(${row.id})">${icon('trash-2', 15)}</button>
@@ -509,6 +510,10 @@ const SalesCrmPage = {
         <div class="field">
           <label for="receipt-amount">Сумма, ₽</label>
           <input id="receipt-amount" inputmode="decimal" autocomplete="off" placeholder="10 000,50" value="${row ? row.amountCents / 100 : ''}" autofocus required />
+        </div>
+        <div class="field">
+          <label for="receipt-comment">Комментарий (необязательно)</label>
+          <textarea id="receipt-comment" rows="3" maxlength="5000">${esc(row?.comment || '')}</textarea>
         </div>
         <div class="form-error" id="receipt-error" role="alert" hidden></div>
         <div class="modal-actions">
@@ -533,7 +538,8 @@ const SalesCrmPage = {
     save.disabled = true
     try {
       const path = id === null ? '/api/sales/receipts' : `/api/sales/receipts/${id}`
-      const result = await api(path, { method: id === null ? 'POST' : 'PUT', body: { amountCents } })
+      const comment = form.querySelector('#receipt-comment').value.trim()
+      const result = await api(path, { method: id === null ? 'POST' : 'PUT', body: { amountCents, comment } })
       SalesCrmPage.updateReceived(result.received)
       if (form.isConnected) {
         if (fromHistory) SalesCrmPage.openReceiptHistory()

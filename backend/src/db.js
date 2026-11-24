@@ -1508,6 +1508,13 @@ function migrate() {
       db.pragma('user_version = 53')
     }).immediate()
   }
+  if (db.pragma('user_version', { simple: true }) < 54) {
+    db.transaction(() => {
+      if (db.pragma('user_version', { simple: true }) >= 54) return
+      db.exec("ALTER TABLE sales_receipts ADD COLUMN comment TEXT NOT NULL DEFAULT ''")
+      db.pragma('user_version = 54')
+    }).immediate()
+  }
 }
 
 migrate()

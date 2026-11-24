@@ -185,21 +185,27 @@ function validateReceipt(req, res, next) {
   if (!Number.isSafeInteger(amount) || amount <= 0) {
     return res.status(400).json({ message: 'Укажи положительную сумму с точностью до копеек' })
   }
+  const comment = req.body.comment
+  if (comment !== undefined && (typeof comment !== 'string' || comment.length > LIMITS.description)) {
+    return res.status(400).json({ message: `Комментарий должен содержать до ${LIMITS.description} символов` })
+  }
+  req.receiptComment = comment?.trim()
   next()
 }
 
 router.get('/receipts', requireAdmin, (req, res) => {
-  res.json(db.prepare(`SELECT id, amount_cents AS amountCents, received_at AS receivedAt
+  res.json(db.prepare(`SELECT id, amount_cents AS amountCents, received_at AS receivedAt, comment
     FROM sales_receipts ORDER BY received_at DESC, id DESC`).all())
 })
 
 router.post('/receipts', requireAdmin, validateReceipt, (req, res) => {
-  db.prepare('INSERT INTO sales_receipts (amount_cents, received_at) VALUES (?, ?)').run(req.body.amountCents, now())
+  db.prepare('INSERT INTO sales_receipts (amount_cents, received_at, comment) VALUES (?, ?, ?)').run(req.body.amountCents, now(), req.receiptComment ?? '')
   res.status(201).json({ received: receivedTotal() })
 })
 
 router.put('/receipts/:id', requireAdmin, validateReceipt, (req, res) => {
-  const result = db.prepare('UPDATE sales_receipts SET amount_cents = ? WHERE id = ?').run(req.body.amountCents, req.params.id)
+  const result = db.prepare('UPDATE sales_receipts SET amount_cents = ?, comment = COALESCE(?, comment) WHERE id = ?')
+    .run(req.body.amountCents, req.receiptComment ?? null, req.params.id)
   if (!result.changes) return res.status(404).json({ message: 'Получение не найдено' })
   res.json({ received: receivedTotal() })
 })
