@@ -4,7 +4,7 @@ import { SCHEDULE } from '../data'
 import { api } from '../api'
 import { QUESTIONS_COMPONENTS, QuestionsInline } from './QuestionsPage'
 import { HomeworkInline } from './HomeworkPage'
-import { SECTIONS } from '../data/libraryCatalog'
+import { LIBRARY_LESSONS } from '../data/libraryCatalog'
 
 // Ссылки на видео для каждого дня. Пустая строка = нет видео.
 const VIDEO_URLS = {
@@ -338,15 +338,6 @@ function RecordingLinks({ recordingMats }) {
   )
 }
 
-// Название конспекта и его категория из каталога библиотеки
-function catalogEntry(id) {
-  for (const section of SECTIONS) {
-    const item = section.items.find(i => i.id === id)
-    if (item) return { title: item.title, section: section.title }
-  }
-  return null
-}
-
 export default function TheoryPage({ selectedDay, onBack }) {
   const [TheoryComponent, setTheoryComponent] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -385,7 +376,7 @@ export default function TheoryPage({ selectedDay, onBack }) {
     return () => { cancelled = true }
   }, [selectedDay])
 
-  const entry = catalogEntry(selectedDay)
+  const entry = LIBRARY_LESSONS.find(item => item.id === selectedDay)
   const hasQuestions = !!QUESTIONS_COMPONENTS[selectedDay]
   const hasHomework = (homeworkContent?.[selectedDay]?.tasks?.length || 0) > 0
 
@@ -470,12 +461,6 @@ export default function TheoryPage({ selectedDay, onBack }) {
         <button className="breadcrumb-link" onClick={onBack}>
           Библиотека знаний
         </button>
-        {entry && (
-          <>
-            <span className="breadcrumb-sep">/</span>
-            <span className="breadcrumb-current">{entry.section}</span>
-          </>
-        )}
         <span className="breadcrumb-sep">/</span>
         <span className="breadcrumb-current is-last">
           {entry ? entry.title : (libraryTitle || getDayLabel(selectedDay))}

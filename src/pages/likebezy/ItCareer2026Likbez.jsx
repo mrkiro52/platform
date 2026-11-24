@@ -1,3 +1,4 @@
+import { LIBRARY_LESSONS } from '../../data/libraryCatalog'
 import { useEffect } from 'react'
 
 /* ═══════════════════════════ Shared UI ═══════════════════════════ */
@@ -23,7 +24,9 @@ const L = ({ to, children }) => (
 )
 
 // T — конспект из Библиотеки знаний по номеру дня, K — полный ликбез
-const T = ({ d, children }) => <L to={`/library/theory/${d}`}>{children}</L>
+const T = ({ d, children }) => LIBRARY_LESSONS.some(item => item.id === d)
+  ? <L to={`/library/theory/${d}`}>{children}</L>
+  : children
 const K = ({ id, children }) => <L to={`/likebezy/${id}`}>{children}</L>
 
 const Ul = ({ items }) => (

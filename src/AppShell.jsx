@@ -1,3 +1,4 @@
+import { LIBRARY_LESSONS } from './data/libraryCatalog'
 import { useCallback, useEffect, useState, lazy, Suspense } from 'react'
 import { Routes, Route, Navigate, useNavigate, useParams, useLocation } from 'react-router-dom'
 import Sidebar from './components/Sidebar'
@@ -48,7 +49,9 @@ const SqlTableView = lazy(() => import('./pages/trainings/SqlTableView'))
 function TheoryRoute() {
   const { day } = useParams()
   const navigate = useNavigate()
-  return <TheoryPage selectedDay={Number(day)} onBack={() => navigate('/library')} />
+  const lesson = LIBRARY_LESSONS.find(item => String(item.id) === day)
+  if (!lesson) return <Navigate to="/library" replace />
+  return <TheoryPage selectedDay={lesson.id} onBack={() => navigate('/library')} />
 }
 
 function QuestionsRoute() {
