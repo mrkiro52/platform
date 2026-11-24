@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import { api } from '../api'
-import '../winter.css'
-import './entrance.css'
+import EntranceFrame, { EntranceLoading } from '../components/EntranceFrame'
 
 const version = '3'
 const initial = { step: 'start', answers: {} }
@@ -36,8 +35,24 @@ export default function Entrance({ user }) {
     } catch { setStorageError(true) }
   }, [draft, key, data])
   const update = patch => setDraft(previous => ({ ...previous, ...patch }))
-  if (!data) return <section className="page active wc-page entrance"><h1>Тестирование знаний</h1>{error || 'Загружаем маршрут…'} {error && <button onClick={() => { setError(''); setRetry(retry + 1) }}>Повторить</button>}</section>
-  if (data.submitted) return <section className="page active wc-page entrance"><div className="wc-card entrance-card"><strong className="wc-kicker">Маршрут завершён ✦</strong><h1>Ответы сохранены и переданы ментору</h1><p>Они помогут выстроить индивидуальную программу с учётом твоего уровня подготовки.</p></div></section>
+  if (!data && !error) return <EntranceLoading />
+  if (!data) return (
+    <EntranceFrame>
+      <section className="wc-card entrance-card">
+        <p className="wc-muted" role="alert">{error}</p>
+        <button className="wc-more" onClick={() => { setError(''); setRetry(retry + 1) }}>Повторить</button>
+      </section>
+    </EntranceFrame>
+  )
+  if (data.submitted) return (
+    <EntranceFrame>
+      <section className="wc-card entrance-card">
+        <strong className="wc-kicker">Тестирование завершено ✦</strong>
+        <h2 className="wc-detail-title">Ответы сохранены и переданы ментору</h2>
+        <p className="wc-muted">Они помогут выстроить индивидуальную программу с учётом твоего уровня подготовки.</p>
+      </section>
+    </EntranceFrame>
+  )
   const sections = Object.entries(data.sections)
   const questions = sections.flatMap(([topic, rows]) =>
     rows.map(([id, prompt]) => [id, topic, prompt]))
@@ -58,26 +73,24 @@ export default function Entrance({ user }) {
     } catch (e) { setError(e.message) } finally { setSaving(false) }
   }
   const jump = id => update({ step: id })
-  return <main className="page active wc-page is-winter entrance">
-    <header className="wc-top"><div><span className="wc-kicker">Winter Camp · Входное тестирование</span>
-      <h1 className="wc-top-title">Тестирование знаний</h1></div></header>
+  return <EntranceFrame>
     <div className="wc-learning-layout">
     <section className="wc-section">
     <section key={step} className="wc-card entrance-card">
-      {step === 'start' && <><strong className="wc-kicker">Доступно тестирование</strong><h2 className="wc-detail-title">С чего начнём обучение?</h2><p>{questions.length} вопросов по {sections.length} разделам. Отвечай в любом порядке. Любой вопрос можно пропустить.</p><button onClick={() => move(1)}>Начать тестирование</button></>}
-      {question && <><strong className="wc-kicker">{question[1]} · Вопрос {questions.indexOf(question) + 1}</strong><h2 className="wc-detail-title"><label htmlFor="entrance-answer">{question[2].split('\n\n')[0]}</label></h2>{question[2].includes('\n\n') && <pre className="entrance-code"><code>{question[2].slice(question[2].indexOf('\n\n') + 2)}</code></pre>}<textarea id="entrance-answer" maxLength={1500} value={draft.answers[step] || ''} placeholder="Опиши решение и объясни, почему выбрал его" onChange={e => update({ answers: { ...draft.answers, [step]: e.target.value } })}/><small>{(draft.answers[step] || '').length} / 1500</small></>}
+      {step === 'start' && <><strong className="wc-kicker">Доступно тестирование</strong><h2 className="wc-detail-title">С чего начнём обучение?</h2><p className="wc-muted">{questions.length} вопросов по {sections.length} разделам. Отвечай в любом порядке. Любой вопрос можно пропустить.</p><button className="wc-more" onClick={() => move(1)}>Начать тестирование</button></>}
+      {question && <><strong className="wc-kicker">{question[1]} · Вопрос {questions.indexOf(question) + 1}</strong><h2 className="wc-detail-title"><label htmlFor="entrance-answer">{question[2].split('\n\n')[0]}</label></h2>{question[2].includes('\n\n') && <pre className="entrance-code"><code>{question[2].slice(question[2].indexOf('\n\n') + 2)}</code></pre>}<textarea id="entrance-answer" maxLength={1500} value={draft.answers[step] || ''} placeholder="Опиши решение и объясни, почему выбрал его" onChange={e => update({ answers: { ...draft.answers, [step]: e.target.value } })}/><small className="wc-section-sub">{(draft.answers[step] || '').length} / 1500</small></>}
       {step === 'review' && <>
         <h2 className="wc-detail-title">Проверка перед отправкой</h2>
-        <p>Ответов — {answered}. Без ответа — {questions.length - answered}. Можно вернуться к любому вопросу в списке.</p>
+        <p className="wc-muted">Ответов — {answered}. Без ответа — {questions.length - answered}. Можно вернуться к любому вопросу в списке.</p>
       </>}
       {index > 0 && <div className="entrance-actions">
-        <button disabled={saving} onClick={() => move(-1)}>Назад</button>
+        <button className="wc-more" disabled={saving} onClick={() => move(-1)}>Назад</button>
         {step === 'review'
-          ? <button disabled={saving} onClick={submit}>{saving ? 'Отправляем…' : 'Отправить ментору'}</button>
-          : <button onClick={() => move(1)}>{draft.answers[step]?.trim() ? 'Продолжить' : 'Пропустить вопрос'}</button>}
+          ? <button className="wc-more" disabled={saving} onClick={submit}>{saving ? 'Отправляем…' : 'Отправить ментору'}</button>
+          : <button className="wc-more" onClick={() => move(1)}>{draft.answers[step]?.trim() ? 'Продолжить' : 'Пропустить вопрос'}</button>}
       </div>}
-      {error && <p role="alert">{error}</p>}
-    </section><small role="status">{storageError ? 'Браузер не смог сохранить черновик. Оставь страницу открытой до отправки.' : 'Черновик сохраняется в этом браузере. Можно вернуться позже.'}</small></section>
+      {error && <p className="wc-muted" role="alert">{error}</p>}
+    </section><small className="wc-section-sub" role="status">{storageError ? 'Браузер не смог сохранить черновик. Оставь страницу открытой до отправки.' : 'Черновик сохраняется в этом браузере. Можно вернуться позже.'}</small></section>
     <aside className="wc-learning-aside"><section className="wc-card wc-section">
       <div className="wc-card-head"><h2 className="wc-card-title">Вопросы</h2><span className="wc-card-value">{answered}/{questions.length}</span></div>
       <progress aria-label="Заполнено ответов" value={answered} max={questions.length}/>
@@ -90,5 +103,5 @@ export default function Entrance({ user }) {
       </div>)}
       <button className="wc-link" disabled={saving} onClick={() => jump('review')}>К проверке ответов</button>
     </section></aside></div>
-  </main>
+  </EntranceFrame>
 }

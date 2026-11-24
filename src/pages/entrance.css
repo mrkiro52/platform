@@ -1,21 +1,28 @@
 .entrance .wc-top-title { margin-top: 6px; }
 .entrance .wc-card-head { margin: 0; }
-.entrance-card { display: grid; gap: 16px; animation: entrance-arrive .2s ease-out; }
-.entrance-card p { color: var(--text-secondary); line-height: 1.6; margin: 0; }
-.entrance textarea,.entrance-code { box-sizing: border-box; width: 100%; min-width: 0; padding: 14px; border: 1px solid var(--border-color); border-radius: var(--radius-md); background: var(--bg-primary); color: var(--text-primary); }
-.entrance textarea { min-height: 180px; resize: vertical; font: inherit; }
+.entrance-card { display: grid; gap: 16px; }
+.entrance-card > .wc-more { justify-self: start; }
+.entrance-loading .wc-muted { display: flex; align-items: center; gap: 10px; }
+.entrance-loading .skeleton-title { width: min(65%, 320px); }
+.entrance-loading .skeleton-text { width: min(85%, 520px); }
+.entrance-loading .skeleton-text:last-child { width: min(70%, 400px); }
+.entrance textarea, .entrance-code {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  padding: 14px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+}
+.entrance textarea { min-height: 180px; resize: vertical; font: inherit; font-size: 14px; line-height: 1.6; }
 .entrance textarea:focus { outline: none; border-color: var(--w); }
-.entrance-code { overflow-x: auto; white-space: pre; }
-.entrance small { color: var(--text-tertiary); }
+.entrance-code { overflow-x: auto; white-space: pre; font: 13px/1.6 var(--font-mono); }
 .entrance progress { width: 100%; height: 6px; accent-color: var(--w); }
-.entrance-actions,.entrance-review { display: flex; flex-wrap: wrap; gap: 8px; }
-.entrance-actions { justify-content: space-between; }
-.entrance-actions button,.entrance-review button,.entrance-card>button { font: inherit; font-size: 13px; font-weight: 700; color: var(--w-text); background: var(--w-dim); border: 1px solid var(--w-line); border-radius: var(--radius-pill); padding: 8px 14px; cursor: pointer; }
-.entrance button:hover:not(:disabled) { border-color: var(--w); }
+.entrance-actions { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
 .entrance button:disabled { opacity: .5; cursor: default; }
-.entrance fieldset { border: 0; padding: 0; }
-.entrance fieldset label { display: block; padding: 6px 0; }
-.entrance input { margin-right: 8px; accent-color: var(--w); }
 .entrance .wc-tabs { margin-top: 8px; }
-@keyframes entrance-arrive { from { opacity: .4; transform: translateY(4px); } }
-@media(prefers-reduced-motion:reduce){.entrance-card{animation:none}}
+@media (prefers-reduced-motion: reduce) {
+  .entrance-loading :is(.skeleton, .py-spinner) { animation: none; }
+}

@@ -516,7 +516,7 @@ img { max-width: 100%; display: block; }
   color: #D6F1FF;
   box-shadow: 0 0 0 1px rgba(91,200,245,0.55) inset, 0 0 18px rgba(91,200,245,0.22);
 }
-.nav-item--autumn + .nav-item--winter { margin-top: 6px; }
+.sidebar-camp-links > .nav-item { margin-bottom: 8px; }
 
 .sidebar-footer { padding: 10px; border-top: 1px solid var(--border-color); flex-shrink: 0; }
 .nav-item--logout { color: var(--text-tertiary); }

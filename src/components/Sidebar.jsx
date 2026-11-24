@@ -153,28 +153,31 @@ export default function Sidebar({
       </div>
 
       <nav className="sidebar-nav">
-        {/* Плашки лагерей: участник осеннего видит осеннюю, зимнего — зимнюю, обоих — обе */}
-        {user?.isAutumnCamp2026 && (
-          <button
-            className={`nav-item nav-item--autumn${isActive('/autumn-camp') ? ' active' : ''}`}
-            onClick={() => handleNav('/autumn-camp')}
-          >
-            <span className="nav-icon">🍂</span>
-            AUTUMN CAMP
-          </button>
+        {(user?.isAutumnCamp2026 || user?.isWinterCamp2027 || user?.entranceAccess) && (
+          <div className="sidebar-camp-links">
+            {user?.isAutumnCamp2026 && (
+              <button
+                className={`nav-item nav-item--autumn${isActive('/autumn-camp') ? ' active' : ''}`}
+                onClick={() => handleNav('/autumn-camp')}
+              >
+                <span className="nav-icon">🍂</span>
+                AUTUMN CAMP
+              </button>
+            )}
+            {user?.isWinterCamp2027 && (
+              <button
+                className={`nav-item nav-item--winter${isActive('/winter-camp') ? ' active' : ''}`}
+                onClick={() => handleNav('/winter-camp')}
+              >
+                <span className="nav-icon">❄️</span>
+                WINTER CAMP
+              </button>
+            )}
+            {user?.entranceAccess && <button className={`nav-item nav-item--winter${isActive('/entrance') ? ' active' : ''}`} onClick={() => handleNav('/entrance')}>
+              <span className="nav-icon" aria-hidden="true">✦</span>Тестирование
+            </button>}
+          </div>
         )}
-        {user?.isWinterCamp2027 && (
-          <button
-            className={`nav-item nav-item--winter${isActive('/winter-camp') ? ' active' : ''}`}
-            onClick={() => handleNav('/winter-camp')}
-          >
-            <span className="nav-icon">❄️</span>
-            WINTER CAMP
-          </button>
-        )}
-        {user?.entranceAccess && <button className={`nav-item nav-item--winter${isActive('/entrance') ? ' active' : ''}`} onClick={() => handleNav('/entrance')}>
-          <span className="nav-icon" aria-hidden="true">✦</span>Тестирование знаний
-        </button>}
         {(user?.isAutumnCamp2026 || user?.isWinterCamp2027 || user?.entranceAccess) && <div className="nav-divider" />}
         {NAV_ITEMS.filter(item => !item.visible || item.visible(user)).map(item => (
           <button

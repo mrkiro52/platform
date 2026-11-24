@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState, lazy, Suspense } from 'react'
 import { Routes, Route, Navigate, useNavigate, useParams, useLocation } from 'react-router-dom'
 import Sidebar from './components/Sidebar'
+import { EntranceLoading } from './components/EntranceFrame'
 import TopBar from './components/TopBar'
 import KiroBuddy from './components/KiroBuddy'
 import { api } from './api'
@@ -181,7 +182,7 @@ export default function AppShell({ user, onLogout }) {
             <Route path="/likebezy"   element={<LikebezyPage user={user} />} />
             <Route path="/likebezy/:id" element={<LikebezyPage user={user} />} />
             <Route path="/antireels" element={<AntiReels />} />
-            <Route path="/entrance" element={<Entrance key={user?.id} user={user} />} />
+            <Route path="/entrance" element={<Suspense fallback={<EntranceLoading />}><Entrance key={user?.id} user={user} /></Suspense>} />
             <Route path="/autumn-camp" element={<AutumnCampPage user={user} />} />
             <Route path="/autumn-camp/program" element={<AutumnProgramPage user={user} />} />
             <Route path="/autumn-camp/program/:chapter" element={<AutumnProgramPage user={user} />} />
