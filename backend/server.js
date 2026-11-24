@@ -9,6 +9,7 @@ app.use(cors({
   origin: process.env.FRONTEND_URL || '*',
   credentials: true,
 }))
+app.use('/api/entrance', require('./src/routes/entrance'))
 app.use(express.json())
 
 // ── Routes ──────────────────────────────────────────────────────────────────
@@ -29,7 +30,6 @@ app.use('/api/homework',      require('./src/routes/homework'))
 app.use('/api/analytics',     require('./src/routes/analytics'))
 app.use('/api/admin-tasks',   require('./src/routes/adminTasks'))
 app.use('/api/sales',         require('./src/routes/sales'))
-app.use('/api/entrance', require('./src/routes/entrance'))
 app.use('/api/python-trainer', require('./src/routes/pythonTrainer'))
 app.use('/api/sql-trainer',   require('./src/routes/sqlTrainer'))
 app.use('/api/programs',      require('./src/routes/programs'))

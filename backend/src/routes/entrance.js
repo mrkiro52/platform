@@ -1,7 +1,11 @@
 const router = require('express').Router()
 const db = require('../db')
+const { verifyToken, requireAdmin } = require('../middleware/auth')
 const originalBank = require('../data/entrance')
 const foundation = require('../data/entrance-foundation.json')
+const complete = require('../data/entrance-complete.json')
+const completeQuestions = Object.entries(complete).flatMap(([topic, rows]) =>
+  rows.map(([id, question]) => [id, topic, question]))
 
 function questionsFor(userId, version) {
   if (version !== '2') return originalBank
@@ -12,7 +16,6 @@ function questionsFor(userId, version) {
   })
   return { ...originalBank, base }
 }
-const { verifyToken, requireAdmin } = require('../middleware/auth')
 
 router.get('/results', requireAdmin, (req, res) => {
   const rows = db.prepare('SELECT u.nickname, r.track, r.responses, r.submitted_at FROM entrance_results r JOIN users u ON u.id = r.user_id ORDER BY r.submitted_at DESC').all()
@@ -27,21 +30,30 @@ router.use(verifyToken, (req, res, next) => {
 })
 router.get('/', (req, res) => {
   const submitted = !!db.prepare('SELECT 1 FROM entrance_results WHERE user_id = ?').get(req.user.id)
-  res.json(submitted ? { submitted } : { submitted, bank: questionsFor(req.user.id, req.query.version) })
+  if (submitted) return res.json({ submitted })
+  if (req.query.version === '3') return res.json({ submitted, sections: complete })
+  res.json({ submitted, bank: questionsFor(req.user.id, req.query.version) })
 })
-router.post('/', (req, res) => {
-  const { track, answers } = req.body || {}
-  if (!['ml', 'backend', 'security'].includes(track) || !answers || typeof answers !== 'object' || Array.isArray(answers)) {
-    return res.status(400).json({ message: 'Выбери направление тестирования.' })
+router.post('/', require('express').json({ limit: '800kb' }), (req, res) => {
+  const { track, answers, version } = req.body || {}
+  if (!answers || typeof answers !== 'object' || Array.isArray(answers)) {
+    return res.status(400).json({ message: 'Передай ответы в виде объекта.' })
   }
-  const bank = questionsFor(req.user.id, req.body.version)
+  let questions = completeQuestions
+  if (version !== '3') {
+    if (!['ml', 'backend', 'security'].includes(track)) {
+      return res.status(400).json({ message: 'Выбери направление тестирования.' })
+    }
+    const bank = questionsFor(req.user.id, version)
+    questions = [...bank.base, ...bank[track]]
+  }
   const responses = []
-  for (const [id, topic, question] of [...bank.base, ...bank[track]]) {
+  for (const [id, topic, question] of questions) {
     const value = answers[id] ?? ''
     if (typeof value !== 'string' || value.length > 1500) return res.status(400).json({ message: 'Максимум 1500 символов на ответ.' })
     responses.push({ topic, question, answer: value.trim() || 'Не ответил' })
   }
-  db.prepare('INSERT INTO entrance_results (user_id, track, responses) VALUES (?, ?, ?) ON CONFLICT(user_id) DO NOTHING').run(req.user.id, track, JSON.stringify(responses))
+  db.prepare('INSERT INTO entrance_results (user_id, track, responses) VALUES (?, ?, ?) ON CONFLICT(user_id) DO NOTHING').run(req.user.id, version === '3' ? 'general' : track, JSON.stringify(responses))
   res.json({ submitted: true })
 })
 module.exports = router

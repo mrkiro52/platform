@@ -565,7 +565,7 @@ PAGES.entrance = {
     view.innerHTML = pageHead({ title: 'Входное тестирование' })
     if (!rows.length) view.insertAdjacentHTML('beforeend', '<p>Пока никто не отправил ответы.</p>')
     for (const row of rows) {
-      const track = WINTER_DIRS[row.track]
+      const track = WINTER_DIRS[row.track] || 'Общее тестирование'
       const markdown = [`# Входное тестирование · ${row.nickname}`, track,
         ...row.responses.map((r, i) => `## ${i + 1}. ${r.topic}\n\n${r.question}\n\n${r.answer}`)].join('\n\n')
       const card = document.createElement('section')
