@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { api } from '../api'
 import EntranceFrame, { EntranceLoading } from '../components/EntranceFrame'
 
@@ -50,6 +51,29 @@ export default function Entrance({ user }) {
         <strong className="wc-kicker">Тестирование завершено ✦</strong>
         <h2 className="wc-detail-title">Ответы сохранены и переданы ментору</h2>
         <p className="wc-muted">Они помогут выстроить индивидуальную программу с учётом твоего уровня подготовки.</p>
+      </section>
+      <section className="wc-card wc-section">
+        <h2 className="wc-detail-title">Материалы для разминки</h2>
+        <p className="wc-muted">Пока советую начать разминку с этих материалов.</p>
+        <ul className="wc-muted entrance-guide">
+          <li><Link to="/likebezy/it-career-2026">Ультимативный гайд: как попасть в айти в 2026 году</Link></li>
+          <li><Link to="/likebezy/it-market-2026">Рынок IT-профессий: кого нанимают и как туда попасть</Link></li>
+          <li>Для практики повтори <Link to="/likebezy/python">Python</Link> и <Link to="/likebezy/sql">SQL</Link>.</li>
+        </ul>
+      </section>
+      <section className="wc-card wc-section">
+        <h2 className="wc-detail-title">Небольшой гайд по платформе</h2>
+        <p className="wc-muted">Мы стартуем 1 декабря. А пока можно освоиться на платформе.</p>
+        <ol className="wc-muted entrance-guide">
+          <li><Link to="/wall">Стена</Link> — делись мыслями и общайся с другими участниками.</li>
+          <li><Link to="/messages">Сообщения</Link> — переписывайся с участниками прямо на платформе.</li>
+          <li><Link to="/dating">Знакомства</Link> — опубликуй анкету и найди людей со схожими интересами.</li>
+          <li><Link to="/library">Библиотека</Link> — ищи материалы для разминки и дополнительного чтения.</li>
+          <li><Link to="/trainings">Тренажёры</Link> — с 1 декабря здесь будут доступны тренажёры по SQL и Python.</li>
+          <li><Link to="/likebezy">Полные ликбезы</Link> — выбирай тему, в которой хочешь разобраться подробнее.</li>
+          <li><Link to="/profile">Профиль</Link> — добавь фото, измени имя и описание или смени пароль.</li>
+          <li><strong>Пингви</strong> — наш помощник в кружке с пингвином. Перетащи его туда, где удобно, и нажми, чтобы открыть инструменты. Мы будем пополнять набор. Если есть идея, напиши Хани в личку.</li>
+        </ol>
       </section>
     </EntranceFrame>
   )

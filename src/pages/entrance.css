@@ -26,3 +26,6 @@
 @media (prefers-reduced-motion: reduce) {
   .entrance-loading :is(.skeleton, .py-spinner) { animation: none; }
 }
+
+.entrance-guide { display: grid; gap: 8px; padding-inline-start: 1.6em; }
+.entrance-guide li::marker { color: var(--w-text); font-weight: 700; }
