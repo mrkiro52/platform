@@ -612,6 +612,8 @@ a.kpi:hover{border-color:var(--lime-line)}
 
 /* ═══ Отдел продаж ═══ */
 .sales-kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px;margin-bottom:16px}
+#receipt-history .table-wrap{border:0;border-radius:0}
+#receipt-history table{width:100%}
 .sales-receipt-actions{display:flex;align-items:center;gap:4px}
 .sales-receipt-comment{min-width:110px;white-space:pre-wrap;overflow-wrap:anywhere}
 .sales-kpis .kpi-value{font-size:24px}
