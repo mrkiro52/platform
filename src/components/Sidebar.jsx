@@ -172,7 +172,7 @@ export default function Sidebar({
             WINTER CAMP
           </button>
         )}
-        {user?.entranceAccess && <button className={`nav-item nav-item--entrance${isActive('/entrance') ? ' active' : ''}`} onClick={() => handleNav('/entrance')}>
+        {user?.entranceAccess && <button className={`nav-item nav-item--winter${isActive('/entrance') ? ' active' : ''}`} onClick={() => handleNav('/entrance')}>
           <span className="nav-icon" aria-hidden="true">✦</span>Тестирование знаний
         </button>}
         {(user?.isAutumnCamp2026 || user?.isWinterCamp2027 || user?.entranceAccess) && <div className="nav-divider" />}

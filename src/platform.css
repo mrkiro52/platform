@@ -5943,5 +5943,3 @@ a.cs-lesson:hover { border-color: color-mix(in srgb, var(--c) 60%, transparent);
   .python-sidebar { position: static; max-height: none; overflow: visible; }
   .python-navigation { order: -1; }
 }
-
-.nav-item.nav-item--entrance {color:#ffda57;background:rgba(255,210,48,.09)}

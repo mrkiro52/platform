@@ -1,6 +1,17 @@
 const router = require('express').Router()
 const db = require('../db')
-const bank = require('../data/entrance')
+const originalBank = require('../data/entrance')
+const foundation = require('../data/entrance-foundation.json')
+
+function questionsFor(userId, version) {
+  if (version !== '2') return originalBank
+  const base = Object.entries(foundation).flatMap(([topic, pool]) => {
+    const count = topic.startsWith('Python') ? 2 : 1
+    const offset = userId % pool.length
+    return Array.from({ length: count }, (_, i) => pool[(offset + i) % pool.length])
+  })
+  return { ...originalBank, base }
+}
 const { verifyToken, requireAdmin } = require('../middleware/auth')
 
 router.get('/results', requireAdmin, (req, res) => {
@@ -16,13 +27,14 @@ router.use(verifyToken, (req, res, next) => {
 })
 router.get('/', (req, res) => {
   const submitted = !!db.prepare('SELECT 1 FROM entrance_results WHERE user_id = ?').get(req.user.id)
-  res.json(submitted ? { submitted } : { submitted, bank })
+  res.json(submitted ? { submitted } : { submitted, bank: questionsFor(req.user.id, req.query.version) })
 })
 router.post('/', (req, res) => {
   const { track, answers } = req.body || {}
   if (!['ml', 'backend', 'security'].includes(track) || !answers || typeof answers !== 'object' || Array.isArray(answers)) {
     return res.status(400).json({ message: 'Выбери направление тестирования.' })
   }
+  const bank = questionsFor(req.user.id, req.body.version)
   const responses = []
   for (const [id, topic, question] of [...bank.base, ...bank[track]]) {
     const value = answers[id] ?? ''
