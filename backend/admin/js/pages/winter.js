@@ -558,34 +558,231 @@ PAGES.winterHomeworkItem = WinterHomeworkItemPage
 PAGES.winterStudents = WinterStudentsPage
 PAGES.winterStudent = WinterStudentPage
 
-PAGES.entrance = {
+// ═══ Входное тестирование ═══════════════════════════════════════════════
+
+const ENTRANCE_TRACKS = {
+  ml: { label: 'ML', badge: 'badge-violet' },
+  backend: { label: 'Backend', badge: 'badge-blue' },
+  security: { label: 'ИБ', badge: 'badge-orange' },
+  general: { label: 'Общее', badge: 'badge-gray' },
+}
+
+function entranceTrack(track) {
+  return ENTRANCE_TRACKS[track] || ENTRANCE_TRACKS.general
+}
+
+function entranceAnswered(row) {
+  const list = row.responses || []
+  const answered = list.filter(r => r.answer && r.answer !== 'Не ответил').length
+  return { answered, total: list.length }
+}
+
+function entranceMarkdown(row) {
+  const track = entranceTrack(row.track).label
+  const header = row.track === 'general' ? 'Общее тестирование' : track
+  return [
+    `# Входное тестирование · ${row.nickname}`,
+    header,
+    ...(row.responses || []).map((r, i) => `## ${i + 1}. ${r.topic}\n\n${r.question}\n\n${r.answer}`),
+  ].join('\n\n')
+}
+
+const EntrancePage = {
+  list: [],
+  track: 'all',
+  q: '',
+  hideEmpty: false,
+
+  head(sub = '') {
+    return pageHead({
+      title: 'Входное тестирование',
+      sub,
+      actions: `<button class="btn-icon is-bordered" onclick="Router.reload()" title="Обновить" aria-label="Обновить">${icon('refresh-cw', 16)}</button>`,
+    })
+  },
+
   async render(view, ctx) {
+    view.innerHTML = EntrancePage.head() + skeleton({ rows: 6, kpis: 4 })
     const rows = await api('/api/entrance/results')
     if (ctx.stale()) return
-    view.innerHTML = pageHead({ title: 'Входное тестирование' })
-    if (!rows.length) view.insertAdjacentHTML('beforeend', '<p>Пока никто не отправил ответы.</p>')
-    for (const row of rows) {
-      const track = WINTER_DIRS[row.track] || 'Общее тестирование'
-      const markdown = [`# Входное тестирование · ${row.nickname}`, track,
-        ...row.responses.map((r, i) => `## ${i + 1}. ${r.topic}\n\n${r.question}\n\n${r.answer}`)].join('\n\n')
-      const card = document.createElement('section')
-      card.className = 'card'
-      card.innerHTML = `<h2>${esc(row.nickname)}</h2><p>${esc(track)} · ${esc(stampLabel(row.submitted_at))}</p>
-        <button class="btn btn-secondary" type="button">Скопировать</button>
-        <button class="btn btn-secondary" type="button">Скачать .md</button>
-        <details><summary>Вопросы и ответы</summary><pre style="white-space:pre-wrap"></pre></details>`
-      card.querySelector('pre').textContent = markdown
-      const [copy, download] = card.querySelectorAll('button')
-      copy.onclick = () => copyText(markdown)
-      download.onclick = () => {
-        const url = URL.createObjectURL(new Blob([markdown], { type: 'text/markdown;charset=utf-8' }))
-        const link = document.createElement('a')
-        link.href = url
-        link.download = `${row.nickname}_entrance.md`
-        link.click()
-        setTimeout(() => URL.revokeObjectURL(url), 1000)
-      }
-      view.append(card)
+    EntrancePage.list = rows
+    EntrancePage.track = ctx.query.get('track') || 'all'
+    EntrancePage.q = ctx.query.get('q') || ''
+
+    const count = t => rows.filter(r => r.track === t).length
+    const ml = count('ml'), be = count('backend'), sec = count('security'), gen = count('general')
+    const avgPct = rows.length
+      ? Math.round(rows.reduce((sum, r) => {
+          const { answered, total } = entranceAnswered(r)
+          return sum + (total ? (answered / total) * 100 : 0)
+        }, 0) / rows.length)
+      : 0
+    const latest = rows[0]?.submitted_at ? stampLabel(rows[0].submitted_at) : ''
+
+    view.innerHTML = EntrancePage.head(rows.length
+      ? `${fmt(rows.length)} ${plural(rows.length, 'анкета', 'анкеты', 'анкет')}${latest ? ` · последняя ${latest}` : ''}`
+      : 'Ответов пока нет') + `
+      <div class="kpi-grid wst-kpis">
+        ${wKpi('Всего анкет', fmt(rows.length), 'clipboard-check', rows.length ? `в среднем заполнено ${avgPct}%` : 'пока никто не прошёл', true)}
+        ${wKpi('ML', fmt(ml), 'activity', rows.length ? `${Math.round((ml / rows.length) * 100)}% от всех` : 'машинное обучение')}
+        ${wKpi('Backend', fmt(be), 'code', rows.length ? `${Math.round((be / rows.length) * 100)}% от всех` : 'серверная разработка')}
+        ${wKpi('ИБ и общее', fmt(sec + gen), 'shield-check', gen ? `ИБ: ${fmt(sec)} · общее: ${fmt(gen)}` : 'информационная безопасность')}
+      </div>
+      <div class="toolbar">
+        <div id="ent-seg"></div>
+        <div class="spacer"></div>
+        ${searchBox('ent-q', EntrancePage.q, 'Никнейм или текст ответа', 'EntrancePage.search')}
+      </div>
+      <div id="ent-table"></div>`
+    EntrancePage.paint()
+  },
+
+  setTrack(track) {
+    EntrancePage.track = track
+    Router.setQuery({ track: track === 'all' ? null : track })
+    EntrancePage.paint()
+  },
+
+  search: debounce((value) => {
+    EntrancePage.q = value.trim()
+    Router.setQuery({ q: EntrancePage.q || null })
+    EntrancePage.paint()
+  }, 150),
+
+  paint() {
+    const all = EntrancePage.list
+    const count = t => all.filter(r => r.track === t).length
+    const segItems = [
+      ['all', `Все <span class="count">${fmt(all.length)}</span>`],
+      ['ml', `ML <span class="count">${fmt(count('ml'))}</span>`],
+      ['backend', `Backend <span class="count">${fmt(count('backend'))}</span>`],
+      ['security', `ИБ <span class="count">${fmt(count('security'))}</span>`],
+    ]
+    if (count('general')) segItems.push(['general', `Общее <span class="count">${fmt(count('general'))}</span>`])
+    $('#ent-seg').innerHTML = seg(segItems, EntrancePage.track, 'EntrancePage.setTrack')
+
+    const q = EntrancePage.q.toLowerCase()
+    const rows = all.map((r, idx) => ({ r, idx })).filter(({ r }) => {
+      if (EntrancePage.track !== 'all' && r.track !== EntrancePage.track) return false
+      if (!q) return true
+      if (String(r.nickname || '').toLowerCase().includes(q)) return true
+      return (r.responses || []).some(item =>
+        String(item.topic || '').toLowerCase().includes(q) ||
+        String(item.answer || '').toLowerCase().includes(q))
+    })
+
+    const el = $('#ent-table')
+    if (!all.length) {
+      el.innerHTML = `<div class="card">${emptyState('inbox', 'Ответов пока нет', 'Когда студенты пройдут входное тестирование, их анкеты появятся здесь')}</div>`
+      return
     }
+    if (!rows.length) {
+      el.innerHTML = `<div class="card">${emptyState('search', 'Ничего не найдено', 'Попробуй сбросить фильтр по треку или изменить поисковый запрос')}</div>`
+      return
+    }
+
+    el.innerHTML = `
+      <div class="table-wrap">
+        <table class="tbl">
+          <thead><tr><th>Студент</th><th>Направление</th><th>Заполнено</th><th>Отправлено</th><th></th></tr></thead>
+          <tbody>${rows.map(({ r, idx }) => {
+            const tr = entranceTrack(r.track)
+            const { answered, total } = entranceAnswered(r)
+            const pct = total ? Math.round((answered / total) * 100) : 0
+            return `
+              <tr class="is-link" onclick="EntrancePage.open(${idx})">
+                <td><div style="display:flex;align-items:center;gap:11px">
+                  <span class="avatar is-winter">${esc(initials(r.nickname))}</span>
+                  <div><div class="cell-main">${esc(r.nickname)}</div><div class="cell-sub">${fmt(total)} ${plural(total, 'вопрос', 'вопроса', 'вопросов')}</div></div>
+                </div></td>
+                <td><span class="badge ${tr.badge}">${esc(tr.label)}</span></td>
+                <td>
+                  <div class="wst-bar" role="progressbar" aria-valuemin="0" aria-valuemax="${total}" aria-valuenow="${answered}"><span style="width:${pct}%"></span></div>
+                  <div class="cell-sub">${fmt(answered)} из ${fmt(total)} (${pct}%)</div>
+                </td>
+                <td class="nowrap">${r.submitted_at ? stampLabel(r.submitted_at) : '—'}</td>
+                <td class="actions"><div>
+                  <button class="btn-icon" type="button" title="Скопировать Markdown" aria-label="Скопировать Markdown" onclick="event.stopPropagation(); EntrancePage.copy(${idx})">${icon('copy', 15)}</button>
+                  <button class="btn-icon" type="button" title="Скачать .md" aria-label="Скачать .md" onclick="event.stopPropagation(); EntrancePage.download(${idx})">${icon('download', 15)}</button>
+                  <button class="btn btn-tint btn-sm" type="button" onclick="event.stopPropagation(); EntrancePage.open(${idx})">Открыть${icon('arrow-right', 14)}</button>
+                </div></td>
+              </tr>`
+          }).join('')}</tbody>
+        </table>
+      </div>`
+  },
+
+  copy(idx) {
+    const row = EntrancePage.list[idx]
+    if (row) copyText(entranceMarkdown(row))
+  },
+
+  download(idx) {
+    const row = EntrancePage.list[idx]
+    if (!row) return
+    const url = URL.createObjectURL(new Blob([entranceMarkdown(row)], { type: 'text/markdown;charset=utf-8' }))
+    const link = document.createElement('a')
+    link.href = url
+    link.download = `${row.nickname}_entrance.md`
+    document.body.appendChild(link)
+    link.click()
+    link.remove()
+    setTimeout(() => URL.revokeObjectURL(url), 1000)
+  },
+
+  open(idx) {
+    EntrancePage.hideEmpty = false
+    EntrancePage.renderModal(idx)
+  },
+
+  toggleEmpty(idx) {
+    EntrancePage.hideEmpty = !EntrancePage.hideEmpty
+    EntrancePage.renderModal(idx)
+  },
+
+  renderModal(idx) {
+    const row = EntrancePage.list[idx]
+    if (!row) return
+    const tr = entranceTrack(row.track)
+    const { answered, total } = entranceAnswered(row)
+    const all = row.responses || []
+    const items = all
+      .map((item, n) => ({ item, n: n + 1 }))
+      .filter(({ item }) => !EntrancePage.hideEmpty || (item.answer && item.answer !== 'Не ответил'))
+
+    Modal.open(`
+      ${modalHead(`Входное тестирование · ${esc(row.nickname)}`, `${esc(tr.label)} · отправлено ${row.submitted_at ? esc(stampLabel(row.submitted_at)) : '—'}`)}
+      <div class="ent-meta">
+        <div class="ent-meta-info">
+          <span class="badge ${tr.badge}">${esc(tr.label)}</span>
+          <span>Ответов: <b>${fmt(answered)}</b> из ${fmt(total)}</span>
+        </div>
+        <div class="ent-meta-actions">
+          ${answered < total ? `<button class="btn btn-secondary btn-sm" type="button" onclick="EntrancePage.toggleEmpty(${idx})">${icon(EntrancePage.hideEmpty ? 'eye' : 'eye-off', 14)}${EntrancePage.hideEmpty ? 'Показать все' : 'Скрыть пустые'}</button>` : ''}
+          <button class="btn btn-secondary btn-sm" type="button" onclick="EntrancePage.copy(${idx})">${icon('copy', 14)}Скопировать</button>
+          <button class="btn btn-secondary btn-sm" type="button" onclick="EntrancePage.download(${idx})">${icon('download', 14)}Скачать .md</button>
+        </div>
+      </div>
+      <div class="ent-modal-list">
+        ${items.length ? `<ol class="phw-answers is-winter">${items.map(({ item, n }) => {
+          const empty = !item.answer || item.answer === 'Не ответил'
+          return `
+            <li class="phw-answer">
+              <div class="phw-q">
+                <span class="phw-num">${n}</span>
+                <div class="ent-q-body">
+                  ${item.topic ? `<div class="ent-topic">${esc(item.topic)}</div>` : ''}
+                  <div>${esc(item.question)}</div>
+                </div>
+              </div>
+              <div class="phw-a${empty ? ' is-empty' : ''}">${esc(item.answer || 'Не ответил')}</div>
+            </li>`
+        }).join('')}</ol>` : `<div class="card">${emptyState('inbox', 'Нет заполненных ответов', 'Студент не заполнил ни одного поля')}</div>`}
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-secondary" type="button" onclick="Modal.close()">Закрыть</button>
+      </div>`, { size: 'lg' })
   },
 }
+
+PAGES.entrance = EntrancePage
